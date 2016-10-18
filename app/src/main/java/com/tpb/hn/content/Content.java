@@ -55,6 +55,7 @@ public class Content extends AppCompatActivity {
 
         StrictMode.setThreadPolicy(policy);
 
+        //TODO- Async do checks and start loading content
         AndroidNetworking.initialize(getApplicationContext());
         AndroidNetworking.get(APIPaths.getMaxItemPath())
                 .setTag("test")
@@ -86,6 +87,8 @@ public class Content extends AppCompatActivity {
         } catch(Exception e) {
             Log.e(TAG, "onCreate: Fetcher", e);
         }
+
+        //getSupportActionBar().hide();
     }
 
     @Override

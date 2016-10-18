@@ -23,6 +23,8 @@ public class Item implements Parcelable {
     private long[] pargs;
     private int descendants;
 
+    public Item() {
+    }
 
     @Override
     public int describeContents() {
@@ -47,8 +49,6 @@ public class Item implements Parcelable {
         dest.writeInt(this.descendants);
     }
 
-    public Item() {
-    }
 
     protected Item(Parcel in) {
         this.id = in.readLong();

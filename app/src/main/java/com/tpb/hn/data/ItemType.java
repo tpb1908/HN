@@ -5,5 +5,5 @@ package com.tpb.hn.data;
  */
 
 public enum ItemType {
-    Story, Job, Comment, Poll, PollOpt
+    STORY, JOB, COMMENT, POLL, POLLOPT
 }
