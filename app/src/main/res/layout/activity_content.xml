@@ -8,35 +8,64 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     sothree:umanoPanelHeight="68dp"
-    sothree:umanoShadowHeight="4dp">
+    sothree:umanoShadowHeight="4dp"
+    sothree:umanoScrollableView="@+id/viewpager"
+    sothree:umanoDragView="@+id/story_toolbar">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/content_pane"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbar"
+            android:id="@+id/content_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:background="?attr/colorPrimary"/>
 
-    </RelativeLayout>
+    </FrameLayout>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/story_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
+
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|top"
-            android:text="The Awesome Sliding Up Panel"
-            android:textSize="16sp" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/story_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+    </FrameLayout>
+
 
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
