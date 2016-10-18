@@ -1,4 +1,4 @@
-package com.tpb.hn;
+package com.tpb.hn.content;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,20 +9,20 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
-import com.tpb.hn.Network.APIPaths;
+import com.tpb.hn.R;
+import com.tpb.hn.network.APIPaths;
 
 /**
  * Created by theo on 17/10/16.
  */
 
-public class Main extends AppCompatActivity {
-    private static final String TAG = Main.class.toString();
-    private static final String URL = "https://hacker-news.firebaseio.com/v0/";
+public class Content extends AppCompatActivity {
+    private static final String TAG = Content.class.toString();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_content);
         AndroidNetworking.initialize(getApplicationContext());
 
         AndroidNetworking.get(APIPaths.getNewStoriesPath())
@@ -45,4 +45,5 @@ public class Main extends AppCompatActivity {
 
 
     }
+
 }

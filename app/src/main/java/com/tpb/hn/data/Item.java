@@ -1,4 +1,4 @@
-package com.tpb.hn.Data;
+package com.tpb.hn.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.tpb.hn.Network;
+package com.tpb.hn.network;
 
 /**
  * Created by theo on 17/10/16.
