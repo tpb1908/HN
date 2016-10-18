@@ -14,10 +14,12 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 import com.tpb.hn.network.APIPaths;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by theo on 17/10/16.
@@ -26,17 +28,24 @@ import butterknife.BindView;
 public class Content extends AppCompatActivity {
     private static final String TAG = Content.class.toString();
 
-    @BindView(R.id.story_toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.sliding_layout)
+    SlidingUpPanelLayout mSlidingLayout;
 
-    @BindView(R.id.viewpager)
-    ViewPager pager;
+    @BindView(R.id.content_toolbar)
+    Toolbar mContentToolbar;
+
+    @BindView(R.id.story_toolbar)
+    Toolbar mStoryToolbar;
+
+    @BindView(R.id.story_pager)
+    ViewPager mStoryPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
-        setSupportActionBar(mToolbar);
+        ButterKnife.bind(this);
+        setSupportActionBar(mContentToolbar);
 
         AndroidNetworking.initialize(getApplicationContext());
         AndroidNetworking.get(APIPaths.getNewStoriesPath())
@@ -55,12 +64,18 @@ public class Content extends AppCompatActivity {
                     }
                 });
 
+        mStoryPager.setAdapter(new Adapter(getSupportFragmentManager()));
 
-        ViewPager p = (ViewPager) findViewById(R.id.viewpager);
+        ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
+    }
 
-        p.setAdapter(new Adapter(getSupportFragmentManager()));
-
-        ((TabLayout) findViewById(R.id.tabs)).setupWithViewPager(p);
+    @Override
+    public void onBackPressed() {
+        if(mSlidingLayout.getPanelState().equals(SlidingUpPanelLayout.PanelState.EXPANDED)) {
+            mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class Adapter extends FragmentPagerAdapter {
