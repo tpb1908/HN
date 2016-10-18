@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "900370149428",
+    "project_id": "firebase-hnreader"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900370149428:android:5070a69b5a026718",
+        "android_client_info": {
+          "package_name": "com.tpb.hn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzST-kZtUIWqP6HaelcWxs3e7Qklf68hw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-80625972-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
