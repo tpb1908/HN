@@ -1,6 +1,7 @@
 package com.tpb.hn.content;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,13 +21,15 @@ import com.tpb.hn.network.APIPaths;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.jetwick.snacktory.HtmlFetcher;
+import de.jetwick.snacktory.JResult;
 
 /**
  * Created by theo on 17/10/16.
  */
 
 public class Content extends AppCompatActivity {
-    private static final String TAG = Content.class.toString();
+    private static final String TAG = Content.class.getCanonicalName();
 
     @BindView(R.id.sliding_layout)
     SlidingUpPanelLayout mSlidingLayout;
@@ -47,8 +50,13 @@ public class Content extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(mContentToolbar);
 
+        //Never do this
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
         AndroidNetworking.initialize(getApplicationContext());
-        AndroidNetworking.get(APIPaths.getNewStoriesPath())
+        AndroidNetworking.get(APIPaths.getMaxItemPath())
                 .setTag("test")
                 .setPriority(Priority.HIGH)
                 .build()
@@ -67,6 +75,17 @@ public class Content extends AppCompatActivity {
         mStoryPager.setAdapter(new Adapter(getSupportFragmentManager()));
 
         ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
+
+
+        HtmlFetcher fetcher = new HtmlFetcher();
+        //Probaly don't do this. Pull down full page and then pass the HTML to the extractor
+        try {
+            JResult res = fetcher.fetchAndExtract("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/",
+                    10000, true);
+            Log.i(TAG, "onCreate: " + res.getText());
+        } catch(Exception e) {
+            Log.e(TAG, "onCreate: Fetcher", e);
+        }
     }
 
     @Override
