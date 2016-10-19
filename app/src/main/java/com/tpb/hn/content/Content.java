@@ -107,6 +107,8 @@ public class Content extends AppCompatActivity {
     public void onBackPressed() {
         if(mPanelController.isExpanded()) {
             mPanelController.collapse();
+            Log.i(TAG, "onBackPressed: " + ReadabilityLoader.getCache().toString());
+            new ReadabilityLoader().execute("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/");
         } else {
             super.onBackPressed();
         }

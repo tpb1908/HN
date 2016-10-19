@@ -63,11 +63,11 @@ public class PanelController {
     
     
     public boolean isCollapsed() {
-        return false;
+        return panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED;
     }
     
     public boolean isExpanded() {
-        return false;
+        return panelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED;
     }
 
 }
