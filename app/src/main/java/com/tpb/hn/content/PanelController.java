@@ -25,11 +25,11 @@ public class PanelController {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 if(slideOffset > lastPanelOffset) {
-                    collapsedView.setAlpha(slideOffset);
+                    collapsedView.setAlpha(Math.min(slideOffset * 1.5f, 1.0f));
                     expandedView.setAlpha(1 - slideOffset);
                 } else {
                     collapsedView.setAlpha(slideOffset);
-                    expandedView.setAlpha(1 - slideOffset);
+                    expandedView.setAlpha(1 - Math.min(slideOffset * 1.5f, 1.0f));
 
                 }
                 lastPanelOffset = slideOffset;
