@@ -10,10 +10,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.FrameLayout;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
+import com.tpb.hn.network.APIPaths;
+import com.tpb.hn.story.ReadabilityLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,26 +60,26 @@ public class Content extends AppCompatActivity {
         //Never do this
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.setThreadPolicy(policy);
 
         //TODO- Async do checks and start loading content
-//        AndroidNetworking.initialize(getApplicationContext());
-//        AndroidNetworking.get(APIPaths.getMaxItemPath())
-//                .setTag("test")
-//                .setPriority(Priority.HIGH)
-//                .build()
-//                .getAsString(new StringRequestListener() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.i(TAG, "onResponse: String request listener " + response);
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//
-//                    }
-//                });
-//
+        AndroidNetworking.initialize(getApplicationContext());
+        AndroidNetworking.get(APIPaths.getMaxItemPath())
+                .setTag("test")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i(TAG, "onResponse: String request listener " + response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
         mStoryPager.setAdapter(new Adapter(getSupportFragmentManager()));
 //
         ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
@@ -93,6 +100,7 @@ public class Content extends AppCompatActivity {
                 ButterKnife.findById(this, R.id.item_large_title),
                 ButterKnife.findById(this, R.id.item_detail_layout));
 
+        new ReadabilityLoader().execute("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/");
     }
 
     @Override
