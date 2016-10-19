@@ -10,10 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
@@ -28,10 +25,7 @@ import butterknife.ButterKnife;
 public class Content extends AppCompatActivity {
     private static final String TAG = Content.class.getCanonicalName();
 
-    @BindView(R.id.sliding_layout)
-    SlidingUpPanelLayout mSlidingLayout;
-
-    private float mLastPanelOffset = 0.0f;
+    private PanelController mPanelController;
 
     @BindView(R.id.content_toolbar)
     Toolbar mContentToolbar;
@@ -48,11 +42,6 @@ public class Content extends AppCompatActivity {
     @BindView(R.id.story_panel)
     FrameLayout mStoryPanel;
 
-    @BindView(R.id.item_large_title)
-    LinearLayout mLargeTitleLayout;
-
-    @BindView(R.id.item_detail_layout)
-    RelativeLayout mDetailLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,34 +88,17 @@ public class Content extends AppCompatActivity {
 //            Log.e(TAG, "onCreate: Fetcher", e);
 //        }
 
-        //getSupportActionBar().hide();
-        //mStoryPanel.setVisibility(View.INVISIBLE);
+        mPanelController = new PanelController(
+                (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout),
+                ButterKnife.findById(this, R.id.item_large_title),
+                ButterKnife.findById(this, R.id.item_detail_layout));
 
-        //TODO- Move this into some sort of sliding panel controller
-        mSlidingLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                if(slideOffset > mLastPanelOffset) {
-                    mLargeTitleLayout.setAlpha(slideOffset);
-                    mDetailLayout.setAlpha(1 - slideOffset);
-                } else {
-                    mLargeTitleLayout.setAlpha(slideOffset);
-                    mDetailLayout.setAlpha(1 - slideOffset);
-
-                }
-                mLastPanelOffset = slideOffset;
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-            }
-        });
     }
 
     @Override
     public void onBackPressed() {
-        if(mSlidingLayout.getPanelState().equals(SlidingUpPanelLayout.PanelState.EXPANDED)) {
-            mSlidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        if(mPanelController.isExpanded()) {
+            mPanelController.collapse();
         } else {
             super.onBackPressed();
         }
