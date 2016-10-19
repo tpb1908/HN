@@ -5,8 +5,6 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +18,7 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.story.ReadabilityLoader;
+import com.tpb.hn.story.StoryAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,7 +78,7 @@ public class Content extends AppCompatActivity {
                     }
                 });
 
-        mStoryPager.setAdapter(new Adapter(getSupportFragmentManager()));
+        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY}));
 //
         ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
 //
@@ -99,40 +97,14 @@ public class Content extends AppCompatActivity {
                 (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout),
                 ButterKnife.findById(this, R.id.item_large_title),
                 ButterKnife.findById(this, R.id.item_detail_layout));
-
-        new ReadabilityLoader().execute("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/");
     }
 
     @Override
     public void onBackPressed() {
         if(mPanelController.isExpanded()) {
             mPanelController.collapse();
-            Log.i(TAG, "onBackPressed: " + ReadabilityLoader.getCache().toString());
-            new ReadabilityLoader().execute("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/");
         } else {
             super.onBackPressed();
-        }
-    }
-
-    private class Adapter extends FragmentPagerAdapter {
-
-        public Adapter(android.support.v4.app.FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return new Fragment();
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return  "Title";
         }
     }
 

@@ -2,6 +2,8 @@ package com.tpb.hn.story;
 
 import android.support.v4.app.Fragment;
 
+import com.tpb.hn.data.Item;
+
 /**
  * Created by theo on 18/10/16.
  * Loads the full page of an article
@@ -9,5 +11,10 @@ import android.support.v4.app.Fragment;
  * Otherwise it will load a webview
  */
 
-public class Browser extends Fragment {
+public class Browser extends Fragment implements StoryLoader {
+
+    @Override
+    public void loadStory(Item item) {
+
+    }
 }

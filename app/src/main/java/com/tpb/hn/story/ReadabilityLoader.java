@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import de.jetwick.snacktory.HtmlFetcher;
 import de.jetwick.snacktory.JResult;
@@ -14,12 +15,17 @@ import de.jetwick.snacktory.SCache;
  * http://stackoverflow.com/questions/6053602/what-arguments-are-passed-into-asynctaskarg1-arg2-arg3
  */
 
-public class ReadabilityLoader extends AsyncTask<String, Short, JResult> {
+public class ReadabilityLoader extends AsyncTask<String, Void, JResult> {
     private static final String TAG = ReadabilityLoader.class.getCanonicalName();
     private static HtmlFetcher fetcher = new HtmlFetcher();
+    private ReadabilityLoadDone listener;
 
     static {
         fetcher.setCache(new ReadabilityCache());
+    }
+
+    public ReadabilityLoader(ReadabilityLoadDone listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -27,18 +33,29 @@ public class ReadabilityLoader extends AsyncTask<String, Short, JResult> {
         if(params.length == 0) throw new UnsupportedOperationException("Must pass URL to ReadabilityLoader");
         final long s = System.nanoTime();
         try {
-            final JResult res = fetcher.fetchAndExtract(params[0],
-                    10000, true);
-            Log.i(TAG, "doInBackground " + res.getText());
+            final JResult res = fetcher.fetchAndExtract(params[0], 10000, true);
             Log.i(TAG, "doInBackground: Time diff" + (System.nanoTime() - s)/1E9);
             return res;
         } catch(Exception e) {
-            Log.e(TAG, "onCreate: Fetcher", e);
+            Log.e(TAG, "doInBackground: ", e);
         }
 
         return null;
     }
 
+    @Override
+    protected void onPostExecute(JResult jResult) {
+        super.onPostExecute(jResult);
+        listener.loadDone(jResult);
+    }
+
+    public interface ReadabilityLoadDone {
+
+        void loadDone(JResult result);
+
+    }
+
+    //TODO- Set this up with higher level caching
     private static class ReadabilityCache implements SCache {
         private static HashMap<String, JResult> map = new HashMap<>();
 
@@ -55,6 +72,18 @@ public class ReadabilityLoader extends AsyncTask<String, Short, JResult> {
         @Override
         public int getSize() {
             return map.size();
+        }
+
+        public boolean containsKey(String key) {
+            return map.containsKey(key);
+        }
+
+        public boolean containsValue(JResult value) {
+            return map.containsValue(value);
+        }
+
+        public void putAll(Map<String, JResult> values) {
+            map.putAll(values);
         }
     }
 
