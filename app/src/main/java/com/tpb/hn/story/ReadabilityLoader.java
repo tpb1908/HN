@@ -35,6 +35,7 @@ public class ReadabilityLoader extends AsyncTask<String, Void, JResult> {
         try {
             final JResult res = fetcher.fetchAndExtract(params[0], 10000, true);
             Log.i(TAG, "doInBackground: Time diff" + (System.nanoTime() - s)/1E9);
+            Log.i(TAG, "doInBackground: Image " + res.getImages().get(0));
             return res;
         } catch(Exception e) {
             Log.e(TAG, "doInBackground: ", e);
@@ -46,12 +47,12 @@ public class ReadabilityLoader extends AsyncTask<String, Void, JResult> {
     @Override
     protected void onPostExecute(JResult jResult) {
         super.onPostExecute(jResult);
-        listener.loadDone(jResult, jResult == null);
+        listener.loadDone(jResult, jResult != null);
     }
 
     public interface ReadabilityLoadDone {
 
-        void loadDone(JResult result, boolean error);
+        void loadDone(JResult result, boolean success);
 
     }
 

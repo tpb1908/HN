@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -25,11 +26,15 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     private static final String TAG = Readability.class.getCanonicalName();
 
     private Unbinder unbinder;
+
     @BindView(R.id.readability_title)
     TextView mTitle;
 
     @BindView(R.id.readability_body)
     TextView mBody;
+
+    @BindView(R.id.readability_image)
+    ImageView mImage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,9 +47,6 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
         unbinder = ButterKnife.bind(this, inflated);
-        //ButterKnife.bind(inflated);
-//        mTitle = (TextView) inflated.findViewById(R.id.readability_title);
-//        mBody = (TextView) inflated.findViewById(R.id.readability_body);
         return inflated;
     }
 
@@ -65,14 +67,27 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     }
 
     @Override
-    public void loadDone(JResult result, boolean error) {
-        //TODO- Error handling
-        Log.i(TAG, "loadDone: " + result.toString());
-        mTitle.setText(result.getTitle());
-        mBody.setText(result.getText());
+    public void loadDone(JResult result, boolean success) {
+        if(success) {
+            Log.i(TAG, "loadDone: " + result.toString());
+            mTitle.setText(result.getTitle());
+            if(result.getImages().get(0) != null) {
+                //TODO- Option to load images
+                Log.i(TAG, "loadDone: " + result.getImages().get(0).src);
+            }
+            mBody.setText(result.getText());
+        } else {
+            mTitle.setText(R.string.error_loading_page);
+            //TODO- Option to retry
+            //TODO- Interface for showing snackbar
+        }
+
     }
 
     @Override
     public void loadStory(Item item) {
+        //TODO- Show loading indicator
+        mTitle.setText(null);
+        mBody.setText(null);
     }
 }

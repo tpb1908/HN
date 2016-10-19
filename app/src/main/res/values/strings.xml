@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HN</string>
+
+    <string name="error_loading_page">Error loading page</string>
 </resources>
