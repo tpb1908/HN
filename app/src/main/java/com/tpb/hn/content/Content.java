@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -45,7 +45,7 @@ public class Content extends AppCompatActivity {
     AppBarLayout mStoryAppbar;
 
     @BindView(R.id.story_panel)
-    FrameLayout mStoryPanel;
+    RelativeLayout mStoryPanel;
 
 
     @Override

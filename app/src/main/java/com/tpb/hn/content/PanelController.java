@@ -1,7 +1,7 @@
 package com.tpb.hn.content;
 
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 
 public class PanelController {
     private SlidingUpPanelLayout panelLayout;
-    private FrameLayout slidingPanel;
+    private RelativeLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
 
 

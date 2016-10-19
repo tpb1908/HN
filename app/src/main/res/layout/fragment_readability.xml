@@ -8,6 +8,7 @@
         android:id="@+id/readability_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
         android:textAppearance="@android:style/TextAppearance.Material.Title"/>
 
     <ImageView
