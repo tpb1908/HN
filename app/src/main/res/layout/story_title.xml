@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <RelativeLayout
+                    android:id="@+id/item_detail_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/item_title"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test title"
+            android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+
+        <TextView
+            android:layout_toEndOf="@+id/item_title"
+            android:layout_alignBaseline="@+id/item_title"
+            android:id="@+id/item_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test.test.com"
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Info"/>
+
+        <TextView
+            android:id="@+id/item_stats"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_below="@+id/item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100 points 32 comments 5 hours ago"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"/>
+
+        <TextView
+            android:id="@+id/item_author"
+            android:layout_alignBaseline="@+id/item_stats"
+            android:layout_toEndOf="@+id/item_stats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" by user"/>
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:padding="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_delete"/>
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/item_large_title"
+        android:alpha="0">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@android:color/transparent"
+            />
+
+        <TextView
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is the title"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>
+
