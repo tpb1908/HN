@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import de.jetwick.snacktory.JResult;
 
 /**
@@ -21,10 +24,11 @@ import de.jetwick.snacktory.JResult;
 public class Readability extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone {
     private static final String TAG = Readability.class.getCanonicalName();
 
-    //@BindView(R.id.readability_title)
+    private Unbinder unbinder;
+    @BindView(R.id.readability_title)
     TextView mTitle;
 
-    //@BindView(R.id.readability_body)
+    @BindView(R.id.readability_body)
     TextView mBody;
 
     @Override
@@ -37,10 +41,17 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
+        unbinder = ButterKnife.bind(this, inflated);
         //ButterKnife.bind(inflated);
-        mTitle = (TextView) inflated.findViewById(R.id.readability_title);
-        mBody = (TextView) inflated.findViewById(R.id.readability_body);
+//        mTitle = (TextView) inflated.findViewById(R.id.readability_title);
+//        mBody = (TextView) inflated.findViewById(R.id.readability_body);
         return inflated;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -54,7 +65,8 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     }
 
     @Override
-    public void loadDone(JResult result) {
+    public void loadDone(JResult result, boolean error) {
+        //TODO- Error handling
         Log.i(TAG, "loadDone: " + result.toString());
         mTitle.setText(result.getTitle());
         mBody.setText(result.getText());
@@ -62,6 +74,5 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
 
     @Override
     public void loadStory(Item item) {
-
     }
 }

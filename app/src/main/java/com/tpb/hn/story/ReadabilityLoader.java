@@ -46,12 +46,12 @@ public class ReadabilityLoader extends AsyncTask<String, Void, JResult> {
     @Override
     protected void onPostExecute(JResult jResult) {
         super.onPostExecute(jResult);
-        listener.loadDone(jResult);
+        listener.loadDone(jResult, jResult == null);
     }
 
     public interface ReadabilityLoadDone {
 
-        void loadDone(JResult result);
+        void loadDone(JResult result, boolean error);
 
     }
 
