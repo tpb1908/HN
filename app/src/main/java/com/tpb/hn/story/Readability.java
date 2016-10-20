@@ -77,6 +77,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
                 mBody.setText(Html.fromHtml(result.getString("content")));
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
+                mProgressSpinner.setVisibility(View.INVISIBLE);
                 mTitle.setText(R.string.error_loading_page);
             }
         } else {

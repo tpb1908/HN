@@ -90,12 +90,15 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     @Override
     public void loadDone(JSONObject result, boolean success) {
         try {
-            final String content = Html.fromHtml(result.getString("content")).toString();
+            final String content = Html.fromHtml(result.getString("content")).
+                    toString().
+                    replace("\n", " ");
             mProgressSpinner.setVisibility(View.INVISIBLE);
             mTextView.setVisibility(View.VISIBLE);
             mTextView.setSpritzText(content);
             mTextView.pause();
         } catch(Exception e) {
+            mProgressSpinner.setVisibility(View.INVISIBLE);
             Log.e(TAG, "loadDone: ", e);
         }
     }
