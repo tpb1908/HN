@@ -57,7 +57,7 @@ public class Content extends AppCompatActivity {
         //TODO- Async do checks and start loading content
 
 
-        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY}));
+        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}));
 //
         ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
 //
