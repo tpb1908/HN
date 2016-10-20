@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="nav_spinner_items">
+        <item>Top</item>
+        <item>New</item>
+        <item>Best</item>
+        <item>Ask</item>
+        <item>Show</item>
+        <item>Job</item>
+    </string-array>
+
+</resources>

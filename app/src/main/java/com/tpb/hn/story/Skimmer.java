@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;
 
@@ -59,7 +60,6 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
         mRoot.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-
                 mTextView.play();
                 return false;
             }
@@ -93,6 +93,7 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                     replace("\n", " ");
             mProgressSpinner.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
+            mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
             mTextView.setSpritzText(content);
             mTextView.pause();
         } catch(Exception e) {
@@ -110,6 +111,9 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 .negativeText(android.R.string.cancel)
                 .show();
         final EditText wpmInput = (EditText) md.getCustomView().findViewById(R.id.input_wpm);
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        wpmInput.setHint(String.format(getString(R.string.hint_wpm_input), prefs.getSkimmerWPM()));
+
         md.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,10 +121,11 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 boolean error = false;
                 try {
                     final int wpm = Integer.parseInt(wpmInput.getText().toString());
-                    if(wpm > 1500) {
+                    if(wpm > 2000) {
                         error = true;
                     } else {
                         mTextView.setWpm(wpm);
+                        prefs.setSkimmerWPM(wpm);
                     }
                 } catch(Exception e) {
                     error = true;

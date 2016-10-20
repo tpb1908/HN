@@ -13,16 +13,18 @@ import java.util.Set;
  */
 
 public class SharedPrefsController {
-    private SharedPrefsController instance;
+    private static SharedPrefsController instance;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
     private static final String PREF_ID = "PREF_SETTINGS";
     private static final String KEY_FIRST_RUN = "FIRST_RUN";
     private static final String KEY_STORY_TABS = "STORY_TABS";
+    private static final String KEY_SKIMMER_WPM = "SKIMMER_WPM";
 
     private StoryAdapter.PageType[] pageTypes;
+    private int skimmerWPM;
 
-    public SharedPrefsController initialize(Context context) {
+    public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
             instance = new SharedPrefsController(context);
         }
@@ -48,8 +50,22 @@ public class SharedPrefsController {
         tabs.add("S");
         editor.putStringSet(KEY_STORY_TABS, tabs);
 
+        editor.putInt(KEY_SKIMMER_WPM, 500);
 
         editor.apply();
+    }
+
+    public int getSkimmerWPM() {
+        if(skimmerWPM == 0) {
+            skimmerWPM = prefs.getInt(KEY_SKIMMER_WPM, 500);
+        }
+        return skimmerWPM;
+    }
+
+    public void setSkimmerWPM(int skimmerWPM) {
+        editor.putInt(KEY_SKIMMER_WPM, skimmerWPM);
+        editor.apply();
+        this.skimmerWPM = skimmerWPM;
     }
 
     public StoryAdapter.PageType[] getPageTypes() {

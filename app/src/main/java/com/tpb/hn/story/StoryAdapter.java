@@ -70,6 +70,8 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
         return "Error";
     }
 
+
+
     public enum PageType {
         COMMENTS, BROWSER, READABILITY, SKIMMER
     }
