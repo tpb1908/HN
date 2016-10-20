@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -38,6 +40,12 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @BindView(R.id.readability_image)
     ImageView mImage;
 
+    @BindView(R.id.readability_loading_spinner)
+    ProgressBar mProgressSpinner;
+
+    @BindView(R.id.readability_wrapper)
+    LinearLayout mWrapper;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,6 +71,8 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
         if(success) {
             Log.i(TAG, "loadDone: " + result.toString());
             try {
+                mProgressSpinner.setVisibility(View.INVISIBLE);
+                mWrapper.setVisibility(View.VISIBLE);
                 mTitle.setText(result.getString("title"));
                 mBody.setText(Html.fromHtml(result.getString("content")));
             } catch(Exception e) {

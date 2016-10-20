@@ -12,7 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.tpb.hn.R;
@@ -35,10 +36,13 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     private Unbinder unbinder;
 
     @BindView(R.id.skimmer_root_layout)
-    LinearLayout mRoot;
+    FrameLayout mRoot;
 
     @BindView(R.id.spritzer_text_view)
     SpritzerTextView mTextView;
+
+    @BindView(R.id.skimmer_loading_spinner)
+    ProgressBar mProgressSpinner;
 
     private int wpm = 250;
 
@@ -87,6 +91,8 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     public void loadDone(JSONObject result, boolean success) {
         try {
             final String content = Html.fromHtml(result.getString("content")).toString();
+            mProgressSpinner.setVisibility(View.INVISIBLE);
+            mTextView.setVisibility(View.VISIBLE);
             mTextView.setSpritzText(content);
             mTextView.pause();
         } catch(Exception e) {
