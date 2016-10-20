@@ -8,16 +8,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.StringRequestListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
-import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.story.StoryAdapter;
 
 import butterknife.BindView;
@@ -61,22 +55,7 @@ public class Content extends AppCompatActivity {
         //StrictMode.setThreadPolicy(policy);
 
         //TODO- Async do checks and start loading content
-        AndroidNetworking.initialize(getApplicationContext());
-        AndroidNetworking.get(APIPaths.getMaxItemPath())
-                .setTag("test")
-                .setPriority(Priority.HIGH)
-                .build()
-                .getAsString(new StringRequestListener() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i(TAG, "onResponse: String request listener " + response);
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
 
         mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY}));
 //

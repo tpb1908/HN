@@ -17,6 +17,9 @@ public class APIPaths {
     public static final String JOB_STORIES = "jobstories/";
     public static final String UPDATED = "updates/";
 
+    public static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
+    public static final String READABILITY_PARSER_KEY = "387ce7ecc4df735d0a7c1e748a9e093fb8213ade";
+
     public static final String JSON = ".json";
     public static final String PRETTY = "?print=pretty";
 
@@ -62,6 +65,10 @@ public class APIPaths {
 
     public static String getPrettyPath(String path) {
         return path + PRETTY;
+    }
+
+    public static String getReadabilityParserPath(String url) {
+        return READABILITY_PARSER + url + "&token=" + READABILITY_PARSER_KEY;
     }
 
 
