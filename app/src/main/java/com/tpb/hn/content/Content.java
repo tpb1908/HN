@@ -1,7 +1,6 @@
 package com.tpb.hn.content;
 
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -22,7 +21,7 @@ import butterknife.ButterKnife;
  */
 
 public class Content extends AppCompatActivity {
-    private static final String TAG = Content.class.getCanonicalName();
+    private static final String TAG = Content.class.getSimpleName();
 
     private PanelController mPanelController;
 
@@ -49,34 +48,17 @@ public class Content extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(mContentToolbar);
 
-        //Never do this
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-        //StrictMode.setThreadPolicy(policy);
-
         //TODO- Async do checks and start loading content
 
 
-        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}));
-//
-        ((TabLayout) findViewById(R.id.story_tabs)).setupWithViewPager(mStoryPager);
-//
-//
-//        HtmlFetcher fetcher = new HtmlFetcher();
-//        //Probaly don't do this. Pull down full page and then pass the HTML to the extractor
-//        try {
-//            JResult res = fetcher.fetchAndExtract("http://www.xda-developers.com/a-look-at-what-has-changed-from-the-snapdragon-820-to-the-snapdragon-821-in-the-google-pixel-phones/",
-//                    10000, true);
-//            Log.i(TAG, "onCreate: " + res.getText());
-//        } catch(Exception e) {
-//            Log.e(TAG, "onCreate: Fetcher", e);
-//        }
-
+        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}));
+        mStoryPager.setOffscreenPageLimit(Integer.MAX_VALUE);
+        ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
         mPanelController = new PanelController(
-                (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout),
-                ButterKnife.findById(this, R.id.item_large_title),
-                ButterKnife.findById(this, R.id.item_detail_layout));
+                (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout));
     }
+
+
 
     @Override
     public void onBackPressed() {

@@ -19,7 +19,7 @@ import java.util.HashMap;
  */
 
 public class ReadabilityLoader {
-    private static final String TAG = ReadabilityLoader.class.getCanonicalName();
+    private static final String TAG = ReadabilityLoader.class.getSimpleName();
     private static HashMap<String, JSONObject> cache = new HashMap<>();
     private static HashMap<String, ArrayList<ReadabilityLoadDone>> listenerCache = new HashMap<>();
     private ReadabilityLoadDone listener;

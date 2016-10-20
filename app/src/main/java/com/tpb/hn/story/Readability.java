@@ -27,7 +27,7 @@ import butterknife.Unbinder;
  */
 
 public class Readability extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone {
-    private static final String TAG = Readability.class.getCanonicalName();
+    private static final String TAG = Readability.class.getSimpleName();
 
     private Unbinder unbinder;
 
@@ -71,7 +71,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
         if(success) {
             Log.i(TAG, "loadDone: " + result.toString());
             try {
-                mProgressSpinner.setVisibility(View.INVISIBLE);
+                mProgressSpinner.setVisibility(View.GONE);
                 mWrapper.setVisibility(View.VISIBLE);
                 mTitle.setText(result.getString("title"));
                 mBody.setText(Html.fromHtml(result.getString("content")));

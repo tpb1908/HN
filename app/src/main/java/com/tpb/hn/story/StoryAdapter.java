@@ -61,7 +61,7 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
             case COMMENTS:
                 return "COMMENTS";
             case BROWSER:
-                return "PAGE";
+                return "ARTICLE";
             case  READABILITY:
                 return "READER";
             case SKIMMER:

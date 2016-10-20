@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -31,20 +31,18 @@ import butterknife.Unbinder;
  */
 
 public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone {
-    private static final String TAG = Skimmer.class.getCanonicalName();
+    private static final String TAG = Skimmer.class.getSimpleName();
 
     private Unbinder unbinder;
 
     @BindView(R.id.skimmer_root_layout)
-    FrameLayout mRoot;
+    LinearLayout mRoot;
 
     @BindView(R.id.spritzer_text_view)
     SpritzerTextView mTextView;
 
     @BindView(R.id.skimmer_loading_spinner)
     ProgressBar mProgressSpinner;
-
-    private int wpm = 250;
 
     @Nullable
     @Override
@@ -93,12 +91,12 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
             final String content = Html.fromHtml(result.getString("content")).
                     toString().
                     replace("\n", " ");
-            mProgressSpinner.setVisibility(View.INVISIBLE);
+            mProgressSpinner.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
             mTextView.setSpritzText(content);
             mTextView.pause();
         } catch(Exception e) {
-            mProgressSpinner.setVisibility(View.INVISIBLE);
+            mProgressSpinner.setVisibility(View.GONE);
             Log.e(TAG, "loadDone: ", e);
         }
     }
@@ -122,7 +120,6 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                     if(wpm > 1500) {
                         error = true;
                     } else {
-                        Skimmer.this.wpm = wpm;
                         mTextView.setWpm(wpm);
                     }
                 } catch(Exception e) {

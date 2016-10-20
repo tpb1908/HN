@@ -2,10 +2,12 @@ package com.tpb.hn.content;
 
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -17,19 +19,30 @@ public class PanelController {
     private RelativeLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
 
+    @BindView(R.id.item_title)
+    TextView mTitle;
 
-    public PanelController(SlidingUpPanelLayout panelLayout, final View collapsedView, final View expandedView) {
+    @BindView(R.id.item_large_title)
+    View expandedView;
+
+    @BindView(R.id.item_detail_layout)
+    View collapsedView;
+
+
+    public PanelController(SlidingUpPanelLayout panelLayout) {
         this.panelLayout = panelLayout;
         this.slidingPanel = ButterKnife.findById(panelLayout, R.id.story_panel);
+        ButterKnife.bind(this, panelLayout);
+
         panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 if(slideOffset > lastPanelOffset) {
-                    collapsedView.setAlpha(Math.min(slideOffset * 1.5f, 1.0f));
-                    expandedView.setAlpha(1 - slideOffset);
+                    expandedView.setAlpha(Math.min(slideOffset * 1.5f, 1.0f));
+                    collapsedView.setAlpha(1 - slideOffset);
                 } else {
-                    collapsedView.setAlpha(slideOffset);
-                    expandedView.setAlpha(1 - Math.min(slideOffset * 1.5f, 1.0f));
+                    expandedView.setAlpha(slideOffset);
+                    collapsedView.setAlpha(1 - Math.min(slideOffset * 1.5f, 1.0f));
 
                 }
                 lastPanelOffset = slideOffset;
