@@ -1,10 +1,8 @@
 package com.tpb.hn.story;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +13,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
@@ -104,29 +104,37 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     }
 
     private void showWPMDialog() {
-        final LayoutInflater li = LayoutInflater.from(getContext());
-        final View input = li.inflate(R.layout.dialog_get_wpm, null);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setView(input);
-
-        final EditText wpmInput = (EditText) input.findViewById(R.id.input_wpm);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final MaterialDialog md = new MaterialDialog.Builder(getContext())
+                .title(R.string.title_wpm_dialog)
+                .customView(R.layout.dialog_get_wpm, false)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .show();
+        final EditText wpmInput = (EditText) md.getCustomView().findViewById(R.id.input_wpm);
+        md.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
+                Log.i(TAG, "onClick: Material dialog click");
+                boolean error = false;
                 try {
                     final int wpm = Integer.parseInt(wpmInput.getText().toString());
-                    if(wpm > 1500) throw new Exception();
-                    Skimmer.this.wpm = wpm;
-                    mTextView.setWpm(wpm);
+                    if(wpm > 1500) {
+                        error = true;
+                    } else {
+                        Skimmer.this.wpm = wpm;
+                        mTextView.setWpm(wpm);
+                    }
                 } catch(Exception e) {
+                    error = true;
+                }
+                if(error) {
                     wpmInput.setError(getContext().getString(R.string.error_wpm_input));
+                } else {
+                    md.dismiss();
                 }
             }
-        })
-                .setNegativeButton(android.R.string.cancel, null);
-        builder.create().show();
+        });
     }
 
     @Override
