@@ -1,5 +1,6 @@
 package com.tpb.hn.story;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,9 +10,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,13 +39,21 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     private Unbinder unbinder;
 
     @BindView(R.id.skimmer_root_layout)
-    LinearLayout mRoot;
+    RelativeLayout mRoot;
 
     @BindView(R.id.spritzer_text_view)
     SpritzerTextView mTextView;
 
+    @BindView(R.id.skimmer_spritzer_progress)
+    ProgressBar mSkimmerProgress;
+
     @BindView(R.id.skimmer_loading_spinner)
     ProgressBar mProgressSpinner;
+
+    @BindView(R.id.skimmer_restart_button)
+    Button mRestartButton;
+
+    private String content;
 
     @Nullable
     @Override
@@ -81,6 +91,25 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 showWPMDialog();
             }
         });
+        mTextView.attachProgressBar(mSkimmerProgress);
+
+        mRestartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTextView.setSpritzText(content);
+                mTextView.getSpritzer().start();
+                try { //TODO- See if there is a better way to do this
+                    Thread.sleep(60000/mTextView.getSpritzer().getWpm());
+                } catch(Exception ignored) {}
+                if(Build.VERSION.SDK_INT >= 24) {
+                    mSkimmerProgress.setProgress(0, true);
+                } else {
+                    mSkimmerProgress.setProgress(0);
+                }
+                mTextView.getSpritzer().pause();
+
+            }
+        });
 
         new ReadabilityLoader(this).loadArticle("http://www.bbc.co.uk/news/science-environment-37707776");
     }
@@ -88,14 +117,16 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     @Override
     public void loadDone(JSONObject result, boolean success) {
         try {
-            final String content = Html.fromHtml(result.getString("content")).
+            content = Html.fromHtml(result.getString("content")).
                     toString().
                     replace("\n", " ");
             mProgressSpinner.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
+            mSkimmerProgress.setVisibility(View.VISIBLE);
             mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
             mTextView.setSpritzText(content);
             mTextView.pause();
+
         } catch(Exception e) {
             mProgressSpinner.setVisibility(View.GONE);
             Log.e(TAG, "loadDone: ", e);

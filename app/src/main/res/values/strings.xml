@@ -8,4 +8,6 @@
     <string name="title_wpm_dialog">Enter words per minute</string>
 
     <string name="hint_wpm_input">Currently %1$d</string>
+
+    <string name="button_skimmer_restart">Restart</string>
 </resources>
