@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +47,8 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     LinearLayout mWrapper;
 
     private String title;
-    private Spanned content;
-    private boolean isViewReady = false;
+    private String content;
+
     private boolean isArticleReady = false;
 
     @Nullable
@@ -57,9 +56,15 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
         unbinder = ButterKnife.bind(this, inflated);
-        isViewReady = true;
         if(isArticleReady) {
             setupTextView();
+        } else if(savedInstanceState != null) {
+            if(savedInstanceState.getString("title") != null) {
+                Log.i(TAG, "onCreateView: Getting from savedInstanceState");
+                title = savedInstanceState.getString("title");
+                content = savedInstanceState.getString("content");
+                setupTextView();
+            }
         }
         return inflated;
     }
@@ -74,17 +79,17 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
         mProgressSpinner.setVisibility(View.GONE);
         mWrapper.setVisibility(View.VISIBLE);
         mTitle.setText(title);
-        mBody.setText(content);
+        mBody.setText(Html.fromHtml(content));
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success) {
         if(success) {
             try {
-                content = Html.fromHtml(result.getString("content"));
+                content = result.getString("content");
                 title = result.getString("title");
                 isArticleReady = true;
-                if(isViewReady) setupTextView();
+                if(mBody != null) setupTextView();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.INVISIBLE);
@@ -96,6 +101,13 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
             //TODO- Interface for showing snackbar
         }
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("title", title);
+        outState.putSerializable("content", content);
     }
 
     @Override
