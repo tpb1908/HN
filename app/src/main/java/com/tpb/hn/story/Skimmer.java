@@ -101,14 +101,14 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
             public void onClick(View view) {
                 mTextView.setSpritzText(article);
                 mTextView.getSpritzer().start();
-                try { //TODO- See if there is a better way to do this
-                    Thread.sleep(60000/mTextView.getSpritzer().getWpm());
-                } catch(Exception ignored) {}
                 if(Build.VERSION.SDK_INT >= 24) {
                     mSkimmerProgress.setProgress(0, true);
                 } else {
                     mSkimmerProgress.setProgress(0);
                 }
+                try { //TODO- See if there is a better way to do this
+                    Thread.sleep(60000/mTextView.getSpritzer().getWpm());
+                } catch(Exception ignored) {}
                 mTextView.getSpritzer().pause();
 
             }

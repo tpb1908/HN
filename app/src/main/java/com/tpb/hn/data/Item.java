@@ -11,26 +11,30 @@ import java.net.URL;
  */
 
 public class Item implements Parcelable {
-    private long id;
+    private int id;
     private boolean deleted;
     private ItemType type;
     private String by;
     private long time;
     private String text;
     private boolean dead;
-    private long parent;
-    private long[] kids;
+    private int parent;
+    private int[] kids;
     private String url;
     private int score;
     private String title;
-    private long[] parts;
+    private int[] parts;
     private int descendants;
 
     public Item() {
     }
 
     //<editor-fold desc="Getters and setters">
-    public long getId() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -86,15 +90,15 @@ public class Item implements Parcelable {
         return parent;
     }
 
-    public void setParent(long parent) {
+    public void setParent(int parent) {
         this.parent = parent;
     }
 
-    public long[] getKids() {
+    public int[] getKids() {
         return kids;
     }
 
-    public void setKids(long[] kids) {
+    public void setKids(int[] kids) {
         this.kids = kids;
     }
 
@@ -122,11 +126,11 @@ public class Item implements Parcelable {
         this.title = title;
     }
 
-    public long[] getParts() {
+    public int[] getParts() {
         return parts;
     }
 
-    public void setParts(long[] parts) {
+    public void setParts(int[] parts) {
         this.parts = parts;
     }
 
@@ -158,25 +162,25 @@ public class Item implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
+        dest.writeInt(this.id);
         dest.writeByte(this.deleted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeString(this.by);
         dest.writeLong(this.time);
         dest.writeString(this.text);
         dest.writeByte(this.dead ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.parent);
-        dest.writeLongArray(this.kids);
+        dest.writeInt(this.parent);
+        dest.writeIntArray(this.kids);
         dest.writeString(this.url);
         dest.writeInt(this.score);
         dest.writeString(this.title);
-        dest.writeLongArray(this.parts);
+        dest.writeIntArray(this.parts);
         dest.writeInt(this.descendants);
     }
 
 
     protected Item(Parcel in) {
-        this.id = in.readLong();
+        this.id = in.readInt();
         this.deleted = in.readByte() != 0;
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : ItemType.values()[tmpType];
@@ -184,12 +188,12 @@ public class Item implements Parcelable {
         this.time = in.readLong();
         this.text = in.readString();
         this.dead = in.readByte() != 0;
-        this.parent = in.readLong();
-        this.kids = in.createLongArray();
+        this.parent = in.readInt();
+        this.kids = in.createIntArray();
         this.url = in.readString();
         this.score = in.readInt();
         this.title = in.readString();
-        this.parts = in.createLongArray();
+        this.parts = in.createIntArray();
         this.descendants = in.readInt();
     }
 

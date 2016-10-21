@@ -8,13 +8,66 @@ import android.os.Parcelable;
  */
 
 public class User implements Parcelable {
-    private long id;
-    private short delay;
+    private String id;
+    private byte delay;
     private long created;
     private int karma;
     private String about;
     private int[] submitted;
 
+
+    public User() {
+    }
+
+    //<editor-fold desc="Getters and setters">
+    public int[] getSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(int[] submitted) {
+        this.submitted = submitted;
+    }
+
+    public byte getDelay() {
+        return delay;
+    }
+
+    public void setDelay(byte delay) {
+        this.delay = delay;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public int getKarma() {
+        return karma;
+    }
+
+    public void setKarma(int karma) {
+        this.karma = karma;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    //</editor-fold>
 
     @Override
     public int describeContents() {
@@ -23,20 +76,19 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeInt(this.delay);
+        dest.writeString(this.id);
+        dest.writeByte(this.delay);
         dest.writeLong(this.created);
         dest.writeInt(this.karma);
         dest.writeString(this.about);
         dest.writeIntArray(this.submitted);
     }
 
-    public User() {
-    }
+
 
     protected User(Parcel in) {
-        this.id = in.readLong();
-        this.delay = (short) in.readInt();
+        this.id = in.readString();
+        this.delay = in.readByte();
         this.created = in.readLong();
         this.karma = in.readInt();
         this.about = in.readString();

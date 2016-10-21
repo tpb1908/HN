@@ -20,8 +20,8 @@ import butterknife.Unbinder;
 /**
  * Created by theo on 18/10/16.
  * Loads the full page of an article
- * If Chrome custom tabs are supported, they will be used
- * Otherwise it will load a webview
+ * Data can be cached by creating a new webview instance somewhere
+ * else and loading the page
  */
 
 public class Browser extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {
@@ -29,7 +29,6 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
 
     private Unbinder unbinder;
 
-    private boolean isUsingChromium = false;
 
     @BindView(R.id.browser_webview)
     WebView mWebView;
