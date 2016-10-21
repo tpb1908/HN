@@ -124,6 +124,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void itemLoaded(Item item, boolean success) {
+        mPanelController.setTitle(item);
         mStoryAdapter.loadStory(item);
     }
 

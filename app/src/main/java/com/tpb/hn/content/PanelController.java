@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
+import com.tpb.hn.data.Item;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,10 +23,9 @@ public class PanelController {
     private RelativeLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
 
-    @BindView(R.id.item_title)
-    TextView mTitle;
 
-    @BindView(R.id.item_large_title)
+
+    @BindView(R.id.item_large_title_wrapper)
     View expandedView;
 
     @BindView(R.id.item_detail_layout)
@@ -55,6 +55,14 @@ public class PanelController {
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
             }
         });
+    }
+
+    public void setTitle(Item item) {
+        ((TextView) expandedView.findViewById(R.id.item_large_title)).setText(item.getTitle());
+        ((TextView) collapsedView.findViewById(R.id.item_title)).setText(item.getTitle());
+        ((TextView) collapsedView.findViewById(R.id.item_url)).setText(item.getFormattedURL());
+        ((TextView) collapsedView.findViewById(R.id.item_stats)).setText(item.getFormattedInfo());
+        ((TextView) collapsedView.findViewById(R.id.item_author)).setText(item.getBy());
     }
 
     public void onResume() {

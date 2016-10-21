@@ -160,7 +160,7 @@ public class Item implements Parcelable {
     }
 
     public String getFormattedInfo() {
-        return score + " points |" + kids.length + " comments | " + Formatter.timeAgo(time);
+        return score + " points | " + kids.length + " comments | " + Formatter.timeAgo(time);
     }
 
     public String getFormattedURL() {
