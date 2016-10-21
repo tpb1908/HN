@@ -2,16 +2,17 @@ package com.tpb.hn.story;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -157,40 +158,47 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     }
 
     private void showWPMDialog() {
-
-        final MaterialDialog md = new MaterialDialog.Builder(getContext())
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        new MaterialDialog.Builder(getContext())
                 .title(R.string.title_wpm_dialog)
-                .customView(R.layout.dialog_get_wpm, false)
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .autoDismiss(false)
+                .input(String.format(getString(R.string.hint_wpm_input), prefs.getSkimmerWPM()),
+                        null,
+                        new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                boolean error = false;
+                                try {
+                                    final int wpm = Integer.parseInt(input.toString());
+                                    if(wpm > 2000) {
+                                        error = true;
+                                    } else {
+                                        mTextView.setWpm(wpm);
+                                        prefs.setSkimmerWPM(wpm);
+                                    }
+                                } catch(Exception e) {
+                                    error = true;
+                                }
+
+                                if(error) {
+                                    dialog.getInputEditText().setError(getContext().getString(R.string.error_wpm_input));
+                                } else {
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .canceledOnTouchOutside(true)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .cancelable(true)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
                 .show();
-        final EditText wpmInput = (EditText) md.getCustomView().findViewById(R.id.input_wpm);
-        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
-        wpmInput.setHint(String.format(getString(R.string.hint_wpm_input), prefs.getSkimmerWPM()));
-
-        md.getActionButton(DialogAction.POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "onClick: Material dialog click");
-                boolean error = false;
-                try {
-                    final int wpm = Integer.parseInt(wpmInput.getText().toString());
-                    if(wpm > 2000) {
-                        error = true;
-                    } else {
-                        mTextView.setWpm(wpm);
-                        prefs.setSkimmerWPM(wpm);
-                    }
-                } catch(Exception e) {
-                    error = true;
-                }
-                if(error) {
-                    wpmInput.setError(getContext().getString(R.string.error_wpm_input));
-                } else {
-                    md.dismiss();
-                }
-            }
-        });
     }
 
     @Override
