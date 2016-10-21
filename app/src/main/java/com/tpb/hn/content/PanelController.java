@@ -1,5 +1,6 @@
 package com.tpb.hn.content;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import butterknife.ButterKnife;
  */
 
 public class PanelController {
+    private static final String TAG = PanelController.class.getSimpleName();
+
     private SlidingUpPanelLayout panelLayout;
     private RelativeLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
@@ -52,6 +55,16 @@ public class PanelController {
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
             }
         });
+    }
+
+    public void onResume() {
+        Log.i(TAG, "onResume: ");
+        if(isExpanded()) {
+            Log.i(TAG, "onResume: Panel visible");
+            expandedView.setAlpha(1);
+            collapsedView.setAlpha(0);
+        }
+        Log.i(TAG, "onResume: expanded " + expandedView.getAlpha() + " collapsed " + collapsedView.getAlpha());
     }
 
     public void setPanelVisible() {

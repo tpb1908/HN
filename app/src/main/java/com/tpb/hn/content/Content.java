@@ -151,7 +151,12 @@ public class Content extends AppCompatActivity {
                 });
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+        mPanelController.onResume();
+    }
 
     @Override
     public void onBackPressed() {
