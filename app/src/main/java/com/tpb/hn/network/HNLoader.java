@@ -7,12 +7,14 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -74,6 +76,26 @@ public class HNLoader {
                     public void onError(ANError anError) {
                         //TODO- Get code like this anError.getResponse().code();
                         Log.e(TAG, "onError: ", anError );
+                    }
+                });
+    }
+
+    public void getTopItem() {
+        AndroidNetworking.get(APIPaths.getBestStoriesPath())
+                .setTag("MAXITEM")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        final int[] items = HNParser.extractIntArray(response);
+                        listenerCache.put(items[0], new ArrayList<>(Collections.singletonList(itemListener)));
+                        loadItem(items[0]);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
                     }
                 });
     }

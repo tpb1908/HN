@@ -57,7 +57,7 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader {
                 loaders[position] = (StoryLoader) page;
                 break;
         }
-        if(loaders[position] != null) {
+        if(loaders[position] != null && queuedItem != null) {
             loaders[position].loadStory(queuedItem);
         }
         return page;

@@ -71,12 +71,26 @@ public class HNParser {
         return user;
     }
 
-    private static int[] extractIntArray(JSONArray array) {
+    public static int[] extractIntArray(JSONArray array) {
         final int[] kids = new int[array.length() + 1];
         for(int i = 0; i < array.length(); i++) {
             kids[i] = array.optInt(i);
         }
         return kids;
+    }
+
+    public static int[] extractIntArray(String array) {
+        final String[] items = array.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+        final int[] results = new int[items.length];
+
+        for (int i = 0; i < items.length; i++) {
+            try {
+                results[i] = Integer.parseInt(items[i]);
+            } catch(NumberFormatException nfe) {
+                //NOTE: write something here if you need to recover from formatting errors
+            }
+        }
+        return results;
     }
 
     private static ItemType getType(String type) {

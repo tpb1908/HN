@@ -15,7 +15,10 @@ import android.widget.Spinner;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.story.StoryAdapter;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by theo on 17/10/16.
  */
 
-public class Content extends AppCompatActivity {
+public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone {
     private static final String TAG = Content.class.getSimpleName();
 
     private PanelController mPanelController;
@@ -67,7 +70,7 @@ public class Content extends AppCompatActivity {
 
         mStoryPager.setAdapter(mStoryAdapter);
         mStoryPager.setOffscreenPageLimit(mStoryAdapter.getCount());
-        
+
         ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
 
         mNavSpinner.setAdapter(new ArrayAdapter<>(
@@ -76,13 +79,9 @@ public class Content extends AppCompatActivity {
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
 
-
-
-        final Item test = new Item();
-        test.setUrl("http://www.bbc.co.uk/news/uk-37725327");
-        mStoryAdapter.loadStory(test);
-
         Log.i(TAG, "onCreate: ");
+
+        new HNLoader(this).getTopItem();
 //        AndroidNetworking.get(APIPaths.getItemPath(12759697))
 //                .setTag("item")
 //                .setPriority(Priority.HIGH)
@@ -123,7 +122,15 @@ public class Content extends AppCompatActivity {
 //                });
     }
 
+    @Override
+    public void itemLoaded(Item item, boolean success) {
+        mStoryAdapter.loadStory(item);
+    }
 
+    @Override
+    public void itemsLoaded(ArrayList<Item> items, boolean success) {
+
+    }
 
     @Override
     protected void onResume() {

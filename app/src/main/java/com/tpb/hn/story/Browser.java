@@ -36,11 +36,15 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
     @BindView(R.id.browser_loading_spinner)
     ProgressBar mLoadingSpinner;
 
+    private boolean isArticleReady = false;
+    private String url;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_browser, container, false);
         unbinder = ButterKnife.bind(this, inflated);
+        if(isArticleReady) mWebView.loadUrl(url);
         return inflated;
     }
 
@@ -48,7 +52,6 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
     public void onResume() {
         super.onResume();
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        mWebView.loadUrl("http://www.bbc.co.uk/news/science-environment-37707776");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -57,11 +60,14 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
                 mWebView.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
     @Override
     public void loadStory(Item item) {
-        //Precache here
+        this.url = item.getUrl();
+        isArticleReady = true;
+        if(mWebView != null) mWebView.loadUrl(url);
     }
 
     @Override
