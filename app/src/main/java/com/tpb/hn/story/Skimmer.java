@@ -53,21 +53,19 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     @BindView(R.id.skimmer_restart_button)
     Button mRestartButton;
 
-
     private String article;
-    private boolean isViewReady = false;
     private boolean isArticleReady = false;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+
+    public static Skimmer newInstance() {
+        return new Skimmer();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
+
         unbinder = ButterKnife.bind(this, inflated);
         mRoot.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -83,6 +81,7 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mTextView.pause();
                 }
+                Log.i(TAG, "onTouch: " + Skimmer.this.toString());
                 return false;
             }
         });
@@ -114,23 +113,34 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
             }
         });
 
-        isViewReady = true;
         if(isArticleReady) {
             setupSkimmer();
+        } else if(savedInstanceState != null) {
+            if(savedInstanceState.getString("article") != null) {
+                article = savedInstanceState.getString("article");
+                setupSkimmer();
+            }
         }
-
         return inflated;
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("article", article);
+    }
+
+    @Override
     public void loadDone(JSONObject result, boolean success) {
+        Log.i(TAG, "loadDone: Skimmer load " + isArticleReady);
         if(success) {
             try {
                 article = Html.fromHtml(result.getString("content")).
                         toString().
                         replace("\n", " ");
                 isArticleReady = true;
-                if(isViewReady) setupSkimmer();
+                if(mTextView != null) setupSkimmer();
+                Log.i(TAG, "loadDone: Done loading. Is view OK? " + (mTextView != null));
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
             }

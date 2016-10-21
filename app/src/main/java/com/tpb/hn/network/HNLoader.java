@@ -92,8 +92,8 @@ public class HNLoader {
                             try {
                                 final Item item = HNParser.JSONToItem(response);
                                 mll.itemLoaded(item, item != null);
-
                             } catch(Exception e) {
+
                                 Log.e(TAG, "onResponse: ", e);
                             }
                         }
@@ -107,6 +107,7 @@ public class HNLoader {
         }
     }
 
+    //TODO- Deal with failed requests
     private class MultiLoadListener implements HNItemLoadDone {
         private final HNItemLoadDone listener;
         private final ArrayList<Item> items;

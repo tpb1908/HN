@@ -3,19 +3,19 @@ package com.tpb.hn.story;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.tpb.hn.data.Item;
-
-import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
  */
 
-public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
+public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader {
+    private static final String TAG = StoryAdapter.class.getSimpleName();
+
     private PageType[] pages;
     private StoryLoader[] loaders;
-    private boolean[] hasLoaded;
 
     private Item queuedItem;
 
@@ -23,13 +23,11 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
         super(fragmentManager);
         this.pages = pages;
         loaders = new StoryLoader[pages.length + 1];
-        hasLoaded = new boolean[pages.length + 1];
     }
 
     @Override
     public void loadStory(Item item) {
         queuedItem = item;
-        Arrays.fill(hasLoaded, false);
         for(StoryLoader sl : loaders) {
             if(sl != null) {
                 sl.loadStory(item);
@@ -40,6 +38,7 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
     @Override
     public Fragment getItem(int position) {
         Fragment page = new Fragment();
+        Log.i(TAG, "getItem: " + position);
         switch(pages[position]) {
             case COMMENTS:
                 page = new Comments();
@@ -54,13 +53,12 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
                 loaders[position] = (StoryLoader) page;
                 break;
             case SKIMMER:
-                page = new Skimmer();
+                page = Skimmer.newInstance();
                 loaders[position] = (StoryLoader) page;
                 break;
         }
-        if(loaders[position] != null && !hasLoaded[position]) {
+        if(loaders[position] != null) {
             loaders[position].loadStory(queuedItem);
-            hasLoaded[position] = true;
         }
         return page;
     }

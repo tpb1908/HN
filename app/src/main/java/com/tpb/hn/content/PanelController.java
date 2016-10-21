@@ -60,11 +60,9 @@ public class PanelController {
     public void onResume() {
         Log.i(TAG, "onResume: ");
         if(isExpanded()) {
-            Log.i(TAG, "onResume: Panel visible");
             expandedView.setAlpha(1);
             collapsedView.setAlpha(0);
         }
-        Log.i(TAG, "onResume: expanded " + expandedView.getAlpha() + " collapsed " + collapsedView.getAlpha());
     }
 
     public void setPanelVisible() {
