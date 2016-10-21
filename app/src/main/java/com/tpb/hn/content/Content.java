@@ -7,14 +7,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.APIPaths;
+import com.tpb.hn.network.HNParser;
 import com.tpb.hn.story.StoryAdapter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,6 +110,45 @@ public class Content extends AppCompatActivity {
         final Item test = new Item();
         test.setUrl("http://www.bbc.co.uk/news/uk-37725327");
         mStoryAdapter.loadStory(test);
+        Log.i(TAG, "onCreate: " + APIPaths.getMaxItemPath());
+        AndroidNetworking.get(APIPaths.getItemPath(12759697))
+                .setTag("item")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.i(TAG, "onResponse: Parsed " + HNParser.JSONToItem(response).toString());
+                        } catch(JSONException je) {
+                            Log.e(TAG, "onResponse: ", je);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e(TAG, "onError: ", anError );
+                    }
+                });
+        AndroidNetworking.get(APIPaths.getUserPath("owenwil"))
+                .setTag("user")
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.i(TAG, "onResponse: Parsed " + HNParser.JSONToUser(response).toString());
+                        } catch(JSONException je) {
+                            Log.e(TAG, "onResponse: ", je);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e(TAG, "onError: ", anError );
+                    }
+                });
     }
 
 

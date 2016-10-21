@@ -3,6 +3,8 @@ package com.tpb.hn.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Arrays;
+
 /**
  * Created by theo on 18/10/16.
  */
@@ -106,4 +108,16 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", delay=" + delay +
+                ", created=" + created +
+                ", karma=" + karma +
+                ", about='" + about + '\'' +
+                ", submitted=" + Arrays.toString(submitted) +
+                '}';
+    }
 }

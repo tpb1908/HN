@@ -8,7 +8,7 @@ public class APIPaths {
     public static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
     public static final String ITEM = "item/";
     public static final String USER = "user/";
-    public static final String MAX_ITEM = "maxitem/";
+    public static final String MAX_ITEM = "maxitem";
     public static final String NEW_STORIES = "newstories/";
     public static final String TOP_STORIES = "topstories/";
     public static final String BEST_STORIES = "beststories/";

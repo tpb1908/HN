@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
@@ -208,4 +209,24 @@ public class Item implements Parcelable {
             return new Item[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", deleted=" + deleted +
+                ", type=" + type +
+                ", by='" + by + '\'' +
+                ", time=" + time +
+                ", text='" + text + '\'' +
+                ", dead=" + dead +
+                ", parent=" + parent +
+                ", kids=" + Arrays.toString(kids) +
+                ", url='" + url + '\'' +
+                ", score=" + score +
+                ", title='" + title + '\'' +
+                ", parts=" + Arrays.toString(parts) +
+                ", descendants=" + descendants +
+                '}';
+    }
 }

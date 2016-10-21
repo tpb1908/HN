@@ -58,11 +58,16 @@ public class HNParser {
     public static User JSONToUser(JSONObject obj) throws JSONException {
         final User user =  new User();
         user.setId(obj.getString(KEY_ID));
-        user.setAbout(obj.getString(KEY_ABOUT));
-        user.setDelay((byte)obj.getInt(KEY_DELAY));
+        if(obj.has(KEY_ABOUT)) user.setAbout(obj.getString(KEY_ABOUT));
+        if(obj.has(KEY_DELAY)) user.setDelay((byte)obj.getInt(KEY_DELAY));
+        if(obj.has(KEY_SUBMITTED)) {
+            user.setSubmitted(extractIntArray(obj.getJSONArray(KEY_SUBMITTED)));
+        } else {
+            user.setSubmitted(new int[] {});
+        }
         user.setCreated(obj.getLong(KEY_CREATED));
         user.setKarma(obj.getInt(KEY_KARMA));
-        user.setSubmitted(extractIntArray(obj.getJSONArray(KEY_SUBMITTED)));
+
         return user;
     }
 
