@@ -69,7 +69,7 @@ public class User implements Parcelable {
     public void setId(String id) {
         this.id = id;
     }
-    //</editor-fold>
+    //</editor-fold>s console (text)
 
     @Override
     public int describeContents() {

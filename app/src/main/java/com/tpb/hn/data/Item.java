@@ -144,6 +144,21 @@ public class Item implements Parcelable {
     }
     //</editor-fold>
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Item) {
+            final Item i = (Item) obj;
+            return id == i.id &&
+                    text.equals(i.text) &&
+                    kids.length == i.kids.length &&
+                    score == i.score &&
+                    parts.length == i.parts.length &&
+                    descendants == i.descendants;
+        }
+        return false;
+    }
+
     public String getFormattedInfo() {
         return score + " points |" + kids.length + " comments | " + Formatter.timeAgo(time);
     }
