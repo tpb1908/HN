@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Readability extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone {
+public class Readability extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone, StoryAdapter.FragmentCycle {
     private static final String TAG = Readability.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -46,11 +47,20 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @BindView(R.id.readability_wrapper)
     LinearLayout mWrapper;
 
+    private String title;
+    private Spanned content;
+    private boolean isViewReady = false;
+    private boolean isArticleReady = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
         unbinder = ButterKnife.bind(this, inflated);
+        isViewReady = true;
+        if(isArticleReady) {
+            setupTextView();
+        }
         return inflated;
     }
 
@@ -60,21 +70,21 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
         unbinder.unbind();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        new ReadabilityLoader(this).loadArticle("http://www.bbc.co.uk/news/science-environment-37707776");
+    private void setupTextView() {
+        mProgressSpinner.setVisibility(View.GONE);
+        mWrapper.setVisibility(View.VISIBLE);
+        mTitle.setText(title);
+        mBody.setText(content);
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success) {
         if(success) {
-            Log.i(TAG, "loadDone: " + result.toString());
             try {
-                mProgressSpinner.setVisibility(View.GONE);
-                mWrapper.setVisibility(View.VISIBLE);
-                mTitle.setText(result.getString("title"));
-                mBody.setText(Html.fromHtml(result.getString("content")));
+                content = Html.fromHtml(result.getString("content"));
+                title = result.getString("title");
+                isArticleReady = true;
+                if(isViewReady) setupTextView();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.INVISIBLE);
@@ -90,8 +100,17 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
 
     @Override
     public void loadStory(Item item) {
-        //TODO- Show loading indicator
-        mTitle.setText(null);
-        mBody.setText(null);
+        Log.i(TAG, "loadStory: Readability loading story");
+        new ReadabilityLoader(this).loadArticle(item.getUrl());
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }

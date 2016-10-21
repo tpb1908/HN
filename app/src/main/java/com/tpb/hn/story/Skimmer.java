@@ -33,7 +33,7 @@ import butterknife.Unbinder;
  * Takes the data from Readability and displays it Spritz style
  */
 
-public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone {
+public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone, StoryAdapter.FragmentCycle {
     private static final String TAG = Skimmer.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -53,20 +53,22 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     @BindView(R.id.skimmer_restart_button)
     Button mRestartButton;
 
-    private String content;
+
+    private String article;
+    private boolean isViewReady = false;
+    private boolean isArticleReady = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
         unbinder = ButterKnife.bind(this, inflated);
-        return inflated;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         mRoot.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -91,12 +93,13 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 showWPMDialog();
             }
         });
+
         mTextView.attachProgressBar(mSkimmerProgress);
 
         mRestartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mTextView.setSpritzText(content);
+                mTextView.setSpritzText(article);
                 mTextView.getSpritzer().start();
                 try { //TODO- See if there is a better way to do this
                     Thread.sleep(60000/mTextView.getSpritzer().getWpm());
@@ -111,26 +114,36 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
             }
         });
 
-        new ReadabilityLoader(this).loadArticle("http://www.bbc.co.uk/news/science-environment-37707776");
+        isViewReady = true;
+        if(isArticleReady) {
+            setupSkimmer();
+        }
+
+        return inflated;
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success) {
-        try {
-            content = Html.fromHtml(result.getString("content")).
-                    toString().
-                    replace("\n", " ");
-            mProgressSpinner.setVisibility(View.GONE);
-            mTextView.setVisibility(View.VISIBLE);
-            mSkimmerProgress.setVisibility(View.VISIBLE);
-            mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
-            mTextView.setSpritzText(content);
-            mTextView.pause();
-
-        } catch(Exception e) {
-            mProgressSpinner.setVisibility(View.GONE);
-            Log.e(TAG, "loadDone: ", e);
+        if(success) {
+            try {
+                article = Html.fromHtml(result.getString("content")).
+                        toString().
+                        replace("\n", " ");
+                isArticleReady = true;
+                if(isViewReady) setupSkimmer();
+            } catch(Exception e) {
+                Log.e(TAG, "loadDone: ", e);
+            }
         }
+    }
+
+    private void setupSkimmer() {
+        mProgressSpinner.setVisibility(View.GONE);
+        mTextView.setVisibility(View.VISIBLE);
+        mSkimmerProgress.setVisibility(View.VISIBLE);
+        mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
+        mTextView.setSpritzText(article);
+        mTextView.pause();
     }
 
     private void showWPMDialog() {
@@ -172,12 +185,25 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
 
     @Override
     public void loadStory(Item item) {
-
+        new ReadabilityLoader(this).loadArticle(item.getUrl());
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+//        if(contentToLoad && viewLoaded) {
+//            setupSkimmer();
+//            contentToLoad = false;
+//        }
     }
 }

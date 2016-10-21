@@ -24,7 +24,7 @@ import butterknife.Unbinder;
  * Otherwise it will load a webview
  */
 
-public class Browser extends Fragment implements StoryLoader {
+public class Browser extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {
     private static final String TAG = Browser.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -69,5 +69,15 @@ public class Browser extends Fragment implements StoryLoader {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }

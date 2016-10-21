@@ -13,6 +13,7 @@ import android.widget.Spinner;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
+import com.tpb.hn.data.Item;
 import com.tpb.hn.story.StoryAdapter;
 
 import butterknife.BindView;
@@ -26,6 +27,7 @@ public class Content extends AppCompatActivity {
     private static final String TAG = Content.class.getSimpleName();
 
     private PanelController mPanelController;
+    private StoryAdapter mStoryAdapter;
 
     @BindView(R.id.content_toolbar)
     Toolbar mContentToolbar;
@@ -54,12 +56,38 @@ public class Content extends AppCompatActivity {
         setSupportActionBar(mContentToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //TODO- Async do checks and start loading content
-
-        mStoryPager.setAdapter(new StoryAdapter(getSupportFragmentManager(), new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}));
-        mStoryPager.setOffscreenPageLimit(Integer.MAX_VALUE);
-        ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
         mPanelController = new PanelController(
                 (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout));
+
+
+        mStoryAdapter = new StoryAdapter(getSupportFragmentManager(),
+                new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER});
+
+
+        mStoryPager.setAdapter(mStoryAdapter);
+        mStoryPager.setOffscreenPageLimit(Integer.MAX_VALUE);
+        mStoryPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int pos = 0;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                ((StoryAdapter.FragmentCycle) mStoryAdapter.getItem(position)).onResumeFragment();
+                ((StoryAdapter.FragmentCycle) mStoryAdapter.getItem(pos)).onPauseFragment();
+                pos = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
+
 
 
 
@@ -68,6 +96,10 @@ public class Content extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
+
+        final Item test = new Item();
+        test.setUrl("http://www.bbc.co.uk/news/uk-37725327");
+        mStoryAdapter.loadStory(test);
     }
 
 

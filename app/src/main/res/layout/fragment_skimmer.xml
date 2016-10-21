@@ -11,10 +11,10 @@
         android:id="@+id/skimmer_loading_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:indeterminateTint="@color/colorAccent"/>
 
     <com.andrewgiang.textspritzer.lib.SpritzerTextView
         android:id="@+id/spritzer_text_view"

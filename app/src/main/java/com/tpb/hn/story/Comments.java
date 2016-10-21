@@ -8,10 +8,20 @@ import com.tpb.hn.data.Item;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements StoryLoader {
+public class Comments extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {
 
     @Override
     public void loadStory(Item item) {
+
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
 
     }
 }

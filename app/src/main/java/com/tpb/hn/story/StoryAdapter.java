@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tpb.hn.data.Item;
 
+import java.util.Arrays;
+
 /**
  * Created by theo on 18/10/16.
  */
@@ -13,41 +15,54 @@ import com.tpb.hn.data.Item;
 public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
     private PageType[] pages;
     private StoryLoader[] loaders;
+    private boolean[] hasLoaded;
+
+    private Item queuedItem;
 
     public StoryAdapter(FragmentManager fragmentManager, PageType[] pages) {
         super(fragmentManager);
         this.pages = pages;
         loaders = new StoryLoader[pages.length + 1];
+        hasLoaded = new boolean[pages.length + 1];
     }
 
     @Override
     public void loadStory(Item item) {
+        queuedItem = item;
+        Arrays.fill(hasLoaded, false);
         for(StoryLoader sl : loaders) {
-            sl.loadStory(item);
+            if(sl != null) {
+                sl.loadStory(item);
+            }
         }
     }
 
     @Override
     public Fragment getItem(int position) {
+        Fragment page = new Fragment();
         switch(pages[position]) {
             case COMMENTS:
-                final Comments comments = new Comments();
-                loaders[position] = comments;
-                return comments;
+                page = new Comments();
+                loaders[position] = (StoryLoader) page;
+                break;
             case BROWSER:
-                final Browser browser = new Browser();
-                loaders[position] = browser;
-                return browser;
+                page = new Browser();
+                loaders[position] = (StoryLoader) page;
+                break;
             case READABILITY:
-                final Readability readability = new Readability();
-                loaders[position] = readability;
-                return readability;
+                page = new Readability();
+                loaders[position] = (StoryLoader) page;
+                break;
             case SKIMMER:
-                final Skimmer skimmer = new Skimmer();
-                loaders[position] = skimmer;
-                return skimmer;
+                page = new Skimmer();
+                loaders[position] = (StoryLoader) page;
+                break;
         }
-        return new Fragment();
+        if(loaders[position] != null && !hasLoaded[position]) {
+            loaders[position].loadStory(queuedItem);
+            hasLoaded[position] = true;
+        }
+        return page;
     }
 
     @Override
@@ -70,7 +85,13 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader{
         return "Error";
     }
 
+    public interface FragmentCycle {
 
+        void onPauseFragment();
+
+        void onResumeFragment();
+
+    }
 
     public enum PageType {
         COMMENTS, BROWSER, READABILITY, SKIMMER

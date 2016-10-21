@@ -31,7 +31,7 @@ public class ReadabilityLoader {
     void loadArticle(final String url) {
         if(cache.containsKey(url)) {
             listener.loadDone(cache.get(url), true);
-        }
+        } //We still pull data to see if it has changed
         if(listenerCache.containsKey(url)) {
             listenerCache.get(url).add(listener);
         } else {
@@ -49,6 +49,7 @@ public class ReadabilityLoader {
                             try {
                                 Log.d(TAG, "onResponse: " + (System.nanoTime()-start)/1E9);
                                 Log.i(TAG, "onResponse: updating " + listenerCache.get(url).size() + " listeners");
+
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
                                     rld.loadDone(response, response != null);
                                 }
