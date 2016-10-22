@@ -6,6 +6,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -51,6 +53,9 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @BindView(R.id.nav_spinner)
     Spinner mNavSpinner;
 
+    @BindView(R.id.content_recycler)
+    RecyclerView mRecycler;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,9 +85,13 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
 
+        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mRecycler.setAdapter(new ContentAdapter());
+
         Log.i(TAG, "onCreate: ");
         final HNLoader load = new HNLoader(this);
-        load.getTop(20);
+        load.loadItem(12763626);
+        //load.getTop(20);
 
 //        AndroidNetworking.get(APIPaths.getItemPath(12759697))
 //                .setTag("item")

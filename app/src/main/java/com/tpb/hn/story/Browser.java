@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.APIPaths;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +23,8 @@ import butterknife.Unbinder;
  * Loads the full page of an article
  * Data can be cached by creating a new webview instance somewhere
  * else and loading the page
+ *
+ * //TODO- Handle PDFs
  */
 
 public class Browser extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {
@@ -44,7 +47,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_browser, container, false);
         unbinder = ButterKnife.bind(this, inflated);
-        if(isArticleReady) mWebView.loadUrl(url);
+        if(isArticleReady) loadURL();
         if(savedInstanceState != null) mWebView.restoreState(savedInstanceState);
         return inflated;
     }
@@ -64,11 +67,20 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
 
     }
 
+    private void loadURL() {
+        if(url.endsWith(".pdf")) {
+            mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
+        } else {
+            mWebView.loadUrl(url);
+        }
+    }
+
     @Override
     public void loadStory(Item item) {
         this.url = item.getUrl();
         isArticleReady = true;
-        if(mWebView != null) mWebView.loadUrl(url);
+        if(mWebView != null) loadURL();
     }
 
     @Override

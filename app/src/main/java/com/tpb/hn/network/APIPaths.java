@@ -5,20 +5,22 @@ package com.tpb.hn.network;
  */
 
 public class APIPaths {
-    public static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
-    public static final String ITEM = "item/";
-    public static final String USER = "user/";
-    public static final String MAX_ITEM = "maxitem";
-    public static final String NEW_STORIES = "newstories/";
-    public static final String TOP_STORIES = "topstories/";
-    public static final String BEST_STORIES = "beststories/";
-    public static final String ASK_STORIES = "askstories/";
-    public static final String SHOW_STORIES = "showstories";
-    public static final String JOB_STORIES = "jobstories/";
-    public static final String UPDATED = "updates/";
+    private static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
+    private static final String ITEM = "item/";
+    private static final String USER = "user/";
+    private static final String MAX_ITEM = "maxitem";
+    private static final String NEW_STORIES = "newstories/";
+    private static final String TOP_STORIES = "topstories/";
+    private static final String BEST_STORIES = "beststories/";
+    private static final String ASK_STORIES = "askstories/";
+    private static final String SHOW_STORIES = "showstories";
+    private static final String JOB_STORIES = "jobstories/";
+    private static final String UPDATED = "updates/";
 
-    public static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
-    public static final String READABILITY_PARSER_KEY = "387ce7ecc4df735d0a7c1e748a9e093fb8213ade";
+    private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
+    private static final String READABILITY_PARSER_KEY = "387ce7ecc4df735d0a7c1e748a9e093fb8213ade";
+
+    private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
 
     public static final String JSON = ".json";
     public static final String PRETTY = "?print=pretty";
@@ -69,6 +71,10 @@ public class APIPaths {
 
     public static String getReadabilityParserPath(String url) {
         return READABILITY_PARSER + url + "&token=" + READABILITY_PARSER_KEY;
+    }
+
+    public static String getPDFDisplayPath(String url) {
+        return DOCS_PDF_BASE + url;
     }
 
 

@@ -211,7 +211,11 @@ public class HNLoader {
                 break;
             }
         }
-
+        if(listenerCache.get(id) == null) {
+            listenerCache.put(id, new ArrayList<>(Collections.singletonList(itemListener)));
+        } else {
+            listenerCache.get(id).add(itemListener);
+        }
         AndroidNetworking.get(APIPaths.getItemPath(id))
                 .setTag(id)
                 .setPriority(Priority.HIGH)
