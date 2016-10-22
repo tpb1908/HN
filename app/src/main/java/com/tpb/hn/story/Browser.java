@@ -45,6 +45,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
         final View inflated = inflater.inflate(R.layout.fragment_browser, container, false);
         unbinder = ButterKnife.bind(this, inflated);
         if(isArticleReady) mWebView.loadUrl(url);
+        if(savedInstanceState != null) mWebView.restoreState(savedInstanceState);
         return inflated;
     }
 
@@ -68,6 +69,12 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
         this.url = item.getUrl();
         isArticleReady = true;
         if(mWebView != null) mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mWebView.saveState(outState);
     }
 
     @Override

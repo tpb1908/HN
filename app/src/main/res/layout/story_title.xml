@@ -21,7 +21,6 @@
                 android:layout_weight="0.7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Test title"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"/>
@@ -32,7 +31,6 @@
                 android:layout_weight="0.3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="test.test.com"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Info"/>
         </LinearLayout>
 
@@ -44,7 +42,6 @@
             android:layout_below="@+id/item_title_line_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100 points 32 comments 5 hours ago"
             android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
         <TextView
@@ -52,19 +49,7 @@
             android:layout_alignBaseline="@+id/item_stats"
             android:layout_toEndOf="@+id/item_stats"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" by user"/>
-
-        <ImageView
-            android:id="@+id/item_image"
-            android:padding="8dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"/>
-
-
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
@@ -90,7 +75,6 @@
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="This is the title"
             android:maxLines="2"
             android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Large"/>

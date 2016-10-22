@@ -10,4 +10,6 @@
     <string name="hint_wpm_input">Currently %1$d</string>
 
     <string name="button_skimmer_restart">Restart</string>
+
+    <string name="text_item_by">By %1$s</string>
 </resources>

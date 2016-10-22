@@ -62,7 +62,8 @@ public class PanelController {
         ((TextView) collapsedView.findViewById(R.id.item_title)).setText(item.getTitle());
         ((TextView) collapsedView.findViewById(R.id.item_url)).setText(item.getFormattedURL());
         ((TextView) collapsedView.findViewById(R.id.item_stats)).setText(item.getFormattedInfo());
-        ((TextView) collapsedView.findViewById(R.id.item_author)).setText(item.getBy());
+        ((TextView) collapsedView.findViewById(R.id.item_author)).setText(
+                String.format(collapsedView.getContext().getString(R.string.text_item_by), item.getBy()));
     }
 
     public void onResume() {
