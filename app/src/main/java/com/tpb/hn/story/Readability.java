@@ -46,6 +46,9 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @BindView(R.id.readability_wrapper)
     LinearLayout mWrapper;
 
+    @BindView(R.id.readability_error_message)
+    TextView mErrorTextView;
+
     private String title;
     private String content;
 
@@ -83,7 +86,8 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     }
 
     @Override
-    public void loadDone(JSONObject result, boolean success) {
+    public void loadDone(JSONObject result, boolean success, int code) {
+        Log.i(TAG, "loadDone: " + success + ", " + code + ", " + result);
         if(success) {
             try {
                 content = result.getString("content");
@@ -96,7 +100,14 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
                 mTitle.setText(R.string.error_loading_page);
             }
         } else {
-            mTitle.setText(R.string.error_loading_page);
+            mProgressSpinner.setVisibility(View.GONE);
+            mErrorTextView.setVisibility(View.VISIBLE);
+            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
+                mErrorTextView.setText(R.string.error_pdf_readability);
+            } else {
+                mErrorTextView.setText(R.string.error_loading_page);
+            }
+
             //TODO- Option to retry
             //TODO- Interface for showing snackbar
         }

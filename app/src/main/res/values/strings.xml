@@ -5,6 +5,10 @@
 
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
 
+    <string name="error_pdf_readability">Can\'t load a PDF in Readability</string>
+
+    <string name="error_pdf_skimmer">Can\'t load a PDF in Skimmer</string>
+
     <string name="title_wpm_dialog">Enter words per minute</string>
 
     <string name="hint_wpm_input">Currently %1$d</string>

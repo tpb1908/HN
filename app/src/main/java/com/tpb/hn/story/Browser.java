@@ -72,6 +72,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
         } else {
+            mWebView.getSettings().setJavaScriptEnabled(false);
             mWebView.loadUrl(url);
         }
     }

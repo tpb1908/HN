@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -53,6 +54,9 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
 
     @BindView(R.id.skimmer_restart_button)
     Button mRestartButton;
+
+    @BindView(R.id.skimmer_error_message)
+    TextView mErrorTextView;
 
     private String article;
     private boolean isArticleReady = false;
@@ -132,7 +136,7 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
     }
 
     @Override
-    public void loadDone(JSONObject result, boolean success) {
+    public void loadDone(JSONObject result, boolean success, int code) {
         Log.i(TAG, "loadDone: Skimmer load " + isArticleReady);
         if(success) {
             try {
@@ -144,6 +148,16 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 Log.i(TAG, "loadDone: Done loading. Is view OK? " + (mTextView != null));
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
+            }
+        } else  {
+            mErrorTextView.setVisibility(View.VISIBLE);
+            mProgressSpinner.setVisibility(View.GONE);
+            mTextView.setVisibility(View.INVISIBLE);
+            mSkimmerProgress.setVisibility(View.INVISIBLE);
+            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
+                mErrorTextView.setText(R.string.error_pdf_skimmer);
+            } else {
+                mErrorTextView.setText(R.string.error_loading_page);
             }
         }
     }

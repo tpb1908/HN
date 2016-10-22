@@ -15,7 +15,6 @@ import java.util.HashMap;
 
 /**
  * Created by theo on 19/10/16.
- * http://stackoverflow.com/questions/6053602/what-arguments-are-passed-into-asynctaskarg1-arg2-arg3
  */
 
 public class ReadabilityLoader {
@@ -29,9 +28,14 @@ public class ReadabilityLoader {
     }
 
     void loadArticle(final String url) {
+        if(url.endsWith(".pdf")) {
+            listener.loadDone(null, false, ReadabilityLoadDone.ERROR_PDF);
+            return;
+        }
         if(cache.containsKey(url)) {
-            listener.loadDone(cache.get(url), true);
+            listener.loadDone(cache.get(url), true, ReadabilityLoadDone.NO_ERROR);
         } //We still pull data to see if it has changed
+
         if(listenerCache.containsKey(url)) {
             listenerCache.get(url).add(listener);
         } else {
@@ -51,7 +55,7 @@ public class ReadabilityLoader {
                                 Log.i(TAG, "onResponse: updating " + listenerCache.get(url).size() + " listeners");
 
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
-                                    rld.loadDone(response, response != null);
+                                    rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
                                 }
                                 listenerCache.remove(url);
                                 if(response != null) {
@@ -59,12 +63,21 @@ public class ReadabilityLoader {
                                 }
                             } catch(Exception e) {
                                 Log.e(TAG, "onResponse: ", e);
+                                Log.i(TAG, "onResponse: " + e.getMessage());
+                                for(ReadabilityLoadDone rld : listenerCache.get(url)) {
+                                    rld.loadDone(null, false, ReadabilityLoadDone.ERROR_PARSING);
+                                }
                             }
                         }
 
                         @Override
                         public void onError(ANError anError) {
                             Log.e(TAG, "onError: ", anError );
+                            Log.i(TAG, "onError: " + anError.getErrorBody());
+                            for(ReadabilityLoadDone rld : listenerCache.get(url)) {
+                                rld.loadDone(null, false, anError.getErrorCode());
+                            }
+
                         }
                     });
         }
@@ -74,8 +87,11 @@ public class ReadabilityLoader {
     private void stripImageCopyright() {}
 
     public interface ReadabilityLoadDone {
+        int ERROR_PARSING = -100;
+        int ERROR_PDF = -200;
+        int NO_ERROR = 0;
 
-        void loadDone(JSONObject result, boolean success);
+        void loadDone(JSONObject result, boolean success, int code);
 
     }
 
