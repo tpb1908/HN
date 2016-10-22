@@ -57,6 +57,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
+
         setSupportActionBar(mContentToolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);

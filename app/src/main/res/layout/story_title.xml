@@ -7,33 +7,41 @@
                     android:id="@+id/item_detail_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/item_title"
-            android:paddingStart="8dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/item_title_line_wrapper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test title"
-            android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_toEndOf="@+id/item_title"
-            android:layout_alignBaseline="@+id/item_title"
-            android:id="@+id/item_url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="test.test.com"
-            android:textAppearance="@android:style/TextAppearance.Material.Notification.Info"/>
+            <TextView
+                android:id="@+id/item_title"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:layout_weight="0.7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Test title"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+
+            <TextView
+
+                android:id="@+id/item_url"
+                android:layout_weight="0.3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="test.test.com"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Info"/>
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/item_stats"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_below="@+id/item_title"
+            android:layout_below="@+id/item_title_line_wrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="100 points 32 comments 5 hours ago"
@@ -83,6 +91,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="This is the title"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textAppearance="@android:style/TextAppearance.Material.Large"/>
 
     </LinearLayout>
