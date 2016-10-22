@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Created by theo on 18/10/16.
  */
 
-public class Item implements Parcelable {
+public class Item implements Parcelable, Comparable<Item> {
     private int id;
     private boolean deleted;
     private ItemType type;
@@ -159,7 +159,11 @@ public class Item implements Parcelable {
     }
 
     public String getFormattedInfo() {
-        return score + " points | " + kids.length + " comments | " + Formatter.timeAgo(time);
+        String info = score + " points | ";
+        if(kids != null) {
+            info += kids.length + " comments | ";
+        }
+        return info + Formatter.timeAgo(time);
     }
 
     public String getFormattedURL() {
@@ -223,6 +227,11 @@ public class Item implements Parcelable {
             return new Item[size];
         }
     };
+
+    @Override
+    public int compareTo(Item item) {
+        return id == item.id ? 0 : id > item.id ? 1 : -1;
+    }
 
     @Override
     public String toString() {

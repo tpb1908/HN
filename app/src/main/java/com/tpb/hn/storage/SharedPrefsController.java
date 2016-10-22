@@ -20,9 +20,11 @@ public class SharedPrefsController {
     private static final String KEY_FIRST_RUN = "FIRST_RUN";
     private static final String KEY_STORY_TABS = "STORY_TABS";
     private static final String KEY_SKIMMER_WPM = "SKIMMER_WPM";
+    private static final String KEY_DEFAULT_PAGE = "DEFAULT_PAGE";
 
-    private StoryAdapter.PageType[] pageTypes;
-    private int skimmerWPM;
+    private static StoryAdapter.PageType[] pageTypes;
+    private static int skimmerWPM;
+    private static String defaultPage;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -52,6 +54,8 @@ public class SharedPrefsController {
 
         editor.putInt(KEY_SKIMMER_WPM, 500);
 
+        editor.putString(KEY_DEFAULT_PAGE, "TOP");
+
         editor.apply();
     }
 
@@ -62,10 +66,23 @@ public class SharedPrefsController {
         return skimmerWPM;
     }
 
-    public void setSkimmerWPM(int skimmerWPM) {
-        editor.putInt(KEY_SKIMMER_WPM, skimmerWPM);
+    public void setSkimmerWPM(int newSkimmerWPM) {
+        editor.putInt(KEY_SKIMMER_WPM, newSkimmerWPM);
         editor.apply();
-        this.skimmerWPM = skimmerWPM;
+        skimmerWPM = newSkimmerWPM;
+    }
+
+    public void setDefaultPage(String newDefault) {
+        defaultPage = newDefault;
+        editor.putString(KEY_DEFAULT_PAGE, newDefault);
+        editor.apply();
+    }
+
+    public String getDefaultPage() {
+        if(defaultPage == null) {
+            defaultPage = prefs.getString(KEY_DEFAULT_PAGE, "BEST");
+        }
+        return defaultPage;
     }
 
     public StoryAdapter.PageType[] getPageTypes() {

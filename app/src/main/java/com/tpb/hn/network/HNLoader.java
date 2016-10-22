@@ -54,63 +54,63 @@ public class HNLoader {
     }
 
     //<editor-fold desc="Getters">
-    public void getTop() {
-        getItemIds(APIPaths.getTopStoriesPath(), false, -1);
+    public void getTop(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone ,APIPaths.getTopStoriesPath(), false, -1);
     }
 
-    public void getTop(int firstChunk) {
-        getItemIds(APIPaths.getTopStoriesPath(), true, firstChunk);
+    public void getTop(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getTopStoriesPath(), true, firstChunk);
     }
 
-    public void getNew() {
-        getItemIds(APIPaths.getNewStoriesPath(), false, -1);
+    public void getNew(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone, APIPaths.getNewStoriesPath(), false, -1);
     }
 
-    public void getNew(int firstChunk) {
-        getItemIds(APIPaths.getNewStoriesPath(), true, firstChunk);
+    public void getNew(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getNewStoriesPath(), true, firstChunk);
     }
 
-    public void getBest() {
-        getItemIds(APIPaths.getBestStoriesPath(), false, -1);
+    public void getBest(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone, APIPaths.getBestStoriesPath(), false, -1);
     }
 
-    public void getBest(int firstChunk) {
-        getItemIds(APIPaths.getBestStoriesPath(), true, firstChunk);
+    public void getBest(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getBestStoriesPath(), true, firstChunk);
     }
 
-    public void getAsk() {
-        getItemIds(APIPaths.getAskStoriesPath(), false, -1);
+    public void getAsk(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone, APIPaths.getAskStoriesPath(), false, -1);
     }
 
-    public void getAsk(int firstChunk) {
-        getItemIds(APIPaths.getAskStoriesPath(), true, firstChunk);
+    public void getAsk(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getAskStoriesPath(), true, firstChunk);
     }
 
 
-    public void getShow() {
-        getItemIds(APIPaths.getShowStoriesPath(), false, -1);
+    public void getShow(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone, APIPaths.getShowStoriesPath(), false, -1);
     }
 
-    public void getShow(int firstChunk) {
-        getItemIds(APIPaths.getShowStoriesPath(), true, firstChunk);
+    public void getShow(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getShowStoriesPath(), true, firstChunk);
     }
 
-    public void getJobs() {
-        getItemIds(APIPaths.getJobStoriesPath(), false, -1);
+    public void getJobs(HNItemIdLoadDone IdLoadDone) {
+        getItemIds(IdLoadDone, APIPaths.getJobStoriesPath(), false, -1);
     }
 
-    public void getJobs(int firstChunk) {
-        getItemIds(APIPaths.getJobStoriesPath(), true, firstChunk);
+    public void getJobs(HNItemIdLoadDone IdLoadDone, int firstChunk) {
+        getItemIds(IdLoadDone, APIPaths.getJobStoriesPath(), true, firstChunk);
     }
 
-    private void getItemIds(String url) {
-        getItemIds(url, false, -1);
+    private void getItemIds(HNItemIdLoadDone IdLoadDone, String url) {
+        getItemIds(IdLoadDone, url, false, -1);
     }
     //</editor-fold>
 
-    private void getItemIds(final String url, final boolean loadItems, final int firstChunk) {
+    private void getItemIds(final HNItemIdLoadDone IdListener, final String url, final boolean loadItems, final int firstChunk) {
         if(firstChunk != -1) {
-            loadItems(url, firstChunk);
+            loadItems(IdListener, url, firstChunk);
         } else {
             AndroidNetworking.get(url)
                     .setTag(url)
@@ -133,6 +133,8 @@ public class HNLoader {
                             } else if(url.equals(APIPaths.getJobStoriesPath())) {
                                 jobs = items;
                             }
+                            Log.i(TAG, "onResponse: " + items);
+                            IdListener.IdLoadDone(items);
                             if(loadItems) {
                                 loadItems(items);
                             }
@@ -146,7 +148,7 @@ public class HNLoader {
         }
     }
 
-    public void loadItems(String url, final int firstChunk) {
+    public void loadItems(final HNItemIdLoadDone idLoadDone, String url, final int firstChunk) {
         AndroidNetworking.get(url)
                 .setTag(url)
                 .setPriority(Priority.HIGH)
@@ -155,6 +157,7 @@ public class HNLoader {
                     @Override
                     public void onResponse(String response) {
                         final int[] items = HNParser.extractIntArray(response);
+                        idLoadDone.IdLoadDone(items);
                         if(firstChunk < items.length) {
                             final int[] first = Arrays.copyOfRange(items, 0, Math.min(firstChunk, items.length));
                             listenerCache.put(Arrays.hashCode(first), new ArrayList<>(Collections.singletonList(itemListener)));
@@ -291,6 +294,11 @@ public class HNLoader {
 
         void itemsLoaded(ArrayList<Item> items, boolean success);
 
+    }
+
+    public interface HNItemIdLoadDone {
+
+        void IdLoadDone(int[] ids);
     }
 
     public interface HNUserLoadDone {

@@ -1,8 +1,6 @@
 package com.tpb.hn.data;
 
 
-import android.util.Log;
-
 import java.util.Date;
 
 /**
@@ -15,7 +13,6 @@ public class Formatter {
     public static String timeAgo(long time) {
         final long now = new Date().getTime()/1000;
         final long delta = (now - time);
-        Log.i(TAG, "timeAgo: " + delta);
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
             return  div + (div == 1 ? " year" : " years") + " ago";

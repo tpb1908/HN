@@ -9,15 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.story.StoryAdapter;
 
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @BindView(R.id.content_recycler)
     RecyclerView mRecycler;
 
+    private ContentAdapter mAdapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +73,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         mPanelController = new PanelController(
                 (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout));
 
-
         mStoryAdapter = new StoryAdapter(getSupportFragmentManager(),
                 new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER});
 
@@ -79,6 +81,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
         ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
 
+        mAdapter = new ContentAdapter();
+
         mNavSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -86,52 +90,13 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ));
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mRecycler.setAdapter(new ContentAdapter());
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
 
-        Log.i(TAG, "onCreate: ");
-        final HNLoader load = new HNLoader(this);
-        load.loadItem(12763626);
-        //load.getTop(20);
-
-//        AndroidNetworking.get(APIPaths.getItemPath(12759697))
-//                .setTag("item")
-//                .setPriority(Priority.HIGH)
-//                .build()
-//                .getAsJSONObject(new JSONObjectRequestListener() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            Log.i(TAG, "onResponse: Parsed " + HNParser.JSONToItem(response).toString());
-//                        } catch(JSONException je) {
-//                            Log.e(TAG, "onResponse: ", je);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        Log.e(TAG, "onError: ", anError );
-//                    }
-//                });
-//        AndroidNetworking.get(APIPaths.getUserPath("owenwil"))
-//                .setTag("user")
-//                .setPriority(Priority.HIGH)
-//                .build()
-//                .getAsJSONObject(new JSONObjectRequestListener() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            Log.i(TAG, "onResponse: Parsed " + HNParser.JSONToUser(response).toString());
-//                        } catch(JSONException je) {
-//                            Log.e(TAG, "onResponse: ", je);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        Log.e(TAG, "onError: ", anError );
-//                    }
-//                });
+        mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
     }
+
+
 
     @Override
     public void itemLoaded(Item item, boolean success) {
@@ -141,7 +106,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void itemsLoaded(ArrayList<Item> items, boolean success) {
-        Log.i(TAG, "itemsLoaded:  " + items.size() + " items , " + items.toString());
         mPanelController.setTitle(items.get(0));
         mStoryAdapter.loadStory(items.get(0));
     }
@@ -149,7 +113,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ");
         mPanelController.onResume();
     }
 

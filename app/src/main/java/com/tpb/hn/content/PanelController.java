@@ -23,8 +23,6 @@ public class PanelController {
     private RelativeLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
 
-
-
     @BindView(R.id.item_large_title_wrapper)
     View expandedView;
 
@@ -36,7 +34,7 @@ public class PanelController {
         this.panelLayout = panelLayout;
         this.slidingPanel = ButterKnife.findById(panelLayout, R.id.story_panel);
         ButterKnife.bind(this, panelLayout);
-
+        panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         panelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -64,6 +62,7 @@ public class PanelController {
         ((TextView) collapsedView.findViewById(R.id.item_stats)).setText(item.getFormattedInfo());
         ((TextView) collapsedView.findViewById(R.id.item_author)).setText(
                 String.format(collapsedView.getContext().getString(R.string.text_item_by), item.getBy()));
+        panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
 
     public void onResume() {

@@ -3,6 +3,7 @@ package com.tpb.hn.story;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
     }
 
     private void loadURL() {
+        Log.i(TAG, "loadURL: WebView loading");
         if(url.endsWith(".pdf")) {
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
