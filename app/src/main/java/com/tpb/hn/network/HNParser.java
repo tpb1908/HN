@@ -36,7 +36,6 @@ public class HNParser {
         item.setId(obj.getInt(KEY_ID));
         item.setBy(obj.getString(KEY_BY));
         item.setDescendants(obj.getInt(KEY_DESCENDANTS));
-        item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
         item.setScore(obj.getInt(KEY_SCORE));
         item.setTime(obj.getLong(KEY_TIME));
         item.setTitle(obj.getString(KEY_TITLE));
@@ -45,7 +44,9 @@ public class HNParser {
         } else {
             item.setType(getType(obj.getString(KEY_TYPE)));
         }
-        item.setUrl(obj.getString(KEY_URL));
+        if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
+        if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
+
 
         if(item.getType() == ItemType.COMMENT ||
                 item.getType() == ItemType.ASK  ||

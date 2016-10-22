@@ -100,6 +100,26 @@ public class HNLoader {
                 });
     }
 
+    public void loadItems(String url) {
+        AndroidNetworking.get(url)
+                .setTag(url)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        final int[] items = HNParser.extractIntArray(response);
+                        listenerCache.put(items[0], new ArrayList<>(Collections.singletonList(itemListener)));
+                        loadItems(items);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+    }
+
     public void loadItems(final int[] ids) {
         final ArrayList<Item> items = new ArrayList<>(ids.length);
         final MultiLoadListener mll = new MultiLoadListener(itemListener, items, ids.length);

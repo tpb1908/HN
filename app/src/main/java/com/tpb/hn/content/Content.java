@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.story.StoryAdapter;
 
@@ -81,8 +82,10 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ));
 
         Log.i(TAG, "onCreate: ");
+        final HNLoader load = new HNLoader(this);
+        load.getTopItem();
+        load.loadItems(APIPaths.getBestStoriesPath());
 
-        new HNLoader(this).getTopItem();
 //        AndroidNetworking.get(APIPaths.getItemPath(12759697))
 //                .setTag("item")
 //                .setPriority(Priority.HIGH)
@@ -131,7 +134,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void itemsLoaded(ArrayList<Item> items, boolean success) {
-
+        Log.i(TAG, "itemsLoaded: Multiple items " + items.toString());
     }
 
     @Override
