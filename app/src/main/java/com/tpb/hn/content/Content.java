@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by theo on 17/10/16.
  */
 
-public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone {
+public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener {
     private static final String TAG = Content.class.getSimpleName();
 
     private PanelController mPanelController;
@@ -81,7 +81,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
         ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
 
-        mAdapter = new ContentAdapter();
+        mAdapter = new ContentAdapter(this);
 
         mNavSpinner.setAdapter(new ArrayAdapter<>(
                 this,
@@ -108,6 +108,22 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     public void itemsLoaded(ArrayList<Item> items, boolean success) {
         mPanelController.setTitle(items.get(0));
         mStoryAdapter.loadStory(items.get(0));
+    }
+
+    @Override
+    public void openItem(Item item) {
+        mPanelController.setTitle(item);
+        mStoryAdapter.loadStory(item);
+    }
+
+    @Override
+    public void openUser(Item item) {
+
+    }
+
+    @Override
+    public void openPage(Item item, StoryAdapter.PageType type) {
+
     }
 
     @Override

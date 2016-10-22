@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.story.StoryAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +31,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     private boolean contentStateChanged = false;
     private int[] ids;
     private Item[] data = new Item[] {};
+    private ContentOpener opener;
+
+    ContentAdapter(ContentOpener opener) {
+        this.opener = opener;
+    }
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItems: Loading items for page " + defaultPage.toLowerCase());
@@ -64,11 +70,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        if(data.length > position && data[position] != null) {
-            holder.mTitle.setText(data[position].getTitle());
-            holder.mInfo.setText(data[position].getFormattedInfo());
-            holder.mAuthor.setText(data[position].getBy());
-            holder.mURL.setText(data[position].getFormattedURL());
+        int pos = holder.getAdapterPosition();
+        if(data.length > pos && data[pos] != null) {
+            holder.mTitle.setText(data[pos].getFormattedTitle());
+            holder.mInfo.setText(data[pos].getFormattedInfo());
+            holder.mAuthor.setText(data[pos].getFormattedBy());
+            holder.mURL.setText(data[pos].getFormattedURL());
+            holder.mNumber.setText(Integer.toString(pos + 1));
         }
     }
 
@@ -77,24 +85,14 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         return Math.max(data.length, 100);
     }
 
-    public static class Holder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_title)
-        TextView mTitle;
-
-        @BindView(R.id.item_stats)
-        TextView mInfo;
-
-        @BindView(R.id.item_author)
-        TextView mAuthor;
-
-        @BindView(R.id.item_url)
-        TextView mURL;
-
-        public Holder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
+    @Override
+    public void onViewRecycled(Holder holder) {
+        super.onViewRecycled(holder);
+        holder.mTitle.setText(R.string.text_title_empty);
+        holder.mInfo.setText(R.string.text_info_empty);
+        holder.mAuthor.setText("");
+        holder.mURL.setText("");
+        holder.mNumber.setText("");
     }
 
     @Override
@@ -123,6 +121,45 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                 notifyItemChanged(index);
             }
         }
+    }
+
+    class Holder extends RecyclerView.ViewHolder {
+        @BindView(R.id.item_title)
+        TextView mTitle;
+
+        @BindView(R.id.item_stats)
+        TextView mInfo;
+
+        @BindView(R.id.item_author)
+        TextView mAuthor;
+
+        @BindView(R.id.item_url)
+        TextView mURL;
+
+        @BindView(R.id.item_number)
+        TextView mNumber;
+
+        Holder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ContentAdapter.this.opener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
+                }
+            });
+        }
+
+    }
+
+    public interface ContentOpener {
+
+        void openItem(Item item);
+
+        void openUser(Item item);
+
+        void openPage(Item item, StoryAdapter.PageType type);
+
     }
 
 }

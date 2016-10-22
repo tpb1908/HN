@@ -158,6 +158,14 @@ public class Item implements Parcelable, Comparable<Item> {
         return false;
     }
 
+    public String getFormattedTitle() {
+        if(url != null && url.endsWith(".pdf") && !title.contains("pdf")) {
+            return title + "[pdf]";
+        } else {
+            return title;
+        }
+    }
+
     public String getFormattedInfo() {
         String info = score + " points | ";
         if(kids != null) {
@@ -172,6 +180,10 @@ public class Item implements Parcelable, Comparable<Item> {
         } catch(MalformedURLException mue) {
             return "Unknown";
         }
+    }
+
+    public String getFormattedBy() {
+        return "By " + by;
     }
 
     @Override

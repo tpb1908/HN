@@ -19,6 +19,6 @@
 
     <string name="text_title_empty"><b>\u2026</b></string>
 
-    <string name="text_details_empty">\u2026</string>
+    <string name="text_info_empty">\u2026</string>
 
 </resources>
