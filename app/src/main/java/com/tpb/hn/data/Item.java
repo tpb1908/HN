@@ -144,7 +144,6 @@ public class Item implements Parcelable {
     }
     //</editor-fold>
 
-
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Item) {
@@ -165,7 +164,7 @@ public class Item implements Parcelable {
 
     public String getFormattedURL() {
         try {
-            return new URL(url).getHost();
+            return "(" + new URL(url).getHost() + ")";
         } catch(MalformedURLException mue) {
             return "Unknown";
         }

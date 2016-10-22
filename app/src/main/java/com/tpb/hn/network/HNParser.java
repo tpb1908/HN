@@ -35,7 +35,6 @@ public class HNParser {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         item.setBy(obj.getString(KEY_BY));
-        item.setDescendants(obj.getInt(KEY_DESCENDANTS));
         item.setScore(obj.getInt(KEY_SCORE));
         item.setTime(obj.getLong(KEY_TIME));
         item.setTitle(obj.getString(KEY_TITLE));
@@ -44,15 +43,11 @@ public class HNParser {
         } else {
             item.setType(getType(obj.getString(KEY_TYPE)));
         }
+        if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));
         if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
+        if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
 
-
-        if(item.getType() == ItemType.COMMENT ||
-                item.getType() == ItemType.ASK  ||
-                item.getType() == ItemType.JOB) {
-            item.setText(obj.getString(KEY_TEXT));
-        }
         return item;
     }
 
