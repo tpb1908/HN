@@ -41,11 +41,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int pos = manager.findFirstVisibleItemPosition();
                     if(ids != null) {
                         Log.i(TAG, "onScrollStateChanged: Loading items");
-                        loader.loadItems(Arrays.copyOfRange(ids, pos, pos + 20), false);
+                        loader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, pos + 15));
                     }
                 }
             }
@@ -53,28 +53,31 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     }
 
     void loadItems(String defaultPage) {
-        Log.i(TAG, "loadItems: Loading items for page " + defaultPage.toLowerCase());
-        switch(defaultPage.toLowerCase()) {
-            case "top":
-                loader.getTop(this);
-                //loader.getTop(this, 20);
-                break;
-            case "best":
-                loader.getBest(this, 20);
-                break;
-            case "ask":
-                loader.getAsk(this, 20);
-                break;
-            case "new":
-                loader.getNew(this, 20);
-                break;
-            case "show":
-                loader.getShow(this, 20);
-                break;
-            case "jobs":
-                loader.getJobs(this, 20);
-                break;
-        }
+        Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
+
+        loader.getIds(this, defaultPage);
+
+//        switch(defaultPage.toLowerCase()) {
+//            case "top":
+//                loader.getTop(this);
+//                //loader.getTop(this, 20);
+//                break;
+//            case "best":
+//                loader.getBest(this, 20);
+//                break;
+//            case "ask":
+//                loader.getAsk(this, 20);
+//                break;
+//            case "new":
+//                loader.getNew(this, 20);
+//                break;
+//            case "show":
+//                loader.getShow(this, 20);
+//                break;
+//            case "jobs":
+//                loader.getJobs(this, 20);
+//                break;
+//        }
         contentStateChanged = contentState != null; //On first run it will stay false
         contentState = defaultPage;
     }
@@ -119,8 +122,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     @Override
     public void IdLoadDone(int[] ids) {
-        //TODO Check for chunk loading
         Log.i(TAG, "IdLoadDone: ");
+        if(this.ids == null) { //First time loading
+            loader.loadItemsIndividually(Arrays.copyOfRange(ids, 0, 10));
+        }
         this.ids = ids;
         //Id loading will only happen once each time the data is to be set
         data = new Item[ids.length + 1];

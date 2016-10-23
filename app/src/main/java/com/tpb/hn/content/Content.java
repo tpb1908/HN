@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.androidnetworking.AndroidNetworking;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
@@ -65,6 +66,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
+        AndroidNetworking.initialize(getApplicationContext());
 
         setSupportActionBar(mContentToolbar);
 
@@ -91,8 +93,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
-
-
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
     }
