@@ -207,6 +207,32 @@ public class HNLoader {
         }
     }
 
+    public void loadItems(final int[] ids, boolean block) {
+        for(int i : ids) {
+            AndroidNetworking.get(APIPaths.getItemPath(i))
+                    .setTag(i)
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                final Item item = HNParser.JSONToItem(response);
+                                itemListener.itemLoaded(item, item != null);
+                            } catch(Exception e) {
+                                Log.e(TAG, "onResponse: ", e);
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            //TODO- Get code like this anError.getResponse().code();
+                            Log.e(TAG, "onError: ", anError );
+                        }
+                    });
+        }
+    }
+
     public void loadItem(final int id) {
         for(Item i : rootItems) {
             if(i.getId() == id) {

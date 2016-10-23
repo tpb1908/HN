@@ -81,17 +81,18 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
         ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
 
-        mAdapter = new ContentAdapter(this);
+        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
 
+        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager());
+        mRecycler.setAdapter(mAdapter);
         mNavSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
 
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mRecycler.setAdapter(mAdapter);
-        mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
     }

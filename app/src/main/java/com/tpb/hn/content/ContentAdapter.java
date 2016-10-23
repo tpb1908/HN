@@ -1,6 +1,7 @@
 package com.tpb.hn.content;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.story.StoryAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import butterknife.BindView;
@@ -33,15 +35,29 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     private Item[] data = new Item[] {};
     private ContentOpener opener;
 
-    ContentAdapter(ContentOpener opener) {
+    ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
         this.opener = opener;
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    int pos = manager.findFirstVisibleItemPosition();
+                    if(ids != null) {
+                        Log.i(TAG, "onScrollStateChanged: Loading items");
+                        loader.loadItems(Arrays.copyOfRange(ids, pos, pos + 20), false);
+                    }
+                }
+            }
+        });
     }
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItems: Loading items for page " + defaultPage.toLowerCase());
         switch(defaultPage.toLowerCase()) {
             case "top":
-                loader.getTop(this, 20);
+                loader.getTop(this);
+                //loader.getTop(this, 20);
                 break;
             case "best":
                 loader.getBest(this, 20);
@@ -112,7 +128,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     @Override
     public void itemLoaded(Item item, boolean success) {
-
+        for(int i = 0; i < ids.length; i++) {
+            if(item.getId() == ids[i]) {
+                data[i] = item;
+                notifyItemChanged(i);
+                break;
+            }
+        }
     }
 
     @Override
