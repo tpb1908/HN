@@ -2,7 +2,9 @@ package com.tpb.hn.story;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,10 +51,21 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @BindView(R.id.readability_error_message)
     TextView mErrorTextView;
 
+    @BindView(R.id.readabilitiy_scroller)
+    NestedScrollView mScroller;
+
     private String title;
     private String content;
 
     private boolean isArticleReady = false;
+
+    AppBarLayout mAppbar;
+
+    public static Readability newInstance(AppBarLayout toolbar) {
+        Readability r = new Readability();
+        r.mAppbar = toolbar;
+        return r;
+    }
 
     @Nullable
     @Override
@@ -69,6 +82,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
                 setupTextView();
             }
         }
+        //mScroller.setOnScrollChangeListener(new StoryAdapter.HidingListener(mAppbar));
         return inflated;
     }
 

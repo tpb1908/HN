@@ -1,8 +1,8 @@
 package com.tpb.hn.content;
 
+import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -20,7 +20,7 @@ public class PanelController {
     private static final String TAG = PanelController.class.getSimpleName();
 
     private SlidingUpPanelLayout panelLayout;
-    private RelativeLayout slidingPanel;
+    private CoordinatorLayout slidingPanel;
     private float lastPanelOffset = 0.0f;
 
     @BindView(R.id.item_large_title_wrapper)
@@ -62,7 +62,7 @@ public class PanelController {
         ((TextView) collapsedView.findViewById(R.id.item_stats)).setText(item.getFormattedInfo());
         ((TextView) collapsedView.findViewById(R.id.item_author)).setText(
                 String.format(collapsedView.getContext().getString(R.string.text_item_by), item.getBy()));
-        panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        expand();
     }
 
     public void onResume() {

@@ -21,6 +21,7 @@
         />
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/readabilitiy_scroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

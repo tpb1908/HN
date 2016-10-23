@@ -88,11 +88,17 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     @Override
     public void onViewRecycled(Holder holder) {
         super.onViewRecycled(holder);
+        if(holder.mTitle.getLineCount() > 1) {
+            holder.mTitle.setText("");
+            holder.itemView.requestLayout();
+        }
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");
         holder.mURL.setText("");
         holder.mNumber.setText("");
+        holder.mTitle.requestLayout();
+
     }
 
     @Override
@@ -145,7 +151,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ContentAdapter.this.opener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
+                    if(ContentAdapter.this.data[getAdapterPosition()] != null) {
+                        ContentAdapter.this.opener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
+                    }
                 }
             });
         }

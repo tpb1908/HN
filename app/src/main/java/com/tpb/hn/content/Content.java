@@ -3,6 +3,7 @@ package com.tpb.hn.content;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -49,7 +49,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     AppBarLayout mStoryAppbar;
 
     @BindView(R.id.story_panel)
-    RelativeLayout mStoryPanel;
+    CoordinatorLayout mStoryPanel;
 
     @BindView(R.id.nav_spinner)
     Spinner mNavSpinner;
@@ -74,7 +74,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
                 (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout));
 
         mStoryAdapter = new StoryAdapter(getSupportFragmentManager(),
-                new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER});
+                new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}, mStoryAppbar);
 
         mStoryPager.setAdapter(mStoryAdapter);
         mStoryPager.setOffscreenPageLimit(mStoryAdapter.getCount());
@@ -106,14 +106,13 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void itemsLoaded(ArrayList<Item> items, boolean success) {
-        mPanelController.setTitle(items.get(0));
-        mStoryAdapter.loadStory(items.get(0));
     }
 
     @Override
     public void openItem(Item item) {
         mPanelController.setTitle(item);
         mStoryAdapter.loadStory(item);
+
     }
 
     @Override

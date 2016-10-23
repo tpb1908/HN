@@ -1,8 +1,10 @@
 package com.tpb.hn.story;
 
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 
 import com.tpb.hn.data.Item;
@@ -19,10 +21,13 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader {
 
     private Item queuedItem;
 
-    public StoryAdapter(FragmentManager fragmentManager, PageType[] pages) {
+    private AppBarLayout mAppBar;
+
+    public StoryAdapter(FragmentManager fragmentManager, PageType[] pages, AppBarLayout toolbar) {
         super(fragmentManager);
         this.pages = pages;
         loaders = new StoryLoader[pages.length + 1];
+        mAppBar = toolbar;
     }
 
     @Override
@@ -49,7 +54,7 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader {
                 loaders[position] = (StoryLoader) page;
                 break;
             case READABILITY:
-                page = new Readability();
+                page = Readability.newInstance(mAppBar);
                 loaders[position] = (StoryLoader) page;
                 break;
             case SKIMMER:
@@ -81,6 +86,35 @@ public class StoryAdapter extends FragmentPagerAdapter implements StoryLoader {
                 return "SKIMMER";
         }
         return "Error";
+    }
+
+    public static class HidingListener implements NestedScrollView.OnScrollChangeListener {
+
+        private AppBarLayout mAppBar;
+        private int y;
+        private int height;
+        private float initialY;
+
+        public HidingListener(AppBarLayout appBarLayout) {
+            mAppBar = appBarLayout;
+            height = mAppBar.getMeasuredHeight();
+            initialY = mAppBar.getY();
+        }
+
+        @Override
+        public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            //Log.i(TAG, "onScrollChange: sY " + scrollY + ", oY " + oldScrollY);
+            int delta = oldScrollY - scrollY;
+            Log.i(TAG, "onScrollChange: Y " + y + ", delta " + delta);
+            if((y > -mAppBar.getMeasuredHeightAndState() || delta > 0 ) && y <= 0) {
+                y += delta;
+                if(y > 0) y= 0;
+            }
+
+            //Log.i(TAG, "onScrollChange: " + mAppBar.getY() + ", from " + initialY);
+            //Log.i(TAG, "onScrollChange: " + mAppBar.getMeasuredHeightAndState());
+            mAppBar.setTranslationY(y);
+        }
     }
 
     public interface FragmentCycle {

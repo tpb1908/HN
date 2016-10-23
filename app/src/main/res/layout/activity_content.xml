@@ -2,7 +2,6 @@
 <com.sothree.slidinguppanel.SlidingUpPanelLayout
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,7 +41,7 @@
 
     </FrameLayout>
 
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/story_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -56,10 +55,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/story_toolbar"
                 android:layout_width="match_parent"
-
                 android:layout_height="72dp"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways">
+                android:background="?attr/colorPrimary">
 
                 <include layout="@layout/story_title">
                 </include>
@@ -82,6 +79,6 @@
 
         </android.support.v4.view.ViewPager>
 
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
