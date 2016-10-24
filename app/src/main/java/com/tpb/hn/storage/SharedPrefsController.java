@@ -22,11 +22,13 @@ public class SharedPrefsController {
     private static final String KEY_SKIMMER_WPM = "SKIMMER_WPM";
     private static final String KEY_DEFAULT_PAGE = "DEFAULT_PAGE";
     private static final String KEY_USE_CARDS = "USE_FALSE";
+    private static final String KEY_MARK_READ_WHEN_PASSED = "MARK_READ_WHEN_PASSED";
 
     private static StoryAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
     private static boolean useCards;
+    private static boolean markReadWhenPassed;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -43,6 +45,7 @@ public class SharedPrefsController {
             initInitialValues();
         }
         useCards = prefs.getBoolean(KEY_USE_CARDS, false);
+        markReadWhenPassed = prefs.getBoolean(KEY_USE_CARDS, false);
         editor.apply();
 
     }
@@ -97,6 +100,16 @@ public class SharedPrefsController {
 
     public boolean getUseCards() {
         return useCards;
+    }
+
+    public void setMarkReadWhenPassed(boolean markRead) {
+        markReadWhenPassed = markRead;
+        editor.putBoolean(KEY_MARK_READ_WHEN_PASSED, markReadWhenPassed);
+        editor.apply();
+    }
+
+    public boolean getMarkReadWhenPassed() {
+        return markReadWhenPassed;
     }
 
     public StoryAdapter.PageType[] getPageTypes() {

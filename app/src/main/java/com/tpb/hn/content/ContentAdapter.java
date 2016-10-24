@@ -37,6 +37,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     private String contentState;
     private boolean contentStateChanged = false;
     private boolean usingCards = false;
+    private boolean markReadWhenPassed = false;
     private int[] ids;
     private Item[] data = new Item[] {};
     private ContentOpener opener;
@@ -44,7 +45,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
         this.opener = opener;
-        usingCards = SharedPrefsController.getInstance(recycler.getContext()).getUseCards();
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
+        usingCards = prefs.getUseCards();
+        markReadWhenPassed = prefs.getMarkReadWhenPassed();
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -60,7 +63,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                             loader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
                         }
                     }
-                    if(pos > mLastPosition) {
+                    if(markReadWhenPassed && pos > mLastPosition) {
                         for(int i = mLastPosition; i < pos; i++) {
                             if(i < data.length && data[i] != null) data[i].setViewed(true);
                         }
