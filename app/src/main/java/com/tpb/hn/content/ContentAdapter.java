@@ -54,6 +54,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                             loader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
                         }
                     }
+                    if(pos > mLastPosition) {
+                        for(int i = mLastPosition; i < pos; i++) {
+                            if(i < data.length && data[i] != null) data[i].setViewed(true);
+                        }
+                    }
                     mLastPosition = pos;
                 }
             }
@@ -64,28 +69,26 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
 
         loader.getIds(this, defaultPage);
-
-//        switch(defaultPage.toLowerCase()) {
-//            case "top":
-//                loader.getTop(this);
-//                //loader.getTop(this, 20);
-//                break;
-//            case "best":
-//                loader.getBest(this, 20);
-//                break;
-//            case "ask":
-//                loader.getAsk(this, 20);
-//                break;
-//            case "new":
-//                loader.getNew(this, 20);
-//                break;
-//            case "show":
-//                loader.getShow(this, 20);
-//                break;
-//            case "jobs":
-//                loader.getJobs(this, 20);
-//                break;
-//        }
+        switch(defaultPage.toLowerCase()) {
+            case "top":
+                loader.getTopIds(this);
+                break;
+            case "best":
+                loader.getBestIds(this);
+                break;
+            case "ask":
+                loader.getAskIds(this);
+                break;
+            case "new":
+                loader.getNewIds(this);
+                break;
+            case "show":
+                loader.getShowIds(this);
+                break;
+            case "jobs":
+                loader.getJobsIds(this);
+                break;
+        }
         contentStateChanged = contentState != null; //On first run it will stay false
         contentState = defaultPage;
     }
@@ -104,6 +107,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             holder.mAuthor.setText(data[pos].getFormattedBy());
             holder.mURL.setText(data[pos].getFormattedURL());
             holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+            if(data[pos].isViewed()) {
+                holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.secondary_text_dark));
+            }
         }
     }
 
@@ -119,6 +125,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
+        holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.tertiary_text_dark));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");
@@ -186,7 +193,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(ContentAdapter.this.data[getAdapterPosition()] != null) {
+                    if(ContentAdapter.this.data != null && ContentAdapter.this.data[getAdapterPosition()] != null) {
                         ContentAdapter.this.opener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
                     }
                 }

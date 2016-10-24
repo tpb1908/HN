@@ -26,6 +26,7 @@ public class Item implements Parcelable, Comparable<Item> {
     private String title;
     private int[] parts;
     private int descendants;
+    private boolean viewed;
 
     public Item() {
     }
@@ -142,6 +143,15 @@ public class Item implements Parcelable, Comparable<Item> {
     public void setDescendants(int descendants) {
         this.descendants = descendants;
     }
+
+    public boolean isViewed() {
+        return viewed;
+    }
+
+    public void setViewed(boolean viewed) {
+        this.viewed = viewed;
+    }
+
     //</editor-fold>
 
     @Override
@@ -207,6 +217,7 @@ public class Item implements Parcelable, Comparable<Item> {
         dest.writeString(this.title);
         dest.writeIntArray(this.parts);
         dest.writeInt(this.descendants);
+        dest.writeByte(this.viewed ? (byte) 1 : (byte) 0);
     }
 
 
@@ -226,6 +237,7 @@ public class Item implements Parcelable, Comparable<Item> {
         this.title = in.readString();
         this.parts = in.createIntArray();
         this.descendants = in.readInt();
+        this.viewed = in.readByte() != 0;
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -262,6 +274,7 @@ public class Item implements Parcelable, Comparable<Item> {
                 ", title='" + title + '\'' +
                 ", parts=" + Arrays.toString(parts) +
                 ", descendants=" + descendants +
+                ", viewed=" + viewed +
                 '}';
     }
 }
