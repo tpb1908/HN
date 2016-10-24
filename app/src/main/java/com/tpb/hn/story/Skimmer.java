@@ -217,7 +217,7 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
 
     @Override
     public void loadStory(Item item) {
-        new ReadabilityLoader(this).loadArticle(item.getUrl());
+        new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
     }
 
     @Override

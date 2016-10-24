@@ -138,7 +138,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @Override
     public void loadStory(Item item) {
         Log.i(TAG, "loadStory: Readability loading story");
-        new ReadabilityLoader(this).loadArticle(item.getUrl());
+        new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
     }
 
     @Override

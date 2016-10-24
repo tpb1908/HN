@@ -53,63 +53,32 @@ public class HNLoader {
     }
 
     public void getIds(HNItemIdLoadDone listener, String page) {
+        getItemIds(listener, page);
+    }
+
+    public void getTopIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getTopStoriesPath());
     }
 
-//    //<editor-fold desc="Getters">
-//    public void getTop(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone ,APIPaths.getTopStoriesPath(), false, -1);
-//    }
-//
-//    public void getTop(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getTopStoriesPath(), true, firstChunk);
-//    }
-//
-//    public void getNew(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone, APIPaths.getNewStoriesPath(), false, -1);
-//    }
-//
-//    public void getNew(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getNewStoriesPath(), true, firstChunk);
-//    }
-//
-//    public void getBest(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone, APIPaths.getBestStoriesPath(), false, -1);
-//    }
-//
-//    public void getBest(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getBestStoriesPath(), true, firstChunk);
-//    }
-//
-//    public void getAsk(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone, APIPaths.getAskStoriesPath(), false, -1);
-//    }
-//
-//    public void getAsk(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getAskStoriesPath(), true, firstChunk);
-//    }
-//
-//
-//    public void getShow(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone, APIPaths.getShowStoriesPath(), false, -1);
-//    }
-//
-//    public void getShow(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getShowStoriesPath(), true, firstChunk);
-//    }
-//
-//    public void getJobs(HNItemIdLoadDone IdLoadDone) {
-//        getItemIds(IdLoadDone, APIPaths.getJobStoriesPath(), false, -1);
-//    }
-//
-//    public void getJobs(HNItemIdLoadDone IdLoadDone, int firstChunk) {
-//        getItemIds(IdLoadDone, APIPaths.getJobStoriesPath(), true, firstChunk);
-//    }
-//
-//    private void getItemIds(HNItemIdLoadDone IdLoadDone, String url) {
-//        getItemIds(IdLoadDone, url, false, -1);
-//    }
-    //</editor-fold>
+    public void getNewIds(HNItemIdLoadDone listener) {
+        getItemIds(listener, APIPaths.getNewStoriesPath());
+    }
+
+    public void getBestIds(HNItemIdLoadDone listener) {
+        getItemIds(listener, APIPaths.getBestStoriesPath());
+    }
+
+    public void getAskIds(HNItemIdLoadDone listener) {
+        getItemIds(listener, APIPaths.getAskStoriesPath());
+    }
+
+    public void getShowIds(HNItemIdLoadDone listener) {
+        getItemIds(listener, APIPaths.getShowStoriesPath());
+    }
+
+    public void getJobsIds(HNItemIdLoadDone listener) {
+        getItemIds(listener, APIPaths.getJobStoriesPath());
+    }
 
     private void getItemIds(final HNItemIdLoadDone IdListener, final String url) {
             AndroidNetworking.get(url)

@@ -27,7 +27,7 @@ public class ReadabilityLoader {
         this.listener = listener;
     }
 
-    void loadArticle(final String url) {
+    void loadArticle(final String url, boolean forImmediateUse) {
         if(url.endsWith(".pdf")) {
             listener.loadDone(null, false, ReadabilityLoadDone.ERROR_PDF);
             return;
@@ -45,7 +45,7 @@ public class ReadabilityLoader {
             final long start = System.nanoTime();
             AndroidNetworking.get(APIPaths.getReadabilityParserPath(url))
                     .setTag("readability")
-                    .setPriority(Priority.HIGH)
+                    .setPriority(forImmediateUse ? Priority.IMMEDIATE : Priority.MEDIUM)
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override

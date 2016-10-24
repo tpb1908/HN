@@ -17,6 +17,7 @@ import com.tpb.hn.story.StoryAdapter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +103,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             holder.mInfo.setText(data[pos].getFormattedInfo());
             holder.mAuthor.setText(data[pos].getFormattedBy());
             holder.mURL.setText(data[pos].getFormattedURL());
-            holder.mNumber.setText(Integer.toString(pos + 1));
+            holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
         }
     }
 
