@@ -22,8 +22,23 @@ public class APIPaths {
 
     private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
 
+    //https://hn.algolia.com/api
+    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/search?query=";
+    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
+
     public static final String JSON = ".json";
     public static final String PRETTY = "?print=pretty";
+
+    private String addTagsToAlgolia(String path, String[] tags) {
+        for(String tag : tags) path += tag;
+        return path;
+    }
+
+    private String searchStoryComments(int storyId) {
+        return ALGOLIA_BASE + "?tags=comment," + storyId;
+    }
+
+
 
     public static String getItemPath(int itemId) {
         return BASE_PATH + ITEM + itemId + JSON;

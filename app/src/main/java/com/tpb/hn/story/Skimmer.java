@@ -160,6 +160,7 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 mErrorTextView.setText(R.string.error_loading_page);
             }
         }
+
     }
 
     private void setupSkimmer() {

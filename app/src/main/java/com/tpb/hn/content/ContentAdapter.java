@@ -1,6 +1,8 @@
 package com.tpb.hn.content;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.story.StoryAdapter;
 
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     private HNLoader loader = new HNLoader(this);
     private String contentState;
     private boolean contentStateChanged = false;
+    private boolean usingCards = false;
     private int[] ids;
     private Item[] data = new Item[] {};
     private ContentOpener opener;
@@ -39,6 +44,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
         this.opener = opener;
+        usingCards = SharedPrefsController.getInstance(recycler.getContext()).getUseCards();
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -110,6 +116,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             if(data[pos].isViewed()) {
                 holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.secondary_text_dark));
             }
+            if(usingCards) {
+                holder.mCard.setUseCompatPadding(true);
+                holder.mCard.setCardElevation(Util.pxFromDp(4));
+            }
         }
     }
 
@@ -125,14 +135,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
-        holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.tertiary_text_dark));
+        holder.mTitle.setTextColor(Color.parseColor("#767676"));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");
         holder.mURL.setText("");
         holder.mNumber.setText("");
         holder.mTitle.requestLayout();
-
     }
 
     @Override
@@ -172,6 +181,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     }
 
     class Holder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.item_card)
+        CardView mCard;
+
         @BindView(R.id.item_title)
         TextView mTitle;
 

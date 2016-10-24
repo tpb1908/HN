@@ -21,10 +21,12 @@ public class SharedPrefsController {
     private static final String KEY_STORY_TABS = "STORY_TABS";
     private static final String KEY_SKIMMER_WPM = "SKIMMER_WPM";
     private static final String KEY_DEFAULT_PAGE = "DEFAULT_PAGE";
+    private static final String KEY_USE_CARDS = "USE_FALSE";
 
     private static StoryAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
+    private static boolean useCards;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -40,6 +42,7 @@ public class SharedPrefsController {
             editor.putBoolean(KEY_FIRST_RUN, false);
             initInitialValues();
         }
+        useCards = prefs.getBoolean(KEY_USE_CARDS, false);
         editor.apply();
 
     }
@@ -56,6 +59,7 @@ public class SharedPrefsController {
 
         editor.putString(KEY_DEFAULT_PAGE, "TOP");
 
+        editor.putBoolean(KEY_USE_CARDS, false);
         editor.apply();
     }
 
@@ -83,6 +87,16 @@ public class SharedPrefsController {
             defaultPage = prefs.getString(KEY_DEFAULT_PAGE, "BEST");
         }
         return defaultPage;
+    }
+
+    public void setUseCards(boolean shouldUseCards) {
+        useCards = shouldUseCards;
+        editor.putBoolean(KEY_USE_CARDS, useCards);
+        editor.apply();
+    }
+
+    public boolean getUseCards() {
+        return useCards;
     }
 
     public StoryAdapter.PageType[] getPageTypes() {

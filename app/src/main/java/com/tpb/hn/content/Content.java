@@ -67,7 +67,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
         AndroidNetworking.initialize(getApplicationContext());
-
+        SharedPrefsController.getInstance(this).setUseCards(false);
         setSupportActionBar(mContentToolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
