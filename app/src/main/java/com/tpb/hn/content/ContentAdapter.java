@@ -34,19 +34,26 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     private int[] ids;
     private Item[] data = new Item[] {};
     private ContentOpener opener;
+    private int mLastPosition = 0;
 
     ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
         this.opener = opener;
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int pos = manager.findFirstVisibleItemPosition();
+                    //TODO- Deal with which way we are scrolling
                     if(ids != null) {
-                        Log.i(TAG, "onScrollStateChanged: Loading items");
-                        loader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, pos + 15));
+                        if(pos > mLastPosition) { //We scrolled down
+                            loader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, Math.min(pos + 15, ids.length)), false);
+                        } else { //We scrolled up
+                            loader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
+                        }
                     }
+                    mLastPosition = pos;
                 }
             }
         });
@@ -124,7 +131,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
         if(this.ids == null) { //First time loading
-            loader.loadItemsIndividually(Arrays.copyOfRange(ids, 0, 10));
+            loader.loadItemsIndividually(Arrays.copyOfRange(ids, 0, 10), false);
         }
         this.ids = ids;
         //Id loading will only happen once each time the data is to be set

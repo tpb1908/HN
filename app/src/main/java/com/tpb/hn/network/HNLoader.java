@@ -203,11 +203,11 @@ public class HNLoader {
 //        }
 //    }
 
-    public void loadItemsIndividually(final int[] ids) {
+    public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
         for(int i : ids) {
             int cachePos = checkCache(i);
             if(cachePos > -1) {
-                itemListener.itemLoaded(rootItems.get(cachePos), true);
+                if(getFromCache) itemListener.itemLoaded(rootItems.get(cachePos), true);
             } else {
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
@@ -218,7 +218,7 @@ public class HNLoader {
                             public void onResponse(JSONObject response) {
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
-
+                                    if(item != null) insertItemToCache(item);
                                     itemListener.itemLoaded(item, item != null);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse: ", e);
@@ -240,6 +240,43 @@ public class HNLoader {
         key.setId(id);
         int pos = Collections.binarySearch(rootItems, key);
         return Math.max(pos, -1);
+    }
+
+    private void updateCachedRootItem(Item item) {
+        boolean set = false;
+        for(int i = 0; i < rootItems.size(); i++) {
+            if(rootItems.get(i).getId() == item.getId()) {
+                rootItems.set(i, item);
+                set = true;
+                break;
+            }
+        }
+        if(!set) rootItems.add(item);
+    }
+
+    private void insertItemToCache(Item item) {
+//        boolean set = false;
+//        for(int i = 0; i < rootItems.size(); i++) {
+//            if(item.getId() > rootItems.get(i).getId()) {
+//                rootItems.add(i, item);
+//                set = true;
+//                Log.i(TAG, "insertItemToCache: Inserting at position " + i);
+//                break;
+//            }
+//        }
+        //if(!set) rootItems.add(0, item);
+//        final int pos = Collections.binarySearch(rootItems, item);
+//        if(pos < 0) {
+//            rootItems.add(0, item);
+//        } else if(pos >= rootItems.size()) {
+//            rootItems.add(item);
+//        } else {
+//            Log.i(TAG, "insertItemToCache: Inserting to position " + pos + " of " + rootItems.size());
+//            rootItems.add(pos, item);
+//        }
+
+        rootItems.add(item);
+        Collections.sort(rootItems);
     }
 
 
@@ -311,17 +348,6 @@ public class HNLoader {
         }
     }
 
-    private void updateCachedRootItem(Item item) {
-        boolean set = false;
-        for(int i = 0; i < rootItems.size(); i++) {
-            if(rootItems.get(i).getId() == item.getId()) {
-                rootItems.set(i, item);
-                set = true;
-                break;
-            }
-        }
-        if(!set) rootItems.add(item);
-    }
 
     //TODO- Send error codes
     public interface HNItemLoadDone {
