@@ -1,16 +1,19 @@
 package com.tpb.hn.story;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.tpb.hn.network.AdBlocker;
 
@@ -65,6 +68,23 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
                     ad = loadedUrls.get(request.getUrl().toString());
                 }
                 return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
+            }
+        });
+    }
+
+    public void bindProgressBar(final ProgressBar progressBar, final boolean animate, final boolean hideWhenDone) {
+        this.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if(Build.VERSION.SDK_INT >= 24 ) {
+                    progressBar.setProgress(newProgress,  animate);
+                } else {
+                    progressBar.setProgress(newProgress);
+                }
+                if(hideWhenDone && newProgress == 100) {
+                    progressBar.setVisibility(GONE);
+                }
             }
         });
     }

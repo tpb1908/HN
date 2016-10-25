@@ -17,6 +17,8 @@
             android:minHeight="0dp"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
+            <include layout="@layout/story_title"/>
+
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

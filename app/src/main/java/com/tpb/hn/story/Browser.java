@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tpb.hn.R;
@@ -34,7 +32,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
 
 
     @BindView(R.id.browser_webview)
-    WebView mWebView;
+    ScrollingAdBlockingWebView mWebView;
 
     @BindView(R.id.browser_loading_spinner)
     ProgressBar mLoadingSpinner;
@@ -56,14 +54,7 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
     public void onResume() {
         super.onResume();
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                mLoadingSpinner.setVisibility(View.GONE);
-                mWebView.setVisibility(View.VISIBLE);
-            }
-        });
+        mWebView.bindProgressBar(mLoadingSpinner, true, true);
 
     }
 

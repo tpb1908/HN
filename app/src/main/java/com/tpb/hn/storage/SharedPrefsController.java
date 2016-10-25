@@ -2,17 +2,19 @@ package com.tpb.hn.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.tpb.hn.story.StoryAdapter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
  */
 
 public class SharedPrefsController {
+    private static final String TAG = SharedPrefsController.class.getSimpleName();
+
     private static SharedPrefsController instance;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -54,13 +56,8 @@ public class SharedPrefsController {
     }
 
     private void initInitialValues() {
-        final HashSet<String> tabs = new HashSet<>();
-        tabs.add("C");
-        tabs.add("B");
-        tabs.add("R");
-        tabs.add("S");
-        editor.putStringSet(KEY_STORY_TABS, tabs);
-
+        final String defaultPages = "BCRS";
+        editor.putString(KEY_STORY_TABS, defaultPages);
         editor.putInt(KEY_SKIMMER_WPM, 500);
 
         editor.putString(KEY_DEFAULT_PAGE, "TOP");
@@ -126,27 +123,28 @@ public class SharedPrefsController {
 
     public StoryAdapter.PageType[] getPageTypes() {
         if(pageTypes == null) {
-            final Set<String> tabs = prefs.getStringSet(KEY_STORY_TABS, new HashSet<String>());
-            pageTypes = new StoryAdapter.PageType[tabs.size()];
-            int i = 0;
-            for(String s : tabs) {
-                switch(s) {
-                    case "C":
+            final String tabs = prefs.getString(KEY_STORY_TABS, "BCRS").toUpperCase();
+            Log.i(TAG, "getPageTypes: Loading page types " + tabs);
+            pageTypes = new StoryAdapter.PageType[tabs.length()];
+            for(int i = 0; i < tabs.length(); i++) {
+                switch(tabs.charAt(i)) {
+                    case 'C':
                         pageTypes[i] = StoryAdapter.PageType.COMMENTS;
                         break;
-                    case "B":
+                    case 'B':
+                        Log.i(TAG, "getPageTypes: Adding browser");
                         pageTypes[i] = StoryAdapter.PageType.BROWSER;
                         break;
-                    case "R":
+                    case 'R':
                         pageTypes[i] = StoryAdapter.PageType.READABILITY;
                         break;
-                    case "S":
+                    case 'S':
                         pageTypes[i] = StoryAdapter.PageType.SKIMMER;
                         break;
                 }
-                i++;
             }
         }
+        Log.i(TAG, "getPageTypes: Array is " + Arrays.toString(pageTypes));
         return pageTypes;
     }
 

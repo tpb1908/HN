@@ -3,10 +3,6 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.androidnetworking.AndroidNetworking;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
@@ -37,23 +32,8 @@ import butterknife.ButterKnife;
 public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener {
     private static final String TAG = Content.class.getSimpleName();
 
-    private PanelController mPanelController;
-    private StoryAdapter mStoryAdapter;
-
     @BindView(R.id.content_toolbar)
     Toolbar mContentToolbar;
-
-    @BindView(R.id.story_toolbar)
-    Toolbar mStoryToolbar;
-
-    @BindView(R.id.story_pager)
-    ViewPager mStoryPager;
-
-    @BindView(R.id.story_appbar)
-    AppBarLayout mStoryAppbar;
-
-    @BindView(R.id.story_panel)
-    CoordinatorLayout mStoryPanel;
 
     @BindView(R.id.nav_spinner)
     Spinner mNavSpinner;
@@ -80,16 +60,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //TODO- Async do checks and start loading content
-        mPanelController = new PanelController(
-                (SlidingUpPanelLayout) ButterKnife.findById(this, R.id.sliding_layout));
-
-        mStoryAdapter = new StoryAdapter(getSupportFragmentManager(),
-                new StoryAdapter.PageType[] {StoryAdapter.PageType.BROWSER, StoryAdapter.PageType.COMMENTS, StoryAdapter.PageType.READABILITY, StoryAdapter.PageType.SKIMMER}, mStoryAppbar);
-
-        mStoryPager.setAdapter(mStoryAdapter);
-        mStoryPager.setOffscreenPageLimit(mStoryAdapter.getCount());
-
-        ((TabLayout) ButterKnife.findById(this, R.id.story_tabs)).setupWithViewPager(mStoryPager);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
@@ -103,16 +73,13 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ));
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
-
-        startActivity(new Intent(Content.this, Story.class));
     }
 
 
 
     @Override
     public void itemLoaded(Item item, boolean success) {
-        mPanelController.setTitle(item);
-        mStoryAdapter.loadStory(item);
+
     }
 
     @Override
@@ -121,9 +88,9 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void openItem(Item item) {
-        mPanelController.setTitle(item);
-        mStoryAdapter.loadStory(item);
-
+        final Intent i = new Intent(Content.this, Story.class);
+        i.putExtra("item", item);
+        startActivity(i);
     }
 
     @Override
@@ -139,17 +106,12 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @Override
     protected void onResume() {
         super.onResume();
-        mPanelController.onResume();
     }
 
     @Override
     public void onBackPressed() {
         //TODO- Allow the fragments to override back press
-        if(mPanelController.isExpanded()) {
-            mPanelController.collapse();
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
 }
