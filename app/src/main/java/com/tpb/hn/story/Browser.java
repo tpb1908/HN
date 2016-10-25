@@ -25,7 +25,6 @@ import butterknife.Unbinder;
  * Data can be cached by creating a new webview instance somewhere
  * else and loading the page
  *
- * //TODO- Handle PDFs
  */
 
 public class Browser extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {

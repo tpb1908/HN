@@ -1,5 +1,6 @@
 package com.tpb.hn.content;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -20,6 +21,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.story.Story;
 import com.tpb.hn.story.StoryAdapter;
 
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
-        prefs.setUseDarkTheme(true);
+        prefs.setUseDarkTheme(false);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }
@@ -99,6 +101,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ));
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
+
+        startActivity(new Intent(Content.this, Story.class));
     }
 
 
