@@ -21,7 +21,7 @@
         />
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/readabilitiy_scroller"
+        android:id="@+id/readability_scroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -30,13 +30,14 @@
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/readability_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:paddingBottom="16dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"/>
 

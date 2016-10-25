@@ -50,7 +50,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     @BindView(R.id.readability_error_message)
     TextView mErrorTextView;
 
-    @BindView(R.id.readabilitiy_scroller)
+    @BindView(R.id.readability_scroller)
     NestedScrollView mScroller;
 
     private String title;
@@ -105,7 +105,7 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
                 if(mBody != null) setupTextView();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
-                mProgressSpinner.setVisibility(View.INVISIBLE);
+                mProgressSpinner.setVisibility(View.GONE);
                 mTitle.setText(R.string.error_loading_page);
             }
         } else {

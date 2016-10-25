@@ -79,7 +79,7 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
         mStoryTabs.setupWithViewPager(mStoryPager);
 
         final Intent launchIntent = getIntent();
-        if(launchIntent.getAction().equals(Intent.ACTION_VIEW)) {
+        if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             final String data = launchIntent.getDataString();
             new HNLoader(this).loadItem(APIPaths.parseUrl(data));
         } else {
