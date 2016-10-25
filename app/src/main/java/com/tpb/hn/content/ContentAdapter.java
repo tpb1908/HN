@@ -122,6 +122,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             if(usingCards) {
                 holder.mCard.setUseCompatPadding(true);
                 holder.mCard.setCardElevation(Util.pxFromDp(4));
+                holder.mCard.setRadius(Util.pxFromDp(3));
             }
         }
     }

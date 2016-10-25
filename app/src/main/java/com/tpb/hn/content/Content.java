@@ -64,10 +64,14 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
+        prefs.setUseDarkTheme(true);
+        if(prefs.getUseDarkTheme()) {
+            setTheme(R.style.AppTheme_Dark);
+        }
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
         AndroidNetworking.initialize(getApplicationContext());
-        SharedPrefsController.getInstance(this).setUseCards(false);
         setSupportActionBar(mContentToolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);

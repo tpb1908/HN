@@ -23,12 +23,14 @@ public class SharedPrefsController {
     private static final String KEY_DEFAULT_PAGE = "DEFAULT_PAGE";
     private static final String KEY_USE_CARDS = "USE_FALSE";
     private static final String KEY_MARK_READ_WHEN_PASSED = "MARK_READ_WHEN_PASSED";
+    private static final String KEY_DARK_THEME = "DARK_THEME";
 
     private static StoryAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
     private static boolean useCards;
     private static boolean markReadWhenPassed;
+    private static boolean useDarkTheme;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -46,6 +48,7 @@ public class SharedPrefsController {
         }
         useCards = prefs.getBoolean(KEY_USE_CARDS, false);
         markReadWhenPassed = prefs.getBoolean(KEY_USE_CARDS, false);
+        useDarkTheme = prefs.getBoolean(KEY_DARK_THEME, false);
         editor.apply();
 
     }
@@ -62,7 +65,6 @@ public class SharedPrefsController {
 
         editor.putString(KEY_DEFAULT_PAGE, "TOP");
 
-        editor.putBoolean(KEY_USE_CARDS, false);
         editor.apply();
     }
 
@@ -110,6 +112,16 @@ public class SharedPrefsController {
 
     public boolean getMarkReadWhenPassed() {
         return markReadWhenPassed;
+    }
+
+    public boolean getUseDarkTheme() {
+        return useDarkTheme;
+    }
+
+    public void setUseDarkTheme(boolean shouldUseDarkTheme) {
+        useDarkTheme = shouldUseDarkTheme;
+        editor.putBoolean(KEY_DARK_THEME, useDarkTheme);
+        editor.commit();
     }
 
     public StoryAdapter.PageType[] getPageTypes() {
