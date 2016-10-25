@@ -86,7 +86,6 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     mTextView.pause();
                 }
-                Log.i(TAG, "onTouch: " + Skimmer.this.toString());
                 return false;
             }
         });

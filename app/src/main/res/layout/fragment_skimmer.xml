@@ -37,7 +37,7 @@
 
     <ProgressBar
         android:id="@+id/skimmer_spritzer_progress"
-        android:layout_below="@+id/spritzer_text_view"
+        android:layout_below="@id/spritzer_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="invisible"
@@ -47,10 +47,8 @@
         android:id="@+id/skimmer_restart_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-
+        android:layout_below="@id/skimmer_spritzer_progress"
         android:text="@string/button_skimmer_restart"
-
         android:background="@color/colorPrimary"
         />
 

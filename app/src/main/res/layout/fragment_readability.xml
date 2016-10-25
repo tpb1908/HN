@@ -50,6 +50,8 @@
                 android:id="@+id/readability_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:textAppearance="@android:style/TextAppearance.Material.Body1"/>
 
         </LinearLayout>
