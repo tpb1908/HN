@@ -1,10 +1,14 @@
 package com.tpb.hn.network;
 
+import android.util.Log;
+
 /**
  * Created by theo on 17/10/16.
  */
 
 public class APIPaths {
+    private static final String TAG = APIPaths.class.getSimpleName();
+
     private static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
     private static final String ITEM = "item/";
     private static final String USER = "user/";
@@ -90,6 +94,22 @@ public class APIPaths {
 
     public static String getPDFDisplayPath(String url) {
         return DOCS_PDF_BASE + url;
+    }
+
+    public static int parseUrl(String url) {
+        if(url.contains("item?")) {
+            try {
+                final String idString = (String) url.subSequence(url.indexOf("=") + 1, url.length());
+                Log.i(TAG, "parseUrl: idString " + idString);
+                final int id = Integer.parseInt(idString);
+                Log.i(TAG, "parseUrl: id is " + id);
+                return id;
+
+            } catch(Exception e) {
+                return -1;
+            }
+        }
+        return -1;
     }
 
 
