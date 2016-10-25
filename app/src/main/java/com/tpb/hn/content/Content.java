@@ -19,6 +19,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.story.Story;
@@ -73,6 +74,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         }
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
+        AdBlocker.init(this);
         AndroidNetworking.initialize(getApplicationContext());
         setSupportActionBar(mContentToolbar);
 

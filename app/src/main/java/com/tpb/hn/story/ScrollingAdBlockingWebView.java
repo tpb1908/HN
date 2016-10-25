@@ -7,7 +7,15 @@ import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.tpb.hn.network.AdBlocker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Copyright (C) 2015 takahirom
@@ -25,25 +33,40 @@ import android.webkit.WebView;
  * limitations under the License.
  */
 
-public class NestedWebView extends WebView implements NestedScrollingChild {
+public class ScrollingAdBlockingWebView extends WebView implements NestedScrollingChild {
     private int mLastY;
     private final int[] mScrollOffset = new int[2];
     private final int[] mScrollConsumed = new int[2];
     private int mNestedOffsetY;
     private NestedScrollingChildHelper mChildHelper;
 
-    public NestedWebView(Context context) {
+    public ScrollingAdBlockingWebView(Context context) {
         this(context, null);
     }
 
-    public NestedWebView(Context context, AttributeSet attrs) {
+    public ScrollingAdBlockingWebView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
     }
 
-    public NestedWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ScrollingAdBlockingWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mChildHelper = new NestedScrollingChildHelper(this);
         setNestedScrollingEnabled(true);
+        this.setWebViewClient(new WebViewClient() {
+            private Map<String, Boolean> loadedUrls = new HashMap<>();
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                boolean ad;
+                if(!loadedUrls.containsKey(request.getUrl().toString())) {
+                    ad = AdBlocker.isAd(request.getUrl().toString());
+                    loadedUrls.put(request.getUrl().toString(), ad);
+                } else {
+                    ad = loadedUrls.get(request.getUrl().toString());
+                }
+                return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
+            }
+        });
     }
 
     @Override

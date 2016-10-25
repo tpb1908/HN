@@ -50,7 +50,7 @@ public class Story extends AppCompatActivity {
         item.setId(1);
         item.setBy("someone");
         item.setScore(100);
-        item.setUrl("http://www.bbc.co.uk/news/uk-england-37667371");
+        item.setUrl("http://10fastfingers.com/typing-test/english");
         item.setType(ItemType.STORY);
         mAdapter.loadStory(item);
 
