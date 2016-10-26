@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -14,11 +16,11 @@ import com.androidnetworking.AndroidNetworking;
 import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.ItemViewer;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.item.ItemViewer;
-import com.tpb.hn.item.ItemAdapter;
 
 import java.util.ArrayList;
 
@@ -56,10 +58,9 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ButterKnife.bind(this);
         AdBlocker.init(this);
         AndroidNetworking.initialize(getApplicationContext());
-        setSupportActionBar(mContentToolbar);
+        //setSupportActionBar(mContentToolbar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //TODO- Async do checks and start loading content
+ //       getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
@@ -71,11 +72,22 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.nav_spinner_items)
         ));
+        mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mAdapter.loadItems(mNavSpinner.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
     }
 
-
+    
 
     @Override
     public void itemLoaded(Item item, boolean success) {

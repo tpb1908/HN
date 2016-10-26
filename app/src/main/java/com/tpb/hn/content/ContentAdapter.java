@@ -35,7 +35,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     private HNLoader loader = new HNLoader(this);
     private String contentState;
-    private boolean contentStateChanged = false;
     private boolean usingCards = false;
     private boolean markReadWhenPassed = false;
     private int[] ids;
@@ -55,7 +54,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int pos = manager.findFirstVisibleItemPosition();
-                    //TODO- Deal with which way we are scrolling
                     if(ids != null) {
                         if(pos > mLastPosition) { //We scrolled down
                             loader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, Math.min(pos + 15, ids.length)), false);
@@ -76,8 +74,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
-
-        loader.getIds(this, defaultPage);
+        this.ids = null;
+        this.data = new Item[0];
+        notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
             case "top":
                 loader.getTopIds(this);
@@ -98,7 +97,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                 loader.getJobsIds(this);
                 break;
         }
-        contentStateChanged = contentState != null; //On first run it will stay false
         contentState = defaultPage;
     }
 
@@ -152,6 +150,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
         if(this.ids == null) { //First time loading
+            //TODO- Deal with item toggle when not at start position
             loader.loadItemsIndividually(Arrays.copyOfRange(ids, 0, 10), false);
         }
         this.ids = ids;
