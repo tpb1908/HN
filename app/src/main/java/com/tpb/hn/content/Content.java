@@ -58,9 +58,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         ButterKnife.bind(this);
         AdBlocker.init(this);
         AndroidNetworking.initialize(getApplicationContext());
-        //setSupportActionBar(mContentToolbar);
-
- //       getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));

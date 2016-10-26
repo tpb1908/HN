@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.APIPaths;
+import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -68,12 +69,14 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }
+
         setContentView(R.layout.activity_item_view);
         ButterKnife.bind(this);
         setSupportActionBar(mStoryToolbar);
 
         final Intent launchIntent = getIntent();
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
+            AdBlocker.init(this);
             final String data = launchIntent.getDataString();
             new HNLoader(this).loadItem(APIPaths.parseUrl(data));
         } else {

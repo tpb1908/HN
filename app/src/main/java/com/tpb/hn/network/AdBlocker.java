@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.webkit.WebResourceResponse;
 
-import com.tpb.hn.content.Content;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,18 +24,20 @@ public class AdBlocker {
     private static final String AD_HOSTS_FILE = "adhosts.txt";
     private static final Set<String> AD_HOSTS = new HashSet<>();
 
-    public static void init(final Content context) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    loadFromAssets(context);
-                } catch(IOException ioe) {
+    public static void init(final Context context) {
+        if(AD_HOSTS.size() == 0) {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        loadFromAssets(context);
+                    } catch(IOException ioe) {
 
+                    }
+                    return null;
                 }
-                return null;
-            }
-        }.execute();
+            }.execute();
+        }
     }
 
     private static void loadFromAssets(Context context) throws IOException {
