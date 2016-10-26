@@ -14,6 +14,7 @@ import com.tpb.hn.data.User;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -57,30 +58,31 @@ public class HNLoader {
     }
 
     public void getTopIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getTopStoriesPath());
+        getItemIds(listener, APIPaths.getTopPath());
     }
 
     public void getNewIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getNewStoriesPath());
+        getItemIds(listener, APIPaths.getNewPath());
     }
 
     public void getBestIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getBestStoriesPath());
+        getItemIds(listener, APIPaths.getBestPath());
     }
 
     public void getAskIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getAskStoriesPath());
+        getItemIds(listener, APIPaths.getAskPath());
     }
 
     public void getShowIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getShowStoriesPath());
+        getItemIds(listener, APIPaths.getShowPath());
     }
 
     public void getJobsIds(HNItemIdLoadDone listener) {
-        getItemIds(listener, APIPaths.getJobStoriesPath());
+        getItemIds(listener, APIPaths.getJobPath());
     }
 
     private void getItemIds(final HNItemIdLoadDone IdListener, final String url) {
+        Log.i(TAG, "getItemIds: Getting item Ids with  " + url);
             AndroidNetworking.get(url)
                     .setTag(url)
                     .setPriority(Priority.HIGH)
@@ -89,20 +91,20 @@ public class HNLoader {
                         @Override
                         public void onResponse(String response) {
                             final int[] items = HNParser.extractIntArray(response);
-                            if(url.equals(APIPaths.getTopStoriesPath())) {
+                            if(url.equals(APIPaths.getTopPath())) {
                                 top = items;
-                            } else if(url.equals(APIPaths.getNewStoriesPath())) {
+                            } else if(url.equals(APIPaths.getNewPath())) {
                                 newstories = items;
-                            } else if(url.equals(APIPaths.getBestStoriesPath())) {
+                            } else if(url.equals(APIPaths.getBestPath())) {
                                 best = items;
-                            } else if(url.equals(APIPaths.getAskStoriesPath())) {
+                            } else if(url.equals(APIPaths.getAskPath())) {
                                 ask = items;
-                            } else if(url.equals(APIPaths.getShowStoriesPath())) {
+                            } else if(url.equals(APIPaths.getShowPath())) {
                                 show = items;
-                            } else if(url.equals(APIPaths.getJobStoriesPath())) {
+                            } else if(url.equals(APIPaths.getJobPath())) {
                                 jobs = items;
                             }
-                            Log.i(TAG, "onResponse: " + items);
+                            Log.i(TAG, "onResponse: " + Arrays.toString(items));
                             IdListener.IdLoadDone(items);
                         }
 

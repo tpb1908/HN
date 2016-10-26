@@ -98,7 +98,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             case "show":
                 mLoader.getShowIds(this);
                 break;
-            case "jobs":
+            case "job":
                 mLoader.getJobsIds(this);
                 break;
         }
@@ -161,13 +161,12 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     @Override
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
-        if(this.ids == null) { //First time loading
-            int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
-            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
-        }
         this.ids = ids;
-        //Id loading will only happen once each time the data is to be set
+        int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
         data = new Item[ids.length + 1];
+        mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
+        notifyDataSetChanged();
+        //Id loading will only happen once each time the data is to be set
     }
 
     @Override

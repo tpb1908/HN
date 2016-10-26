@@ -90,7 +90,8 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         mProgressSpinner.setVisibility(View.GONE);
         mWrapper.setVisibility(View.VISIBLE);
         mTitle.setText(title);
-        mBody.setText(Html.fromHtml(content));
+        if(content != null) mBody.setText(Html.fromHtml(content));
+
     }
 
     @Override

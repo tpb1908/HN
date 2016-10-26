@@ -13,12 +13,12 @@ public class APIPaths {
     private static final String ITEM = "item/";
     private static final String USER = "user/";
     private static final String MAX_ITEM = "maxitem";
-    private static final String NEW_STORIES = "newstories/";
-    private static final String TOP_STORIES = "topstories/";
-    private static final String BEST_STORIES = "beststories/";
-    private static final String ASK_STORIES = "askstories/";
+    private static final String NEW_STORIES = "newstories";
+    private static final String TOP_STORIES = "topstories";
+    private static final String BEST_STORIES = "beststories";
+    private static final String ASK_STORIES = "askstories";
     private static final String SHOW_STORIES = "showstories";
-    private static final String JOB_STORIES = "jobstories/";
+    private static final String JOB_STORIES = "jobstories";
     private static final String UPDATED = "updates/";
 
     private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
@@ -56,27 +56,27 @@ public class APIPaths {
         return BASE_PATH + MAX_ITEM + JSON;
     }
 
-    public static String getNewStoriesPath() {
+    public static String getNewPath() {
         return BASE_PATH + NEW_STORIES + JSON;
     }
 
-    public static String getTopStoriesPath() {
+    public static String getTopPath() {
         return BASE_PATH + TOP_STORIES + JSON;
     }
 
-    public static String getBestStoriesPath() {
+    public static String getBestPath() {
         return BASE_PATH + BEST_STORIES + JSON;
     }
 
-    public static String getAskStoriesPath() {
+    public static String getAskPath() {
         return BASE_PATH + ASK_STORIES + JSON;
     }
 
-    public static String getShowStoriesPath() {
+    public static String getShowPath() {
         return BASE_PATH + SHOW_STORIES + JSON;
     }
 
-    public static String getJobStoriesPath() {
+    public static String getJobPath() {
         return BASE_PATH + JOB_STORIES + JSON;
     }
 
