@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ import butterknife.Unbinder;
  * Takes the data from Readability and displays it Spritz style
  */
 
-public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone, StoryAdapter.FragmentCycle {
+public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
     private static final String TAG = Skimmer.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -217,7 +218,12 @@ public class Skimmer extends Fragment implements StoryLoader, ReadabilityLoader.
 
     @Override
     public void loadStory(Item item) {
-        new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+        if(item.getType() == ItemType.STORY) {
+            new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+        } else {
+            article = item.getText();
+            isArticleReady = true;
+        }
     }
 
     @Override

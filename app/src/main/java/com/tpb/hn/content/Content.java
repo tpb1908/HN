@@ -17,8 +17,8 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.story.Story;
-import com.tpb.hn.story.StoryAdapter;
+import com.tpb.hn.item.ItemViewer;
+import com.tpb.hn.item.ItemAdapter;
 
 import java.util.ArrayList;
 
@@ -88,7 +88,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
 
     @Override
     public void openItem(Item item) {
-        final Intent i = new Intent(Content.this, Story.class);
+        final Intent i = new Intent(Content.this, ItemViewer.class);
         i.putExtra("item", item);
         startActivity(i);
     }
@@ -99,7 +99,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     }
 
     @Override
-    public void openPage(Item item, StoryAdapter.PageType type) {
+    public void openPage(Item item, ItemAdapter.PageType type) {
 
     }
 

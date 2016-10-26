@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Readability extends Fragment implements StoryLoader, ReadabilityLoader.ReadabilityLoadDone, StoryAdapter.FragmentCycle {
+public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
     private static final String TAG = Readability.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -59,7 +60,6 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
     private boolean isArticleReady = false;
 
     public static Readability newInstance() {
-
         return new Readability();
     }
 
@@ -72,7 +72,6 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
             setupTextView();
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("title") != null) {
-                Log.i(TAG, "onCreateView: Getting from savedInstanceState");
                 title = savedInstanceState.getString("title");
                 content = savedInstanceState.getString("content");
                 setupTextView();
@@ -132,8 +131,15 @@ public class Readability extends Fragment implements StoryLoader, ReadabilityLoa
 
     @Override
     public void loadStory(Item item) {
-        Log.i(TAG, "loadStory: Readability loading story");
-        new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+        Log.i(TAG, "loadStory: Readability loading story " + item);
+        if(item.getType() == ItemType.STORY) {
+            new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+        } else {
+            title = item.getTitle();
+            content = item.getText();
+            isArticleReady = true;
+        }
+
     }
 
     @Override

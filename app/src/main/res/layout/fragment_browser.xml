@@ -16,12 +16,12 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
 
-        <com.tpb.hn.story.ScrollingAdBlockingWebView
+        <com.tpb.hn.item.ScrollingAdBlockingWebView
             android:id="@+id/browser_webview"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </com.tpb.hn.story.ScrollingAdBlockingWebView>
+        </com.tpb.hn.item.ScrollingAdBlockingWebView>
 
 </LinearLayout>

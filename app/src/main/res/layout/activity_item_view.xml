@@ -17,15 +17,17 @@
             android:minHeight="0dp"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-            <include layout="@layout/story_title"/>
+            <include layout="@layout/item_title"/>
 
         </android.support.v7.widget.Toolbar>
+
+
 
         <android.support.design.widget.TabLayout
             android:id="@+id/item_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="enterAlways|snap|scroll">
+            app:layout_scrollFlags="scroll|snap|enterAlways">
 
         </android.support.design.widget.TabLayout>
 

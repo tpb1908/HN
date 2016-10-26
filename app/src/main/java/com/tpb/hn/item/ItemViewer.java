@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,8 +27,8 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone {
-    private static final String TAG = Story.class.getSimpleName();
+public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoadDone {
+    private static final String TAG = ItemViewer.class.getSimpleName();
 
     @BindView(R.id.item_toolbar)
     Toolbar mStoryToolbar;
@@ -59,7 +59,7 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
         finish();
     }
 
-    private StoryAdapter mAdapter;
+    private ItemAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,15 +68,9 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }
-        setContentView(R.layout.activity_story_view);
+        setContentView(R.layout.activity_item_view);
         ButterKnife.bind(this);
         setSupportActionBar(mStoryToolbar);
-
-        mAdapter = new StoryAdapter(getSupportFragmentManager(), prefs.getPageTypes());
-
-        mStoryPager.setAdapter(mAdapter);
-        mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
-        mStoryTabs.setupWithViewPager(mStoryPager);
 
         final Intent launchIntent = getIntent();
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
@@ -85,7 +79,7 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
         } else {
             if(launchIntent.getParcelableExtra("item") != null) {
                 final Item item = launchIntent.getParcelableExtra("item");
-                mAdapter.loadStory(item);
+                setupFragments(prefs.getPageTypes(), item);
                 setTitle(item);
             } else {
                 Toast.makeText(this, R.string.error_no_item, Toast.LENGTH_LONG).show();
@@ -93,6 +87,13 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
             }
         }
 
+    }
+
+    private void setupFragments(ItemAdapter.PageType[] possiblePages, Item item) {
+        mAdapter = new ItemAdapter(getSupportFragmentManager(), possiblePages, item);
+        mStoryPager.setAdapter(mAdapter);
+        mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
+        mStoryTabs.setupWithViewPager(mStoryPager);
     }
 
     private void setTitle(Item item) {
@@ -104,7 +105,7 @@ public class Story extends AppCompatActivity  implements HNLoader.HNItemLoadDone
 
     @Override
     public void itemLoaded(Item item, boolean success) {
-        mAdapter.loadStory(item);
+        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
         setTitle(item);
     }
 

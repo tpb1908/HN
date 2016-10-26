@@ -16,7 +16,7 @@ import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.story.StoryAdapter;
+import com.tpb.hn.item.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -225,7 +225,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
         void openUser(Item item);
 
-        void openPage(Item item, StoryAdapter.PageType type);
+        void openPage(Item item, ItemAdapter.PageType type);
 
     }
 

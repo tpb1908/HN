@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import android.util.Log;
 
@@ -15,6 +15,8 @@ import java.util.HashMap;
 
 /**
  * Created by theo on 19/10/16.
+ * TODO- Create a NodeJS server https://devcenter.heroku.com/articles/getting-started-with-nodejs#deploy-the-app
+ * Use JS REadability to return the Articles https://github.com/luin/readability
  */
 
 public class ReadabilityLoader {

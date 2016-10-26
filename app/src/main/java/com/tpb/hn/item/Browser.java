@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +25,7 @@ import butterknife.Unbinder;
  *
  */
 
-public class Browser extends Fragment implements StoryLoader, StoryAdapter.FragmentCycle {
+public class Browser extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
     private static final String TAG = Browser.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -60,12 +60,14 @@ public class Browser extends Fragment implements StoryLoader, StoryAdapter.Fragm
 
     private void loadURL() {
         Log.i(TAG, "loadURL: WebView loading");
-        if(url.endsWith(".pdf")) {
-            mWebView.getSettings().setJavaScriptEnabled(true);
-            mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
-        } else {
-            mWebView.getSettings().setJavaScriptEnabled(false);
-            mWebView.loadUrl(url);
+        if(url != null) {
+            if(url.endsWith(".pdf")) {
+                mWebView.getSettings().setJavaScriptEnabled(true);
+                mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
+            } else {
+                mWebView.getSettings().setJavaScriptEnabled(false);
+                mWebView.loadUrl(url);
+            }
         }
     }
 

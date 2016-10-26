@@ -1,4 +1,4 @@
-package com.tpb.hn.story;
+package com.tpb.hn.item;
 
 import com.tpb.hn.data.Item;
 
@@ -6,7 +6,7 @@ import com.tpb.hn.data.Item;
  * Created by theo on 18/10/16.
  */
 
-public interface StoryLoader {
+public interface ItemLoader {
 
     void loadStory(Item item);
 

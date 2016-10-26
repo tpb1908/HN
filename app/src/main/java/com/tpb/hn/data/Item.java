@@ -188,7 +188,7 @@ public class Item implements Parcelable, Comparable<Item> {
         try {
             return "(" + new URL(url).getHost() + ")";
         } catch(MalformedURLException mue) {
-            return "Unknown";
+            return "";
         }
     }
 
