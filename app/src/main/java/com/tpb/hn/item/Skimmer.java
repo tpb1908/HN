@@ -140,7 +140,9 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
         Log.i(TAG, "loadDone: Skimmer load " + isArticleReady);
         if(success) {
             try {
-                article = Html.fromHtml(result.getString("content")).
+                String content = result.getString("content");
+                if(content == null) content = " ";
+                article = Html.fromHtml(content).
                         toString().
                         replace("\n", " ");
                 isArticleReady = true;
@@ -217,11 +219,12 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     @Override
-    public void loadStory(Item item) {
+    public void loadItem(Item item) {
         if(item.getType() == ItemType.STORY) {
             new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
         } else {
             article = item.getText();
+            if(article == null) article = "";
             isArticleReady = true;
         }
     }

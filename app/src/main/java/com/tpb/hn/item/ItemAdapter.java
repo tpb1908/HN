@@ -70,7 +70,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 break;
         }
         if(loaders[position] != null && item != null) {
-            loaders[position].loadStory(item);
+            loaders[position].loadItem(item);
         }
         return page;
     }

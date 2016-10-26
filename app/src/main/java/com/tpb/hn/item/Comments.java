@@ -11,7 +11,7 @@ import com.tpb.hn.data.Item;
 public class Comments extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
 
     @Override
-    public void loadStory(Item item) {
+    public void loadItem(Item item) {
 
     }
 

@@ -72,7 +72,7 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
     }
 
     @Override
-    public void loadStory(Item item) {
+    public void loadItem(Item item) {
         this.url = item.getUrl();
         isArticleReady = true;
         if(mWebView != null) loadURL();

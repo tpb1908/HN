@@ -8,6 +8,6 @@ import com.tpb.hn.data.Item;
 
 public interface ItemLoader {
 
-    void loadStory(Item item);
+    void loadItem(Item item);
 
 }
