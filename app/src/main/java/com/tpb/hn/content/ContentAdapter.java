@@ -1,5 +1,6 @@
 package com.tpb.hn.content;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -10,13 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.item.ItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,32 +35,35 @@ import butterknife.ButterKnife;
 class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
-    private HNLoader loader = new HNLoader(this);
+    private Context mContext;
+    private HNLoader mLoader = new HNLoader(this);
     private String contentState;
     private boolean usingCards = false;
     private boolean markReadWhenPassed = false;
     private int[] ids;
     private Item[] data = new Item[] {};
-    private ContentOpener opener;
+    private ContentOpener mOpener;
     private int mLastPosition = 0;
+    private LinearLayoutManager mManager;
 
     ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
-        this.opener = opener;
+        mContext = recycler.getContext();
+        this.mOpener = opener;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();
+        mManager = manager;
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int pos = manager.findFirstVisibleItemPosition();
+                    int pos = Math.max(manager.findFirstVisibleItemPosition(), 0);
                     if(ids != null) {
                         if(pos > mLastPosition) { //We scrolled down
-                            loader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, Math.min(pos + 15, ids.length)), false);
+                            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, Math.min(pos + 15, ids.length)), false);
                         } else { //We scrolled up
-                            loader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
+                            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
                         }
                     }
                     if(markReadWhenPassed && pos > mLastPosition) {
@@ -79,25 +84,32 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
             case "top":
-                loader.getTopIds(this);
+                mLoader.getTopIds(this);
                 break;
             case "best":
-                loader.getBestIds(this);
+                mLoader.getBestIds(this);
                 break;
             case "ask":
-                loader.getAskIds(this);
+                mLoader.getAskIds(this);
                 break;
             case "new":
-                loader.getNewIds(this);
+                mLoader.getNewIds(this);
                 break;
             case "show":
-                loader.getShowIds(this);
+                mLoader.getShowIds(this);
                 break;
             case "jobs":
-                loader.getJobsIds(this);
+                mLoader.getJobsIds(this);
                 break;
         }
         contentState = defaultPage;
+    }
+
+    private void attemptLoadAgain(int pos) {
+        if(pos < ids.length) {
+            mLoader.loadItem(ids[pos]);
+            Toast.makeText(mContext, R.string.text_attempting_item_load, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -127,7 +139,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
 
     @Override
     public int getItemCount() {
-        return Math.max(data.length, 100);
+        return data == null ? 100 : data.length;
     }
 
     @Override
@@ -150,8 +162,8 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
         if(this.ids == null) { //First time loading
-            //TODO- Deal with item toggle when not at start position
-            loader.loadItemsIndividually(Arrays.copyOfRange(ids, 0, 10), false);
+            int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         }
         this.ids = ids;
         //Id loading will only happen once each time the data is to be set
@@ -210,7 +222,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                 @Override
                 public void onClick(View view) {
                     if(ContentAdapter.this.data != null && ContentAdapter.this.data[getAdapterPosition()] != null) {
-                        ContentAdapter.this.opener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
+                        ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
+                    }
+                   else {
+                        ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
                     }
                 }
             });

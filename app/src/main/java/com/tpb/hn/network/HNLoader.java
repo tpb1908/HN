@@ -112,65 +112,6 @@ public class HNLoader {
                         }
                     });
     }
-//
-//    public void loadItemsIndividually(final HNItemIdLoadDone idLoadDone, String url, final int firstChunk) {
-//        AndroidNetworking.get(url)
-//                .setTag(url)
-//                .setPriority(Priority.HIGH)
-//                .build()
-//                .getAsString(new StringRequestListener() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        final int[] items = HNParser.extractIntArray(response);
-//                        idLoadDone.IdLoadDone(items);
-//                        if(firstChunk < items.length) {
-//                            final int[] first = Arrays.copyOfRange(items, 0, Math.min(firstChunk, items.length));
-//                            listenerCache.put(Arrays.hashCode(first), new ArrayList<>(Collections.singletonList(itemListener)));
-//                            loadItemsIndividually(first);
-//                            final int[] second = Arrays.copyOfRange(items, firstChunk, items.length);
-//                            listenerCache.put(Arrays.hashCode(second), new ArrayList<>(Collections.singletonList(itemListener)));
-//                            loadItemsIndividually(second);
-//                        } else {
-//                            listenerCache.put(Arrays.hashCode(items), new ArrayList<>(Collections.singletonList(itemListener)));
-//                            loadItemsIndividually(items);
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//
-//                    }
-//                });
-//    }
-//
-//    public void loadItemsIndividually(final int[] ids) {
-//        final ArrayList<Item> items = new ArrayList<>(ids.length);
-//        final MultiLoadListener mll = new MultiLoadListener(itemListener, items, ids.length);
-//        for(int i : ids) {
-//            AndroidNetworking.get(APIPaths.getItemPath(i))
-//                    .setTag(i)
-//                    .setPriority(Priority.HIGH)
-//                    .build()
-//                    .getAsJSONObject(new JSONObjectRequestListener() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            try {
-//                                final Item item = HNParser.JSONToItem(response);
-//                                mll.itemLoaded(item, item != null);
-//                            } catch(Exception e) {
-//                                Log.e(TAG, "onResponse: ", e);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError(ANError anError) {
-//                            //TODO- Get code like this anError.getResponse().code();
-//                            Log.e(TAG, "onError: ", anError );
-//                        }
-//                    });
-//        }
-//    }
 
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
         for(int i : ids) {
@@ -190,7 +131,7 @@ public class HNLoader {
                                     if(item != null) insertItemToCache(item);
                                     itemListener.itemLoaded(item, item != null);
                                 } catch(Exception e) {
-                                    Log.e(TAG, "onResponse: ", e);
+                                    Log.e(TAG, "onResponse error: ", e);
                                 }
                             }
 
@@ -278,7 +219,8 @@ public class HNLoader {
 
                             updateCachedRootItem(item);
                         } catch(Exception e) {
-                            Log.e(TAG, "onResponse: ", e);
+                            loadItem(id);
+                            Log.e(TAG, "onResponse error : ", e);
                         }
                     }
 
