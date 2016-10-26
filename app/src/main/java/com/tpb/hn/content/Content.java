@@ -48,7 +48,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
-        prefs.setUseDarkTheme(false);
+        prefs.setUseDarkTheme(true);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }
