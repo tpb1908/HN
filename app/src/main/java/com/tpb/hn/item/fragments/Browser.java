@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,9 @@ import android.widget.ProgressBar;
 
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ScrollingAdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 
 import butterknife.BindView;

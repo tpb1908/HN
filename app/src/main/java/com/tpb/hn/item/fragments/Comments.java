@@ -1,8 +1,10 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.fragments;
 
 import android.support.v4.app.Fragment;
 
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.ItemLoader;
 
 /**
  * Created by theo on 18/10/16.

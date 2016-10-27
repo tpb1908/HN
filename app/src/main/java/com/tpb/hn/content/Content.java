@@ -82,6 +82,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         });
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
+
     }
 
     

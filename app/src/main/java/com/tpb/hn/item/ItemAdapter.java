@@ -5,6 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.fragments.Browser;
+import com.tpb.hn.item.fragments.Comments;
+import com.tpb.hn.item.fragments.Readability;
+import com.tpb.hn.item.fragments.Skimmer;
 
 import java.util.ArrayList;
 

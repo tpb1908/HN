@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +23,9 @@ import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
+import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ReadabilityLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;

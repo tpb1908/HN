@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,14 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidnetworking.widget.ANImageView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
+import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ReadabilityLoader;
 
 import org.json.JSONObject;
 
@@ -40,7 +43,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     TextView mBody;
 
     @BindView(R.id.readability_image)
-    ImageView mImage;
+    ANImageView mImage;
 
     @BindView(R.id.readability_loading_spinner)
     ProgressBar mProgressSpinner;
@@ -103,6 +106,8 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
                 title = result.getString("title");
                 isArticleReady = true;
                 if(mBody != null) setupTextView();
+                final String imageURL = result.getString("lead_image_url");
+                mImage.setImageUrl(imageURL);
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.GONE);

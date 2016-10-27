@@ -120,7 +120,7 @@ public class HNLoader {
             int cachePos = checkCache(i);
             if(cachePos > -1 && getFromCache) {
                 itemListener.itemLoaded(rootItems.get(cachePos), true);
-            } else {
+            } else if(cachePos == -1){
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
                         .setPriority(Priority.HIGH)

@@ -29,7 +29,7 @@ public class ReadabilityLoader {
         this.listener = listener;
     }
 
-    void loadArticle(final String url, boolean forImmediateUse) {
+    public void loadArticle(final String url, boolean forImmediateUse) {
         if(url.endsWith(".pdf")) {
             listener.loadDone(null, false, ReadabilityLoadDone.ERROR_PDF);
             return;
