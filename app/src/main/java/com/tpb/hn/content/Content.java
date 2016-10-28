@@ -14,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.androidnetworking.AndroidNetworking;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
@@ -36,6 +39,7 @@ import butterknife.ButterKnife;
 
 public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener, Login.LoginListener, HNUserLoader.HNUserLoadDone {
     private static final String TAG = Content.class.getSimpleName();
+    private Tracker mTracker;
 
     @BindView(R.id.content_toolbar)
     Toolbar mContentToolbar;
@@ -52,6 +56,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
         prefs.setUseDarkTheme(false);
         prefs.setUseCards(true);
@@ -77,6 +82,10 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mAdapter.loadItems(mNavSpinner.getSelectedItem().toString());
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(Analytics.CATEGORY_NAVIGATION)
+                        .setAction(Analytics.KEY_PAGE + mNavSpinner.getSelectedItem().toString())
+                        .build());
             }
 
             @Override
@@ -85,9 +94,6 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
             }
         });
 
-        mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
-
-        new HNUserLoader(this).loadUser("tpb1908");
     }
 
     @Override
@@ -129,6 +135,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @Override
     protected void onResume() {
         super.onResume();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

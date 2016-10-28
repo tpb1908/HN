@@ -11,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.APIPaths;
@@ -30,6 +33,7 @@ import butterknife.OnClick;
 
 public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoadDone {
     private static final String TAG = ItemViewer.class.getSimpleName();
+    private Tracker mTracker;
 
     @BindView(R.id.item_toolbar)
     Toolbar mStoryToolbar;
@@ -60,11 +64,16 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         finish();
     }
 
+
+
     private ItemAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mTracker = ((Analytics) getApplication()).getDefaultTracker();
+
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
@@ -92,6 +101,13 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
     private void setupFragments(ItemAdapter.PageType[] possiblePages, Item item) {
         mAdapter = new ItemAdapter(getSupportFragmentManager(), possiblePages, item);
         mStoryPager.setAdapter(mAdapter);
@@ -104,6 +120,13 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         mUrl.setText(item.getFormattedURL());
         mStats.setText(item.getFormattedInfo());
         mAuthor.setText(String.format(getResources().getString(R.string.text_item_by), item.getBy()));
+
+        mTracker.send(new HitBuilders.EventBuilder()
+            .setCategory(Analytics.CATEGORY_ITEM)
+            .setAction(Analytics.KEY_OPEN_ITEM)
+            .setLabel(item.toString())
+            .build());
+
     }
 
     @Override

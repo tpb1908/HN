@@ -9,11 +9,11 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -24,9 +24,10 @@ import java.util.HashMap;
 public class HNLoader {
     private static final String TAG = HNLoader.class.getSimpleName();
 
-    private static ArrayList<Item> rootItems = new ArrayList<>();
+    private static ArrayList<Item> itemCache = new ArrayList<>();
     private SparseArray<ArrayList<HNItemLoadDone>> listenerCache = new SparseArray<>();
-    private static HashMap<Item, ArrayList<Item>> kids = new HashMap<>();
+
+    private static HashMap<Item, ArrayList<Item>> kidCache = new HashMap<>();
 
     private static int[] top = new int[500];
     private static int[] newstories = new int[500];
@@ -94,7 +95,6 @@ public class HNLoader {
                             } else if(url.equals(APIPaths.getJobPath())) {
                                 jobs = items;
                             }
-                            Log.i(TAG, "onResponse: " + Arrays.toString(items));
                             IdListener.IdLoadDone(items);
                         }
 
@@ -109,7 +109,7 @@ public class HNLoader {
         for(int i : ids) {
             int cachePos = checkCache(i);
             if(cachePos > -1 && getFromCache) {
-                itemListener.itemLoaded(rootItems.get(cachePos), true);
+                itemListener.itemLoaded(itemCache.get(cachePos), true);
             } else if(cachePos == -1){
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
@@ -130,7 +130,12 @@ public class HNLoader {
                             @Override
                             public void onError(ANError anError) {
                                 //TODO- Get code like this anError.getResponse().code();
-                                Log.e(TAG, "onError: ", anError);
+//                                Log.e(TAG, "onError: ", anError);
+//                                try {
+//                                    Log.i(TAG, "onError: " + anError.getResponse().body().string());
+//                                } catch(IOException ioe) {
+//                                    Log.e(TAG, "onError: ", ioe);
+//                                }
                             }
                         });
             }
@@ -140,50 +145,61 @@ public class HNLoader {
     private int checkCache(int id) {
         final Item key = new Item();
         key.setId(id);
-        int pos = Collections.binarySearch(rootItems, key);
+        int pos = Collections.binarySearch(itemCache, key);
         return Math.max(pos, -1);
     }
 
     private void updateCachedRootItem(Item item) {
         boolean set = false;
-        for(int i = 0; i < rootItems.size(); i++) {
-            if(rootItems.get(i).getId() == item.getId()) {
-                rootItems.set(i, item);
+        for(int i = 0; i < itemCache.size(); i++) {
+            if(itemCache.get(i).getId() == item.getId()) {
+                itemCache.set(i, item);
                 set = true;
                 break;
             }
         }
-        if(!set) rootItems.add(item);
+        if(!set) itemCache.add(item);
     }
 
     private void insertItemToCache(Item item) {
 //        boolean set = false;
-//        for(int i = 0; i < rootItems.size(); i++) {
-//            if(item.getId() > rootItems.get(i).getId()) {
-//                rootItems.add(i, item);
+//        for(int i = 0; i < itemCache.size(); i++) {
+//            if(item.getId() > itemCache.get(i).getId()) {
+//                itemCache.add(i, item);
 //                set = true;
 //                Log.i(TAG, "insertItemToCache: Inserting at position " + i);
 //                break;
 //            }
 //        }
-        //if(!set) rootItems.add(0, item);
-//        final int pos = Collections.binarySearch(rootItems, item);
+        //if(!set) itemCache.add(0, item);
+//        final int pos = Collections.binarySearch(itemCache, item);
 //        if(pos < 0) {
-//            rootItems.add(0, item);
-//        } else if(pos >= rootItems.size()) {
-//            rootItems.add(item);
+//            itemCache.add(0, item);
+//        } else if(pos >= itemCache.size()) {
+//            itemCache.add(item);
 //        } else {
-//            Log.i(TAG, "insertItemToCache: Inserting to position " + pos + " of " + rootItems.size());
-//            rootItems.add(pos, item);
+//            Log.i(TAG, "insertItemToCache: Inserting to position " + pos + " of " + itemCache.size());
+//            itemCache.add(pos, item);
 //        }
-
-        rootItems.add(item);
-        Collections.sort(rootItems);
+        if(item.getType() == ItemType.COMMENT) {
+            final Item parent = new Item();
+            parent.setId(item.getParent());
+            ArrayList<Item> siblings = kidCache.get(parent);
+            if(siblings == null) {
+                siblings = new ArrayList<>();
+                kidCache.put(parent, siblings);
+            }
+            siblings.add(item);
+            Collections.sort(siblings);
+        } else {
+            itemCache.add(item);
+            Collections.sort(itemCache);
+        }
     }
 
 
     public void loadItem(final int id) {
-        for(Item i : rootItems) {
+        for(Item i : itemCache) {
             if(i.getId() == id) {
                 itemListener.itemLoaded(i, true);
                 break;

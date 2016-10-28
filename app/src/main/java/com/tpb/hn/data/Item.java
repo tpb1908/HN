@@ -2,6 +2,7 @@ package com.tpb.hn.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,7 +89,7 @@ public class Item implements Parcelable, Comparable<Item> {
         this.dead = dead;
     }
 
-    public long getParent() {
+    public int getParent() {
         return parent;
     }
 
@@ -178,8 +179,8 @@ public class Item implements Parcelable, Comparable<Item> {
 
     public String getFormattedInfo() {
         String info = score + " points | ";
-        if(kids != null) {
-            info += kids.length + " comments | ";
+        if(descendants > 0) {
+            info +=  descendants + " comments | ";
         }
         return info + Formatter.timeAgo(time);
     }
@@ -253,7 +254,7 @@ public class Item implements Parcelable, Comparable<Item> {
     };
 
     @Override
-    public int compareTo(Item item) {
+    public int compareTo(@NonNull Item item) {
         return id == item.id ? 0 : id > item.id ? 1 : -1;
     }
 

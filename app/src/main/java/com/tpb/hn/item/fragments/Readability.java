@@ -91,6 +91,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private void setupTextView() {
         mProgressSpinner.setVisibility(View.GONE);
+        mErrorTextView.setVisibility(View.GONE);
         mWrapper.setVisibility(View.VISIBLE);
         mTitle.setText(title);
         if(content != null) mBody.setText(Html.fromHtml(content));
@@ -99,7 +100,6 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-        Log.i(TAG, "loadDone: " + success + ", " + code + ", " + result);
         if(success) {
             try {
                 content = result.getString("content");
@@ -138,7 +138,6 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @Override
     public void loadItem(Item item) {
         //TODO- Check if it has a url, not just type
-        Log.i(TAG, "loadItem: Readability loading item " + item);
         if(item.getType() == ItemType.STORY) {
             new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
         } else {

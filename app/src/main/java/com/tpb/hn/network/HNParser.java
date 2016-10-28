@@ -35,14 +35,15 @@ public class HNParser {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         item.setBy(obj.getString(KEY_BY));
-        item.setScore(obj.getInt(KEY_SCORE));
         item.setTime(obj.getLong(KEY_TIME));
-        item.setTitle(obj.getString(KEY_TITLE));
-        if(item.getTitle().contains(KEY_ASK_TITLE)) {
+        if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
+        if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
             item.setType(ItemType.ASK);
         } else {
             item.setType(getType(obj.getString(KEY_TYPE)));
         }
+
+        if(obj.has(KEY_SCORE)) item.setScore(obj.getInt(KEY_SCORE));
         if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));
         if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
@@ -83,7 +84,7 @@ public class HNParser {
             try {
                 results[i] = Integer.parseInt(items[i]);
             } catch(NumberFormatException nfe) {
-                //NOTE: write something here if you need to recover from formatting errors
+                //TODO: write something here if you need to recover from formatting errors
             }
         }
         return results;
