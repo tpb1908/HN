@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemViewer;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by theo on 17/10/16.
  */
 
-public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener {
+public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener, Login.LoginListener {
     private static final String TAG = Content.class.getSimpleName();
 
     @BindView(R.id.content_toolbar)
@@ -82,10 +84,14 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         });
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
-
+        final Login login = new Login(this, "tpb1908", "badlogin");
+        login.getCookie();
     }
 
-    
+    @Override
+    public void response(boolean success) {
+        Log.i(TAG, "response: Was login successful ? " + success);
+    }
 
     @Override
     public void itemLoaded(Item item, boolean success) {
