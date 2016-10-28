@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:title="@string/pref_content_cards"
+        />
+
+    <SwitchPreference
+        android:title="@string/pref_content_read_behaviour"
+        />
+
+    <SwitchPreference
+        android:title="@string/pref_content_mark_new_items"
+        />
+
+
+</PreferenceScreen>

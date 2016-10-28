@@ -1,4 +1,4 @@
-package com.tpb.hn;
+package com.tpb.hn.content;
 
 import android.content.Context;
 import android.content.res.TypedArray;

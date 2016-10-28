@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.network;
 
 import android.util.Log;
 
@@ -6,7 +6,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.tpb.hn.network.APIPaths;
 
 import org.json.JSONObject;
 

@@ -25,7 +25,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
-import com.tpb.hn.item.ReadabilityLoader;
+import com.tpb.hn.network.ReadabilityLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;

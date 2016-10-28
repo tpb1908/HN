@@ -9,7 +9,6 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.User;
 
 import org.json.JSONObject;
 
@@ -38,20 +37,11 @@ public class HNLoader {
 
 
     private HNItemLoadDone itemListener;
-    private HNUserLoadDone userListener;
 
     public HNLoader(HNItemLoadDone itemListener) {
         this.itemListener = itemListener;
     }
 
-    public HNLoader(HNUserLoadDone userListener) {
-        this.userListener = userListener;
-    }
-
-    public HNLoader(HNItemLoadDone itemListener, HNUserLoadDone userListener) {
-        this.itemListener = itemListener;
-        this.userListener = userListener;
-    }
 
     public void getIds(HNItemIdLoadDone listener, String page) {
         getItemIds(listener, page);
@@ -275,12 +265,5 @@ public class HNLoader {
 
         void IdLoadDone(int[] ids);
     }
-
-    public interface HNUserLoadDone {
-
-        void userLoaded(User user);
-    }
-
-
 
 }

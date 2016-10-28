@@ -14,13 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.androidnetworking.AndroidNetworking;
-import com.tpb.hn.DividerItemDecoration;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.User;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemViewer;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.network.HNUserLoader;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
  * Created by theo on 17/10/16.
  */
 
-public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener, Login.LoginListener {
+public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener, Login.LoginListener, HNUserLoader.HNUserLoadDone {
     private static final String TAG = Content.class.getSimpleName();
 
     @BindView(R.id.content_toolbar)
@@ -52,7 +53,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
-        prefs.setUseDarkTheme(true);
+        prefs.setUseDarkTheme(false);
+        prefs.setUseCards(true);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }
@@ -84,8 +86,13 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         });
 
         mAdapter.loadItems(SharedPrefsController.getInstance(this).getDefaultPage());
-        final Login login = new Login(this, "tpb1908", "badlogin");
-        login.getCookie();
+
+        new HNUserLoader(this).loadUser("tpb1908");
+    }
+
+    @Override
+    public void userLoaded(User user) {
+
     }
 
     @Override

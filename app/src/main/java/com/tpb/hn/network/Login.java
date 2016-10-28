@@ -31,35 +31,6 @@ public class Login {
         this.listener = listener;
         user = username;
         pass = password;
-//        final OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(new Interceptor() {
-//                    @Override
-//                    public Response intercept(Chain chain) throws IOException {
-//                        final Request orig = chain.request();
-//
-//                        final Request authorised = orig.newBuilder()
-//                                .addHeader("Cookie", "user=tpb1908&VqqT7hNr5ldSR4ItAUnmB4UaWxH4FAcP")
-//                                .build();
-//                        return chain.proceed(authorised);
-//                    }
-//                })
-//                .build();
-//        AndroidNetworking.get("https://news.ycombinator.com")
-//                .setOkHttpClient(client)
-//                .setTag("Test")
-//                .setPriority(Priority.IMMEDIATE)
-//                .build()
-//                .getAsString(new StringRequestListener() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.i(TAG, "onResponse: " + response);
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        Log.i(TAG, "onError: " + anError.toString());
-//                    }
-//                });
 
     }
 
