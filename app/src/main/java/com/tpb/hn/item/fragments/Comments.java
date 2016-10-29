@@ -3,14 +3,27 @@ package com.tpb.hn.item.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
+import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.CommentAdapter;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.network.HNLoader;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by theo on 18/10/16.
@@ -18,20 +31,37 @@ import java.util.ArrayList;
 
 public class Comments extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle, HNLoader.HNItemLoadDone {
     private static final String TAG = Comments.class.getSimpleName();
+    private Tracker mTracker;
+
+    private Unbinder unbinder;
+
+    @BindView(R.id.comment_recycler)
+    RecyclerView mRecycler;
+
+    private CommentAdapter mAdapter;
 
     private int[] kids;
     private ArrayList<Item> comments;
 
+    @Nullable
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: Comment fragment created");
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_comments, container, false);
+        unbinder = ButterKnife.bind(this, view);
+
+        mAdapter = new CommentAdapter(mRecycler);
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
+        return view;
     }
+
+
 
     @Override
     public void itemLoaded(Item item, boolean success) {
         comments.add(item);
-        Log.i(TAG, "itemLoaded: " + comments.toString());
+        //Log.i(TAG, "itemLoaded: " + comments.toString());
     }
 
     @Override
@@ -41,7 +71,7 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
 
     @Override
     public void loadItem(Item item) {
-        Log.i(TAG, "itemLoaded: Comments " + item);
+       // Log.i(TAG, "itemLoaded: Comments " + item);
         if(item.getKids() != null) {
             kids = item.getKids();
             comments = new ArrayList<>(kids.length + 1);
@@ -52,12 +82,19 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
     public void onPauseFragment() {
 
     }
 
     @Override
     public void onResumeFragment() {
-
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

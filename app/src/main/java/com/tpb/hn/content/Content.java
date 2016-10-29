@@ -69,7 +69,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         AndroidNetworking.initialize(getApplicationContext());
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mRecycler.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+
 
         mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager());
         mRecycler.setAdapter(mAdapter);

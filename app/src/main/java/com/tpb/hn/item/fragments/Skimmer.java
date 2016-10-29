@@ -20,6 +20,9 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.andrewgiang.textspritzer.lib.SpritzerTextView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
@@ -41,6 +44,7 @@ import butterknife.Unbinder;
 
 public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
     private static final String TAG = Skimmer.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -129,6 +133,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
                 setupSkimmer();
             }
         }
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
     }
 
@@ -245,9 +250,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void onResumeFragment() {
-//        if(contentToLoad && viewLoaded) {
-//            setupSkimmer();
-//            contentToLoad = false;
-//        }
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

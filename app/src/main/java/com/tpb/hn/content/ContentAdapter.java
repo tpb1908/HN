@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by theo on 18/10/16.
  */
 
-class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone {
+class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
@@ -53,6 +54,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();
         mManager = manager;
+        if(!usingCards) {
+            recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+        }
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -60,16 +64,22 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int pos = Math.max(manager.findFirstVisibleItemPosition(), 0);
                     if(ids != null) {
-                        if(pos > mLastPosition) { //We scrolled down
-                            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, pos, Math.min(pos + 15, ids.length)), false);
-                        } else { //We scrolled up
-                            mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, Math.max(pos - 15, 0), pos), false);
+                        int pos2;
+                        if(pos > mLastPosition) {
+                            pos2 = Math.min(pos + 15, ids.length);
+                        } else {
+                            pos2 = Math.max(pos - 15, 0);
                         }
-                    }
-                    if(markReadWhenPassed && pos > mLastPosition) {
-                        for(int i = mLastPosition; i < pos; i++) {
-                            if(i < data.length && data[i] != null) data[i].setViewed(true);
+                        if(pos2 < pos) {
+                            final int t = pos;
+                            pos = pos2;
+                            pos2 = t;
                         }
+                        final ArrayList<Integer> toLoad = new ArrayList<>();
+                        for(int i = pos; i < pos2; i++) {
+                            if(data[i] == null) toLoad.add(ids[i]);
+                        }
+                        mLoader.loadItemsIndividually(Util.convertIntegers(toLoad), false);
                     }
                     mLastPosition = pos;
                 }
@@ -81,6 +91,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
         this.ids = null;
         this.data = new Item[0];
+        AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
             case "top":
@@ -113,12 +124,12 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
     }
 
     @Override
-    public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new Holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false));
+    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int position) {
+    public void onBindViewHolder(ItemHolder holder, int position) {
         int pos = holder.getAdapterPosition();
         if(data.length > pos && data[pos] != null) {
             holder.mTitle.setText(data[pos].getFormattedTitle());
@@ -129,21 +140,21 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
             if(data[pos].isViewed()) {
                 holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.secondary_text_dark));
             }
-            if(usingCards) {
-                holder.mCard.setUseCompatPadding(true);
-                holder.mCard.setCardElevation(Util.pxFromDp(4));
-                holder.mCard.setRadius(Util.pxFromDp(3));
-            }
+        }
+        if(usingCards) {
+            holder.mCard.setUseCompatPadding(true);
+            holder.mCard.setCardElevation(Util.pxFromDp(4));
+            holder.mCard.setRadius(Util.pxFromDp(3));
         }
     }
 
     @Override
     public int getItemCount() {
-        return data == null ? 100 : data.length;
+        return data.length == 0 ? 100 : data.length;
     }
 
     @Override
-    public void onViewRecycled(Holder holder) {
+    public void onViewRecycled(ItemHolder holder) {
         super.onViewRecycled(holder);
         if(holder.mTitle.getLineCount() > 1) {
             holder.mTitle.setText("");
@@ -163,6 +174,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         Log.i(TAG, "IdLoadDone: ");
         this.ids = ids;
         int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+        if(currentPos > ids.length) {
+            mManager.scrollToPosition(ids.length);
+        }
         data = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
@@ -194,7 +208,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         }
     }
 
-    class Holder extends RecyclerView.ViewHolder {
+    class ItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_card)
         CardView mCard;
@@ -214,13 +228,15 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.Holder> impleme
         @BindView(R.id.item_number)
         TextView mNumber;
 
-        Holder(@NonNull View itemView) {
+        ItemHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(ContentAdapter.this.data != null && ContentAdapter.this.data[getAdapterPosition()] != null) {
+                    if(ContentAdapter.this.data != null &&
+                            ContentAdapter.this.data.length >= getAdapterPosition() &&
+                            ContentAdapter.this.data[getAdapterPosition()] != null) {
                         ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
                     }
                    else {

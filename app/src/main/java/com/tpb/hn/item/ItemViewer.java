@@ -64,8 +64,6 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         finish();
     }
 
-
-
     private ItemAdapter mAdapter;
 
     @Override

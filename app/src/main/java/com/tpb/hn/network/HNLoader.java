@@ -108,9 +108,9 @@ public class HNLoader {
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
         for(int i : ids) {
             int cachePos = checkCache(i);
-            if(cachePos > -1 && getFromCache) {
+            if(cachePos >= 0 && getFromCache) {
                 itemListener.itemLoaded(itemCache.get(cachePos), true);
-            } else if(cachePos == -1){
+            } else if(!getFromCache) {
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
                         .setPriority(Priority.HIGH)

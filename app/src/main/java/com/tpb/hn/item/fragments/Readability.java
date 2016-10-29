@@ -14,6 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.androidnetworking.widget.ANImageView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
@@ -33,6 +36,7 @@ import butterknife.Unbinder;
 
 public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
     private static final String TAG = Readability.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -80,6 +84,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
                 setupTextView();
             }
         }
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
     }
 
@@ -155,6 +160,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     @Override
     public void onResumeFragment() {
-
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.ItemAdapter;
@@ -30,6 +33,7 @@ import butterknife.Unbinder;
 
 public class Browser extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
     private static final String TAG = Browser.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -50,6 +54,7 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
         unbinder = ButterKnife.bind(this, inflated);
         if(isArticleReady) loadURL();
         if(savedInstanceState != null) mWebView.restoreState(savedInstanceState);
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
     }
 
@@ -100,6 +105,7 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
 
     @Override
     public void onResumeFragment() {
-
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }
