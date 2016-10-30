@@ -72,7 +72,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     public void onBindViewHolder(CommentHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
         if(pos < mComments.size() && mComments.get(pos) != null) {
-            holder.mBody.setText(Html.fromHtml(mComments.get(pos).item.getText()));
+            if(mComments.get(pos).item.getText() != null) {
+                holder.mBody.setText(Html.fromHtml(mComments.get(pos).item.getText()));
+            }
+
+            holder.mInfo.setText(Integer.toString(mComments.get(pos).item.getId()));
         }
         if(usingCards) {
             holder.mCard.setUseCompatPadding(true);
@@ -89,7 +93,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     @Override
     public int getItemCount() {
         //TODO- Display message for item with no mComments
-        return mRootItem == null ? 0 : mRootItem.getKids() == null ? 0 : mRootItem.getKids().length;
+        return mRootItem == null ? 0 : mRootItem.getKids() == null ? 0 : mRootItem.getDescendants();
     }
 
     @Override
@@ -103,8 +107,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     public void itemLoaded(Item item, boolean success) {
         if(success) {
             insert(item);
+            Log.i(TAG, "insert: " + mComments.toString());
             if(item.getKids() != null) {
-                mLoader.loadItemsIndividually(item.getKids(), false);
+                //mLoader.loadItemsIndividually(item.getKids(), false);
             }
         }
     }
@@ -114,7 +119,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final Comment c = new Comment(item);
         int pp = -2;
         int[] siblings = null;
-
         if(item.getParent() == mRootItem.getId()) {
             pp = -1;
             siblings = mRootItem.getKids();
@@ -132,98 +136,44 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         if(pp == -2) {
             Log.d(TAG, "insert: Didn't find parent");
         } else {
-            final int index = Util.linearSearch(siblings, item.getId());
-            if(index == 0) {
+            final int comPos = Util.linearSearch(siblings, item.getId());
+            if(comPos == 0) {
                 mComments.add(Math.max(pp, 0), c);
                 Log.i(TAG, "insert: First comment in siblings. Pos " + pp);
-                notifyDataSetChanged();
+                //notifyDataSetChanged();
                 //notifyItemInserted(Math.max(pp, 0));
             } else {
                 for(int i = 0; i < mComments.size(); i++) {
                     final Comment other = mComments.get(i);
-                    if(other.depth < c.depth) {
-                        mComments.add(Math.max(i - 1, 0), c);
-                        Log.i(TAG, "insert: Found lower depth. Pos " + Math.max(i - 1, 0));
-                        notifyDataSetChanged();
-                        return;
-                        //notifyItemInserted(Math.max(i - 1, 0));
-                    } else if(other.item.getParent() == c.item.getParent()) {
+                     if(other.item.getParent() == c.item.getParent()) {
                         int sibPos = Util.linearSearch(siblings, other.item.getId());
                         Log.i(TAG, "insert: Found sibling");
-                        if(sibPos > index) {
-                            mComments.add(Math.max(i - 1, 0), c);
-                            Log.i(TAG, "insert: Found higher sibling. Pos " + Math.max(i - 1, 0));
-                            notifyDataSetChanged();
+                        if(sibPos > comPos) {
+                            mComments.add(Math.max(i, 0), c);
+                            Log.i(TAG, "insert: Found higher sibling. Pos " + Math.max(i, 0));
+                            //notifyDataSetChanged();
                             return;
                             //notifyItemInserted(Math.max(i - 1, 0));
                         }
-                    }
+                    } else if(other.depth < c.depth) {
+                         mComments.add(Math.max(i, 0), c);
+                         Log.i(TAG, "insert: Found lower depth. Pos " + Math.max(i, 0));
+                         //notifyDataSetChanged();
+                         return;
+                         //notifyItemInserted(Math.max(i - 1, 0));
+                     }
 
                     if(i == mComments.size() - 1) {
                         mComments.add(c);
                         Log.i(TAG, "insert: End of comments. Pos " + mComments.size());
-                        notifyDataSetChanged();
+                        //notifyDataSetChanged();
                         return;
                         //notifyItemInserted(mComments.size());
                     }
                 }
             }
         }
-    }
-
-    private void insertComment(Item item) {
-        final Comment c = new Comment(item);
-        if(mComments.size() == 0) {
-            c.depth = 0;
-            mComments.add(c);
-            notifyDataSetChanged();
-            return;
-        }
-
-        int pp; //Parent position
-        int[] siblings;
-        if(item.getParent() == mRootItem.getId()) {
-            c.depth = 0;
-            pp = -1;
-            siblings = mRootItem.getKids();
-        } else {
-            final int parentId = item.getParent();
-            for(pp = 0; pp < mComments.size(); pp++) {
-                if(mComments.get(pp).item.getId() == parentId) {
-                    c.depth = mComments.get(pp).depth + 1;
-                    break;
-                }
-            }
-            siblings = mComments.get(pp).item.getKids();
-        }
-        if(siblings.length == 1) {
-            //Add to position after the parent
-            mComments.add(pp + 1, c);
-            notifyItemChanged(pp + 1);
-        } else {
-            final int ind = Util.linearSearch(siblings, c.item.getId());
-            Log.i(TAG, "insertComment: " + item.getId() + " Position " + ind + " in " + Arrays.toString(siblings));
-            for(int i = Math.max(pp, 0); i < mComments.size(); i++) {
-                Log.i(TAG, "insertComment: Searching comments " + mComments.get(i).depth);
-                if(mComments.get(i).depth <= c.depth) {
-                    //We check if this comment comes after ours
-                    //Or if the depth of the comment is lower than ours
-                    //In which case we insert it
-                    //TODO
-                    //We also need to consider what happens when there
-                    //are not greater comments
-                    //If our comment goes at the end
-                    int sibi = Util.linearSearch(siblings, mComments.get(i).item.getId());
-                    Log.i(TAG, "insertComment: Found a relation with index " + sibi);
-                    if(sibi > ind || mComments.get(i).depth < c.depth) {
-                        Log.i(TAG, "insertComment: Inserting " + c.item.getId() + " to " + i + 1);
-                        mComments.add(i + 1, c);
-                        notifyItemChanged(i + 1);
-                        break;
-                    }
-                }
-            }
-        }
+        Log.i(TAG, "insert: Item not inserted");
     }
 
     @Override
@@ -238,6 +188,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         Comment(Item item) {
             this.item = item;
+        }
+
+        @Override
+        public String toString() {
+            return  "{" +item.getId() + ", "
+                   + item.getBy() + ", "
+                    + (item.getKids() == null ? "" : Arrays.toString(item.getKids()) + ", ") +
+                    + depth + "}";
         }
     }
 
