@@ -15,9 +15,68 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-            <include layout="@layout/item_title"/>
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageButton
+                    android:id="@+id/item_back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_arrow_back"
+                    android:background="@android:color/transparent"
+                    />
+
+                <TextView
+                    android:id="@+id/item_title"
+                    android:layout_toEndOf="@id/item_back_button"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+
+                <TextView
+                    android:id="@+id/item_stats"
+                    android:layout_toEndOf="@id/item_back_button"
+                    android:layout_below="@id/item_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"/>
+
+                <TextView
+                    android:id="@+id/item_author"
+                    android:layout_toEndOf="@id/item_back_button"
+                    android:layout_below="@id/item_stats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/item_url"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_toEndOf="@id/item_author"
+                    android:layout_below="@id/item_stats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+
+            </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
 

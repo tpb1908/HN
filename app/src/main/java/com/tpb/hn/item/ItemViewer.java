@@ -59,7 +59,7 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     @BindView(R.id.item_author)
     TextView mAuthor;
 
-    @OnClick(R.id.story_back_button)
+    @OnClick(R.id.item_back_button)
     public void onClick() {
         finish();
     }
