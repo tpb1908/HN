@@ -13,6 +13,8 @@ import org.json.JSONObject;
  */
 
 public class HNParser {
+    private static final String TAG = HNParser.class.getSimpleName();
+
     private static final String KEY_ID = "id";
     private static final String KEY_BY = "by";
     private static final String KEY_DESCENDANTS = "descendants";
@@ -23,6 +25,7 @@ public class HNParser {
     private static final String KEY_TYPE = "type";
     private static final String KEY_URL = "url";
     private static final String KEY_TEXT = "text";
+    private static final String KEY_PARENT = "parent";
     private static final String KEY_ASK_TITLE = "Ask HN:";
 
     private static final String KEY_DELAY = "delay";
@@ -34,7 +37,6 @@ public class HNParser {
     public static Item JSONToItem(JSONObject obj) throws JSONException{
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
-        item.setBy(obj.getString(KEY_BY));
         item.setTime(obj.getLong(KEY_TIME));
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
         if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
@@ -42,13 +44,13 @@ public class HNParser {
         } else {
             item.setType(getType(obj.getString(KEY_TYPE)));
         }
-
+        if(obj.has(KEY_BY)) item.setBy(obj.getString(KEY_BY));
         if(obj.has(KEY_SCORE)) item.setScore(obj.getInt(KEY_SCORE));
         if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));
         if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
-
+        if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
         return item;
     }
 
@@ -69,7 +71,7 @@ public class HNParser {
     }
 
     public static int[] extractIntArray(JSONArray array) {
-        final int[] kids = new int[array.length() + 1];
+        final int[] kids = new int[array.length()];
         for(int i = 0; i < array.length(); i++) {
             kids[i] = array.optInt(i);
         }
@@ -78,6 +80,7 @@ public class HNParser {
 
     public static int[] extractIntArray(String array) {
         final String[] items = array.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+        //Log.i(TAG, "extractIntArray: Extracting int array " + Arrays.toString(items));
         final int[] results = new int[items.length];
 
         for (int i = 0; i < items.length; i++) {
@@ -87,6 +90,7 @@ public class HNParser {
                 //TODO: write something here if you need to recover from formatting errors
             }
         }
+        //Log.i(TAG, "extractIntArray: " + Arrays.toString(results));
         return results;
     }
 

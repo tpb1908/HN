@@ -35,4 +35,11 @@ public class Util {
         return ret;
     }
 
+    public static int linearSearch(int[] items, int key) {
+        for(int i = 0; i < items.length; i++) {
+            if(items[i] == key) return i;
+        }
+        return -1;
+    }
+
 }

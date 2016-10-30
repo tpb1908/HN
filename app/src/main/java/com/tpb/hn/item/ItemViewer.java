@@ -107,10 +107,11 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     }
 
     private void setupFragments(ItemAdapter.PageType[] possiblePages, Item item) {
-        mAdapter = new ItemAdapter(getSupportFragmentManager(), possiblePages, item);
+        mAdapter = new ItemAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item);
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);
+
     }
 
     private void setTitle(Item item) {

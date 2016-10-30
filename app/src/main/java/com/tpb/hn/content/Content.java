@@ -58,7 +58,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         super.onCreate(savedInstanceState);
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
-        prefs.setUseDarkTheme(false);
+        prefs.setUseDarkTheme(true);
         prefs.setUseCards(true);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
@@ -69,10 +69,9 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         AndroidNetworking.initialize(getApplicationContext());
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-
-
         mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager());
         mRecycler.setAdapter(mAdapter);
+
         mNavSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,

@@ -34,6 +34,7 @@ public class ReadabilityLoader {
             return;
         }
         if(cache.containsKey(url)) {
+            Log.i(TAG, "loadArticle: Listener is " + listener);
             listener.loadDone(cache.get(url), true, ReadabilityLoadDone.NO_ERROR);
         } //We still pull data to see if it has changed
 
@@ -56,7 +57,11 @@ public class ReadabilityLoader {
                                 Log.i(TAG, "onResponse: updating " + listenerCache.get(url).size() + " listeners");
 
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
-                                    rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
+                                    if(rld == null) {
+                                        listenerCache.get(url).remove(rld);
+                                    } else {
+                                        rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
+                                    }
                                 }
                                 listenerCache.remove(url);
                                 if(response != null) {

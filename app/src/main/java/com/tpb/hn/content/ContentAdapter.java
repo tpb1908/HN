@@ -130,7 +130,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     @Override
     public void onBindViewHolder(ItemHolder holder, int position) {
-        int pos = holder.getAdapterPosition();
+        final int pos = holder.getAdapterPosition();
         if(data.length > pos && data[pos] != null) {
             holder.mTitle.setText(data[pos].getFormattedTitle());
             holder.mInfo.setText(data[pos].getFormattedInfo());

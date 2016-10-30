@@ -17,9 +17,6 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.item.CommentAdapter;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
-import com.tpb.hn.network.HNLoader;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +26,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle, HNLoader.HNItemLoadDone {
+public class Comments extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 
@@ -38,10 +35,8 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
     @BindView(R.id.comment_recycler)
     RecyclerView mRecycler;
 
+    private Item mRootItem;
     private CommentAdapter mAdapter;
-
-    private int[] kids;
-    private ArrayList<Item> comments;
 
     @Nullable
     @Override
@@ -52,33 +47,14 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
         mAdapter = new CommentAdapter(mRecycler);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter.loadItem(mRootItem);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return view;
     }
 
-
-
-    @Override
-    public void itemLoaded(Item item, boolean success) {
-        comments.add(item);
-        //Log.i(TAG, "itemLoaded: " + comments.toString());
-    }
-
-    @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success) {
-
-    }
-
     @Override
     public void loadItem(Item item) {
-       // Log.i(TAG, "itemLoaded: Comments " + item);
-        if(item.getKids() != null) {
-            kids = item.getKids();
-            comments = new ArrayList<>(kids.length + 1);
-            comments.ensureCapacity(kids.length + 1);
-            new HNLoader(this).loadItemsIndividually(kids, false);
-        }
-
+        mRootItem = item;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tpb.hn.item;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.fragments.Browser;
@@ -20,11 +21,11 @@ public class ItemAdapter extends FragmentPagerAdapter {
     private static final String TAG = ItemAdapter.class.getSimpleName();
 
     private ArrayList<PageType> pages = new ArrayList<>();
-    private ItemLoader[] loaders;
+    private Fragment[] fragments;
 
     private Item item;
 
-    public ItemAdapter(FragmentManager fragmentManager, PageType[] possiblePages, Item item) {
+    public ItemAdapter(FragmentManager fragmentManager, ViewPager pager,  PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
         for(PageType pt : possiblePages) {
@@ -49,7 +50,26 @@ public class ItemAdapter extends FragmentPagerAdapter {
                     break;
             }
         }
-        loaders = new ItemLoader[pages.size() + 1];
+        fragments = new Fragment[pages.size()];
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int oldPos = 0;
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                ((FragmentCycle) fragments[oldPos]).onPauseFragment();
+                ((FragmentCycle) fragments[position]).onResumeFragment();
+                oldPos = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -58,23 +78,23 @@ public class ItemAdapter extends FragmentPagerAdapter {
         switch(pages.get(position)) {
             case COMMENTS:
                 page = new Comments();
-                loaders[position] = (ItemLoader) page;
+                fragments[position] = page;
                 break;
             case BROWSER:
                 page = new Browser();
-                loaders[position] = (ItemLoader) page;
+                fragments[position] = page;
                 break;
             case READABILITY:
                 page = Readability.newInstance();
-                loaders[position] = (ItemLoader) page;
+                fragments[position] =  page;
                 break;
             case SKIMMER:
                 page = Skimmer.newInstance();
-                loaders[position] = (ItemLoader) page;
+                fragments[position] = page;
                 break;
         }
-        if(loaders[position] != null && item != null) {
-            loaders[position].loadItem(item);
+        if(fragments[position] != null && item != null) {
+            ((ItemLoader) fragments[position]).loadItem(item);
         }
         return page;
     }

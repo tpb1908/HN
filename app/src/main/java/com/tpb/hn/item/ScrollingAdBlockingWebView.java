@@ -82,23 +82,12 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
                 } else {
                     progressBar.setProgress(newProgress);
                 }
-                if(hideWhenDone && newProgress == 100) {
-                    progressBar.setVisibility(GONE);
+                if(newProgress == 100) {
+                    ScrollingAdBlockingWebView.this.setVisibility(VISIBLE);
+                    if(hideWhenDone) progressBar.setVisibility(GONE);
                 }
             }
         });
-    }
-
-    @Override
-    public void loadUrl(String url) {
-        super.loadUrl(url);
-        this.setVisibility(VISIBLE);
-    }
-
-    @Override
-    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
-        super.loadUrl(url, additionalHttpHeaders);
-        this.setVisibility(VISIBLE);
     }
 
     @Override

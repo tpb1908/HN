@@ -63,6 +63,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private String title;
     private String content;
+    private String imageUrl;
 
     private boolean isArticleReady = false;
 
@@ -76,12 +77,13 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
         unbinder = ButterKnife.bind(this, inflated);
         if(isArticleReady) {
-            setupTextView();
+            setupViews();
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("title") != null) {
                 title = savedInstanceState.getString("title");
                 content = savedInstanceState.getString("content");
-                setupTextView();
+                imageUrl = savedInstanceState.getString("imageUrl");
+                setupViews();
             }
         }
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
@@ -94,11 +96,12 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         unbinder.unbind();
     }
 
-    private void setupTextView() {
+    private void setupViews() {
         mProgressSpinner.setVisibility(View.GONE);
         mErrorTextView.setVisibility(View.GONE);
         mWrapper.setVisibility(View.VISIBLE);
         mTitle.setText(title);
+        if(imageUrl != null) mImage.setImageUrl(imageUrl);
         if(content != null) mBody.setText(Html.fromHtml(content));
 
     }
@@ -110,9 +113,8 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
                 content = result.getString("content");
                 title = result.getString("title");
                 isArticleReady = true;
-                if(mBody != null) setupTextView();
-                final String imageURL = result.getString("lead_image_url");
-                mImage.setImageUrl(imageURL);
+                imageUrl = result.getString("lead_image_url");
+                if(mBody != null) setupViews();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.GONE);
@@ -138,6 +140,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         super.onSaveInstanceState(outState);
         outState.putString("title", title);
         outState.putSerializable("content", content);
+        outState.putString("imageUrl", imageUrl);
     }
 
     @Override
