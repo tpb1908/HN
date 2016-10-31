@@ -146,7 +146,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @Override
     public void loadItem(Item item) {
         //TODO- Check if it has a url, not just type
-        if(item.getType() == ItemType.STORY) {
+        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
             new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
         } else {
             title = item.getTitle();
