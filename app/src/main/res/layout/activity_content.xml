@@ -35,12 +35,15 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/content_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
-            android:scrollbars="vertical"/>
+            app:fastScrollPopupTextSize="32sp"
+            app:fastScrollPopupBackgroundSize="64dp"
+            app:fastScrollPopupBgColor="@color/colorAccent"
+            app:fastScrollPopupTextColor="@color/colorPrimaryText"
+            app:fastScrollThumbColor="@color/colorAccent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

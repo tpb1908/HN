@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
+import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
@@ -34,7 +36,7 @@ import butterknife.ButterKnife;
  * Created by theo on 18/10/16.
  */
 
-class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone {
+class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone, FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
@@ -49,10 +51,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private LinearLayoutManager mManager;
     private SwipeRefreshLayout mSwiper;
 
-    ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
+    ContentAdapter(ContentOpener opener, FastScrollRecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
         mContext = recycler.getContext();
         mOpener = opener;
         mSwiper = swiper;
+        mManager = manager;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();
@@ -72,29 +75,56 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int pos = Math.max(manager.findFirstVisibleItemPosition(), 0);
-                    if(ids != null) {
-                        int pos2;
-                        if(pos > mLastPosition) {
-                            pos2 = Math.min(pos + 15, ids.length);
-                        } else {
-                            pos2 = Math.max(pos - 15, 0);
-                        }
-                        if(pos2 < pos) {
-                            final int t = pos;
-                            pos = pos2;
-                            pos2 = t;
-                        }
-                        final ArrayList<Integer> toLoad = new ArrayList<>();
-                        for(int i = pos; i < pos2; i++) {
-                            if(data[i] == null) toLoad.add(ids[i]);
-                        }
-                        mLoader.loadItemsIndividually(Util.convertIntegers(toLoad), false);
-                    }
-                    mLastPosition = pos;
+                    loadItemsOnScroll(false);
                 }
             }
         });
+        recycler.setStateChangeListener(new OnFastScrollStateChangeListener() {
+            @Override
+            public void onFastScrollStart() {
+
+            }
+
+            @Override
+            public void onFastScrollStop() {
+                loadItemsOnScroll(true);
+            }
+        });
+    }
+
+    private void loadItemsOnScroll(boolean fastScroll) {
+        int pos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+        if(ids != null) {
+            int pos2;
+            /*
+            If we are scrolling down the list, we load the items below
+            the first visible.
+            Also if we have just fastscrolled to a position, as there
+            is no inertia and we have stopped at this point
+             */
+            if(pos > mLastPosition || fastScroll) {
+                pos2 = Math.min(pos + 15, ids.length);
+            } else {
+                pos2 = Math.max(pos - 15, 0);
+            }
+            if(pos2 < pos) {
+                final int t = pos;
+                pos = pos2;
+                pos2 = t;
+            }
+            final ArrayList<Integer> toLoad = new ArrayList<>();
+            for(int i = pos; i < pos2; i++) {
+                if(data[i] == null) toLoad.add(ids[i]);
+            }
+            mLoader.loadItemsIndividually(Util.convertIntegers(toLoad), false);
+        }
+        mLastPosition = pos;
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        return Integer.toString(position);
     }
 
     void loadItems(String defaultPage) {

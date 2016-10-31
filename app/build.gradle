@@ -36,6 +36,7 @@ dependencies {
     compile 'com.amitshekhar.android:android-networking:0.2.0'
     compile 'com.andrewgiang.spritzertextview:library:0.3.4'
     compile 'com.afollestad.material-dialogs:commons:0.9.0.2'
+    compile 'com.simplecityapps:recyclerview-fastscroll:1.0.11'
 
     compile 'com.jakewharton:butterknife:8.2.1'
     apt 'com.jakewharton:butterknife-compiler:8.2.1'

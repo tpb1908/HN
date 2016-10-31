@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.Spinner;
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
@@ -49,7 +49,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     Spinner mNavSpinner;
 
     @BindView(R.id.content_recycler)
-    RecyclerView mRecycler;
+    FastScrollRecyclerView mRecycler;
 
     @BindView(R.id.content_swiper)
     SwipeRefreshLayout mSwiper;
