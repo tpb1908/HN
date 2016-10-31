@@ -3,6 +3,7 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +51,9 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     @BindView(R.id.content_recycler)
     RecyclerView mRecycler;
 
+    @BindView(R.id.content_swiper)
+    SwipeRefreshLayout mSwiper;
+
     private ContentAdapter mAdapter;
 
 
@@ -69,7 +73,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         AndroidNetworking.initialize(getApplicationContext());
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager());
+        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mSwiper);
         mRecycler.setAdapter(mAdapter);
 
         mNavSpinner.setAdapter(new ArrayAdapter<>(

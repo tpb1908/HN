@@ -3,6 +3,7 @@ package com.tpb.hn.content;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     private Context mContext;
     private HNLoader mLoader = new HNLoader(this);
-    private String contentState;
+    private String currentPage;
     private boolean usingCards = false;
     private boolean markReadWhenPassed = false;
     private int[] ids;
@@ -46,10 +47,12 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private ContentOpener mOpener;
     private int mLastPosition = 0;
     private LinearLayoutManager mManager;
+    private SwipeRefreshLayout mSwiper;
 
-    ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager) {
+    ContentAdapter(ContentOpener opener, RecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
         mContext = recycler.getContext();
-        this.mOpener = opener;
+        mOpener = opener;
+        mSwiper = swiper;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();
@@ -57,6 +60,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         if(!usingCards) {
             recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadItems(currentPage);
+            }
+        });
+
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -113,7 +123,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 mLoader.getJobsIds(this);
                 break;
         }
-        contentState = defaultPage;
+        currentPage = defaultPage;
     }
 
     private void attemptLoadAgain(int pos) {
@@ -180,6 +190,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         data = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
+        mSwiper.setRefreshing(false);
         //Id loading will only happen once each time the data is to be set
     }
 
