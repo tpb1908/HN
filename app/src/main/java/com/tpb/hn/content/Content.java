@@ -123,6 +123,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         final Intent i = new Intent(Content.this, ItemViewer.class);
         i.putExtra("item", item);
         startActivity(i);
+        overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
     @Override

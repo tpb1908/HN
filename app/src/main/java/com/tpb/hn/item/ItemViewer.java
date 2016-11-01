@@ -129,6 +129,12 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.none, R.anim.slide_down);
+    }
+
+    @Override
     public void itemLoaded(Item item, boolean success) {
         setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
         setTitle(item);
