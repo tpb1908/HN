@@ -66,12 +66,16 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     @BindView(R.id.skimmer_error_message)
     TextView mErrorTextView;
 
+    private ItemAdapter.Fullscreen fullscreen;
+
     private String article;
     private boolean isArticleReady = false;
 
 
-    public static Skimmer newInstance() {
-        return new Skimmer();
+    public static Skimmer newInstance(ItemAdapter.Fullscreen fullscreen) {
+        final Skimmer s = new Skimmer();
+        s.fullscreen = fullscreen;
+        return s;
     }
 
     @Nullable

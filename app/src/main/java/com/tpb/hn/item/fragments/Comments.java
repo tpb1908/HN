@@ -35,8 +35,16 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
     @BindView(R.id.comment_recycler)
     RecyclerView mRecycler;
 
+    private ItemAdapter.Fullscreen fullscreen;
+
     private Item mRootItem;
     private CommentAdapter mAdapter;
+
+    public static Comments newInstance(ItemAdapter.Fullscreen fullscreen) {
+        final Comments c = new Comments();
+        c.fullscreen = fullscreen;
+        return c;
+    }
 
     @Nullable
     @Override

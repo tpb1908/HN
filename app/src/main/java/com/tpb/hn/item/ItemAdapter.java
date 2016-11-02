@@ -23,11 +23,13 @@ public class ItemAdapter extends FragmentPagerAdapter {
     private ArrayList<PageType> pages = new ArrayList<>();
     private Fragment[] fragments;
 
+    private Fullscreen fullscreen;
     private Item item;
 
-    public ItemAdapter(FragmentManager fragmentManager, ViewPager pager,  PageType[] possiblePages, Item item) {
+    public ItemAdapter(Fullscreen fullscreen, FragmentManager fragmentManager, ViewPager pager,  PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
+        this.fullscreen = fullscreen;
         for(PageType pt : possiblePages) {
             switch(pt) {
                 case COMMENTS:
@@ -77,19 +79,19 @@ public class ItemAdapter extends FragmentPagerAdapter {
         Fragment page = new Fragment();
         switch(pages.get(position)) {
             case COMMENTS:
-                page = new Comments();
+                page = Comments.newInstance(fullscreen);
                 fragments[position] = page;
                 break;
             case BROWSER:
-                page = new Browser();
+                page = Browser.newInstance(fullscreen);
                 fragments[position] = page;
                 break;
             case READABILITY:
-                page = Readability.newInstance();
+                page = Readability.newInstance(fullscreen);
                 fragments[position] =  page;
                 break;
             case SKIMMER:
-                page = Skimmer.newInstance();
+                page = Skimmer.newInstance(fullscreen);
                 fragments[position] = page;
                 break;
         }
@@ -125,6 +127,14 @@ public class ItemAdapter extends FragmentPagerAdapter {
         void onPauseFragment();
 
         void onResumeFragment();
+
+    }
+
+    public interface Fullscreen {
+
+        void openFullScreen();
+
+        void closeFullScreen();
 
     }
 

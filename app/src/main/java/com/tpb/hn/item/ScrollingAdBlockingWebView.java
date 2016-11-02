@@ -37,6 +37,7 @@ import java.util.Map;
  */
 
 public class ScrollingAdBlockingWebView extends WebView implements NestedScrollingChild {
+
     private int mLastY;
     private final int[] mScrollOffset = new int[2];
     private final int[] mScrollConsumed = new int[2];
@@ -54,6 +55,7 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
     public ScrollingAdBlockingWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mChildHelper = new NestedScrollingChildHelper(this);
+        getSettings().setSupportZoom(true);
         setNestedScrollingEnabled(true);
         this.setWebViewClient(new WebViewClient() {
             private Map<String, Boolean> loadedUrls = new HashMap<>();
@@ -82,18 +84,28 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
                 } else {
                     progressBar.setProgress(newProgress);
                 }
-                if(newProgress == 100) {
-                    ScrollingAdBlockingWebView.this.setVisibility(VISIBLE);
-                    if(hideWhenDone) progressBar.setVisibility(GONE);
+                if(hideWhenDone && newProgress == 100) {
+                    progressBar.setVisibility(GONE);
                 }
             }
         });
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean returnValue = false;
+    public void loadUrl(String url) {
+        super.loadUrl(url);
+        this.setVisibility(VISIBLE);
+    }
 
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        super.loadUrl(url, additionalHttpHeaders);
+        this.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean returnValue;
         MotionEvent event = MotionEvent.obtain(ev);
         final int action = MotionEventCompat.getActionMasked(event);
         if (action == MotionEvent.ACTION_DOWN) {
@@ -126,8 +138,7 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
                 // start NestedScroll
                 startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
                 break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+            default:
                 returnValue = super.onTouchEvent(event);
                 // end NestedScroll
                 stopNestedScroll();
@@ -182,5 +193,6 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
     public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
         return mChildHelper.dispatchNestedPreFling(velocityX, velocityY);
     }
+
 
 }

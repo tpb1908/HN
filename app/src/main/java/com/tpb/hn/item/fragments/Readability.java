@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -61,14 +62,18 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @BindView(R.id.readability_scroller)
     NestedScrollView mScroller;
 
+    private ItemAdapter.Fullscreen fullscreen;
+
     private String title;
     private String content;
     private String imageUrl;
 
     private boolean isArticleReady = false;
 
-    public static Readability newInstance() {
-        return new Readability();
+    public static Readability newInstance(ItemAdapter.Fullscreen fullscreen) {
+        final Readability r = new Readability();
+        r.fullscreen = fullscreen;
+        return r;
     }
 
     @Nullable
@@ -165,5 +170,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
     }
 }

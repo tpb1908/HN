@@ -44,8 +44,16 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
     @BindView(R.id.browser_loading_spinner)
     ProgressBar mLoadingSpinner;
 
+    private ItemAdapter.Fullscreen fullscreen;
+
     private boolean isArticleReady = false;
     private String url;
+
+    public static Browser newInstance(ItemAdapter.Fullscreen fullscreen) {
+        final Browser b = new Browser()                                                                                                                                                                                                             ;
+        b.fullscreen = fullscreen;
+        return b;
+    }
 
     @Nullable
     @Override
@@ -63,9 +71,18 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
         super.onResume();
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mWebView.bindProgressBar(mLoadingSpinner, true, true);
+        mWebView.getSettings().setSupportZoom(true);
+//        fullscreen.openFullScreen();
+//        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        //getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        //mWebView.setNestedScrollingEnabled(false);
+        //fullscreen.openFullScreen();
 
     }
 
+    @SuppressWarnings("SetJavaScriptEnabled")
     private void loadURL() {
         Log.i(TAG, "loadURL: WebView loading");
         if(url != null) {

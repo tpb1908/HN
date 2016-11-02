@@ -31,7 +31,7 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoadDone {
+public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoadDone, ItemAdapter.Fullscreen {
     private static final String TAG = ItemViewer.class.getSimpleName();
     private Tracker mTracker;
 
@@ -96,6 +96,7 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
                 finish();
             }
         }
+        //TODO- Fullscreen mode
 
     }
 
@@ -107,7 +108,7 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     }
 
     private void setupFragments(ItemAdapter.PageType[] possiblePages, Item item) {
-        mAdapter = new ItemAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item);
+        mAdapter = new ItemAdapter(this, getSupportFragmentManager(), mStoryPager, possiblePages, item);
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);
@@ -126,6 +127,16 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
             .setLabel(item.toString())
             .build());
 
+    }
+
+    @Override
+    public void openFullScreen() {
+        mStoryAppbar.setExpanded(false, true);
+    }
+
+    @Override
+    public void closeFullScreen() {
+        mStoryAppbar.setExpanded(true, true);
     }
 
     @Override
