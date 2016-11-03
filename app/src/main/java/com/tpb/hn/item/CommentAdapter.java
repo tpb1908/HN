@@ -60,7 +60,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
-        mLoader = new HNLoader(this);
+        mLoader = new HNLoader(recycler.getContext(), this);
     }
 
     @Override

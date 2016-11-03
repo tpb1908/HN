@@ -70,6 +70,36 @@ public class HNParser {
         return user;
     }
 
+    public static JSONObject itemToJSON(Item item) {
+        final JSONObject object = new JSONObject();
+        try {
+            object.put(KEY_ID, item.getId());
+            object.put(KEY_TEXT, item.getType());
+            object.put(KEY_SCORE, item.getScore());
+            object.put(KEY_DESCENDANTS, item.getDescendants());
+            //TODO- Dead and deleted, + parts
+            if(item.getBy() != null) object.put(KEY_BY, item.getBy());
+            if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
+            if(item.getText() != null) object.put(KEY_TEXT, item.getText());
+            if(item.getParent() != 0) object.put(KEY_PARENT, item.getParent());
+            if(item.getKids() != null) object.put(KEY_KIDS, toJSONArray(item.getKids()));
+            if(item.getUrl() != null) object.put(KEY_URL, item.getUrl());
+            if(item.getTitle() != null) object.put(KEY_TITLE, item.getTitle());
+
+        } catch(JSONException je) {
+
+        }
+        return object;
+    }
+
+    public static JSONArray toJSONArray(int[] array ) {
+        final JSONArray jsonArray = new JSONArray();
+        for(int i : array) {
+            jsonArray.put(i);
+        }
+        return jsonArray;
+    }
+
     public static int[] extractIntArray(JSONArray array) {
         final int[] kids = new int[array.length()];
         for(int i = 0; i < array.length(); i++) {

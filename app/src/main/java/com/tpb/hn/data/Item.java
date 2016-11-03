@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Created by theo on 18/10/16.
@@ -29,7 +30,10 @@ public class Item implements Parcelable, Comparable<Item> {
     private int descendants;
     private boolean viewed;
 
+    private long lastUpdated;
+
     public Item() {
+        lastUpdated = System.currentTimeMillis();
     }
 
     //<editor-fold desc="Getters and setters">
@@ -54,6 +58,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setType(ItemType type) {
+        lastUpdated = System.currentTimeMillis();
         this.type = type;
     }
 
@@ -70,6 +75,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setTime(long time) {
+        lastUpdated = System.currentTimeMillis();
         this.time = time;
     }
 
@@ -78,6 +84,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setText(String text) {
+        lastUpdated = System.currentTimeMillis();
         this.text = text;
     }
 
@@ -86,6 +93,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setDead(boolean dead) {
+        lastUpdated = System.currentTimeMillis();
         this.dead = dead;
     }
 
@@ -94,6 +102,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setParent(int parent) {
+        lastUpdated = System.currentTimeMillis();
         this.parent = parent;
     }
 
@@ -102,6 +111,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setKids(int[] kids) {
+        lastUpdated = System.currentTimeMillis();
         this.kids = kids;
     }
 
@@ -110,6 +120,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setUrl(String url) {
+        lastUpdated = System.currentTimeMillis();
         this.url = url;
     }
 
@@ -118,6 +129,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setScore(int score) {
+        lastUpdated = System.currentTimeMillis();
         this.score = score;
     }
 
@@ -126,6 +138,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setTitle(String title) {
+        lastUpdated = System.currentTimeMillis();
         this.title = title;
     }
 
@@ -134,6 +147,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setParts(int[] parts) {
+        lastUpdated = System.currentTimeMillis();
         this.parts = parts;
     }
 
@@ -142,6 +156,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setDescendants(int descendants) {
+        lastUpdated = System.currentTimeMillis();
         this.descendants = descendants;
     }
 
@@ -219,6 +234,7 @@ public class Item implements Parcelable, Comparable<Item> {
         dest.writeIntArray(this.parts);
         dest.writeInt(this.descendants);
         dest.writeByte(this.viewed ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.lastUpdated);
     }
 
 
@@ -239,6 +255,7 @@ public class Item implements Parcelable, Comparable<Item> {
         this.parts = in.createIntArray();
         this.descendants = in.readInt();
         this.viewed = in.readByte() != 0;
+        this.lastUpdated = in.readLong();
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -258,6 +275,13 @@ public class Item implements Parcelable, Comparable<Item> {
         return id == item.id ? 0 : id > item.id ? 1 : -1;
     }
 
+    public static Comparator<Item> comparator = new Comparator<Item>() {
+        @Override
+        public int compare(Item item, Item t1) {
+            return item.id == t1.id ? 0 : item.id > t1.id ? 1 : -1;
+        }
+    };
+
     @Override
     public String toString() {
         return "Item{" +
@@ -276,6 +300,7 @@ public class Item implements Parcelable, Comparable<Item> {
                 ", parts=" + Arrays.toString(parts) +
                 ", descendants=" + descendants +
                 ", viewed=" + viewed +
+                ", lastUpdated=" + lastUpdated +
                 '}';
     }
 }

@@ -40,7 +40,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
-    private HNLoader mLoader = new HNLoader(this);
+    private HNLoader mLoader;
     private String currentPage;
     private boolean usingCards = false;
     private boolean markReadWhenPassed = false;
@@ -56,6 +56,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         mOpener = opener;
         mSwiper = swiper;
         mManager = manager;
+        mLoader = new HNLoader(mContext, this);
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();

@@ -85,7 +85,7 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            new HNLoader(this).loadItem(APIPaths.parseUrl(data));
+            new HNLoader(this, this).loadItem(APIPaths.parseUrl(data));
         } else {
             if(launchIntent.getParcelableExtra("item") != null) {
                 final Item item = launchIntent.getParcelableExtra("item");

@@ -1,5 +1,6 @@
 package com.tpb.hn.network;
 
+import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -9,13 +10,12 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
+import com.tpb.hn.storage.permanent.Cache;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * Created by theo on 21/10/16.
@@ -24,11 +24,9 @@ import java.util.HashMap;
 public class HNLoader {
     private static final String TAG = HNLoader.class.getSimpleName();
 
-    private static ArrayList<Item> itemCache = new ArrayList<>();
-    private SparseArray<ArrayList<HNItemLoadDone>> listenerCache = new SparseArray<>();
+    private static Cache cache;
 
-    private static HashMap<Item, ArrayList<Item>> kidCache = new HashMap<>();
-
+    private static SparseArray<ArrayList<HNItemLoadDone>> listenerCache = new SparseArray<>();
     private static int[] top = new int[500];
     private static int[] newstories = new int[500];
     private static int[] best = new int[200];
@@ -39,7 +37,8 @@ public class HNLoader {
 
     private HNItemLoadDone itemListener;
 
-    public HNLoader(HNItemLoadDone itemListener) {
+    public HNLoader(Context context, HNItemLoadDone itemListener) {
+        cache = Cache.getInstance(context);
         this.itemListener = itemListener;
     }
 
@@ -107,9 +106,9 @@ public class HNLoader {
 
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
         for(int i : ids) {
-            int cachePos = checkCache(i);
+            int cachePos = cache.position(i);
             if(cachePos >= 0 && getFromCache) {
-                itemListener.itemLoaded(itemCache.get(cachePos), true);
+                itemListener.itemLoaded(cache.getItems().get(cachePos), true);
             } else if(!getFromCache) {
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
@@ -120,7 +119,7 @@ public class HNLoader {
                             public void onResponse(JSONObject response) {
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
-                                    if(item != null) insertItemToCache(item);
+                                    if(item != null) cache.insert(item);
                                     itemListener.itemLoaded(item, item != null);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);
@@ -142,64 +141,8 @@ public class HNLoader {
         }
     }
 
-    private int checkCache(int id) {
-        final Item key = new Item();
-        key.setId(id);
-        int pos = Collections.binarySearch(itemCache, key);
-        return Math.max(pos, -1);
-    }
-
-    private void updateCachedRootItem(Item item) {
-        boolean set = false;
-        for(int i = 0; i < itemCache.size(); i++) {
-            if(itemCache.get(i).getId() == item.getId()) {
-                itemCache.set(i, item);
-                set = true;
-                break;
-            }
-        }
-        if(!set) itemCache.add(item);
-    }
-
-    private void insertItemToCache(Item item) {
-//        boolean set = false;
-//        for(int i = 0; i < itemCache.size(); i++) {
-//            if(item.getId() > itemCache.get(i).getId()) {
-//                itemCache.add(i, item);
-//                set = true;
-//                Log.i(TAG, "insertItemToCache: Inserting at position " + i);
-//                break;
-//            }
-//        }
-        //if(!set) itemCache.add(0, item);
-//        final int pos = Collections.binarySearch(itemCache, item);
-//        if(pos < 0) {
-//            itemCache.add(0, item);
-//        } else if(pos >= itemCache.size()) {
-//            itemCache.add(item);
-//        } else {
-//            Log.i(TAG, "insertItemToCache: Inserting to position " + pos + " of " + itemCache.size());
-//            itemCache.add(pos, item);
-//        }
-        if(item.getType() == ItemType.COMMENT) {
-            final Item parent = new Item();
-            parent.setId(item.getParent());
-            ArrayList<Item> siblings = kidCache.get(parent);
-            if(siblings == null) {
-                siblings = new ArrayList<>();
-                kidCache.put(parent, siblings);
-            }
-            siblings.add(item);
-            Collections.sort(siblings);
-        } else {
-            itemCache.add(item);
-            Collections.sort(itemCache);
-        }
-    }
-
-
     public void loadItem(final int id) {
-        for(Item i : itemCache) {
+        for(Item i : cache.getItems()) {
             if(i.getId() == id) {
                 itemListener.itemLoaded(i, true);
                 break;
@@ -225,7 +168,7 @@ public class HNLoader {
                             }
                             listenerCache.remove(id);
 
-                            updateCachedRootItem(item);
+                            cache.update(item);
                         } catch(Exception e) {
                             loadItem(id);
                             Log.e(TAG, "onResponse error : ", e);
