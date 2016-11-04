@@ -34,7 +34,7 @@ public class HNParser {
     private static final String KEY_ABOUT = "about";
     private static final String KEY_SUBMITTED = "submitted";
 
-    public static Item JSONToItem(JSONObject obj) throws JSONException{
+    public static Item JSONToItem(JSONObject obj) throws JSONException {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         item.setTime(obj.getLong(KEY_TIME));
@@ -51,6 +51,7 @@ public class HNParser {
         if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
+
         return item;
     }
 

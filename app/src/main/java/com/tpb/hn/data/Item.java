@@ -168,6 +168,10 @@ public class Item implements Parcelable, Comparable<Item> {
         this.viewed = viewed;
     }
 
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
+
     //</editor-fold>
 
     @Override

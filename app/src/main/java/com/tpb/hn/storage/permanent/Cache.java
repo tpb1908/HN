@@ -21,9 +21,6 @@ public class Cache {
     private static DB db;
     private SharedPreferences sp;
 
-    private long lastWrite;
-    private boolean writeInProgress;
-
     private ArrayList<Item> items = new ArrayList<>();
     private HashMap<Item, ArrayList<Item>> kids = new HashMap<>();
 
@@ -69,6 +66,7 @@ public class Cache {
         } else {
             items.add(item);
             Collections.sort(items);
+            db.writeOrUpdate(item);
         }
     }
 
@@ -90,6 +88,7 @@ public class Cache {
             } else {
                 insert(item);
             }
+            db.writeOrUpdate(item);
         }
     }
 
