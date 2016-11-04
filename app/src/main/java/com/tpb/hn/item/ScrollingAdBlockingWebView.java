@@ -1,6 +1,7 @@
 package com.tpb.hn.item;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingChild;
@@ -57,6 +58,7 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
         mChildHelper = new NestedScrollingChildHelper(this);
         getSettings().setSupportZoom(true);
         setNestedScrollingEnabled(true);
+        this.setBackgroundColor(Color.TRANSPARENT);
         this.setWebViewClient(new WebViewClient() {
             private Map<String, Boolean> loadedUrls = new HashMap<>();
 
@@ -86,6 +88,7 @@ public class ScrollingAdBlockingWebView extends WebView implements NestedScrolli
                 }
                 if(hideWhenDone && newProgress == 100) {
                     progressBar.setVisibility(GONE);
+                    ScrollingAdBlockingWebView.this.setBackgroundColor(Color.WHITE);
                 }
             }
         });
