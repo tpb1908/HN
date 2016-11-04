@@ -10,6 +10,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -58,7 +59,7 @@ public class ReadabilityLoader {
 
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
                                     if(rld == null) {
-                                        listenerCache.get(url).remove(rld);
+                                        listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null
                                     } else {
                                         rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
                                     }
@@ -67,6 +68,7 @@ public class ReadabilityLoader {
                                 if(response != null) {
                                     cache.put(url, response);
                                 }
+                                Log.i(TAG, "onResponse: " + response.toString());
                             } catch(Exception e) {
                                 Log.e(TAG, "onResponse: ", e);
                                 Log.i(TAG, "onResponse: " + e.getMessage());

@@ -3,18 +3,14 @@ package com.tpb.hn.item.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.androidnetworking.widget.ANImageView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
@@ -23,6 +19,8 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ScrollingAdBlockingWebView;
+import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.ReadabilityLoader;
 
 import org.json.JSONObject;
@@ -41,32 +39,20 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private Unbinder unbinder;
 
-    @BindView(R.id.readability_title)
-    TextView mTitle;
-
-    @BindView(R.id.readability_body)
-    TextView mBody;
-
-    @BindView(R.id.readability_image)
-    ANImageView mImage;
+    @BindView(R.id.readability_webview)
+    ScrollingAdBlockingWebView mWebView;
 
     @BindView(R.id.readability_loading_spinner)
     ProgressBar mProgressSpinner;
 
-    @BindView(R.id.readability_wrapper)
-    LinearLayout mWrapper;
-
     @BindView(R.id.readability_error_message)
     TextView mErrorTextView;
 
-    @BindView(R.id.readability_scroller)
-    NestedScrollView mScroller;
+    private boolean ampView = true;
 
     private ItemAdapter.Fullscreen fullscreen;
 
-    private String title;
-    private String content;
-    private String imageUrl;
+    private String url;
 
     private boolean isArticleReady = false;
 
@@ -84,13 +70,11 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         if(isArticleReady) {
             setupViews();
         } else if(savedInstanceState != null) {
-            if(savedInstanceState.getString("title") != null) {
-                title = savedInstanceState.getString("title");
-                content = savedInstanceState.getString("content");
-                imageUrl = savedInstanceState.getString("imageUrl");
+            if(savedInstanceState.getString("url") != null) {
                 setupViews();
             }
         }
+        mWebView.bindProgressBar(mProgressSpinner, true, true);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
     }
@@ -102,28 +86,21 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     }
 
     private void setupViews() {
-        mProgressSpinner.setVisibility(View.GONE);
+        //mProgressSpinner.setVisibility(View.GONE);
         mErrorTextView.setVisibility(View.GONE);
-        mWrapper.setVisibility(View.VISIBLE);
-        mTitle.setText(title);
-        if(imageUrl != null) mImage.setImageUrl(imageUrl);
-        if(content != null) mBody.setText(Html.fromHtml(content));
-
+        mWebView.loadUrl(url);
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
         if(success) {
             try {
-                content = result.getString("content");
-                title = result.getString("title");
                 isArticleReady = true;
-                imageUrl = result.getString("lead_image_url");
-                if(mBody != null) setupViews();
+                if(mWebView != null) setupViews();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.GONE);
-                mTitle.setText(R.string.error_loading_page);
+
             }
         } else {
             mProgressSpinner.setVisibility(View.GONE);
@@ -143,20 +120,23 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("title", title);
-        outState.putSerializable("content", content);
-        outState.putString("imageUrl", imageUrl);
+        outState.putString("url", url);
     }
 
     @Override
     public void loadItem(Item item) {
         //TODO- Check if it has a url, not just type
         if(item.getType() == ItemType.STORY && item.getUrl() != null) {
-            new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+            if(ampView) {
+                isArticleReady = true;
+                url = APIPaths.getMercuryAmpPath(item.getUrl());
+                if(mWebView != null) setupViews();
+            } else {
+                new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+            }
         } else {
-            title = item.getTitle();
-            content = item.getText();
-            isArticleReady = true;
+
+            //isArticleReady = true;
         }
 
     }

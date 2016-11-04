@@ -6,11 +6,12 @@
 
     <ProgressBar
         android:id="@+id/readability_loading_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/colorAccent"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <TextView
         android:id="@+id/readability_error_message"
@@ -20,47 +21,14 @@
         android:visibility="invisible"
         />
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/readability_scroller"
+    <com.tpb.hn.item.ScrollingAdBlockingWebView
+        android:id="@+id/readability_webview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/readability_wrapper"
-            android:visibility="invisible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/readability_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="16dp"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"/>
-
-            <com.androidnetworking.widget.ANImageView
-                android:id="@+id/readability_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center"/>
-
-            <TextView
-                android:id="@+id/readability_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textAppearance="@android:style/TextAppearance.Material.Body1"/>
-
-        </LinearLayout>
+    </com.tpb.hn.item.ScrollingAdBlockingWebView>
 
 
-    </android.support.v4.widget.NestedScrollView>
 
 
 </LinearLayout>

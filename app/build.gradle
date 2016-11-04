@@ -17,9 +17,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        buildTypes.each {
+            it.buildConfigField('String', 'MERCURY_API_TOKEN', MERCURY_API_KEY)
+        }
+
     }
 
 }
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

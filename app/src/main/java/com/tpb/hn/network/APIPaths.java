@@ -2,6 +2,8 @@ package com.tpb.hn.network;
 
 import android.util.Log;
 
+import com.tpb.hn.BuildConfig;
+
 /**
  * Created by theo on 17/10/16.
  */
@@ -21,8 +23,10 @@ public class APIPaths {
     private static final String JOB_STORIES = "jobstories";
     private static final String UPDATED = "updates/";
 
+    private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
+
     private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
-    private static final String READABILITY_PARSER_KEY = "387ce7ecc4df735d0a7c1e748a9e093fb8213ade";
+    private static final String READABILITY_PARSER_KEY = BuildConfig.MERCURY_API_TOKEN;
 
     private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
 
@@ -90,6 +94,10 @@ public class APIPaths {
 
     public static String getReadabilityParserPath(String url) {
         return READABILITY_PARSER + url + "&token=" + READABILITY_PARSER_KEY;
+    }
+
+    public static String getMercuryAmpPath(String url) {
+        return MERCURY_AMP_PATH + url;
     }
 
     public static String getPDFDisplayPath(String url) {
