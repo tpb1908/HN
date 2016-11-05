@@ -10,6 +10,8 @@
     <color name="colorSecondaryTextInverse">@color/md_grey_500</color>
     <color name="colorDivider">@color/md_grey_400</color>
 
+    <color name="md_grey_bg">#303030</color>
+
     <color name="md_red_50">#FFEBEE</color>
     <color name="md_red_100">#FFCDD2</color>
     <color name="md_red_200">#EF9A9A</color>

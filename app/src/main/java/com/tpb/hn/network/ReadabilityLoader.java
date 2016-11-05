@@ -117,6 +117,7 @@ public class ReadabilityLoader {
                     .getAsString(new StringRequestListener() {
                         @Override
                         public void onResponse(String response) {
+                            Log.i(TAG, "onResponse: " + response);
                             for(ReadabilityLoadDone rld : listenerCache.get(url)) {
                                 if(rld == null) {
                                     listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null
@@ -137,6 +138,22 @@ public class ReadabilityLoader {
                     });
         }
 
+    }
+
+    public static String setHTMLStyling(String html, int bgColor, int textColor) {
+        final String CSS = "<style type=\"text/css\"> \n" +
+                " .x-boilerpipe-mark1 " +
+                "{ text-decoration:none; background-color:" + String.format("#%06X", 0xFFFFFF & bgColor) +
+                " !important; color: " + String.format("#%06X", 0xFFFFFF & textColor) +
+                " !important; display:inline !important; visibility:visible !important; }" +
+                "\n</style> \n<style type=\"text/css\"> \n" +
+                "BODY { font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size:10pt; " +
+                "color: " + String.format("#%06X", 0xFFFFFF & textColor) + ";" +
+                 " background-color: " + String.format("#%06X", 0xFFFFFF & bgColor) +  "; }\n" +
+                "</style>";
+        final int startPos = html.indexOf("<style");
+        final int endPos = html.lastIndexOf("</style>");
+        return html.substring(0, startPos) + CSS + html.substring(endPos + 8);
     }
 
     private void stripImageCopyright() {}

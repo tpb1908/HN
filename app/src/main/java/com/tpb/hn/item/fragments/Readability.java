@@ -22,9 +22,11 @@ import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ScrollingAdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.ReadabilityLoader;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -38,6 +40,18 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     private Tracker mTracker;
 
     private Unbinder unbinder;
+
+    @BindColor(R.color.md_grey_50)
+    int lightBG;
+
+    @BindColor(R.color.md_grey_bg)
+    int darkBG;
+
+    @BindColor(R.color.colorPrimaryText)
+    int lightText;
+
+    @BindColor(R.color.colorPrimaryTextInverse)
+    int darkText;
 
     @BindView(R.id.readability_webview)
     ScrollingAdBlockingWebView mWebView;
@@ -128,7 +142,11 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         Log.i(TAG, "loadDone: Boilerpipe load done " + success);
         if(success) {
             isArticleReady = true;
-            boilerpipePage = result;
+            final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
+            boilerpipePage = ReadabilityLoader.setHTMLStyling(result,
+                    darkTheme ? darkBG : lightBG,
+                    darkTheme ? darkText : lightText);
+            Log.i(TAG, "loadDone: " + boilerpipePage);
             if(mWebView != null) setupViews();
         } else {
             mProgressSpinner.setVisibility(View.GONE);
