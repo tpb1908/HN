@@ -21,11 +21,27 @@
         android:visibility="invisible"
         />
 
-    <com.tpb.hn.item.ScrollingAdBlockingWebView
-        android:id="@+id/readability_webview"
+    <FrameLayout
+        android:id="@+id/webview_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.tpb.hn.item.ScrollingAdBlockingWebView>
+        <com.tpb.hn.item.ScrollingAdBlockingWebView
+            android:id="@+id/readability_webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.tpb.hn.item.ScrollingAdBlockingWebView>
+
+    </FrameLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/fullscreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 </LinearLayout>

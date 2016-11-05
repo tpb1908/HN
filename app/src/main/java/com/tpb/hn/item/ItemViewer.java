@@ -146,13 +146,13 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     }
 
     @Override
-    public void itemLoaded(Item item, boolean success) {
+    public void itemLoaded(Item item, boolean success, int code) {
         setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
         setTitle(item);
     }
 
     @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success) {
+    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
 
     }
 }

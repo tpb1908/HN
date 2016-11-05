@@ -98,13 +98,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public void loadItem(Item item) {
-        mRootItem = item;
-        if(item.getKids() != null) mLoader.loadItemsIndividually(item.getKids(), false);
-        notifyDataSetChanged();
+//        mRootItem = item;
+//        if(item.getKids() != null) mLoader.loadItemsIndividually(item.getKids(), false);
+//        notifyDataSetChanged();
     }
 
     @Override
-    public void itemLoaded(Item item, boolean success) {
+    public void itemLoaded(Item item, boolean success, int code) {
         if(success) {
             insert(item);
             Log.i(TAG, "insert: " + mComments.toString());
@@ -177,7 +177,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success) {
+    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
 
     }
 

@@ -108,7 +108,7 @@ public class HNLoader {
         for(int i : ids) {
             int cachePos = cache.position(i);
             if(cachePos >= 0 && getFromCache) {
-                itemListener.itemLoaded(cache.getItems().get(cachePos), true);
+                itemListener.itemLoaded(cache.getItems().get(cachePos), true, 200);
             } else if(!getFromCache) {
                 AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(i)
@@ -120,7 +120,7 @@ public class HNLoader {
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
                                     if(item != null) cache.insert(item);
-                                    itemListener.itemLoaded(item, item != null);
+                                    itemListener.itemLoaded(item, item != null, 200);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);
                                 }
@@ -128,13 +128,7 @@ public class HNLoader {
 
                             @Override
                             public void onError(ANError anError) {
-                                //TODO- Get code like this anError.getResponse().code();
-//                                Log.e(TAG, "onError: ", anError);
-//                                try {
-//                                    Log.i(TAG, "onError: " + anError.getResponse().body().string());
-//                                } catch(IOException ioe) {
-//                                    Log.e(TAG, "onError: ", ioe);
-//                                }
+                                itemListener.itemLoaded(null, false, anError.getResponse().code());
                             }
                         });
             }
@@ -144,7 +138,7 @@ public class HNLoader {
     public void loadItem(final int id) {
         for(Item i : cache.getItems()) {
             if(i.getId() == id) {
-                itemListener.itemLoaded(i, true);
+                itemListener.itemLoaded(i, true, 200);
                 break;
             }
         }
@@ -164,7 +158,7 @@ public class HNLoader {
                             final Item item = HNParser.JSONToItem(response);
 
                             for(HNItemLoadDone ild : listenerCache.get(id)) {
-                                ild.itemLoaded(item, item != null);
+                                ild.itemLoaded(item, item != null, 200);
                             }
                             listenerCache.remove(id);
 
@@ -197,15 +191,15 @@ public class HNLoader {
 
 
         @Override
-        public void itemLoaded(Item item, boolean success) {
+        public void itemLoaded(Item item, boolean success, int code) {
             items.add(item);
             if(items.size() == count) {
-                listener.itemsLoaded(items, true);
+                listener.itemsLoaded(items, true, 200);
             }
         }
 
         @Override
-        public void itemsLoaded(ArrayList<Item> items, boolean success) {
+        public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
 
         }
     }
@@ -214,9 +208,9 @@ public class HNLoader {
     //TODO- Send error codes
     public interface HNItemLoadDone {
 
-        void itemLoaded(Item item, boolean success);
+        void itemLoaded(Item item, boolean success, int code);
 
-        void itemsLoaded(ArrayList<Item> items, boolean success);
+        void itemsLoaded(ArrayList<Item> items, boolean success, int code);
 
     }
 

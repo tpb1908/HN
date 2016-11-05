@@ -226,7 +226,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     @Override
-    public void itemLoaded(Item item, boolean success) {
+    public void itemLoaded(Item item, boolean success, int code) {
         for(int i = 0; i < ids.length; i++) {
             if(item.getId() == ids[i]) {
                 data[i] = item;
@@ -237,7 +237,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success) {
+    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
         Collections.sort(items);
         final Item key = new Item();
         for(int i = 0 ; i < ids.length; i++) {
@@ -277,7 +277,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 @Override
                 public void onClick(View view) {
                     if(ContentAdapter.this.data != null &&
-                            ContentAdapter.this.data.length >= getAdapterPosition() &&
+                            ContentAdapter.this.data.length > getAdapterPosition() &&
                             ContentAdapter.this.data[getAdapterPosition()] != null) {
                         ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
                     }

@@ -26,7 +26,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
     private Fullscreen fullscreen;
     private Item item;
 
-    public ItemAdapter(Fullscreen fullscreen, FragmentManager fragmentManager, ViewPager pager,  PageType[] possiblePages, Item item) {
+    public ItemAdapter(final Fullscreen fullscreen, FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
         this.fullscreen = fullscreen;
@@ -62,6 +62,11 @@ public class ItemAdapter extends FragmentPagerAdapter {
 
             @Override
             public void onPageSelected(int position) {
+                if(pages.get(position) == PageType.READABILITY) {
+                    fullscreen.openFullScreen();
+                } else if(pages.get(oldPos) == PageType.READABILITY){
+                    fullscreen.closeFullScreen();
+                }
                 ((FragmentCycle) fragments[oldPos]).onPauseFragment();
                 ((FragmentCycle) fragments[position]).onResumeFragment();
                 oldPos = position;
@@ -87,7 +92,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 fragments[position] = page;
                 break;
             case READABILITY:
-                page = Readability.newInstance(fullscreen);
+                page = Readability.newInstance();
                 fragments[position] =  page;
                 break;
             case SKIMMER:

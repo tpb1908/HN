@@ -125,6 +125,7 @@ public class ReadabilityLoader {
                                     rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
                                 }
                             }
+                            listenerCache.remove(url);
                         }
 
                         @Override

@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -53,6 +53,12 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @BindColor(R.color.colorPrimaryTextInverse)
     int darkText;
 
+    @BindView(R.id.webview_container)
+    FrameLayout mWebContainer;
+
+    @BindView(R.id.fullscreen)
+    FrameLayout mFullscreen;
+
     @BindView(R.id.readability_webview)
     ScrollingAdBlockingWebView mWebView;
 
@@ -64,16 +70,14 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private boolean ampView = false;
 
-    private ItemAdapter.Fullscreen fullscreen;
 
     private String url;
     private String boilerpipePage;
 
     private boolean isArticleReady = false;
 
-    public static Readability newInstance(ItemAdapter.Fullscreen fullscreen) {
+    public static Readability newInstance() {
         final Readability r = new Readability();
-        r.fullscreen = fullscreen;
         return r;
     }
 
@@ -92,6 +96,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
             }
         }
         mWebView.bindProgressBar(mProgressSpinner, true, true);
+        mWebView.setNestedScrollingEnabled(false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
     }
@@ -110,6 +115,14 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         } else {
             mWebView.loadData(boilerpipePage, "text/html", "utf-8");
         }
+    }
+
+    private void makeFullScreen() {
+        mWebContainer.removeView(mWebView);
+        mFullscreen.addView(mWebView);
+        final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        mWebView.setLayoutParams(params);
     }
 
     @Override
@@ -193,7 +206,10 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+//        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+
+        //makeFullScreen();
+
     }
 }
