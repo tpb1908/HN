@@ -156,6 +156,10 @@ public class ReadabilityLoader {
         return html.substring(0, startPos) + CSS + html.substring(endPos + 8);
     }
 
+    public static String stripCSS(String html) {
+        return html.substring(0, html.indexOf("<style")) + html.substring(html.lastIndexOf("</style>") + 8);
+    }
+
     private void stripImageCopyright() {}
 
     public interface ReadabilityLoadDone {

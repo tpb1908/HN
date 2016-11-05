@@ -25,6 +25,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.network.ReadabilityLoader;
@@ -151,13 +152,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
         Log.i(TAG, "loadDone: Skimmer load " + isArticleReady);
         if(success) {
             try {
-                String content = result.getString("content");
-                if(content == null) content = " ";
-                article = Html.fromHtml(content).
-                        toString().
-                        replace("\n", " ");
-                isArticleReady = true;
-                if(mTextView != null) setupSkimmer();
+                loadDone((String) result.get("content"));
                 Log.i(TAG, "loadDone: Done loading. Is view OK? " + (mTextView != null));
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
@@ -178,7 +173,28 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void loadDone(String result, boolean success, int code) {
-
+        if(success) {
+            loadDone(ReadabilityLoader.stripCSS(result));
+        } else {
+            mErrorTextView.setVisibility(View.VISIBLE);
+            mProgressSpinner.setVisibility(View.GONE);
+            mTextView.setVisibility(View.INVISIBLE);
+            mSkimmerProgress.setVisibility(View.INVISIBLE);
+            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
+                mErrorTextView.setText(R.string.error_pdf_skimmer);
+            } else {
+                mErrorTextView.setText(R.string.error_loading_page);
+            }
+        }
+    }
+    
+    private void loadDone(String content) {
+        if(content== null) content = " ";
+        article = Html.fromHtml(content).
+                toString().
+                replace("\n", " ");
+        isArticleReady = true;
+        if(mTextView != null) setupSkimmer();
     }
 
     private void setupSkimmer() {
@@ -236,12 +252,12 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void loadItem(Item item) {
-//        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
-//            new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
-//        } else {
-//            article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
-//            isArticleReady = true;
-//        }
+        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
+            new ReadabilityLoader(this).boilerPipe(item.getUrl(), true);
+        } else {
+            article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
+            isArticleReady = true;
+        }
     }
 
     @Override
