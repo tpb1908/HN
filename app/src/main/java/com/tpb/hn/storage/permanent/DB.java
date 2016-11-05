@@ -2,14 +2,18 @@ package com.tpb.hn.storage.permanent;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNParser;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by theo on 03/11/16.
@@ -63,14 +67,65 @@ class DB extends SQLiteOpenHelper {
         new WriteItemTask().doInBackground(items);
     }
 
-    void loadRecentItems() {
+    void loadRecentItems(int count) {
+        //final String QUERY = "SELECT * FROM " + TABLE + " LIMIT 10 ";
+    }
+
+    void loadRecentItems(DBCallback callback, long timescale) {
+        new LoadItemsTask(callback).doInBackground(100L, timescale);
 
     }
 
     public interface DBCallback {
 
-        boolean writeComplete(boolean success, Item item);
+        void writeComplete(boolean success, Item item);
 
+        void loadComplete(boolean success, ArrayList<Item> items);
+
+    }
+
+    private class LoadItemsTask extends AsyncTask<Long, Void, Boolean> {
+        private DBCallback callback;
+
+        LoadItemsTask(DBCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Boolean doInBackground(Long... params) {
+            final SQLiteDatabase db = DB.this.getReadableDatabase();
+            Cursor cursor;
+            String QUERY;
+            long timescale, bound;
+            if(params.length == 1) {
+                bound = params[0];
+
+            } if(params.length == 2) {
+                bound = params[0];
+                timescale =  System.currentTimeMillis() - params[1];
+                QUERY = "SELECT * FROM " + TABLE; // + " WHERE " + KEY_LAST_UPDATE + " > ?";
+                cursor = db.rawQuery(QUERY, new String[] {}); // Long.toString(timescale)});
+
+                final ArrayList<Item> items = new ArrayList<>();
+
+                if(cursor.moveToFirst()) {
+                    do {
+                        final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                        try {
+                            final Item i = HNParser.JSONToItem(new JSONObject(s));
+                            items.add(i);
+                        } catch(Exception e) {
+                            Log.e(TAG, "loadRecentItems: Exception parsing ", e);
+                        }
+                    } while(cursor.moveToNext());
+                }
+                cursor.close();
+                Log.i(TAG, "doInBackground: Items loaded " + items.size() + " " + items.toString());
+                //callback.loadComplete(true, items);
+            }
+
+            return null;
+        }
     }
 
     private class WriteItemTask extends AsyncTask<Item, Void, Boolean> {
@@ -93,13 +148,14 @@ class DB extends SQLiteOpenHelper {
                 values.put(KEY_ID, i.getId());
                 values.put(KEY_LAST_UPDATE, i.getLastUpdated());
                 values.put(KEY_JSON, JSON.toString());
-                final boolean success = db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE) != -1;
+                final boolean success = db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
                 allSuccessful &= success;
-                if(callback != null) callback.writeComplete(success, i);
+                //if(callback != null) callback.writeComplete(success, i);
                 values.clear();
             }
             db.setTransactionSuccessful();
             db.endTransaction();
+            Log.i(TAG, "doInBackground: Insert complete " + allSuccessful);
             return allSuccessful;
         }
     }

@@ -2,6 +2,7 @@ package com.tpb.hn.storage.permanent;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
@@ -42,6 +43,7 @@ public class Cache {
     private Cache(Context context) {
         db = new DB(context);
         sp = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        db.loadRecentItems(null, 1000 * 3600 * 24 * 100);
     }
 
     public ArrayList<Item> getItems() {
@@ -53,6 +55,7 @@ public class Cache {
     }
 
     public void insert(Item item) {
+        Log.i(TAG, "insert: Inserting item " + item.getId());
         if(item.getType() == ItemType.COMMENT) {
             final Item parent = new Item();
             parent.setId(item.getParent());

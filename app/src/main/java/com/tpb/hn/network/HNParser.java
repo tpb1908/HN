@@ -75,6 +75,7 @@ public class HNParser {
         final JSONObject object = new JSONObject();
         try {
             object.put(KEY_ID, item.getId());
+            object.put(KEY_TYPE, item.getType());
             object.put(KEY_TEXT, item.getType());
             object.put(KEY_SCORE, item.getScore());
             object.put(KEY_DESCENDANTS, item.getDescendants());
