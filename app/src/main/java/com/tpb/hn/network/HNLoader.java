@@ -73,35 +73,35 @@ public class HNLoader {
 
     private void getItemIds(final HNItemIdLoadDone IdListener, final String url) {
         Log.i(TAG, "getItemIds: Getting item Ids with  " + url);
-            AndroidNetworking.get(url)
-                    .setTag(url)
-                    .setPriority(Priority.HIGH)
-                    .build()
-                    .getAsString(new StringRequestListener() {
-                        @Override
-                        public void onResponse(String response) {
-                            final int[] items = HNParser.extractIntArray(response);
-                            if(url.equals(APIPaths.getTopPath())) {
-                                top = items;
-                            } else if(url.equals(APIPaths.getNewPath())) {
-                                newstories = items;
-                            } else if(url.equals(APIPaths.getBestPath())) {
-                                best = items;
-                            } else if(url.equals(APIPaths.getAskPath())) {
-                                ask = items;
-                            } else if(url.equals(APIPaths.getShowPath())) {
-                                show = items;
-                            } else if(url.equals(APIPaths.getJobPath())) {
-                                jobs = items;
-                            }
-                            IdListener.IdLoadDone(items);
+        AndroidNetworking.get(url)
+                .setTag(url)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(new StringRequestListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        final int[] items = HNParser.extractIntArray(response);
+                        if(url.equals(APIPaths.getTopPath())) {
+                            top = items;
+                        } else if(url.equals(APIPaths.getNewPath())) {
+                            newstories = items;
+                        } else if(url.equals(APIPaths.getBestPath())) {
+                            best = items;
+                        } else if(url.equals(APIPaths.getAskPath())) {
+                            ask = items;
+                        } else if(url.equals(APIPaths.getShowPath())) {
+                            show = items;
+                        } else if(url.equals(APIPaths.getJobPath())) {
+                            jobs = items;
                         }
+                        IdListener.IdLoadDone(items);
+                    }
 
-                        @Override
-                        public void onError(ANError anError) {
+                    @Override
+                    public void onError(ANError anError) {
 
-                        }
-                    });
+                    }
+                });
     }
 
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {

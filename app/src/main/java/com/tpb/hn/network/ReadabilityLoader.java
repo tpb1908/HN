@@ -6,6 +6,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.StringRequestListener;
 
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ public class ReadabilityLoader {
 
     public void loadArticle(final String url, boolean forImmediateUse) {
         if(url.endsWith(".pdf")) {
-            listener.loadDone(null, false, ReadabilityLoadDone.ERROR_PDF);
+            listener.loadDone("", false, ReadabilityLoadDone.ERROR_PDF);
             return;
         }
         if(cache.containsKey(url)) {
@@ -73,7 +74,7 @@ public class ReadabilityLoader {
                                 Log.e(TAG, "onResponse: ", e);
                                 Log.i(TAG, "onResponse: " + e.getMessage());
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
-                                    rld.loadDone(null, false, ReadabilityLoadDone.ERROR_PARSING);
+                                    rld.loadDone("", false, ReadabilityLoadDone.ERROR_PARSING);
                                 }
                             }
                         }
@@ -83,9 +84,55 @@ public class ReadabilityLoader {
                             Log.e(TAG, "onError: ", anError );
                             Log.i(TAG, "onError: " + anError.getErrorBody());
                             for(ReadabilityLoadDone rld : listenerCache.get(url)) {
-                                rld.loadDone(null, false, anError.getErrorCode());
+                                rld.loadDone("", false, anError.getErrorCode());
                             }
 
+                        }
+                    });
+        }
+
+    }
+
+    public void boilerPipe(final String url, boolean forImmediateUse) {
+        if(url.endsWith(".pdf")) {
+            listener.loadDone("", false, ReadabilityLoadDone.ERROR_PDF);
+            return;
+        }
+
+        if(cache.containsKey(url)) {
+            Log.i(TAG, "loadArticle: Listener is " + listener);
+            listener.loadDone(cache.get(url), true, ReadabilityLoadDone.NO_ERROR);
+        } //We still pull data to see if it has changed
+
+        if(listenerCache.containsKey(url)) {
+            listenerCache.get(url).add(listener);
+        } else {
+            final ArrayList<ReadabilityLoadDone> listeners = new ArrayList<>();
+            listeners.add(listener);
+            listenerCache.put(url, listeners);
+            AndroidNetworking.get(APIPaths.getBoilerpipePath(url))
+                    .setTag("boilerpipe")
+                    .setPriority(forImmediateUse ? Priority.IMMEDIATE : Priority.MEDIUM)
+                    .build()
+                    .getAsString(new StringRequestListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            for(ReadabilityLoadDone rld : listenerCache.get(url)) {
+                                if(rld == null) {
+                                    listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null
+                                } else {
+                                    rld.loadDone(response, response != null, ReadabilityLoadDone.NO_ERROR);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            Log.e(TAG, "onError: ", anError );
+                            Log.i(TAG, "onError: " + anError.getErrorBody());
+                            for(ReadabilityLoadDone rld : listenerCache.get(url)) {
+                                rld.loadDone("", false, anError.getErrorCode());
+                            }
                         }
                     });
         }
@@ -100,6 +147,8 @@ public class ReadabilityLoader {
         int NO_ERROR = 0;
 
         void loadDone(JSONObject result, boolean success, int code);
+
+        void loadDone(String result, boolean success, int code);
 
     }
 

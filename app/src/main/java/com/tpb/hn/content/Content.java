@@ -20,16 +20,11 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.User;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemViewer;
 import com.tpb.hn.network.AdBlocker;
-import com.tpb.hn.network.HNLoader;
-import com.tpb.hn.network.HNUserLoader;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +33,7 @@ import butterknife.ButterKnife;
  * Created by theo on 17/10/16.
  */
 
-public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDone, ContentAdapter.ContentOpener, Login.LoginListener, HNUserLoader.HNUserLoadDone {
+public class Content extends AppCompatActivity implements ContentAdapter.ContentOpener, Login.LoginListener {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -52,7 +47,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     FastScrollRecyclerView mRecycler;
 
     @BindView(R.id.content_swiper)
-    SwipeRefreshLayout mSwiper;
+    SwipeRefreshLayout mRefreshSwiper;
 
     private ContentAdapter mAdapter;
 
@@ -69,11 +64,12 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
         }
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
+
         AdBlocker.init(this);
         AndroidNetworking.initialize(getApplicationContext());
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mSwiper);
+        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
 
         mNavSpinner.setAdapter(new ArrayAdapter<>(
@@ -100,22 +96,8 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     }
 
     @Override
-    public void userLoaded(User user) {
-
-    }
-
-    @Override
     public void response(boolean success) {
         Log.i(TAG, "response: Was login successful ? " + success);
-    }
-
-    @Override
-    public void itemLoaded(Item item, boolean success) {
-
-    }
-
-    @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success) {
     }
 
     @Override
@@ -132,7 +114,7 @@ public class Content extends AppCompatActivity implements HNLoader.HNItemLoadDon
     }
 
     @Override
-    public void openPage(Item item, ItemAdapter.PageType type) {
+    public void openItem(Item item, ItemAdapter.PageType type) {
 
     }
 

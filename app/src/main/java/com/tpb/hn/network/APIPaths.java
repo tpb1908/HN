@@ -23,6 +23,8 @@ public class APIPaths {
     private static final String JOB_STORIES = "jobstories";
     private static final String UPDATED = "updates/";
 
+    private static final String BOILERPIPE_PATH = "http://boilerpipe-web.appspot.com/extract?url=";
+
     private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
 
     private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
@@ -98,6 +100,10 @@ public class APIPaths {
 
     public static String getMercuryAmpPath(String url) {
         return MERCURY_AMP_PATH + url;
+    }
+
+    public static String getBoilerpipePath(String url) {
+        return  BOILERPIPE_PATH + url + "&output=htmlFragment";
     }
 
     public static String getPDFDisplayPath(String url) {

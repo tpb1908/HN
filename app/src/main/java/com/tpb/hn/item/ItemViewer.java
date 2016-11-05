@@ -97,7 +97,7 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
             }
         }
         //TODO- Fullscreen mode
-
+        //TODO- Load Items in background while user is looking at current item
     }
 
     @Override

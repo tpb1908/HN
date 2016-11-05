@@ -48,11 +48,12 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @BindView(R.id.readability_error_message)
     TextView mErrorTextView;
 
-    private boolean ampView = true;
+    private boolean ampView = false;
 
     private ItemAdapter.Fullscreen fullscreen;
 
     private String url;
+    private String boilerpipePage;
 
     private boolean isArticleReady = false;
 
@@ -71,6 +72,8 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
             setupViews();
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("url") != null) {
+                url = savedInstanceState.getString("url");
+                boilerpipePage = savedInstanceState.getString("boilerpipePage");
                 setupViews();
             }
         }
@@ -88,7 +91,11 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     private void setupViews() {
         //mProgressSpinner.setVisibility(View.GONE);
         mErrorTextView.setVisibility(View.GONE);
-        mWebView.loadUrl(url);
+        if(ampView) {
+            mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+        } else {
+            mWebView.loadData(boilerpipePage, "text/html", "utf-8");
+        }
     }
 
     @Override
@@ -100,7 +107,6 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
                 mProgressSpinner.setVisibility(View.GONE);
-
             }
         } else {
             mProgressSpinner.setVisibility(View.GONE);
@@ -118,25 +124,44 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     }
 
     @Override
+    public void loadDone(String result, boolean success, int code) {
+        Log.i(TAG, "loadDone: Boilerpipe load done " + success);
+        if(success) {
+            isArticleReady = true;
+            boilerpipePage = result;
+            if(mWebView != null) setupViews();
+        } else {
+            mProgressSpinner.setVisibility(View.GONE);
+            mErrorTextView.setVisibility(View.VISIBLE);
+            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
+                mErrorTextView.setText(R.string.error_pdf_readability);
+            } else {
+                mErrorTextView.setText(R.string.error_loading_page);
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("url", url);
+        outState.putString("boilerpipe", boilerpipePage);
     }
 
     @Override
     public void loadItem(Item item) {
         //TODO- Check if it has a url, not just type
         if(item.getType() == ItemType.STORY && item.getUrl() != null) {
+            new ReadabilityLoader(this).boilerPipe(item.getUrl(), true);
             if(ampView) {
                 isArticleReady = true;
                 url = APIPaths.getMercuryAmpPath(item.getUrl());
                 if(mWebView != null) setupViews();
             } else {
-                new ReadabilityLoader(this).loadArticle(item.getUrl(), true);
+                new ReadabilityLoader(this).boilerPipe(item.getUrl(), true);
             }
         } else {
 
-            //isArticleReady = true;
         }
 
     }

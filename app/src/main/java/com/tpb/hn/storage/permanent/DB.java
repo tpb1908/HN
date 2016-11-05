@@ -63,6 +63,10 @@ class DB extends SQLiteOpenHelper {
         new WriteItemTask().doInBackground(items);
     }
 
+    void loadRecentItems() {
+
+    }
+
     public interface DBCallback {
 
         boolean writeComplete(boolean success, Item item);

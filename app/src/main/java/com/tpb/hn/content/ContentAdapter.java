@@ -294,9 +294,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
         void openItem(Item item);
 
-        void openUser(Item item);
+        void openItem(Item item, ItemAdapter.PageType type);
 
-        void openPage(Item item, ItemAdapter.PageType type);
+        void openUser(Item item);
 
     }
 
