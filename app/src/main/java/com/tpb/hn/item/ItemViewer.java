@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +66,8 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
 
     private ItemAdapter mAdapter;
 
+    private int originalFlags;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +98,8 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
                 finish();
             }
         }
+
+        originalFlags = getWindow().getDecorView().getSystemUiVisibility();
         //TODO- Fullscreen mode
         //TODO- Load Items in background while user is looking at current item
     }
@@ -132,11 +136,17 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     @Override
     public void openFullScreen() {
         mStoryAppbar.setExpanded(false, true);
+        getWindow().getDecorView().setSystemUiVisibility(originalFlags |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION  |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        mStoryPager.setSwipeEnabled(false);
     }
 
     @Override
     public void closeFullScreen() {
         mStoryAppbar.setExpanded(true, true);
+        getWindow().getDecorView().setSystemUiVisibility(originalFlags);
+        mStoryPager.setSwipeEnabled(true);
     }
 
     @Override

@@ -3,12 +3,13 @@ package com.tpb.hn.item.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -19,7 +20,6 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.ItemAdapter;
 import com.tpb.hn.item.ItemLoader;
-import com.tpb.hn.item.ScrollingAdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.ReadabilityLoader;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -41,6 +41,8 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private Unbinder unbinder;
 
+    private boolean fullscreen = false;
+
     @BindColor(R.color.md_grey_50)
     int lightBG;
 
@@ -53,20 +55,30 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @BindColor(R.color.colorPrimaryTextInverse)
     int darkText;
 
-    @BindView(R.id.webview_container)
-    FrameLayout mWebContainer;
+
+    @BindView(R.id.test)
+    TextView test;
 
     @BindView(R.id.fullscreen)
     FrameLayout mFullscreen;
 
-    @BindView(R.id.readability_webview)
-    ScrollingAdBlockingWebView mWebView;
+    @BindView(R.id.webview_scroller)
+    NestedScrollView mScrollView;
 
-    @BindView(R.id.readability_loading_spinner)
-    ProgressBar mProgressSpinner;
+    @BindView(R.id.webview)
+    WebView mWebView;
 
-    @BindView(R.id.readability_error_message)
-    TextView mErrorTextView;
+    @BindView(R.id.webview_container)
+    FrameLayout mWebContainer;
+
+//    @BindView(R.id.readability_webview)
+//    ScrollingAdBlockingWebView mWebView;
+//
+//    @BindView(R.id.readability_loading_spinner)
+//    ProgressBar mProgressSpinner;
+//
+//    @BindView(R.id.readability_error_message)
+//    TextView mErrorTextView;
 
     private boolean ampView = false;
 
@@ -95,7 +107,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
                 setupViews();
             }
         }
-        mWebView.bindProgressBar(mProgressSpinner, true, true);
+        //mWebView.bindProgressBar(mProgressSpinner, true, true);
         mWebView.setNestedScrollingEnabled(false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return inflated;
@@ -109,7 +121,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private void setupViews() {
         //mProgressSpinner.setVisibility(View.GONE);
-        mErrorTextView.setVisibility(View.GONE);
+        //mErrorTextView.setVisibility(View.GONE);
         if(ampView) {
             mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
         } else {
@@ -123,6 +135,14 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
         final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         mWebView.setLayoutParams(params);
+        fullscreen = true;
+        Log.d(TAG, "makeFullScreen: scroller " + mScrollView.getMeasuredHeight() + ", container " + mWebContainer.getMeasuredHeight() + ", fullscreen " + mFullscreen.getMeasuredHeight() + ", test  "  + test.getMeasuredHeight());
+        mFullscreen.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "makeFullScreen: scroller " + mScrollView.getMeasuredHeight() + ", container " + mWebContainer.getMeasuredHeight() + ", fullscreen " + mFullscreen.getMeasuredHeight() + ", test " + test.getMeasuredHeight() );
+            }
+        });
     }
 
     @Override
@@ -133,15 +153,15 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
                 if(mWebView != null) setupViews();
             } catch(Exception e) {
                 Log.e(TAG, "loadDone: ", e);
-                mProgressSpinner.setVisibility(View.GONE);
+                //mProgressSpinner.setVisibility(View.GONE);
             }
         } else {
-            mProgressSpinner.setVisibility(View.GONE);
-            mErrorTextView.setVisibility(View.VISIBLE);
+            //mProgressSpinner.setVisibility(View.GONE);
+            //mErrorTextView.setVisibility(View.VISIBLE);
             if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
-                mErrorTextView.setText(R.string.error_pdf_readability);
+              //  mErrorTextView.setText(R.string.error_pdf_readability);
             } else {
-                mErrorTextView.setText(R.string.error_loading_page);
+             //   mErrorTextView.setText(R.string.error_loading_page);
             }
 
             //TODO- Option to retry
@@ -162,12 +182,12 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
             Log.i(TAG, "loadDone: " + boilerpipePage);
             if(mWebView != null) setupViews();
         } else {
-            mProgressSpinner.setVisibility(View.GONE);
-            mErrorTextView.setVisibility(View.VISIBLE);
+           // mProgressSpinner.setVisibility(View.GONE);
+           // mErrorTextView.setVisibility(View.VISIBLE);
             if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
-                mErrorTextView.setText(R.string.error_pdf_readability);
+              //  mErrorTextView.setText(R.string.error_pdf_readability);
             } else {
-                mErrorTextView.setText(R.string.error_loading_page);
+               // mErrorTextView.setText(R.string.error_loading_page);
             }
         }
     }
@@ -209,7 +229,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 //        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
-        //makeFullScreen();
+        if(!fullscreen) makeFullScreen();
 
     }
 }
