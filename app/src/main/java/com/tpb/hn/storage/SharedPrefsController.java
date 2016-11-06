@@ -136,7 +136,7 @@ public class SharedPrefsController {
                         pageTypes[i] = ItemAdapter.PageType.BROWSER;
                         break;
                     case 'R':
-                        pageTypes[i] = ItemAdapter.PageType.READABILITY;
+                        pageTypes[i] = ItemAdapter.PageType.TEXT_READER;
                         break;
                     case 'S':
                         pageTypes[i] = ItemAdapter.PageType.SKIMMER;

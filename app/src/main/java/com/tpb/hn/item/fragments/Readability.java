@@ -80,7 +80,7 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 //    @BindView(R.id.readability_error_message)
 //    TextView mErrorTextView;
 
-    private boolean ampView = false;
+    private boolean ampView = true;
 
 
     private String url;

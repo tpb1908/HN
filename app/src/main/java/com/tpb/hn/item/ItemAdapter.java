@@ -40,9 +40,9 @@ public class ItemAdapter extends FragmentPagerAdapter {
                         pages.add(PageType.BROWSER);
                     }
                     break;
-                case READABILITY:
+                case TEXT_READER:
                     if(item.getUrl() != null || item.getText() != null) {
-                        pages.add(PageType.READABILITY);
+                        pages.add(PageType.TEXT_READER);
                     }
                     break;
                 case SKIMMER:
@@ -62,9 +62,9 @@ public class ItemAdapter extends FragmentPagerAdapter {
 
             @Override
             public void onPageSelected(int position) {
-                if(pages.get(position) == PageType.READABILITY) {
+                if(pages.get(position) == PageType.TEXT_READER) {
                     fullscreen.openFullScreen();
-                } else if(pages.get(oldPos) == PageType.READABILITY){
+                } else if(pages.get(oldPos) == PageType.TEXT_READER){
                     fullscreen.closeFullScreen();
                 }
                 ((FragmentCycle) fragments[oldPos]).onPauseFragment();
@@ -91,7 +91,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 page = Browser.newInstance(fullscreen);
                 fragments[position] = page;
                 break;
-            case READABILITY:
+            case TEXT_READER:
                 page = Readability.newInstance();
                 fragments[position] =  page;
                 break;
@@ -118,7 +118,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 return "COMMENT";
             case BROWSER:
                 return "ARTICLE";
-            case  READABILITY:
+            case TEXT_READER:
                 return "READ";
             case SKIMMER:
                 return "SKIM";
@@ -144,7 +144,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
     }
 
     public enum PageType {
-        COMMENTS, BROWSER, READABILITY, SKIMMER
+        COMMENTS, BROWSER, TEXT_READER, AMP_READER,  SKIMMER
     }
 
 }
