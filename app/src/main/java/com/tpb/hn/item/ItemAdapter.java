@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.fragments.Browser;
 import com.tpb.hn.item.fragments.Comments;
+import com.tpb.hn.item.fragments.Content;
 import com.tpb.hn.item.fragments.Readability;
 import com.tpb.hn.item.fragments.Skimmer;
 
@@ -52,6 +53,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
                     break;
             }
         }
+        pages.add(PageType.AMP_READER);
         fragments = new Fragment[pages.size()];
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int oldPos = 0;
@@ -99,6 +101,9 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 page = Skimmer.newInstance(fullscreen);
                 fragments[position] = page;
                 break;
+            case AMP_READER:
+                page = Content.newInstance(PageType.BROWSER);
+                fragments[position] = page;
         }
         if(fragments[position] != null && item != null) {
             ((ItemLoader) fragments[position]).loadItem(item);
@@ -122,6 +127,8 @@ public class ItemAdapter extends FragmentPagerAdapter {
                 return "READ";
             case SKIMMER:
                 return "SKIM";
+            case AMP_READER:
+                return "READ";
         }
         return "Error";
     }
@@ -144,7 +151,7 @@ public class ItemAdapter extends FragmentPagerAdapter {
     }
 
     public enum PageType {
-        COMMENTS, BROWSER, TEXT_READER, AMP_READER,  SKIMMER
+        COMMENTS, BROWSER, TEXT_READER, AMP_READER, SKIMMER
     }
 
 }

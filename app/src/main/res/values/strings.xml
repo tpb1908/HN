@@ -18,12 +18,11 @@
     <string name="button_skimmer_restart">Restart</string>
 
     <string name="text_item_by">By %1$s</string>
-
     <string name="text_title_empty"><b>\u2026</b></string>
-
     <string name="text_info_empty">\u2026</string>
-
     <string name="text_attempting_item_load">Loading item</string>
+
+    <string name="action_find_in_page">Find in page</string>
 
     <string name="pref_content">Content page</string>
     <string name="pref_content_summary">How the content feed is displayed</string>

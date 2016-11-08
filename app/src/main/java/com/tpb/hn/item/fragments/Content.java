@@ -82,7 +82,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View inflated = inflater.inflate(R.layout.fragment_readability, container, false);
+        final View inflated = inflater.inflate(R.layout.fragment_content, container, false);
         unbinder = ButterKnife.bind(this, inflated);
         if(mIsArticleReady) {
             bindData();
@@ -119,6 +119,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mWebContainer.setLayoutParams(params);
         }
     }
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -160,12 +162,12 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-
+        //If a JSONObject is returned we have loaded the boilerpipe page
     }
 
     @Override
     public void loadDone(String result, boolean success, int code) {
-
+        //We have loaded the boilerpipe page
     }
 
 }
