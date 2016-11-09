@@ -4,6 +4,13 @@ import android.util.Log;
 
 import com.tpb.hn.BuildConfig;
 
+import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * Created by theo on 17/10/16.
  */
@@ -24,6 +31,22 @@ public class APIPaths {
     private static final String UPDATED = "updates/";
 
     private static final String BOILERPIPE_PATH = "http://boilerpipe-web.appspot.com/extract?url=";
+
+    private static final String MERCURY_PARSER_PATH = "https://mercury.postlight.com/parser?url=";
+    private static final String MERCURY_HEADER_KEY = "x-api-key";
+    private static final String MERCURY_KEY = BuildConfig.MERCURY_API_TOKEN;
+    public static OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        final Request request = chain.request();
+                        final Request newRequest = request.newBuilder()
+                                .addHeader(MERCURY_HEADER_KEY, MERCURY_KEY)
+                                .build();
+                        return chain.proceed(newRequest);
+                    }
+                })
+                .build();
 
     private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
 
@@ -100,6 +123,10 @@ public class APIPaths {
 
     public static String getMercuryAmpPath(String url) {
         return MERCURY_AMP_PATH + url;
+    }
+
+    public static String getMercuryParserPath(String url) {
+        return MERCURY_PARSER_PATH + url;
     }
 
     public static String getBoilerpipePath(String url) {

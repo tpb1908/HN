@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ import butterknife.Unbinder;
  * Created by theo on 06/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
+public class Content extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -83,6 +84,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     EditText mFindEditText;
 
     private boolean mIsFindShown = false;
+    private boolean mIsSearchComplete = false;
 
     @OnClick(R.id.button_find_in_page)
     void onFindInPagePressed() {
@@ -109,6 +111,18 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             toggleFullscreen(!mIsFullscreen);
         }
     }
+
+    private View.OnClickListener mFullScreenToggler  = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(mIsSearchComplete) {
+                mWebView.findNext(true);
+            } else {
+                toggleFullscreen(!mIsFullscreen);
+            }
+        }
+    };
+
 
     private FragmentPagerAdapter.PageType mType;
 
@@ -139,12 +153,6 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mWebView.bindProgressBar(mProgressBar, true, true);
 
         mParent.showFab();
-        mParent.setUpFab(R.drawable.ic_zoom_out_arrows, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleFullscreen(!mIsFullscreen);
-            }
-        });
 
         if(mIsArticleReady) {
             bindData();
@@ -177,6 +185,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 mWebView.loadUrl(url);
                // mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
             } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+                Log.i(TAG, "bindData: Text reader");
                 mWebView.loadData(readablePage, "text/html", "utf-8");
             }
         }
@@ -188,18 +197,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             @Override
             public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
                 if(isDoneCounting) {
-                    /*
-                    If there are matches
-                    Set the FAB button to
-                    mWebView.findNext()
-
-                     */
-                    mParent.setUpFab(R.drawable.ic_chevron_down, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mWebView.findNext(true);
-                        }
-                    });
+                    mIsSearchComplete = true;
+                    mParent.setFabDrawable(R.drawable.ic_chevron_down);
                 }
             }
         });
@@ -207,6 +206,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     private void toggleFullscreen(boolean fullscreen) {
+        Log.i(TAG, "toggleFullscreen: " + fullscreen);
         mIsFullscreen = fullscreen;
         if(fullscreen) {
             mWebContainer.removeView(mWebView);
@@ -227,16 +227,10 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mWebView.setLayoutParams(params);
             mWebView.clearMatches();
             mParent.closeFullScreen();
-            mParent.setUpFab(R.drawable.ic_zoom_out_arrows, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    toggleFullscreen(!mIsFullscreen);
-                }
-            });
+            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
+            mIsSearchComplete = false;
         }
     }
-
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -260,7 +254,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-
+        mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows, mFullScreenToggler);
     }
 
     @Override
@@ -278,17 +272,16 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 bindData();
             } else {
                 url = item.getUrl();
-                mIsArticleReady = true;
-                new ReadabilityLoader(this).boilerPipe(url, true);
+               // mIsArticleReady = true;
+               // new ReadabilityLoader(this).boilerPipe(url, true);
+                new ReadabilityLoader(this).loadArticle(url, true);
             }
         }
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-        /*
-        This will be unused until I can get a key from Mercury
-         */
+
     }
 
     @Override

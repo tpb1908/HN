@@ -53,7 +53,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     private ContentAdapter mAdapter;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

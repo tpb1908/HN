@@ -35,7 +35,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
+public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Readability.class.getSimpleName();
     private Tracker mTracker;
 

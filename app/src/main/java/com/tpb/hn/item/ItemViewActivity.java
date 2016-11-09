@@ -121,6 +121,10 @@ public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNI
         mFab.setOnClickListener(listener);
     }
 
+    public void setFabDrawable(int resId) {
+        mFab.setImageDrawable(getDrawable(resId));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

@@ -26,7 +26,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycle {
+public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 

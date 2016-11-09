@@ -42,7 +42,7 @@ import butterknife.Unbinder;
  * Takes the data from Readability and displays it Spritz style
  */
 
-public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
+public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
     private Tracker mTracker;
 

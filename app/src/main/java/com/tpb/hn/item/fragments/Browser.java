@@ -31,7 +31,7 @@ import butterknife.Unbinder;
  *
  */
 
-public class Browser extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycle {
+public class Browser extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Browser.class.getSimpleName();
     private Tracker mTracker;
 

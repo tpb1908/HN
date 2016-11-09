@@ -47,8 +47,9 @@ public class ReadabilityLoader {
             listeners.add(listener);
             listenerCache.put(url, listeners);
             final long start = System.nanoTime();
-            AndroidNetworking.get(APIPaths.getReadabilityParserPath(url))
-                    .setTag("readability")
+            AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
+                    .setTag("mercury")
+                    .setOkHttpClient(APIPaths.MERCURY_CLIENT)
                     .setPriority(forImmediateUse ? Priority.IMMEDIATE : Priority.MEDIUM)
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
@@ -82,7 +83,7 @@ public class ReadabilityLoader {
                         @Override
                         public void onError(ANError anError) {
                             Log.e(TAG, "onError: ", anError );
-                            Log.i(TAG, "onError: " + anError.getErrorBody());
+                            Log.i(TAG, "onError: " + anError.getErrorBody() );
                             for(ReadabilityLoadDone rld : listenerCache.get(url)) {
                                 rld.loadDone("", false, anError.getErrorCode());
                             }

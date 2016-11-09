@@ -3,9 +3,9 @@ package com.tpb.hn.item;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.fragments.Browser;
 import com.tpb.hn.item.fragments.Comments;
 import com.tpb.hn.item.fragments.Content;
 import com.tpb.hn.item.fragments.Skimmer;
@@ -54,7 +54,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                     break;
             }
         }
-        pages.add(PageType.AMP_READER);
+       // pages.add(PageType.AMP_READER);
         fragments = new Fragment[pages.size()];
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int oldPos = 0;
@@ -65,8 +65,9 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
             @Override
             public void onPageSelected(int position) {
-                ((FragmentCycle) fragments[oldPos]).onPauseFragment();
-                ((FragmentCycle) fragments[position]).onResumeFragment();
+                Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
+                ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
+                ((FragmentCycleListener) fragments[position]).onResumeFragment();
                 oldPos = position;
             }
 
@@ -86,7 +87,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 fragments[position] = page;
                 break;
             case BROWSER:
-                page = Browser.newInstance();
+                page = Content.newInstance(PageType.BROWSER);
                 fragments[position] = page;
                 break;
             case TEXT_READER:
@@ -105,6 +106,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         if(fragments[position] != null && item != null) {
             ((ItemLoader) fragments[position]).loadItem(item);
         }
+        Log.i(TAG, "getItem: Getting item " + position);
         return page;
     }
 
@@ -130,8 +132,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         return "Error";
     }
 
-
-    public interface FragmentCycle {
+    public interface FragmentCycleListener {
 
         void onPauseFragment();
 
