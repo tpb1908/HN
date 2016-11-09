@@ -25,6 +25,7 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.LockableNestedScrollView;
+import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.ReadabilityLoader;
 
 import org.json.JSONException;
@@ -108,6 +109,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mFindEditText.setText("");
             mSwitcher.showPrevious();
             mIsFindShown = false;
+            mIsSearchComplete = false;
+            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
         } else {
             toggleFullscreen(!mIsFullscreen);
         }
@@ -183,8 +186,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             if(mType == FragmentPagerAdapter.PageType.BROWSER) {
                 mWebView.loadUrl(url);
             } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
-                mWebView.loadUrl(url);
-               // mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+                mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
             } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
                 Log.i(TAG, "bindData: Text reader");
                 mWebView.loadData(readablePage, "text/html", "utf-8");
@@ -211,6 +213,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mIsFullscreen = fullscreen;
         if(fullscreen) {
             mWebContainer.removeView(mWebView);
+            //mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
             mFullscreen.addView(mWebView);
             mScrollView.setScrollingEnabled(false);
             mToolbar.setVisibility(View.VISIBLE);
@@ -220,9 +223,15 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mParent.openFullScreen();
         } else {
             mToolbar.setVisibility(View.GONE);
-            mScrollView.setScrollingEnabled(true);
             mFullscreen.removeView(mWebView);
+            mScrollView.setScrollingEnabled(true);
             mWebContainer.addView(mWebView);
+//            mWebContainer.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
+//                }
+//            });
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             mWebView.setLayoutParams(params);

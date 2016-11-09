@@ -27,6 +27,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
+        possiblePages = new PageType[] {PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER,  PageType.SKIMMER};
         for(PageType pt : possiblePages) {
             switch(pt) {
                 case COMMENTS:
@@ -125,7 +126,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             case TEXT_READER:
                 return "READ";
             case AMP_READER:
-                return "READ";
+                return "AMP";
             case SKIMMER:
                 return "SKIM";
         }
