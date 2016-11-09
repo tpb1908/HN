@@ -27,6 +27,7 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.LockableNestedScrollView;
 import com.tpb.hn.network.ReadabilityLoader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindColor;
@@ -272,7 +273,6 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 bindData();
             } else {
                 url = item.getUrl();
-               // mIsArticleReady = true;
                // new ReadabilityLoader(this).boilerPipe(url, true);
                 new ReadabilityLoader(this).loadArticle(url, true);
             }
@@ -281,7 +281,11 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-
+        try {
+            readablePage = result.get("content").toString();
+            mIsArticleReady = true;
+            bindData();
+        } catch(JSONException jse) {}
     }
 
     @Override
