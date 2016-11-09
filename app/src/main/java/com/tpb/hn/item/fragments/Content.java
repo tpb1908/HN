@@ -1,5 +1,6 @@
 package com.tpb.hn.item.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,8 +8,11 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ViewSwitcher;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -24,6 +28,7 @@ import org.json.JSONObject;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -59,6 +64,34 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @BindView(R.id.webview_container)
     FrameLayout mWebContainer;
+
+    @BindView(R.id.content_toolbar_switcher)
+    ViewSwitcher mSwitcher;
+
+    @BindView(R.id.content_find_edittext)
+    EditText mFindEditText;
+
+    private boolean mIsFindShown = false;
+
+    @OnClick(R.id.button_find_in_page)
+    void onFindInPagePressed() {
+        mSwitcher.showNext();
+        mFindEditText.requestFocus();
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        mIsFindShown = true;
+    }
+
+    @OnClick(R.id.button_content_toolbar_close)
+    void onClosePressed() {
+        if(mIsFindShown) {
+            final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            mSwitcher.showPrevious();
+        } else {
+            //Close the toolbar
+        }
+    }
 
     private ItemAdapter.PageType mType;
 
