@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -25,6 +23,7 @@ import com.tpb.hn.item.CachingAdBlockingWebView;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
+import com.tpb.hn.item.LockableNestedScrollView;
 import com.tpb.hn.network.ReadabilityLoader;
 
 import org.json.JSONObject;
@@ -63,13 +62,16 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     FrameLayout mFullscreen;
 
     @BindView(R.id.webview_scroller)
-    NestedScrollView mScrollView;
+    LockableNestedScrollView mScrollView;
 
     @BindView(R.id.webview_container)
     FrameLayout mWebContainer;
 
     @BindView(R.id.webview)
     CachingAdBlockingWebView mWebView;
+
+    @BindView(R.id.content_fragment_toolbar)
+    android.widget.Toolbar mToolbar;
 
     @BindView(R.id.content_progressbar)
     ProgressBar mProgressBar;
@@ -136,6 +138,13 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
         mWebView.bindProgressBar(mProgressBar, true, true);
 
+        mParent.showFab();
+        mParent.setUpFab(R.drawable.ic_zoom_out_arrows, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFullscreen(!mIsFullscreen);
+            }
+        });
 
         if(mIsArticleReady) {
             bindData();
@@ -197,15 +206,21 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         if(fullscreen) {
             mWebContainer.removeView(mWebView);
             mFullscreen.addView(mWebView);
+            mScrollView.setScrollingEnabled(false);
+            mToolbar.setVisibility(View.VISIBLE);
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
+            mParent.openFullScreen();
         } else {
+            mToolbar.setVisibility(View.GONE);
+            mScrollView.setScrollingEnabled(true);
             mFullscreen.removeView(mWebView);
-            mWebContainer.addView(mWebContainer);
-            final ViewGroup.LayoutParams params = mWebContainer.getLayoutParams();
+            mWebContainer.addView(mWebView);
+            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mWebContainer.setLayoutParams(params);
+            mWebView.setLayoutParams(params);
+            mParent.closeFullScreen();
         }
     }
 
@@ -233,13 +248,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mParent.showFab();
-        mParent.setUpFab(R.drawable.ic_arrow_downward_black, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
-            }
-        });
+
     }
 
     @Override

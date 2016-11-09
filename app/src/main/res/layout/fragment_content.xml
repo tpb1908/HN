@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <com.tpb.hn.item.LockableNestedScrollView
         android:id="@+id/webview_scroller"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
@@ -40,6 +40,7 @@
                 android:contentInsetEnd="0dp"
                 app:contentInsetRight="0dp"
                 app:contentInsetEnd="0dp"
+                android:visibility="gone"
                 >
 
                 <RelativeLayout
@@ -146,7 +147,7 @@
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </com.tpb.hn.item.LockableNestedScrollView>
 
 
     <FrameLayout
