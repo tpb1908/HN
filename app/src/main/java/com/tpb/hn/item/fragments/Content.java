@@ -106,7 +106,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mSwitcher.showPrevious();
             mIsFindShown = false;
         } else {
-            //Close the toolbar
+            toggleFullscreen(!mIsFullscreen);
         }
     }
 
@@ -194,7 +194,12 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                     mWebView.findNext()
 
                      */
-
+                    mParent.setUpFab(R.drawable.ic_chevron_down, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mWebView.findNext(true);
+                        }
+                    });
                 }
             }
         });
@@ -220,7 +225,14 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             mWebView.setLayoutParams(params);
+            mWebView.clearMatches();
             mParent.closeFullScreen();
+            mParent.setUpFab(R.drawable.ic_zoom_out_arrows, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleFullscreen(!mIsFullscreen);
+                }
+            });
         }
     }
 
