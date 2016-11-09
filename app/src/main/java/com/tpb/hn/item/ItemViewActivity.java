@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,15 +32,15 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoadDone, ItemAdapter.Fullscreen {
-    private static final String TAG = ItemViewer.class.getSimpleName();
+public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
+    private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 
     @BindView(R.id.item_toolbar)
     Toolbar mStoryToolbar;
 
     @BindView(R.id.item_viewpager)
-    ViewPager mStoryPager;
+    LockableViewPager mStoryPager;
 
     @BindView(R.id.item_appbar)
     AppBarLayout mStoryAppbar;
@@ -59,12 +60,15 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
     @BindView(R.id.item_author)
     TextView mAuthor;
 
+    @BindView(R.id.item_fab)
+    FloatingActionButton mFab;
+
     @OnClick(R.id.item_back_button)
     public void onClick() {
         finish();
     }
 
-    private ItemAdapter mAdapter;
+    private FragmentPagerAdapter mAdapter;
 
     private int originalFlags;
 
@@ -104,6 +108,19 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         //TODO- Load Items in background while user is looking at current item
     }
 
+    public void showFab() {
+        mFab.show();
+    }
+
+    public void hideFab() {
+        mFab.hide();
+    }
+
+    public void setUpFab(int resId, View.OnClickListener listener) {
+        mFab.setImageDrawable(getDrawable(resId));
+        mFab.setOnClickListener(listener);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -111,8 +128,8 @@ public class ItemViewer extends AppCompatActivity  implements HNLoader.HNItemLoa
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-    private void setupFragments(ItemAdapter.PageType[] possiblePages, Item item) {
-        mAdapter = new ItemAdapter(this, getSupportFragmentManager(), mStoryPager, possiblePages, item);
+    private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item);
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);

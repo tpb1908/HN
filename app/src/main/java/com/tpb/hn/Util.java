@@ -3,6 +3,8 @@ package com.tpb.hn;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.view.ContextThemeWrapper;
 
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +42,11 @@ public class Util {
             if(items[i] == key) return i;
         }
         return -1;
+    }
+
+    public static FloatingActionButton getFAB(Context context) {
+        final Context themeWrapper = new ContextThemeWrapper(context, R.style.AppTheme);
+        return new FloatingActionButton(themeWrapper);
     }
 
 }

@@ -20,7 +20,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.network.HNLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -294,7 +294,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
         void openItem(Item item);
 
-        void openItem(Item item, ItemAdapter.PageType type);
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
 
         void openUser(Item item);
 

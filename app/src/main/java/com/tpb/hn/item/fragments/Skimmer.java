@@ -26,7 +26,7 @@ import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.network.ReadabilityLoader;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -42,7 +42,7 @@ import butterknife.Unbinder;
  * Takes the data from Readability and displays it Spritz style
  */
 
-public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
+public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
     private static final String TAG = Skimmer.class.getSimpleName();
     private Tracker mTracker;
 
@@ -66,16 +66,13 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     @BindView(R.id.skimmer_error_message)
     TextView mErrorTextView;
 
-    private ItemAdapter.Fullscreen fullscreen;
 
     private String article;
     private boolean isArticleReady = false;
 
 
-    public static Skimmer newInstance(ItemAdapter.Fullscreen fullscreen) {
-        final Skimmer s = new Skimmer();
-        s.fullscreen = fullscreen;
-        return s;
+    public static Skimmer newInstance() {
+        return new Skimmer();
     }
 
     @Nullable

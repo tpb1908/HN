@@ -20,8 +20,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.ItemAdapter;
-import com.tpb.hn.item.ItemViewer;
+import com.tpb.hn.item.FragmentPagerAdapter;
+import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -31,10 +31,12 @@ import butterknife.ButterKnife;
 
 /**
  * Created by theo on 17/10/16.
+ * Main activity
+ * Displays the content feed
  */
 
-public class Content extends AppCompatActivity implements ContentAdapter.ContentOpener, Login.LoginListener {
-    private static final String TAG = Content.class.getSimpleName();
+public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentOpener, Login.LoginListener {
+    private static final String TAG = ContentActivity.class.getSimpleName();
     private Tracker mTracker;
 
     @BindView(R.id.content_toolbar)
@@ -98,13 +100,13 @@ public class Content extends AppCompatActivity implements ContentAdapter.Content
     }
 
     @Override
-    public void response(boolean success) {
-        Log.i(TAG, "response: Was login successful ? " + success);
+    public void loginResponse(boolean success) {
+        Log.i(TAG, "loginResponse: Was login successful ? " + success);
     }
 
     @Override
     public void openItem(Item item) {
-        final Intent i = new Intent(Content.this, ItemViewer.class);
+        final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
         i.putExtra("item", item);
         startActivity(i);
         overridePendingTransition(R.anim.slide_up, R.anim.none);
@@ -116,7 +118,7 @@ public class Content extends AppCompatActivity implements ContentAdapter.Content
     }
 
     @Override
-    public void openItem(Item item, ItemAdapter.PageType type) {
+    public void openItem(Item item, FragmentPagerAdapter.PageType type) {
 
     }
 

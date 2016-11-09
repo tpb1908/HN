@@ -92,14 +92,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.tpb.hn.item.ViewPager
+    <com.tpb.hn.item.LockableViewPager
         android:id="@+id/item_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </com.tpb.hn.item.ViewPager>
+    </com.tpb.hn.item.LockableViewPager>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/item_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

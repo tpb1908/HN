@@ -12,6 +12,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -19,8 +21,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.CachingAdBlockingWebView;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.ReadabilityLoader;
 
 import org.json.JSONObject;
@@ -35,7 +39,7 @@ import butterknife.Unbinder;
  * Created by theo on 06/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
+public class Content extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -53,17 +57,22 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     @BindColor(R.color.colorPrimaryTextInverse)
     int darkText;
 
+    private ItemViewActivity mParent;
+
     @BindView(R.id.fullscreen)
     FrameLayout mFullscreen;
 
     @BindView(R.id.webview_scroller)
     NestedScrollView mScrollView;
 
-    @BindView(R.id.webview)
-    WebView mWebView;
-
     @BindView(R.id.webview_container)
     FrameLayout mWebContainer;
+
+    @BindView(R.id.webview)
+    CachingAdBlockingWebView mWebView;
+
+    @BindView(R.id.content_progressbar)
+    ProgressBar mProgressBar;
 
     @BindView(R.id.content_toolbar_switcher)
     ViewSwitcher mSwitcher;
@@ -75,11 +84,15 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @OnClick(R.id.button_find_in_page)
     void onFindInPagePressed() {
-        mSwitcher.showNext();
-        mFindEditText.requestFocus();
-        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        mIsFindShown = true;
+        if(mIsFindShown) {
+            findInPage();
+        } else {
+            mSwitcher.showNext();
+            mFindEditText.requestFocus();
+            final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            mIsFindShown = true;
+        }
     }
 
     @OnClick(R.id.button_content_toolbar_close)
@@ -95,17 +108,16 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         }
     }
 
-    private ItemAdapter.PageType mType;
+    private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;
     private boolean mIsArticleReady;
 
-
     private String url;
     private String readablePage;
 
-    public static Content newInstance(ItemAdapter.PageType type) {
-        if(type == ItemAdapter.PageType.COMMENTS || type == ItemAdapter.PageType.SKIMMER) {
+    public static Content newInstance(FragmentPagerAdapter.PageType type) {
+        if(type == FragmentPagerAdapter.PageType.COMMENTS || type == FragmentPagerAdapter.PageType.SKIMMER) {
             throw new IllegalArgumentException("Page type must be browser, amp page, or readability");
         }
         final Content content = new Content();
@@ -119,6 +131,12 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_content, container, false);
         unbinder = ButterKnife.bind(this, inflated);
+
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
+
+        mWebView.bindProgressBar(mProgressBar, true, true);
+
+
         if(mIsArticleReady) {
             bindData();
         } else if(savedInstanceState != null) {
@@ -128,14 +146,50 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 bindData();
             }
         }
-        //mWebView.bindProgressBar(mProgressSpinner, true, true);
-        mWebView.setNestedScrollingEnabled(false);
-        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
+
         return inflated;
     }
 
-    private void bindData() {
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(!(context instanceof ItemViewActivity)) {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+        } else {
+            mParent = (ItemViewActivity) context;
+        }
+    }
 
+    private void bindData() {
+        if(mIsArticleReady && mWebView != null) {
+            if(mType == FragmentPagerAdapter.PageType.BROWSER) {
+                mWebView.loadUrl(url);
+            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
+                mWebView.loadUrl(url);
+               // mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+                mWebView.loadData(readablePage, "text/html", "utf-8");
+            }
+        }
+    }
+
+    private void findInPage() {
+        final String query = mFindEditText.getText().toString();
+        mWebView.setFindListener(new WebView.FindListener() {
+            @Override
+            public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
+                if(isDoneCounting) {
+                    /*
+                    If there are matches
+                    Set the FAB button to
+                    mWebView.findNext()
+
+                     */
+
+                }
+            }
+        });
+        mWebView.findAllAsync(query);
     }
 
     private void toggleFullscreen(boolean fullscreen) {
@@ -179,30 +233,49 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mParent.showFab();
+        mParent.setUpFab(R.drawable.ic_arrow_downward_black, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Test", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void loadItem(Item item) {
-        if(mType == ItemAdapter.PageType.BROWSER) {
+        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             //Load url
-        } else if(mType == ItemAdapter.PageType.AMP_READER) {
-            //Load amp url
-        } else if(mType == ItemAdapter.PageType.TEXT_READER) {
-            /*
-            Check if there is a URL, if so load it
-            Otherwise load the items text
-             */
+            url = item.getUrl();
+            mIsArticleReady = true;
+            bindData();
+        }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+            //Text reader deals with Item text, or BoilerPipe readability
+            if(item.getUrl() == null) {
+                readablePage = item.getText();
+                mIsArticleReady = true;
+                bindData();
+            } else {
+                url = item.getUrl();
+                mIsArticleReady = true;
+                new ReadabilityLoader(this).boilerPipe(url, true);
+            }
         }
     }
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-        //If a JSONObject is returned we have loaded the boilerpipe page
+        /*
+        This will be unused until I can get a key from Mercury
+         */
     }
 
     @Override
     public void loadDone(String result, boolean success, int code) {
-        //We have loaded the boilerpipe page
+        //TODO- Error checking
+        readablePage = result;
+        mIsArticleReady = true;
+        bindData();
     }
 
 }

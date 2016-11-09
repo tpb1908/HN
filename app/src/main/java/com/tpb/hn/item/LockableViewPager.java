@@ -8,14 +8,14 @@ import android.view.MotionEvent;
  * Created by theo on 06/11/16.
  */
 
-public class ViewPager extends android.support.v4.view.ViewPager {
+public class LockableViewPager extends android.support.v4.view.ViewPager {
     private boolean isSwipeEnabled = true;
 
-    public ViewPager(Context context) {
+    public LockableViewPager(Context context) {
         this(context, null);
     }
 
-    public ViewPager(Context context, AttributeSet attrs) {
+    public LockableViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

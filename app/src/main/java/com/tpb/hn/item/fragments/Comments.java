@@ -15,7 +15,7 @@ import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.CommentAdapter;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 
 import butterknife.BindView;
@@ -26,7 +26,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
+public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycle {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 
@@ -35,15 +35,12 @@ public class Comments extends Fragment implements ItemLoader, ItemAdapter.Fragme
     @BindView(R.id.comment_recycler)
     RecyclerView mRecycler;
 
-    private ItemAdapter.Fullscreen fullscreen;
 
     private Item mRootItem;
     private CommentAdapter mAdapter;
 
-    public static Comments newInstance(ItemAdapter.Fullscreen fullscreen) {
-        final Comments c = new Comments();
-        c.fullscreen = fullscreen;
-        return c;
+    public static Comments newInstance() {
+        return new Comments();
     }
 
     @Nullable

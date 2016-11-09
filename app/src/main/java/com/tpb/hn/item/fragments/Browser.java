@@ -14,7 +14,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ScrollingAdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
@@ -31,7 +31,7 @@ import butterknife.Unbinder;
  *
  */
 
-public class Browser extends Fragment implements ItemLoader, ItemAdapter.FragmentCycle {
+public class Browser extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycle {
     private static final String TAG = Browser.class.getSimpleName();
     private Tracker mTracker;
 
@@ -44,15 +44,12 @@ public class Browser extends Fragment implements ItemLoader, ItemAdapter.Fragmen
     @BindView(R.id.browser_loading_spinner)
     ProgressBar mLoadingSpinner;
 
-    private ItemAdapter.Fullscreen fullscreen;
 
     private boolean isArticleReady = false;
     private String url;
 
-    public static Browser newInstance(ItemAdapter.Fullscreen fullscreen) {
-        final Browser b = new Browser()                                                                                                                                                                                                             ;
-        b.fullscreen = fullscreen;
-        return b;
+    public static Browser newInstance() {
+        return new Browser()                                                                                                                                                                                                             ;
     }
 
     @Nullable

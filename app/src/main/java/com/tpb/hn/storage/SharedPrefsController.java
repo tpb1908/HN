@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ public class SharedPrefsController {
     private static final String KEY_MARK_READ_WHEN_PASSED = "MARK_READ_WHEN_PASSED";
     private static final String KEY_DARK_THEME = "DARK_THEME";
 
-    private static ItemAdapter.PageType[] pageTypes;
+    private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
     private static boolean useCards;
@@ -121,25 +121,25 @@ public class SharedPrefsController {
         editor.commit();
     }
 
-    public ItemAdapter.PageType[] getPageTypes() {
+    public FragmentPagerAdapter.PageType[] getPageTypes() {
         if(pageTypes == null) {
             final String tabs = prefs.getString(KEY_STORY_TABS, "BCRS").toUpperCase();
             Log.i(TAG, "getPageTypes: Loading page types " + tabs);
-            pageTypes = new ItemAdapter.PageType[tabs.length()];
+            pageTypes = new FragmentPagerAdapter.PageType[tabs.length()];
             for(int i = 0; i < tabs.length(); i++) {
                 switch(tabs.charAt(i)) {
                     case 'C':
-                        pageTypes[i] = ItemAdapter.PageType.COMMENTS;
+                        pageTypes[i] = FragmentPagerAdapter.PageType.COMMENTS;
                         break;
                     case 'B':
                         Log.i(TAG, "getPageTypes: Adding browser");
-                        pageTypes[i] = ItemAdapter.PageType.BROWSER;
+                        pageTypes[i] = FragmentPagerAdapter.PageType.BROWSER;
                         break;
                     case 'R':
-                        pageTypes[i] = ItemAdapter.PageType.TEXT_READER;
+                        pageTypes[i] = FragmentPagerAdapter.PageType.TEXT_READER;
                         break;
                     case 'S':
-                        pageTypes[i] = ItemAdapter.PageType.SKIMMER;
+                        pageTypes[i] = FragmentPagerAdapter.PageType.SKIMMER;
                         break;
                 }
             }

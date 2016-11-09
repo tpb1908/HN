@@ -18,7 +18,7 @@ import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
-import com.tpb.hn.item.ItemAdapter;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.ReadabilityLoader;
@@ -35,7 +35,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, ItemAdapter.FragmentCycle {
+public class Readability extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycle {
     private static final String TAG = Readability.class.getSimpleName();
     private Tracker mTracker;
 

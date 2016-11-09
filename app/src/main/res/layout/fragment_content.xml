@@ -6,6 +6,12 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/content_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/webview_scroller"
         android:scrollbarStyle="insideOverlay"
@@ -33,7 +39,8 @@
                 android:contentInsetRight="0dp"
                 android:contentInsetEnd="0dp"
                 app:contentInsetRight="0dp"
-                app:contentInsetEnd="0dp">
+                app:contentInsetEnd="0dp"
+                >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -118,16 +125,13 @@
 
             </Toolbar>
 
-
             <FrameLayout
                 android:id="@+id/webview_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <!--- toolbar -->
-
-                <WebView
+                <com.tpb.hn.item.CachingAdBlockingWebView
                     android:id="@+id/webview"
                     android:scrollbarStyle="insideOverlay"
                     android:scrollbars="vertical"
@@ -135,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </WebView>
+                </com.tpb.hn.item.CachingAdBlockingWebView>
 
 
             </FrameLayout>
@@ -151,5 +155,6 @@
         android:layout_height="match_parent">
 
     </FrameLayout>
+
 
 </LinearLayout>

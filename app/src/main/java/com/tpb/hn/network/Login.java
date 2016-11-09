@@ -46,13 +46,13 @@ public class Login {
                     public void onResponse(Response response) {
                         if(response.code() >=200 && response.code() < 400) {//Success
                             try {
-//                            Log.i(TAG, "onResponse: Login response " + response.toString());
-//                            Log.i(TAG, "onResponse: Network response " + response.networkResponse().toString());
-//                            Log.i(TAG, "onResponse: Cache control " + response.cacheControl().toString());
-//                            Log.i(TAG, "onResponse: Body " + response.body().string());
-//                            Log.i(TAG, "onResponse: Response headers" + response.headers().toString());
+//                            Log.i(TAG, "onResponse: Login loginResponse " + loginResponse.toString());
+//                            Log.i(TAG, "onResponse: Network loginResponse " + loginResponse.networkResponse().toString());
+//                            Log.i(TAG, "onResponse: Cache control " + loginResponse.cacheControl().toString());
+//                            Log.i(TAG, "onResponse: Body " + loginResponse.body().string());
+//                            Log.i(TAG, "onResponse: Response headers" + loginResponse.headers().toString());
 
-                                //We want the prior response headers as there is a redirect
+                                //We want the prior loginResponse headers as there is a redirect
                                 final String res = response.priorResponse().headers().get("set-cookie");
                                 final int startPos = res.indexOf("user=") + 5;
                                 final int endPos = res.indexOf(";");
@@ -61,17 +61,17 @@ public class Login {
                                 checkWithCookie(cookie, false);
                             } catch(Exception e) {
                                 Log.i(TAG, "onResponse: Exception when getting header");
-                                listener.response(false);
+                                listener.loginResponse(false);
                             }
                         } else {
-                            listener.response(false);
+                            listener.loginResponse(false);
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         Log.d(TAG, "onError: Login error \n\n\n" + anError.getErrorBody());
-                        listener.response(false);
+                        listener.loginResponse(false);
                     }
                 });
     }
@@ -93,9 +93,9 @@ public class Login {
                             try {
                                 final boolean success = checkIfLoggedIn(response.body().string());
                                 if(setCookie && success) Login.this.cookie = cookie;
-                                listener.response(success);
+                                listener.loginResponse(success);
                             } catch(Exception e) {
-                                listener.response(false);
+                                listener.loginResponse(false);
                             }
                         }
                     }
@@ -133,7 +133,7 @@ public class Login {
 
     public interface LoginListener {
 
-        void response(boolean success);
+        void loginResponse(boolean success);
 
     }
 
