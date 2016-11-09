@@ -62,7 +62,7 @@
                         android:id="@+id/content_toolbar_switcher"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inAnimation="@android:anim/fade_in"
+                        android:inAnimation="@anim/expand_horizontal"
                         android:outAnimation="@android:anim/fade_out"
                         android:layout_alignParentTop="true"
                         android:layout_toEndOf="@id/button_content_toolbar_close"

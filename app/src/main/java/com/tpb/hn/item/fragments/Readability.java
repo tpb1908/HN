@@ -55,7 +55,6 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
     @BindColor(R.color.colorPrimaryTextInverse)
     int darkText;
 
-
     @BindView(R.id.test)
     TextView test;
 
@@ -82,15 +81,13 @@ public class Readability extends Fragment implements ItemLoader, ReadabilityLoad
 
     private boolean ampView = true;
 
-
     private String url;
     private String boilerpipePage;
 
     private boolean isArticleReady = false;
 
     public static Readability newInstance() {
-        final Readability r = new Readability();
-        return r;
+        return new Readability();
     }
 
     @Nullable

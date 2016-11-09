@@ -87,7 +87,9 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         if(mIsFindShown) {
             final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            mFindEditText.setText("");
             mSwitcher.showPrevious();
+            mIsFindShown = false;
         } else {
             //Close the toolbar
         }
