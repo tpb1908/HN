@@ -1,6 +1,7 @@
 package com.tpb.hn.item;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -51,6 +52,12 @@ public class CachingAdBlockingWebView extends WebView {
                 }
                 return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
             }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
+            }
         });
     }
 
@@ -78,14 +85,12 @@ public class CachingAdBlockingWebView extends WebView {
     public void loadUrl(String url) {
         super.loadUrl(url);
         this.setVisibility(VISIBLE);
-        if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
     }
 
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         super.loadUrl(url, additionalHttpHeaders);
         this.setVisibility(VISIBLE);
-        if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
     }
     
     

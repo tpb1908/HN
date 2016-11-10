@@ -121,6 +121,16 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         }
     }
 
+    @OnClick(R.id.button_content_back)
+    void webViewBack() {
+        if(mWebView.canGoBack()) mWebView.goBack();
+    }
+
+    @OnClick(R.id.button_content_forward)
+    void webViewForward() {
+        if(mWebView.canGoForward()) mWebView.goForward();
+    }
+
     private View.OnClickListener mFullScreenToggler  = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
