@@ -2,6 +2,8 @@ package com.tpb.hn.item.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -116,8 +118,6 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mIsFindShown = false;
             mIsSearchComplete = false;
             mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
-        } else {
-            toggleFullscreen(!mIsFullscreen);
         }
     }
 
@@ -189,9 +189,11 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     private void toggleFullscreen(boolean fullscreen) {
+
         Log.i(TAG, "toggleFullscreen: " + fullscreen);
         mIsFullscreen = fullscreen;
         if(fullscreen) {
+            mParent.hideFab();
             mWebContainer.removeView(mWebView);
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
@@ -206,6 +208,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mParent.openFullScreen();
 
         } else {
+            mParent.showFab();
             mToolbar.setVisibility(View.GONE);
             mFullscreen.removeView(mWebView);
             if(mIsShowingPDF) {
@@ -294,6 +297,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 if(isDoneCounting) {
                     mIsSearchComplete = true;
                     mParent.setFabDrawable(R.drawable.ic_chevron_down);
+                    mParent.showFab();
                 }
             }
         });
@@ -301,6 +305,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     private void setupPDFButtons() {
+        mParent.hideFab();
         mWebView.setVisibility(View.GONE);
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity= Gravity.CENTER_HORIZONTAL;
@@ -325,7 +330,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(i);
             }
         });
     }
