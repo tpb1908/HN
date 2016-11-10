@@ -118,6 +118,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mIsFindShown = false;
             mIsSearchComplete = false;
             mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
+        } else {
+            toggleFullscreen(false);
         }
     }
 

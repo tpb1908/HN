@@ -92,6 +92,5 @@ public class CachingAdBlockingWebView extends WebView {
         super.loadUrl(url, additionalHttpHeaders);
         this.setVisibility(VISIBLE);
     }
-    
-    
+
 }
