@@ -1,17 +1,21 @@
 package com.tpb.hn.item.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ViewSwitcher;
 
@@ -62,7 +66,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     private ItemViewActivity mParent;
 
     @BindView(R.id.fullscreen)
-    FrameLayout mFullscreen;
+    LinearLayout mFullscreen;
 
     @BindView(R.id.webview_scroller)
     LockableNestedScrollView mScrollView;
@@ -87,6 +91,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     private boolean mIsFindShown = false;
     private boolean mIsSearchComplete = false;
+    private boolean mIsShowingPDF = false;
 
     @OnClick(R.id.button_find_in_page)
     void onFindInPagePressed() {
@@ -146,6 +151,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         return content;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -155,6 +161,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
 
         mWebView.bindProgressBar(mProgressBar, true, true);
+        mWebView.getSettings().setJavaScriptEnabled(true);
 
         mParent.showFab();
 
@@ -181,17 +188,102 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         }
     }
 
+    private void toggleFullscreen(boolean fullscreen) {
+        Log.i(TAG, "toggleFullscreen: " + fullscreen);
+        mIsFullscreen = fullscreen;
+        if(fullscreen) {
+            mWebContainer.removeView(mWebView);
+            if(mIsShowingPDF) {
+                mFullscreen.removeAllViews();
+                mWebView.setVisibility(View.VISIBLE);
+            }
+            mFullscreen.addView(mWebView);
+            mScrollView.setScrollingEnabled(false);
+            mToolbar.setVisibility(View.VISIBLE);
+            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            mWebView.setLayoutParams(params);
+            mParent.openFullScreen();
+
+        } else {
+            mToolbar.setVisibility(View.GONE);
+            mFullscreen.removeView(mWebView);
+            if(mIsShowingPDF) {
+                mWebView.setVisibility(View.GONE);
+                setupPDFButtons();
+            }
+
+            mWebContainer.addView(mWebView);
+            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            mWebView.setLayoutParams(params);
+            mWebView.clearMatches();
+            mWebContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    mParent.closeFullScreen();
+                }
+            });
+            mScrollView.setScrollingEnabled(true);
+            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
+            mIsSearchComplete = false;
+        }
+    }
+
     private void bindData() {
+        Log.i(TAG, "bindData: Binding data ");
         if(mIsArticleReady && mWebView != null) {
-            if(mType == FragmentPagerAdapter.PageType.BROWSER) {
-                mWebView.loadUrl(url);
-            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
-                mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
-            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-                Log.i(TAG, "bindData: Text reader");
-                mWebView.loadData(readablePage, "text/html", "utf-8");
+            if(mIsShowingPDF) {
+                setupPDFButtons();
+            } else {
+                if(mType == FragmentPagerAdapter.PageType.BROWSER) {
+                    mWebView.loadUrl(url);
+                } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
+                    mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+                } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+                    Log.i(TAG, "bindData: Text reader");
+                    mWebView.loadData(readablePage, "text/html", "utf-8");
+                }
             }
         }
+    }
+
+    @Override
+    public void loadItem(Item item) {
+        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
+            url = item.getUrl();
+            mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
+            mIsArticleReady = true;
+            bindData();
+        }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+            //Text reader deals with Item text, or readability
+            if(item.getUrl() == null) {
+                readablePage = item.getText();
+                mIsArticleReady = true;
+                bindData();
+            } else {
+                url = item.getUrl();
+                // new ReadabilityLoader(this).boilerPipe(url, true);
+                new ReadabilityLoader(this).loadArticle(url, true);
+            }
+        }
+    }
+
+    @Override
+    public void loadDone(JSONObject result, boolean success, int code) {
+        try {
+            readablePage = result.get("content").toString();
+            mIsArticleReady = true;
+            bindData();
+        } catch(JSONException jse) {}
+    }
+
+    @Override
+    public void loadDone(String result, boolean success, int code) {
+        //TODO- Error checking
+        readablePage = result;
+        mIsArticleReady = true;
+        bindData();
     }
 
     private void findInPage() {
@@ -208,38 +300,34 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mWebView.findAllAsync(query);
     }
 
-    private void toggleFullscreen(boolean fullscreen) {
-        Log.i(TAG, "toggleFullscreen: " + fullscreen);
-        mIsFullscreen = fullscreen;
-        if(fullscreen) {
-            mWebContainer.removeView(mWebView);
-            //mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
-            mFullscreen.addView(mWebView);
-            mScrollView.setScrollingEnabled(false);
-            mToolbar.setVisibility(View.VISIBLE);
-            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            mWebView.setLayoutParams(params);
-            mParent.openFullScreen();
-        } else {
-            mToolbar.setVisibility(View.GONE);
-            mFullscreen.removeView(mWebView);
-            mScrollView.setScrollingEnabled(true);
-            mWebContainer.addView(mWebView);
-//            mWebContainer.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
-//                }
-//            });
-            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mWebView.setLayoutParams(params);
-            mWebView.clearMatches();
-            mParent.closeFullScreen();
-            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
-            mIsSearchComplete = false;
-        }
+    private void setupPDFButtons() {
+        mWebView.setVisibility(View.GONE);
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity= Gravity.CENTER_HORIZONTAL;
+
+        final Button browserButton = new Button(getContext());
+        browserButton.setLayoutParams(params);
+        browserButton.setText("Open with Google docs");
+
+        final Button downloadButton = new Button(getContext());
+        downloadButton.setLayoutParams(params);
+        downloadButton.setText("Download PDF");
+        mFullscreen.addView(browserButton);
+        mFullscreen.addView(downloadButton);
+
+        browserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
+                toggleFullscreen(true);
+            }
+        });
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -265,44 +353,6 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows, mFullScreenToggler);
-    }
-
-    @Override
-    public void loadItem(Item item) {
-        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
-            //Load url
-            url = item.getUrl();
-            mIsArticleReady = true;
-            bindData();
-        }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-            //Text reader deals with Item text, or BoilerPipe readability
-            if(item.getUrl() == null) {
-                readablePage = item.getText();
-                mIsArticleReady = true;
-                bindData();
-            } else {
-                url = item.getUrl();
-               // new ReadabilityLoader(this).boilerPipe(url, true);
-                new ReadabilityLoader(this).loadArticle(url, true);
-            }
-        }
-    }
-
-    @Override
-    public void loadDone(JSONObject result, boolean success, int code) {
-        try {
-            readablePage = result.get("content").toString();
-            mIsArticleReady = true;
-            bindData();
-        } catch(JSONException jse) {}
-    }
-
-    @Override
-    public void loadDone(String result, boolean success, int code) {
-        //TODO- Error checking
-        readablePage = result;
-        mIsArticleReady = true;
-        bindData();
     }
 
 }

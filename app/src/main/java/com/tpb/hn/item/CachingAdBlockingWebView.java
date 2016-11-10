@@ -21,6 +21,9 @@ import java.util.Map;
  */
 
 public class CachingAdBlockingWebView extends WebView {
+    private static final String TAG = CachingAdBlockingWebView.class.getSimpleName();
+
+    private ProgressBar mBoundProgressBar;
 
     public CachingAdBlockingWebView(Context context) {
         this(context, null);
@@ -52,6 +55,7 @@ public class CachingAdBlockingWebView extends WebView {
     }
 
     public void bindProgressBar(final ProgressBar progressBar, final boolean animate, final boolean hideWhenDone) {
+        mBoundProgressBar = progressBar;
         this.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -65,6 +69,7 @@ public class CachingAdBlockingWebView extends WebView {
                     progressBar.setVisibility(GONE);
                     CachingAdBlockingWebView.this.setBackgroundColor(Color.WHITE);
                 }
+
             }
         });
     }
@@ -73,12 +78,14 @@ public class CachingAdBlockingWebView extends WebView {
     public void loadUrl(String url) {
         super.loadUrl(url);
         this.setVisibility(VISIBLE);
+        if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
     }
 
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         super.loadUrl(url, additionalHttpHeaders);
         this.setVisibility(VISIBLE);
+        if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
     }
     
     

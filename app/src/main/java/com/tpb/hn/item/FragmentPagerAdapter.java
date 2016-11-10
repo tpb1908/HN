@@ -11,6 +11,7 @@ import com.tpb.hn.item.fragments.Content;
 import com.tpb.hn.item.fragments.Skimmer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
@@ -27,7 +28,10 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
-        possiblePages = new PageType[] {PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER,  PageType.SKIMMER};
+        possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER,  PageType.SKIMMER};
+        final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]");
+
+        boolean containsBrowser = Arrays.asList(possiblePages).contains(PageType.BROWSER);
         for(PageType pt : possiblePages) {
             switch(pt) {
                 case COMMENTS:
@@ -40,22 +44,36 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                     break;
                 case TEXT_READER:
                     if(item.getUrl() != null || item.getText() != null) {
-                        pages.add(PageType.TEXT_READER);
+                        if(pdf) {
+                            if(!containsBrowser) {
+                                pages.add(PageType.TEXT_READER);
+                                containsBrowser = true;
+                            }
+                        } else {
+                            pages.add(PageType.TEXT_READER);
+                        }
                     }
                     break;
                 case AMP_READER:
                     if(item.getUrl() != null) {
-                        pages.add(PageType.AMP_READER);
+                        if(pdf) {
+                            if(!containsBrowser) {
+                                pages.add(PageType.BROWSER);
+                                containsBrowser = true;
+                            }
+                        } else {
+                            pages.add(PageType.AMP_READER);
+                        }
                     }
                     break;
                 case SKIMMER:
-                    if(item.getUrl() != null || item.getText() != null) {
+                    if((item.getUrl() != null && !pdf) || item.getText() != null) {
                         pages.add(PageType.SKIMMER);
                     }
                     break;
             }
         }
-       // pages.add(PageType.AMP_READER);
+
         fragments = new Fragment[pages.size()];
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int oldPos = 0;

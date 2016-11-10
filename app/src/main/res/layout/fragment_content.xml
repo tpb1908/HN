@@ -10,6 +10,7 @@
         android:id="@+id/content_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <com.tpb.hn.item.LockableNestedScrollView
@@ -150,12 +151,13 @@
     </com.tpb.hn.item.LockableNestedScrollView>
 
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fullscreen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </FrameLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
