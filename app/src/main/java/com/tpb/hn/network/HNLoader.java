@@ -122,10 +122,9 @@ public class HNLoader {
                         .getAsJSONObject(new JSONObjectRequestListener() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                if(inBackground) Log.i(TAG, "onResponse: Background load done");
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
-                                    if(item != null) cache.insert(item);
+                                    if(item != null) cache.insert(item, inBackground);
                                     itemListener.itemLoaded(item, item != null, 200);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);

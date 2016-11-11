@@ -217,6 +217,9 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
         mIsFullscreen = fullscreen;
         if(fullscreen) {
+            mWebView.getSettings().setSupportZoom(true);
+            mWebView.getSettings().setBuiltInZoomControls(true);
+            mWebView.getSettings().setDisplayZoomControls(false);
             mParent.hideFab();
             mParent.openFullScreen();
             mToolbar.setVisibility(View.VISIBLE);
@@ -232,6 +235,7 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
         } else {
+            mWebView.getSettings().setSupportZoom(false);
             mParent.showFab();
             mToolbar.setVisibility(View.GONE);
             mFullscreen.removeView(mWebView);

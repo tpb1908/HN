@@ -25,6 +25,8 @@ public class Cache {
     private ArrayList<Item> items = new ArrayList<>();
     private HashMap<Item, ArrayList<Item>> kids = new HashMap<>();
 
+    private ArrayList<Item> backgroundChunk = new ArrayList<>();
+
 
     private int[] top = new int[500];
     private int[] newstories = new int[500];
@@ -55,7 +57,7 @@ public class Cache {
         return kids.get(parent);
     }
 
-    public void insert(Item item) {
+    public void insert(Item item, boolean background) {
         //TODO- Check that item doens't already exist
         Log.i(TAG, "insert: Inserting item " + item.getId());
         if(item.getType() == ItemType.COMMENT) {
@@ -71,7 +73,16 @@ public class Cache {
         } else {
             items.add(item);
             Collections.sort(items);
-            db.writeOrUpdate(item);
+            if(background) {
+                backgroundChunk.add(item);
+                if(backgroundChunk.size() > 50) {
+                    Log.i(TAG, "insert: Writing chunk");
+                    db.writeOrUpdate(backgroundChunk.toArray(new Item[0]));
+                    backgroundChunk.clear();
+                }
+            } else {
+                db.writeOrUpdate(item);
+            }
         }
     }
 
@@ -91,7 +102,7 @@ public class Cache {
             if(pos > 0 && pos < items.size()) {
                 items.set(pos, item);
             } else {
-                insert(item);
+                insert(item, false);
             }
             db.writeOrUpdate(item);
         }
