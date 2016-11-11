@@ -104,7 +104,6 @@ public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNI
         }
 
         originalFlags = getWindow().getDecorView().getSystemUiVisibility();
-        //TODO- Fullscreen mode
         //TODO- Load Items in background while user is looking at current item
     }
 

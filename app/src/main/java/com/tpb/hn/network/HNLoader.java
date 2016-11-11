@@ -105,18 +105,24 @@ public class HNLoader {
     }
 
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
+        loadItemsIndividually(ids, getFromCache, false);
+    }
+
+    public void loadItemsIndividually(final int[] ids, boolean getFromCache, final boolean inBackground) {
+        if(inBackground) Log.i(TAG, "loadItemsIndividually: Background load started");
         for(int i : ids) {
             int cachePos = cache.position(i);
             if(cachePos >= 0 && getFromCache) {
                 itemListener.itemLoaded(cache.getItems().get(cachePos), true, 200);
             } else if(!getFromCache) {
                 AndroidNetworking.get(APIPaths.getItemPath(i))
-                        .setTag(i)
-                        .setPriority(Priority.HIGH)
+                        .setTag(inBackground ? "background" : i)
+                        .setPriority(inBackground ? Priority.LOW : Priority.HIGH)
                         .build()
                         .getAsJSONObject(new JSONObjectRequestListener() {
                             @Override
                             public void onResponse(JSONObject response) {
+                                if(inBackground) Log.i(TAG, "onResponse: Background load done");
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
                                     if(item != null) cache.insert(item);
@@ -133,6 +139,10 @@ public class HNLoader {
                         });
             }
         }
+    }
+
+    public void cancelBackgroundLoading() {
+        AndroidNetworking.cancel("background");
     }
 
     public void loadItem(final int id) {

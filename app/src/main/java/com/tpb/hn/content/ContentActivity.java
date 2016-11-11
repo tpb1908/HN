@@ -108,6 +108,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
         i.putExtra("item", item);
         startActivity(i);
+        mAdapter.beginBackgroundLoading();
         overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
@@ -126,6 +127,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         super.onResume();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mAdapter.cancelBackgroundLoading();
     }
 
     @Override

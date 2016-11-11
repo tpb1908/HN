@@ -157,6 +157,14 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         currentPage = defaultPage;
     }
 
+    public void beginBackgroundLoading() {
+        mLoader.loadItemsIndividually(ids, false, true);
+    }
+
+    public void cancelBackgroundLoading() {
+        mLoader.cancelBackgroundLoading();
+    }
+
     private void attemptLoadAgain(int pos) {
         if(pos < ids.length) {
             mLoader.loadItem(ids[pos]);
@@ -191,6 +199,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     @Override
     public int getItemCount() {
+        //TODO- Get an average value for each of the pages being loaded
         return data.length == 0 ? 500 : data.length;
     }
 

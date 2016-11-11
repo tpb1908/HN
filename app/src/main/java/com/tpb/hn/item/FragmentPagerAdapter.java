@@ -159,7 +159,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     public enum PageType {
         COMMENTS, //The comment adapter fragment
-        BROWSER, //Loads the URL TODO- Merge this with the Content fragment
+        BROWSER, //Loads the URL
         TEXT_READER, //Content fragment
         AMP_READER, //Content fragment
         SKIMMER; //Skimmer fragment
