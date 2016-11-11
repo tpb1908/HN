@@ -138,19 +138,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch(pages.get(position)) {
-            case COMMENTS:
-                return "COMMENT";
-            case BROWSER:
-                return "ARTICLE";
-            case TEXT_READER:
-                return "READ";
-            case AMP_READER:
-                return "AMP";
-            case SKIMMER:
-                return "SKIM";
-        }
-        return "Error";
+        return PageType.toReadableString(pages.get(position));
     }
 
     public interface FragmentCycleListener {
@@ -174,7 +162,24 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         BROWSER, //Loads the URL TODO- Merge this with the Content fragment
         TEXT_READER, //Content fragment
         AMP_READER, //Content fragment
-        SKIMMER //Skimmer fragment
+        SKIMMER; //Skimmer fragment
+
+        public static String toReadableString(PageType type) {
+            switch(type) {
+                case COMMENTS:
+                    return "COMMENT";
+                case BROWSER:
+                    return "ARTICLE";
+                case TEXT_READER:
+                    return "READ";
+                case AMP_READER:
+                    return "AMP";
+                case SKIMMER:
+                    return "SKIM";
+            }
+            return "ERROR";
+        }
+
     }
 
 }

@@ -28,6 +28,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.CachingAdBlockingWebView;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -306,10 +307,16 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void loadDone(String result, boolean success, int code) {
-        //TODO- Error checking
-        readablePage = result;
-        mIsArticleReady = true;
-        bindData();
+        if(success) {
+            readablePage = result;
+            mIsArticleReady = true;
+            bindData();
+        } else {
+            readablePage = Util.formatHTTPError(getContext(),
+                    Util.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
+                    code);
+
+        }
     }
 
     private void findInPage() {

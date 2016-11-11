@@ -58,7 +58,6 @@ public class ReadabilityLoader {
                             try {
                                 Log.d(TAG, "onResponse: " + (System.nanoTime()-start)/1E9);
                                 Log.i(TAG, "onResponse: updating " + listenerCache.get(url).size() + " listeners");
-
                                 for(ReadabilityLoadDone rld : listenerCache.get(url)) {
                                     if(rld == null) {
                                         listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null

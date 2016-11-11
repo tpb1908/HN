@@ -163,11 +163,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
             mProgressSpinner.setVisibility(View.GONE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
-            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
-                mErrorTextView.setText(R.string.error_pdf_skimmer);
-            } else {
-                mErrorTextView.setText(R.string.error_loading_page);
-            }
+
         }
 
     }
@@ -181,11 +177,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
             mProgressSpinner.setVisibility(View.GONE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
-            if(code == ReadabilityLoader.ReadabilityLoadDone.ERROR_PDF) {
-                mErrorTextView.setText(R.string.error_pdf_skimmer);
-            } else {
-                mErrorTextView.setText(R.string.error_loading_page);
-            }
+
         }
     }
 

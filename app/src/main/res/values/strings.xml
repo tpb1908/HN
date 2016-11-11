@@ -2,14 +2,21 @@
     <string name="app_name">HN</string>
 
     <string name="error_no_item">No item loaded</string>
-
     <string name="error_loading_page">Error loading page</string>
-
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
 
-    <string name="error_pdf_readability">Can\'t load a PDF in Readability</string>
-
-    <string name="error_pdf_skimmer">Can\'t load a PDF in Skimmer</string>
+    <string name="error_http_400">400 Bad Request</string>
+    <string name="error_http_401">401 Unauthorised</string>
+    <string name="error_http_403">403 Forbidden</string>
+    <string name="error_http_404">404 Not Found</string>
+    <string name="error_http_406">406 Not Acceptable</string>
+    <string name="error_http_500">500 Internal Server Error</string>
+    <string name="error_http_501">501 Not Implemented</string>
+    <string name="error_http_502">502 Bad GateWay</string>
+    <string name="error_http_503">503 Service Unavailable</string>
+    <string name="error_http_504">504 GateWay Timeout</string>
+    <string name="error_http_unknown">Unknown code %1$d</string>
+    <string name="error_http_format_string">%1$s %2$s</string>
 
     <string name="title_wpm_dialog">Enter words per minute</string>
 
