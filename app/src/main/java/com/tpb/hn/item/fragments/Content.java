@@ -157,7 +157,6 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         }
     };
 
-
     private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;

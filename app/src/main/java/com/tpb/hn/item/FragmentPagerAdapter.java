@@ -129,6 +129,8 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         return page;
     }
 
+
+
     @Override
     public int getCount() {
         return pages.size();

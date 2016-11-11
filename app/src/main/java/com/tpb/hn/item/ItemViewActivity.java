@@ -137,7 +137,6 @@ public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNI
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);
-
     }
 
     private void setTitle(Item item) {
