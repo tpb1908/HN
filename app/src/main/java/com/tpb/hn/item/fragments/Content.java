@@ -336,11 +336,11 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
         final Button browserButton = new Button(getContext());
         browserButton.setLayoutParams(params);
-        browserButton.setText("Open with Google docs");
+        browserButton.setText(R.string.text_open_with_docs);
 
         final Button downloadButton = new Button(getContext());
         downloadButton.setLayoutParams(params);
-        downloadButton.setText("Download PDF");
+        downloadButton.setText(R.string.text_download_pdf);
         mFullscreen.addView(browserButton);
         mFullscreen.addView(downloadButton);
 
@@ -383,7 +383,12 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
         mTracker.setScreenName(TAG + "_" + mType);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows, mFullScreenToggler);
-        mParent.showFab();
+        if(mIsShowingPDF) {
+            //TODO- Hide the find in page button as it can't be used in Docs PDF?
+            mParent.hideFab();
+        } else {
+            mParent.showFab();
+        }
     }
 
 }
