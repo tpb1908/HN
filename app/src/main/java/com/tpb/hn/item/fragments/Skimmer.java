@@ -122,11 +122,16 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
                 } else {
                     mSkimmerProgress.setProgress(0);
                 }
-                try { //TODO- See if there is a better way to do this
-                    Thread.sleep(60000/mTextView.getSpritzer().getWpm());
-                } catch(Exception ignored) {}
-                mTextView.getSpritzer().pause();
-
+                /*
+                In order to skip one word, we have to wait
+                for one minute / words per minute
+                 */
+                mTextView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTextView.getSpritzer().pause();
+                    }
+                }, 60000 / mTextView.getSpritzer().getWpm());
             }
         });
 

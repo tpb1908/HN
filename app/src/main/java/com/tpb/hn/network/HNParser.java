@@ -119,6 +119,7 @@ public class HNParser {
             try {
                 results[i] = Integer.parseInt(items[i]);
             } catch(NumberFormatException nfe) {
+                results[i] = -1;
                 //TODO: write something here if you need to recover from formatting errors
             }
         }

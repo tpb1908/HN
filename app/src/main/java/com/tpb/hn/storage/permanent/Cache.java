@@ -58,8 +58,6 @@ public class Cache {
     }
 
     public void insert(Item item, boolean background) {
-        //TODO- Check that item doens't already exist
-        Log.i(TAG, "insert: Inserting item " + item.getId());
         if(item.getType() == ItemType.COMMENT) {
             final Item parent = new Item();
             parent.setId(item.getParent());
@@ -71,6 +69,7 @@ public class Cache {
             siblings.add(item);
             Collections.sort(siblings);
         } else {
+            if(items.contains(item)) return;
             items.add(item);
             Collections.sort(items);
             if(background) {
