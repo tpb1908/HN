@@ -1,7 +1,6 @@
 package com.tpb.hn.content;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -21,7 +20,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
-import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
@@ -36,11 +35,11 @@ import butterknife.ButterKnife;
  * Created by theo on 18/10/16.
  */
 
-class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNLoader.HNItemLoadDone, HNLoader.HNItemIdLoadDone, FastScrollRecyclerView.SectionedAdapter {
+class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNItemLoader.HNItemLoadDone, HNItemLoader.HNItemIdLoadDone, FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
-    private HNLoader mLoader;
+    private HNItemLoader mLoader;
     private String currentPage;
     private boolean usingCards = false;
     private boolean markReadWhenPassed = false;
@@ -56,7 +55,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         mOpener = opener;
         mSwiper = swiper;
         mManager = manager;
-        mLoader = new HNLoader(mContext, this);
+        mLoader = new HNItemLoader(mContext, this);
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         usingCards = prefs.getUseCards();
         markReadWhenPassed = prefs.getMarkReadWhenPassed();
@@ -157,11 +156,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         currentPage = defaultPage;
     }
 
-    public void beginBackgroundLoading() {
+    void beginBackgroundLoading() {
         mLoader.loadItemsIndividually(ids, false, true);
     }
 
-    public void cancelBackgroundLoading() {
+    void cancelBackgroundLoading() {
         mLoader.cancelBackgroundLoading();
     }
 
@@ -194,6 +193,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mCard.setUseCompatPadding(true);
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
+            holder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
         }
     }
 
@@ -210,7 +210,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
-        holder.mTitle.setTextColor(Color.parseColor("#767676"));
+        holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");

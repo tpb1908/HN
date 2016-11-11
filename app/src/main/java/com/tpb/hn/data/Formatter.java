@@ -1,6 +1,10 @@
 package com.tpb.hn.data;
 
 
+import android.content.Context;
+
+import com.tpb.hn.R;
+
 import java.util.Date;
 
 /**
@@ -38,6 +42,41 @@ public class Formatter {
         }
     }
 
+    public static String capitaliseFirst(String original) {
+        if(original == null || original.length() == 0) return original;
+        return original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
+    }
 
+    public static String formatHTTPError(Context context, int resId, int code) {
+        return formatHTTPError(context, context.getString(resId), code);
+    }
+
+    public static String formatHTTPError(Context context, String message, int code) {
+
+        switch(code) {
+            case 400: //Bad request
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_400));
+            case 401: //Unauthorised
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_401));
+            case 403: //Forbidden
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_403));
+            case 404: //Not found
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_404));
+            case 406: //Not Acceptable
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_406));
+            case 500: //Internal server error
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_500));
+            case 501: //Not implemented
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_501));
+            case 502: //Bad gateway
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_502));
+            case 503: //Service unavailable
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_503));
+            case 504: //GateWay timeout
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_504));
+            default:
+                return String.format(context.getString(R.string.error_http_format_string), message, String.format(context.getString(R.string.error_http_unknown), code));
+        }
+    }
 
 }

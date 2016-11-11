@@ -179,6 +179,7 @@ public class Item implements Parcelable, Comparable<Item> {
         if(obj instanceof Item) {
             final Item i = (Item) obj;
             return id == i.id &&
+                    (text != null && i.text != null) &&
                     text.equals(i.text) &&
                     kids.length == i.kids.length &&
                     score == i.score &&

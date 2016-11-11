@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.views;
 
 import android.content.Context;
 import android.support.v4.widget.NestedScrollView;

@@ -15,7 +15,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.content.DividerItemDecoration;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by theo on 29/10/16.
  */
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> implements ItemLoader, HNLoader.HNItemLoadDone{
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> implements ItemLoader, HNItemLoader.HNItemLoadDone{
     private static final String TAG = CommentAdapter.class.getSimpleName();
 
     private Item mRootItem;
@@ -36,7 +36,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private ArrayList<Comment> mComments = new ArrayList<>();
     private ArrayList<Comment> mVisibleComments = new ArrayList<>(); //TODO- Make this an int array
-    private HNLoader mLoader;
+    private HNItemLoader mLoader;
 
     /*
     Inserting a comment-
@@ -60,7 +60,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
-        mLoader = new HNLoader(recycler.getContext(), this);
+        mLoader = new HNItemLoader(recycler.getContext(), this);
     }
 
     @Override

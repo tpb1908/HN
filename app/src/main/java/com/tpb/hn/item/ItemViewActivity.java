@@ -17,9 +17,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.item.views.LockableViewPager;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
-import com.tpb.hn.network.HNLoader;
+import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
+public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 
@@ -91,7 +92,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNLoader.HNI
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            new HNLoader(this, this).loadItem(APIPaths.parseUrl(data));
+            new HNItemLoader(this, this).loadItem(APIPaths.parseUrl(data));
         } else {
             if(launchIntent.getParcelableExtra("item") != null) {
                 final Item item = launchIntent.getParcelableExtra("item");

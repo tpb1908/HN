@@ -1,4 +1,4 @@
-package com.tpb.hn.network;
+package com.tpb.hn.network.loaders;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,6 +10,8 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.APIPaths;
+import com.tpb.hn.network.HNParser;
 import com.tpb.hn.storage.permanent.Cache;
 
 import org.json.JSONObject;
@@ -21,8 +23,8 @@ import java.util.Collections;
  * Created by theo on 21/10/16.
  */
 
-public class HNLoader {
-    private static final String TAG = HNLoader.class.getSimpleName();
+public class HNItemLoader {
+    private static final String TAG = HNItemLoader.class.getSimpleName();
 
     private static Cache cache;
 
@@ -37,7 +39,7 @@ public class HNLoader {
 
     private HNItemLoadDone itemListener;
 
-    public HNLoader(Context context, HNItemLoadDone itemListener) {
+    public HNItemLoader(Context context, HNItemLoadDone itemListener) {
         cache = Cache.getInstance(context);
         this.itemListener = itemListener;
     }

@@ -28,15 +28,15 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.Util;
+import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.CachingAdBlockingWebView;
+import com.tpb.hn.item.views.CachingAdBlockingWebView;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
-import com.tpb.hn.item.LockableNestedScrollView;
+import com.tpb.hn.item.views.LockableNestedScrollView;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.network.ReadabilityLoader;
+import com.tpb.hn.network.loaders.TextLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +51,7 @@ import butterknife.Unbinder;
  * Created by theo on 06/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycleListener {
+public class Content extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -294,8 +294,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 bindData();
             } else {
                 url = item.getUrl();
-                // new ReadabilityLoader(this).boilerPipe(url, true);
-                new ReadabilityLoader(this).loadArticle(url, true);
+                // new TextLoader(this).boilerPipe(url, true);
+                new TextLoader(this).loadArticle(url, true);
             }
         }
     }
@@ -316,8 +316,8 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
             mIsArticleReady = true;
             bindData();
         } else {
-            readablePage = Util.formatHTTPError(getContext(),
-                    Util.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
+            readablePage = Formatter.formatHTTPError(getContext(),
+                    Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
                     code);
 
         }

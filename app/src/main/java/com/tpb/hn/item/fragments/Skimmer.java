@@ -13,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -30,13 +28,16 @@ import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
-import com.tpb.hn.network.ReadabilityLoader;
+import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
+import butterknife.OnTouch;
 import butterknife.Unbinder;
 
 /**
@@ -44,7 +45,7 @@ import butterknife.Unbinder;
  * Takes the data from Readability and displays it Spritz style
  */
 
-public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.ReadabilityLoadDone, FragmentPagerAdapter.FragmentCycleListener {
+public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
     private Tracker mTracker;
 
@@ -52,28 +53,57 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     private ItemViewActivity mParent;
 
-    @BindView(R.id.skimmer_root_layout)
-    RelativeLayout mRoot;
-
     @BindView(R.id.spritzer_text_view)
     SpritzerTextView mTextView;
 
     @BindView(R.id.skimmer_spritzer_progress)
     ProgressBar mSkimmerProgress;
 
-    @BindView(R.id.skimmer_loading_spinner)
-    ProgressBar mProgressSpinner;
-
-    @BindView(R.id.skimmer_restart_button)
-    Button mRestartButton;
-
     @BindView(R.id.skimmer_error_message)
     TextView mErrorTextView;
-
 
     private String article;
     private boolean isArticleReady = false;
 
+    @OnLongClick(R.id.skimmer_touch_area)
+    boolean onLongClick() {
+        mTextView.play();
+        return false;
+    }
+
+    @OnTouch(R.id.skimmer_touch_area)
+    boolean onTouch(MotionEvent motionEvent) {
+        if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            mTextView.pause();
+        }
+        return false;
+    }
+
+    @OnClick(R.id.skimmer_restart_button)
+    void onRestartClick() {
+        mTextView.setSpritzText(article);
+        mTextView.getSpritzer().start();
+        if(Build.VERSION.SDK_INT >= 24) {
+            mSkimmerProgress.setProgress(0, true);
+        } else {
+            mSkimmerProgress.setProgress(0);
+        }
+                /*
+                In order to skip one word, we have to wait
+                for one minute / words per minute
+                 */
+        mTextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.getSpritzer().pause();
+            }
+        }, 60000 / mTextView.getSpritzer().getWpm());
+    }
+
+    @OnClick(R.id.spritzer_text_view)
+    void onSpritzerClick() {
+        showWPMDialog();
+    }
 
     public static Skimmer newInstance() {
         return new Skimmer();
@@ -85,55 +115,8 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
 
         unbinder = ButterKnife.bind(this, inflated);
-        mRoot.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mTextView.play();
-                return false;
-            }
-        });
-
-        mRoot.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    mTextView.pause();
-                }
-                return false;
-            }
-        });
-
-        mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showWPMDialog();
-            }
-        });
 
         mTextView.attachProgressBar(mSkimmerProgress);
-
-        mRestartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mTextView.setSpritzText(article);
-                mTextView.getSpritzer().start();
-                if(Build.VERSION.SDK_INT >= 24) {
-                    mSkimmerProgress.setProgress(0, true);
-                } else {
-                    mSkimmerProgress.setProgress(0);
-                }
-                /*
-                In order to skip one word, we have to wait
-                for one minute / words per minute
-                 */
-                mTextView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTextView.getSpritzer().pause();
-                    }
-                }, 60000 / mTextView.getSpritzer().getWpm());
-            }
-        });
 
         if(isArticleReady) {
             setupSkimmer();
@@ -148,45 +131,6 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("article", article);
-    }
-
-    @Override
-    public void loadDone(JSONObject result, boolean success, int code) {
-        Log.i(TAG, "loadDone: Skimmer load " + isArticleReady);
-        if(success) {
-            try {
-                loadDone((String) result.get("content"));
-                Log.i(TAG, "loadDone: Done loading. Is view OK? " + (mTextView != null));
-            } catch(Exception e) {
-                Log.e(TAG, "loadDone: ", e);
-            }
-        } else  {
-            mErrorTextView.setVisibility(View.VISIBLE);
-            mProgressSpinner.setVisibility(View.GONE);
-            mTextView.setVisibility(View.INVISIBLE);
-            mSkimmerProgress.setVisibility(View.INVISIBLE);
-
-        }
-
-    }
-
-    @Override
-    public void loadDone(String result, boolean success, int code) {
-        if(success) {
-            loadDone(ReadabilityLoader.stripCSS(result));
-        } else {
-            mErrorTextView.setVisibility(View.VISIBLE);
-            mProgressSpinner.setVisibility(View.GONE);
-            mTextView.setVisibility(View.INVISIBLE);
-            mSkimmerProgress.setVisibility(View.INVISIBLE);
-
-        }
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if(context instanceof ItemViewActivity) {
@@ -194,10 +138,54 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
         } else {
             throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("article", article);
+    }
+
+    @Override
+    public void loadItem(Item item) {
+        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
+            new TextLoader(this).loadArticle(item.getUrl(), true);
+        } else {
+            article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
+            isArticleReady = true;
+        }
+    }
+
+    @Override
+    public void loadDone(JSONObject result, boolean success, int code) {
+        if(success) {
+            try {
+                bindData((String) result.get("content"));
+            } catch(Exception e) {
+                Log.e(TAG, "bindData: ", e);
+            }
+        } else  {
+            mErrorTextView.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.INVISIBLE);
+            mSkimmerProgress.setVisibility(View.INVISIBLE);
+        }
 
     }
 
-    private void loadDone(String content) {
+    @Override
+    public void loadDone(String result, boolean success, int code) {
+        if(success) {
+            bindData(result);
+        } else {
+            //TODO- Error handling
+            mErrorTextView.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.INVISIBLE);
+            mSkimmerProgress.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    private void bindData(String content) {
         if(content== null) content = " ";
         article = Html.fromHtml(content).
                 toString().
@@ -207,7 +195,6 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     private void setupSkimmer() {
-        mProgressSpinner.setVisibility(View.GONE);
         mTextView.setVisibility(View.VISIBLE);
         mSkimmerProgress.setVisibility(View.VISIBLE);
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
@@ -260,16 +247,6 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     }
 
     @Override
-    public void loadItem(Item item) {
-        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
-            new ReadabilityLoader(this).boilerPipe(item.getUrl(), true);
-        } else {
-            article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
-            isArticleReady = true;
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -277,7 +254,7 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void onPauseFragment() {
-
+        mTextView.pause();
     }
 
     @Override

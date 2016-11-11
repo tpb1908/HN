@@ -1,4 +1,4 @@
-package com.tpb.hn.network;
+package com.tpb.hn.network.loaders;
 
 import android.util.Log;
 
@@ -8,6 +8,8 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
+import com.tpb.hn.network.APIPaths;
+import com.tpb.hn.network.HNParser;
 
 import org.json.JSONObject;
 

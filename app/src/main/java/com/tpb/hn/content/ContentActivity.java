@@ -57,7 +57,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
         prefs.setUseDarkTheme(true);

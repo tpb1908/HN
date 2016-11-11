@@ -155,7 +155,6 @@ class DB extends SQLiteOpenHelper {
             }
             db.setTransactionSuccessful();
             db.endTransaction();
-            Log.i(TAG, "doInBackground: Insert complete " + allSuccessful);
             return allSuccessful;
         }
     }

@@ -13,7 +13,7 @@
         android:visibility="invisible"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
-    <com.tpb.hn.item.LockableNestedScrollView
+    <com.tpb.hn.item.views.LockableNestedScrollView
         android:id="@+id/webview_scroller"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical"
@@ -133,7 +133,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <com.tpb.hn.item.CachingAdBlockingWebView
+                <com.tpb.hn.item.views.CachingAdBlockingWebView
                     android:id="@+id/webview"
                     android:scrollbarStyle="insideOverlay"
                     android:scrollbars="vertical"
@@ -141,14 +141,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </com.tpb.hn.item.CachingAdBlockingWebView>
+                </com.tpb.hn.item.views.CachingAdBlockingWebView>
 
 
             </FrameLayout>
 
         </LinearLayout>
 
-    </com.tpb.hn.item.LockableNestedScrollView>
+    </com.tpb.hn.item.views.LockableNestedScrollView>
 
 
     <LinearLayout
