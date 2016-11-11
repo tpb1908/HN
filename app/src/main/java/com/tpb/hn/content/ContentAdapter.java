@@ -191,7 +191,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     @Override
     public int getItemCount() {
-        return data.length == 0 ? 100 : data.length;
+        return data.length == 0 ? 500 : data.length;
     }
 
     @Override
