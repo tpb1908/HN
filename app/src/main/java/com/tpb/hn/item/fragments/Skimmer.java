@@ -1,5 +1,6 @@
 package com.tpb.hn.item.fragments;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.ReadabilityLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -47,6 +49,8 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     private Tracker mTracker;
 
     private Unbinder unbinder;
+
+    private ItemViewActivity mParent;
 
     @BindView(R.id.skimmer_root_layout)
     RelativeLayout mRoot;
@@ -184,7 +188,18 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
             }
         }
     }
-    
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof ItemViewActivity) {
+            mParent = (ItemViewActivity) context;
+        } else {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+        }
+
+    }
+
     private void loadDone(String content) {
         if(content== null) content = " ";
         article = Html.fromHtml(content).
@@ -272,5 +287,6 @@ public class Skimmer extends Fragment implements ItemLoader, ReadabilityLoader.R
     public void onResumeFragment() {
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mParent.hideFab();
     }
 }

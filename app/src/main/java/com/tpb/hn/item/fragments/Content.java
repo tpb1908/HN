@@ -206,32 +206,31 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(!(context instanceof ItemViewActivity)) {
-            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
-        } else {
+        if(context instanceof ItemViewActivity) {
             mParent = (ItemViewActivity) context;
+        } else {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
         }
     }
 
     private void toggleFullscreen(boolean fullscreen) {
 
-        Log.i(TAG, "toggleFullscreen: " + fullscreen);
         mIsFullscreen = fullscreen;
         if(fullscreen) {
             mParent.hideFab();
+            mParent.openFullScreen();
+            mToolbar.setVisibility(View.VISIBLE);
             mWebContainer.removeView(mWebView);
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
                 mWebView.setVisibility(View.VISIBLE);
             }
+            mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
             mFullscreen.addView(mWebView);
             mScrollView.setScrollingEnabled(false);
-            mToolbar.setVisibility(View.VISIBLE);
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
-            mParent.openFullScreen();
-
         } else {
             mParent.showFab();
             mToolbar.setVisibility(View.GONE);
@@ -240,19 +239,19 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
                 mWebView.setVisibility(View.GONE);
                 setupPDFButtons();
             }
-
             mWebContainer.addView(mWebView);
-            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mWebView.setLayoutParams(params);
-            mWebView.clearMatches();
+            mScrollView.setScrollingEnabled(true);
             mWebContainer.post(new Runnable() {
                 @Override
                 public void run() {
                     mParent.closeFullScreen();
                 }
             });
-            mScrollView.setScrollingEnabled(true);
+
+            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            mWebView.setLayoutParams(params);
+            mWebView.clearMatches();
             mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
             mIsSearchComplete = false;
         }
@@ -381,9 +380,10 @@ public class Content extends Fragment implements ItemLoader, ReadabilityLoader.R
 
     @Override
     public void onResumeFragment() {
-        mTracker.setScreenName(TAG);
+        mTracker.setScreenName(TAG + "_" + mType);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows, mFullScreenToggler);
+        mParent.showFab();
     }
 
 }

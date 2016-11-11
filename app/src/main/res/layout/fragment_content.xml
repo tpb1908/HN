@@ -21,7 +21,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/scroll_view_content"
+            android:id="@+id/scroll_content"
             android:orientation="vertical"
             android:animateLayoutChanges="true"
             android:layout_width="match_parent"
@@ -124,8 +124,6 @@
                     </ViewSwitcher>
 
                 </RelativeLayout>
-
-
 
             </Toolbar>
 

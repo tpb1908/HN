@@ -58,6 +58,7 @@ public class CachingAdBlockingWebView extends WebView {
                 super.onPageStarted(view, url, favicon);
                 if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
             }
+
         });
     }
 
@@ -80,6 +81,7 @@ public class CachingAdBlockingWebView extends WebView {
             }
         });
     }
+
 
     @Override
     public void loadUrl(String url) {
