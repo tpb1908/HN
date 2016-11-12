@@ -98,6 +98,17 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
                 final Item item = launchIntent.getParcelableExtra("item");
                 setupFragments(prefs.getPageTypes(), item);
                 setTitle(item);
+                if(launchIntent.getSerializableExtra("type") != null) {
+                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
+                    final int index = mAdapter.indexOf(type);
+                    mStoryPager.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(index != -1) mStoryPager.setCurrentItem(index);
+                        }
+                    });
+
+                }
             } else {
                 Toast.makeText(this, R.string.error_no_item, Toast.LENGTH_LONG).show();
                 finish();

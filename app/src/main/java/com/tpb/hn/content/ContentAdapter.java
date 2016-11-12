@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by theo on 18/10/16.
@@ -279,22 +280,35 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         @BindView(R.id.item_number)
         TextView mNumber;
 
+        @OnClick(R.id.item_card)
+        void cardClick() {
+            dispatchClick(null);
+        }
+
+        @OnClick(R.id.item_stats)
+        void statsClick() {
+            dispatchClick(FragmentPagerAdapter.PageType.COMMENTS);
+        }
+
+        @OnClick(R.id.item_url)
+        void urlClick() {
+            dispatchClick(FragmentPagerAdapter.PageType.BROWSER);
+        }
+
         ItemHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(ContentAdapter.this.data != null &&
-                            ContentAdapter.this.data.length > getAdapterPosition() &&
-                            ContentAdapter.this.data[getAdapterPosition()] != null) {
-                        ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()]);
-                    }
-                   else {
-                        ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
-                    }
-                }
-            });
+        }
+
+        private void dispatchClick(FragmentPagerAdapter.PageType type) {
+            if(ContentAdapter.this.data != null &&
+                    ContentAdapter.this.data.length > getAdapterPosition() &&
+                    ContentAdapter.this.data[getAdapterPosition()] != null) {
+                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()], type);
+            }
+            else {
+                ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
+            }
         }
 
     }

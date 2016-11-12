@@ -129,7 +129,21 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         return page;
     }
 
-
+    int indexOf(PageType type) {
+        if(type == PageType.COMMENTS) {
+            return pages.indexOf(PageType.COMMENTS);
+        } else {
+            final int index = pages.indexOf(type);
+            if(index == -1) {
+                for(int i = 0; i < pages.size(); i++) {
+                    if(pages.get(i) == PageType.AMP_READER ||
+                            pages.get(i) == PageType.TEXT_READER)
+                        return i;
+                }
+            }
+            return index;
+        }
+    }
 
     @Override
     public int getCount() {

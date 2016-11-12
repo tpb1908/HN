@@ -118,7 +118,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void openItem(Item item, FragmentPagerAdapter.PageType type) {
-
+        final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
+        i.putExtra("item", item);
+        i.putExtra("type", type);
+        startActivity(i);
+        mAdapter.beginBackgroundLoading();
+        overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
     @Override
