@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,13 +27,12 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.item.views.CachingAdBlockingWebView;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
+import com.tpb.hn.item.views.CachingAdBlockingWebView;
 import com.tpb.hn.item.views.LockableNestedScrollView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.TextLoader;
@@ -263,7 +261,6 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
     }
 
     private void bindData() {
-        Log.i(TAG, "bindData: Binding data ");
         if(mIsContentReady && mWebView != null) {
             if(mIsShowingPDF) {
                 setupPDFButtons();
@@ -273,8 +270,13 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
                     mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
                 } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-                    Util.largeDebugDump(TAG, readablePage);
-                    mWebView.setBackgroundColor(darkBG);
+                    /*
+                    We have to do the theming on bind
+                    If we do when the JSON is returned, and the JSON is returned from Cache
+                    it will be returned before the Fragment has been attached and getContext()
+                    will return null
+                     */
+                    readablePage = TextLoader.setTextColor(getContext(), readablePage, darkBG, darkText);
                     mWebView.loadData(readablePage, "text/html", "utf-8");
                 }
             }
@@ -306,9 +308,6 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
         if(success) {
             try {
                 readablePage = result.get("content").toString();
-                Log.i(TAG, "loadDone: " + Util.toHtmlColor(darkBG) + ", " + Util.toHtmlColor(darkText));
-                readablePage = TextLoader.setTextColor(getContext(), readablePage, darkBG, darkText);
-                Log.i(TAG, "loadDone: Mercury page " + readablePage);
                 mIsContentReady = true;
                 bindData();
             } catch(JSONException jse) {
