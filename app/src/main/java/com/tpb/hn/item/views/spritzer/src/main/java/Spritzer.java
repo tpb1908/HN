@@ -43,9 +43,10 @@ public class Spritzer {
     protected boolean mPlayingRequested;
     protected boolean mSpritzThreadStarted;
 
+    protected boolean mJustJumped;
+
     protected int mCurWordIdx;
     private SeekBar mSeekBar;
-    private int mSeekPc;
 
     public interface OnCompletionListener {
 
@@ -77,15 +78,11 @@ public class Spritzer {
      */
     public void setText(String input) {
         createWordArrayFromString(input);
-        setMaxProgress();
         refillWordQueue();
     }
 
-    private void setMaxProgress() {
-        if (mWordArray != null && mSeekBar != null) {
-            mSeekBar.setMax(mWordArray.length);
-        }
-    }
+
+
 
     private void createWordArrayFromString(String input) {
         mWordArray = input
@@ -103,7 +100,7 @@ public class Spritzer {
         mPlayingRequested = false;
         mSpritzThreadStarted = false;
         mCurWordIdx = 0;
-        mSeekPc = 0;
+        mJustJumped = false;
     }
 
     public int getMinutesRemainingInQueue() {
@@ -162,9 +159,7 @@ public class Spritzer {
         while(!mWordQueue.isEmpty() && mCurWordIdx < pos) {
             mWordQueue.remove();
             mCurWordIdx++;
-
         }
-        mSeekPc = (int) ((float) mCurWordIdx/mWordQueue.size());
         step();
     }
 
@@ -186,14 +181,15 @@ public class Spritzer {
         mCurWordIdx = 0;
         mWordQueue.clear();
         mWordQueue.addAll(Arrays.asList(mWordArray));
+        if(mSeekBar != null) mSeekBar.setMax(mWordQueue.size());
     }
 
     private void updateProgress() {
-        if (mSeekBar != null) {
-            final int newPc = (int) ((float) mCurWordIdx/mWordQueue.size());
-            if(newPc != mSeekPc) {
+        if (mSeekBar != null && !mJustJumped && !mWordQueue.isEmpty()) {
+            final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress())/ (float) mWordQueue.size());
+            Log.i(TAG, "updateProgress: At " + mCurWordIdx + " of " + mWordQueue.size() + " dif " + pcDif);
+            if(pcDif > 0.01f) {
                 mSeekBar.setProgress(mCurWordIdx);
-                mSeekPc = newPc;
             }
         }
     }
@@ -227,7 +223,7 @@ public class Spritzer {
             word = splitLongWord(word);
 
             mSpritzHandler.sendMessage(mSpritzHandler.obtainMessage(MSG_PRINT_WORD, word));
-
+            mJustJumped = false;
             final int delayMultiplier = mDelayStrategy.delayMultiplier(word);
             //Do not allow multiplier that is less than 1
             final int wordDelay = getInterWordDelay() * (mDelayStrategy != null ? delayMultiplier < 1 ? 1 : delayMultiplier : 1);
@@ -428,9 +424,13 @@ public class Spritzer {
             mSeekBar = bar;
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    mCurWordIdx = (int) (mWordArray.length * (i/100f));
-                    step();
+                public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
+                    if(fromUser) {
+                        mCurWordIdx = pos;
+                        Log.i(TAG, "onProgressChanged: Change " + pos + " of " + mSeekBar.getMax());
+                        mJustJumped = true;
+                        step();
+                    }
                 }
 
                 @Override

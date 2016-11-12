@@ -18,8 +18,6 @@ import com.tpb.hn.R;
  */
 public class SpritzerTextView extends TextView implements View.OnClickListener {
 
-    //TODO- Update SeekBar only if percentage is over 1
-
     /**
      * Interface definition for a callback to be invoked when the
      * clickControls are enabled and the view is clicked
@@ -231,11 +229,9 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
 
     public void attachSeekBar(SeekBar bar) {
         mSpritzer.attachSeekBar(bar);
-
     }
 
     public void setOnCompletionListener(Spritzer.OnCompletionListener listener) {
-
         mSpritzer.setOnCompletionListener(listener);
     }
 
