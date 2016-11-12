@@ -180,7 +180,7 @@ public class Item implements Parcelable, Comparable<Item> {
             final Item i = (Item) obj;
             return id == i.id &&
                     (text != null && i.text != null && text.equals(i.text)) &&
-                    kids.length == i.kids.length &&
+                    (kids != null && i.kids != null && kids.length == i.kids.length) &&
                     score == i.score &&
                     parts.length == i.parts.length &&
                     descendants == i.descendants;

@@ -135,7 +135,7 @@ public class HNItemLoader {
 
                             @Override
                             public void onError(ANError anError) {
-                                itemListener.itemLoaded(null, false, anError.getResponse().code());
+                                itemListener.itemLoaded(null, false, anError.getResponse() == null ? 0 : anError.getResponse().code());
                             }
                         });
             }
