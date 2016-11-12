@@ -146,7 +146,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         }
     }
 
-    public boolean onBackPressed() {
+    boolean onBackPressed() {
         for(Fragment f : fragments) {
             if(!((FragmentCycleListener) f).onBackPressed()) return false;
         }

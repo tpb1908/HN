@@ -298,6 +298,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 bindData();
             } else {
                 url = item.getUrl();
+                //TODO- At some point a PDF article crashed this thing
                 new TextLoader(this).loadArticle(url, true);
             }
         }
@@ -324,9 +325,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
     @Override
     public void loadDone(String result, boolean success, int code) {
         if(success) {
-
             mIsContentReady = true;
-
             bindData();
         } else {
             readablePage = Formatter.formatHTTPError(getContext(),
@@ -407,7 +406,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows, mFullScreenToggler);
         if(mIsShowingPDF) {
-            //TODO- Hide the find in page button as it can't be used in Docs PDF?
+            ButterKnife.findById(mToolbar, R.id.button_find_in_page).setVisibility(View.INVISIBLE);
             mParent.hideFab();
         } else {
             mParent.showFab();

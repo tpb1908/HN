@@ -182,7 +182,7 @@ public class Item implements Parcelable, Comparable<Item> {
                     (text != null && i.text != null && text.equals(i.text)) &&
                     (kids != null && i.kids != null && kids.length == i.kids.length) &&
                     score == i.score &&
-                    parts.length == i.parts.length &&
+                    (parts != null && i.parts != null && parts.length == i.parts.length) &&
                     descendants == i.descendants;
         }
         return false;

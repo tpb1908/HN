@@ -315,7 +315,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     }
 
-    public interface ContentOpener {
+    interface ContentOpener {
 
         void openItem(Item item);
 
