@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -59,8 +58,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
     @BindView(R.id.skimmer_spritzer_progress)
     SeekBar mSkimmerProgress;
 
-    @BindView(R.id.skimmer_error_message)
-    TextView mErrorTextView;
 
     private String article;
     private boolean isArticleReady = false;
@@ -165,7 +162,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
                 Log.e(TAG, "bindData: ", e);
             }
         } else  {
-            mErrorTextView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
         }
@@ -178,7 +174,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
             bindData(result);
         } else {
             //TODO- Error handling
-            mErrorTextView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
 
