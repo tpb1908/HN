@@ -29,7 +29,7 @@
     <string name="text_info_empty">\u2026</string>
     <string name="text_attempting_item_load">Loading item</string>
 
-    <string name="text_open_with_docs">Open in browser with Google Docs</string>
+    <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
 
     <string name="action_find_in_page">Find in page</string>
