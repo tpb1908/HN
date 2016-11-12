@@ -237,11 +237,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
-        for(int i = 0; i < ids.length; i++) {
-            if(item.getId() == ids[i]) {
-                data[i] = item;
-                notifyItemChanged(i);
-                break;
+        if(success) {
+            for(int i = 0; i < ids.length; i++) {
+                if(item.getId() == ids[i]) {
+                    data[i] = item;
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }
