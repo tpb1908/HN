@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.andrewgiang.textspritzer.lib.SpritzerTextView
+            <com.tpb.hn.item.views.spritzer.src.main.java.SpritzerTextView
                 android:id="@+id/spritzer_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:visibility="invisible"
                 />
 
-            <ProgressBar
+            <SeekBar
                 android:id="@+id/skimmer_spritzer_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
