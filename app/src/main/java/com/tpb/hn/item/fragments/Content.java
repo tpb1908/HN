@@ -28,6 +28,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.views.CachingAdBlockingWebView;
@@ -161,7 +162,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
     private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;
-    private boolean mIsArticleReady;
+    private boolean mIsContentReady;
 
     private String url;
     private String readablePage;
@@ -190,7 +191,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
 
         mParent.showFab();
 
-        if(mIsArticleReady) {
+        if(mIsContentReady) {
             bindData();
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("url") != null) {
@@ -263,7 +264,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     private void bindData() {
         Log.i(TAG, "bindData: Binding data ");
-        if(mIsArticleReady && mWebView != null) {
+        if(mIsContentReady && mWebView != null) {
             if(mIsShowingPDF) {
                 setupPDFButtons();
             } else {
@@ -272,7 +273,8 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
                     mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
                 } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-                    Log.i(TAG, "bindData: Text reader");
+                    Util.largeDebugDump(TAG, readablePage);
+                    mWebView.setBackgroundColor(darkBG);
                     mWebView.loadData(readablePage, "text/html", "utf-8");
                 }
             }
@@ -284,17 +286,16 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
-            mIsArticleReady = true;
+            mIsContentReady = true;
             bindData();
         }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
                 readablePage = item.getText();
-                mIsArticleReady = true;
+                mIsContentReady = true;
                 bindData();
             } else {
                 url = item.getUrl();
-                // new TextLoader(this).boilerPipe(url, true);
                 new TextLoader(this).loadArticle(url, true);
             }
         }
@@ -302,24 +303,37 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @Override
     public void loadDone(JSONObject result, boolean success, int code) {
-        try {
-            readablePage = result.get("content").toString();
-            mIsArticleReady = true;
-            bindData();
-        } catch(JSONException jse) {}
+        if(success) {
+            try {
+                readablePage = result.get("content").toString();
+                Log.i(TAG, "loadDone: " + Util.toHtmlColor(darkBG) + ", " + Util.toHtmlColor(darkText));
+                readablePage = TextLoader.setTextColor(getContext(), readablePage, darkBG, darkText);
+                Log.i(TAG, "loadDone: Mercury page " + readablePage);
+                mIsContentReady = true;
+                bindData();
+            } catch(JSONException jse) {
+                //TODO- Error message
+            }
+        } else {
+            readablePage = Formatter.formatHTTPError(getContext(),
+                    Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
+                    code);
+            mIsContentReady = true;
+        }
     }
 
     @Override
     public void loadDone(String result, boolean success, int code) {
         if(success) {
-            readablePage = result;
-            mIsArticleReady = true;
+
+            mIsContentReady = true;
+
             bindData();
         } else {
             readablePage = Formatter.formatHTTPError(getContext(),
                     Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
                     code);
-
+            mIsContentReady = true;
         }
     }
 

@@ -59,6 +59,10 @@ public class CachingAdBlockingWebView extends WebView {
                 if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
             }
 
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+            }
         });
     }
 

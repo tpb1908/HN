@@ -40,4 +40,30 @@
     <string name="pref_content_read_behaviour">Mark read when passed</string>
     <string name="pref_content_mark_new_items">Mark new items</string>
 
+    <string name="html" translatable="false">
+        <![CDATA[
+        <html>
+            <head>
+                <title>Title</title>
+                <style type="text/css">
+                    body {
+                        font-size: %1$fpx;
+                        background-color: %2$s;
+                        margin: %3$fpx %4$fpx %5$fpx %6$fpx;
+                        line-height: %7$f;
+                    }
+                    a {color: %8$s;}
+                    p {color: %10$s;}
+                    .caption-text {color:%10$s; }
+                    span {color: %10$s;}
+                    img {display: inline; height: auto; max-width: 100%%;}
+                    pre {white-space: pre-wrap;}
+                    iframe {width: 90vw; height: 50.625vw;} /* 16:9 */
+                </style>
+            </head>
+            <body>%9$s</body>
+        </html>
+        ]]>
+    </string>
+
 </resources>

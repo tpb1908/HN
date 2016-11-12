@@ -1,11 +1,14 @@
 package com.tpb.hn.network.loaders;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.network.APIPaths;
 
 import org.json.JSONObject;
@@ -44,7 +47,6 @@ public class TextLoader {
             final ArrayList<TextLoadDone> listeners = new ArrayList<>();
             listeners.add(listener);
             listenerCache.put(url, listeners);
-            final long start = System.nanoTime();
             AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
                     .setTag("mercury")
                     .setOkHttpClient(APIPaths.MERCURY_CLIENT)
@@ -54,8 +56,6 @@ public class TextLoader {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                Log.d(TAG, "onResponse: " + (System.nanoTime()-start)/1E9);
-                                Log.i(TAG, "onResponse: updating " + listenerCache.get(url).size() + " listeners");
                                 for(TextLoadDone rld : listenerCache.get(url)) {
                                     if(rld == null) {
                                         listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null
@@ -67,7 +67,7 @@ public class TextLoader {
                                 if(response != null) {
                                     cache.put(url, response);
                                 }
-                                Log.i(TAG, "onResponse: " + response.toString());
+                                Log.i(TAG, "onResponse: " + response.get("title"));
                             } catch(Exception e) {
                                 Log.e(TAG, "onResponse: ", e);
                                 Log.i(TAG, "onResponse: " + e.getMessage());
@@ -89,6 +89,17 @@ public class TextLoader {
                     });
         }
 
+    }
+
+    public static String setTextColor(Context context, String markup, int bgColor, int textColor) {
+            return context.getString(R.string.html,
+                    14f,
+                    Util.toHtmlColor(bgColor),
+                    10f, 10f, 10f, 10f,
+                    1f,
+                    Util.toHtmlColor(textColor),
+                    markup,
+                    Util.toHtmlColor(textColor));
     }
 
     public interface TextLoadDone {

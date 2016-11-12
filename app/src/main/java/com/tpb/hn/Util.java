@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -53,5 +54,19 @@ public class Util {
         return new FloatingActionButton(themeWrapper);
     }
 
+    public static void largeDebugDump(String tag, String dump) {
+        final int len = dump.length();
+        for(int i = 0; i < len; i+= 1024) {
+            if(i + 1024 < len) {
+                Log.d(tag, dump.substring(i, i + 1024));
+            } else {
+                Log.d(tag, dump.substring(i, len));
+            }
+        }
+    }
+
+    public static String toHtmlColor(int color ) {
+        return String.format("#%06X", 0xFFFFFF & color);
+    }
 
 }
