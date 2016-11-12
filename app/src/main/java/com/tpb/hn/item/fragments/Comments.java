@@ -78,4 +78,9 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
+    }
 }

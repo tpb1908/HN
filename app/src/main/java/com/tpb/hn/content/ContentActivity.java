@@ -134,10 +134,4 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mAdapter.cancelBackgroundLoading();
     }
 
-    @Override
-    public void onBackPressed() {
-        //TODO- Allow the fragments to override back press
-        super.onBackPressed();
-    }
-
 }

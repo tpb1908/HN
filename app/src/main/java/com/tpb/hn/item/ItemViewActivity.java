@@ -142,6 +142,11 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
+    @Override
+    public void onBackPressed() {
+        if(mAdapter.onBackPressed()) super.onBackPressed();
+    }
+
     private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item);
         mStoryPager.setAdapter(mAdapter);
@@ -187,12 +192,13 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
+        //This is only called when the Activity is launched from a link outside the app
         setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
         setTitle(item);
     }
 
     @Override
     public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
-
+        //This should never be called, so we just ignore it
     }
 }

@@ -414,4 +414,16 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
         }
     }
 
+    @Override
+    public boolean onBackPressed() {
+        if(mIsFullscreen) {
+            if(mWebView.canGoBack()) {
+                mWebView.goBack();
+            } else {
+                toggleFullscreen(false);
+            }
+            return false;
+        }
+        return true;
+    }
 }

@@ -263,4 +263,10 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mParent.hideFab();
     }
+
+    @Override
+    public boolean onBackPressed() {
+        //The Skimmer never needs to stop the back button
+        return true;
+    }
 }

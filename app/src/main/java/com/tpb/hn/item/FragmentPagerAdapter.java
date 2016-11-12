@@ -134,6 +134,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             return pages.indexOf(PageType.COMMENTS);
         } else {
             final int index = pages.indexOf(type);
+            //TODO- Allow picking the default browser mode, and the default fragment
             if(index == -1) {
                 for(int i = 0; i < pages.size(); i++) {
                     if(pages.get(i) == PageType.AMP_READER ||
@@ -143,6 +144,13 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             }
             return index;
         }
+    }
+
+    public boolean onBackPressed() {
+        for(Fragment f : fragments) {
+            if(!((FragmentCycleListener) f).onBackPressed()) return false;
+        }
+        return true;
     }
 
     @Override
@@ -161,9 +169,11 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
         void onResumeFragment();
 
+        boolean onBackPressed();
+
     }
 
-    public interface Fullscreen {
+    interface Fullscreen {
 
         void openFullScreen();
 
