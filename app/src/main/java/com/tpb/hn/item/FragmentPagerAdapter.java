@@ -29,7 +29,8 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         super(fragmentManager);
         this.item = item;
         possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER,  PageType.SKIMMER};
-        final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]");
+        final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]") ||
+                (item.getUrl() != null && item.getUrl().endsWith(".pdf"));
 
         boolean containsBrowser = Arrays.asList(possiblePages).contains(PageType.BROWSER);
         for(PageType pt : possiblePages) {

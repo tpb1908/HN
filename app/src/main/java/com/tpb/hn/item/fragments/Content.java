@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -285,6 +286,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @Override
     public void loadItem(Item item) {
+        Log.d(TAG, "loadItem: Loading item " + mType);
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
@@ -298,7 +300,6 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 bindData();
             } else {
                 url = item.getUrl();
-                //TODO- At some point a PDF article crashed this thing
                 new TextLoader(this).loadArticle(url, true);
             }
         }
