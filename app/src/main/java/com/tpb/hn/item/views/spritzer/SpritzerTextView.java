@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -11,7 +13,10 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
+import com.tpb.hn.storage.SharedPrefsController;
 
 /**
  * Created by andrewgiang on 3/3/14.
@@ -86,6 +91,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
 
     }
 
+    @SuppressWarnings("ResourceType")
     private void setAdditionalPadding(AttributeSet attrs) {
         //check padding attributes
         int[] attributes = new int[]{android.R.attr.padding, android.R.attr.paddingTop,
@@ -116,6 +122,67 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
             this.setOnClickListener(this);
         }
 
+    }
+
+    public void showWPMDialog() {
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.title_wpm_dialog)
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .autoDismiss(false)
+                .input(String.format(getContext().getString(R.string.hint_wpm_input), mSpritzer.getWpm()),
+                        null,
+                        new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                boolean error = false;
+                                try {
+                                    final int wpm = Integer.parseInt(input.toString());
+                                    if(wpm > 2000) {
+                                        error = true;
+                                    } else {
+                                        prefs.setSkimmerWPM(wpm);
+                                    }
+                                } catch(Exception e) {
+                                    error = true;
+                                }
+
+                                if(error) {
+                                    dialog.getInputEditText().setError(getContext().getString(R.string.error_wpm_input));
+                                } else {
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                .canceledOnTouchOutside(true)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .cancelable(true)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .show();
+    }
+
+    public void showTextDialog() {
+        final ClickableTextView text = new ClickableTextView(getContext());
+        text.setText(mSpritzer.getWordArray());
+        final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                .title(R.string.title_text_dialog)
+                .customView(text, true)
+                .negativeText(android.R.string.cancel)
+                .show();
+
+        text.setListener(new ClickableTextView.OnSpanClickListener() {
+            @Override
+            public void spanClicked(int pos) {
+                mSpritzer.setPosition(pos);
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -236,7 +303,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     }
 
     /**
-     * @param strategy @see {@link com.andrewgiang.textspritzer.lib.DelayStrategy#delayMultiplier(String)}
+     * @param strategy @see {@link DefaultDelayStrategy></com.tpb.hn.item.views.spritzer.DefaultDelayStrategy>}
      */
     public void setDelayStrategy(DelayStrategy strategy) {
         mSpritzer.setDelayStrategy(strategy);

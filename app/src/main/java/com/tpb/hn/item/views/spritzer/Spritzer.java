@@ -152,6 +152,9 @@ public class Spritzer {
     }
 
     public void setPosition(int pos) {
+        if(pos < mCurWordIdx) {
+            refillWordQueue();
+        }
         while(!mWordQueue.isEmpty() && mCurWordIdx < pos) {
             mWordQueue.remove();
             mCurWordIdx++;

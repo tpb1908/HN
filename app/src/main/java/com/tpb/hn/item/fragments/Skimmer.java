@@ -3,11 +3,9 @@ package com.tpb.hn.item.fragments;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
@@ -99,7 +95,13 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @OnClick(R.id.spritzer_text_view)
     void onSpritzerClick() {
-        showWPMDialog();
+       mTextView.showWPMDialog();
+    }
+
+    @OnLongClick(R.id.spritzer_text_view)
+    boolean onSpritzerLongClick() {
+        mTextView.showTextDialog();
+        return true;
     }
 
     public static Skimmer newInstance() {
@@ -195,52 +197,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
         mTextView.setSpritzText(article);
         mTextView.pause();
-    }
-
-    //TODO- Move this dialog to the SpritzerTextView
-    //TODO- Add text dialog to choose word
-    private void showWPMDialog() {
-        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
-        new MaterialDialog.Builder(getContext())
-                .title(R.string.title_wpm_dialog)
-                .inputType(InputType.TYPE_CLASS_NUMBER)
-                .autoDismiss(false)
-                .input(String.format(getString(R.string.hint_wpm_input), prefs.getSkimmerWPM()),
-                        null,
-                        new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                boolean error = false;
-                                try {
-                                    final int wpm = Integer.parseInt(input.toString());
-                                    if(wpm > 2000) {
-                                        error = true;
-                                    } else {
-                                        mTextView.setWpm(wpm);
-                                        prefs.setSkimmerWPM(wpm);
-                                    }
-                                } catch(Exception e) {
-                                    error = true;
-                                }
-
-                                if(error) {
-                                    dialog.getInputEditText().setError(getContext().getString(R.string.error_wpm_input));
-                                } else {
-                                    dialog.dismiss();
-                                }
-                            }
-                        })
-                .canceledOnTouchOutside(true)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .cancelable(true)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .show();
     }
 
     @Override

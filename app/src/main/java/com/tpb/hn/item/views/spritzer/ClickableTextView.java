@@ -1,4 +1,4 @@
-package com.tpb.hn.item.views;
+package com.tpb.hn.item.views.spritzer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,6 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -44,7 +43,7 @@ public class ClickableTextView extends TextView {
         int end = 0;
         // to cater last/only word loop will run equal to the length of indices.length
         for (int i = 0; i <= indices.length; i++) {
-            ClickableSpan clickSpan = getClickableSpan();
+            ClickableSpan clickSpan = getClickableSpan(i);
             // to cater last/only word
             end = (i < indices.length ? indices[i] : spans.length());
             spans.setSpan(clickSpan, start, end,
@@ -53,21 +52,20 @@ public class ClickableTextView extends TextView {
         }
     }
 
-    private ClickableSpan getClickableSpan(){
-        return new ClickableSpan() {
+    public void setText(String[] text) {
+        final StringBuilder builder = new StringBuilder();
+        for(String s : text) {
+            builder.append(s);
+            builder.append(' ');
+        }
+        setText(builder.toString());
+    }
+
+    private CleanClickableSpan getClickableSpan(final int pos) {
+        return new CleanClickableSpan(pos) {
             @Override
             public void onClick(View widget) {
-                final TextView tv = (TextView) widget;
-                final String s = tv
-                        .getText()
-                        .subSequence(tv.getSelectionStart(),
-                                tv.getSelectionEnd()).toString();
-                Log.d("tapped on:", s);
-                if(mListener != null) mListener.spanClicked(s);
-            }
-
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
+                if(mListener != null) mListener.spanClicked(pos);
             }
         };
     }
@@ -82,9 +80,22 @@ public class ClickableTextView extends TextView {
         return indices.toArray(new Integer[0]);
     }
 
+    private abstract class CleanClickableSpan extends ClickableSpan {
+        final int pos;
+
+        public CleanClickableSpan(int pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setUnderlineText(false);
+        }
+    }
+
     public interface OnSpanClickListener {
 
-        void spanClicked(String span);
+        void spanClicked(int pos);
 
     }
 
