@@ -13,12 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.SeekBar;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.andrewgiang.textspritzer.lib.SpritzerTextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
@@ -28,6 +26,7 @@ import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
+import com.tpb.hn.item.views.spritzer.src.main.java.SpritzerTextView;
 import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -57,10 +56,8 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
     SpritzerTextView mTextView;
 
     @BindView(R.id.skimmer_spritzer_progress)
-    ProgressBar mSkimmerProgress;
+    SeekBar mSkimmerProgress;
 
-    @BindView(R.id.skimmer_error_message)
-    TextView mErrorTextView;
 
     private String article;
     private boolean isArticleReady = false;
@@ -116,7 +113,7 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
         unbinder = ButterKnife.bind(this, inflated);
 
-        mTextView.attachProgressBar(mSkimmerProgress);
+        mTextView.attachSeekBar(mSkimmerProgress);
 
         if(isArticleReady) {
             setupSkimmer();
@@ -165,7 +162,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
                 Log.e(TAG, "bindData: ", e);
             }
         } else  {
-            mErrorTextView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
         }
@@ -178,7 +174,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
             bindData(result);
         } else {
             //TODO- Error handling
-            mErrorTextView.setVisibility(View.VISIBLE);
             mTextView.setVisibility(View.INVISIBLE);
             mSkimmerProgress.setVisibility(View.INVISIBLE);
 
@@ -202,6 +197,8 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         mTextView.pause();
     }
 
+    //TODO- Move this dialog to the SpritzerTextView
+    //TODO- Add text dialog to choose word
     private void showWPMDialog() {
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
         new MaterialDialog.Builder(getContext())

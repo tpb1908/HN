@@ -49,6 +49,13 @@ public class Util {
         return -1;
     }
 
+    public static int indexOf(String[] values, String key) {
+        for(int i = 0; i < values.length; i++) {
+            if(key.equals(values[i])) return i;
+        }
+        return -1;
+    }
+
     public static FloatingActionButton getFAB(Context context) {
         final Context themeWrapper = new ContextThemeWrapper(context, R.style.AppTheme);
         return new FloatingActionButton(themeWrapper);
