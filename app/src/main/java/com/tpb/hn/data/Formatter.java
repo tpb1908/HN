@@ -79,4 +79,8 @@ public class Formatter {
         }
     }
 
+    public static String wrapInDiv(String text) {
+        return "<div>" + text + "</div>";
+    }
+
 }

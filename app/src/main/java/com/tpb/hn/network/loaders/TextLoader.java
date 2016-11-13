@@ -91,6 +91,7 @@ public class TextLoader {
 
     }
 
+    //TODO- Move to formatter
     public static String setTextColor(Context context, String markup, int bgColor, int textColor) {
             return context.getString(R.string.html,
                     14f,

@@ -298,7 +298,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
         }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
-                readablePage = item.getText();
+                readablePage = Formatter.wrapInDiv(item.getText());
                 mIsContentReady = true;
                 bindData();
             } else {
