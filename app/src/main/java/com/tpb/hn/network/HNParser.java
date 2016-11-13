@@ -79,7 +79,7 @@ public class HNParser {
             object.put(KEY_TEXT, item.getType());
             object.put(KEY_SCORE, item.getScore());
             object.put(KEY_DESCENDANTS, item.getDescendants());
-            //TODO- Dead and deleted, + parts
+            //TODO- Dead delete, and parts
             if(item.getBy() != null) object.put(KEY_BY, item.getBy());
             if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
             if(item.getText() != null) object.put(KEY_TEXT, item.getText());

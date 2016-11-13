@@ -81,15 +81,11 @@ public class Spritzer {
         refillWordQueue();
     }
 
-
-
-
     private void createWordArrayFromString(String input) {
         mWordArray = input
                 .replaceAll("/\\s+/g", " ")      // condense adjacent spaces
                 .split(" ");                    // split on spaces
     }
-
 
     protected void init() {
 

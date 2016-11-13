@@ -197,6 +197,8 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         mTextView.pause();
     }
 
+    //TODO- Move this dialog to the SpritzerTextView
+    //TODO- Add text dialog to choose word
     private void showWPMDialog() {
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
         new MaterialDialog.Builder(getContext())
