@@ -30,6 +30,8 @@
     <string name="text_info_empty">\u2026</string>
     <string name="text_attempting_item_load">Loading item</string>
 
+    <string name="text_redirecting_reader">Redirecting through parser service</string>
+
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
 

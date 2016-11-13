@@ -168,7 +168,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     }
 
     public void showTextDialog() {
-        final ClickableTextView text = new ClickableTextView(getContext(), mSpritzer.mCurWordIdx);
+        final ClickableTextView text = new ClickableTextView(getContext(), mSpritzer.mCurWordIdx - 1);
         text.setText(mSpritzer.getWordArray());
         final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
                 .title(R.string.title_text_dialog)

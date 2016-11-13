@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -25,6 +26,7 @@ public class CachingAdBlockingWebView extends WebView {
     private static final String TAG = CachingAdBlockingWebView.class.getSimpleName();
 
     private ProgressBar mBoundProgressBar;
+    private LinkHandler mHandler;
 
     public CachingAdBlockingWebView(Context context) {
         this(context, null);
@@ -61,8 +63,29 @@ public class CachingAdBlockingWebView extends WebView {
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if(mHandler != null) {
+                    final Pair<Boolean, String> val = mHandler.handleLink(request.getUrl().toString());
+                    if(val.first) {
+                        loadUrl(val.second);
+                    }
+                } else {
+                    loadUrl(request.getUrl().toString());
+                }
+                return true;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if(mHandler != null) {
+                    final Pair<Boolean, String> val = mHandler.handleLink(url);
+                    if(val.first) {
+                        loadUrl(val.second);
+                    }
+                } else {
+                    loadUrl(url);
+                }
+                return true;
             }
         });
     }
@@ -87,6 +110,10 @@ public class CachingAdBlockingWebView extends WebView {
         });
     }
 
+    public void setLinkHandler(LinkHandler handler) {
+        mHandler = handler;
+    }
+
 
     @Override
     public void loadUrl(String url) {
@@ -98,6 +125,12 @@ public class CachingAdBlockingWebView extends WebView {
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         super.loadUrl(url, additionalHttpHeaders);
         this.setVisibility(VISIBLE);
+    }
+
+    public interface LinkHandler {
+
+        Pair<Boolean, String> handleLink(String url);
+
     }
 
 }

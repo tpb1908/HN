@@ -214,7 +214,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
-        holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
+       // holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");

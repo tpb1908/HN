@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -51,7 +53,7 @@ import butterknife.Unbinder;
  * Created by theo on 06/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener {
+public class Content extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener, CachingAdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -187,6 +189,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
 
         mWebView.bindProgressBar(mProgressBar, true, true);
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setLinkHandler(this);
 
         mParent.showFab();
 
@@ -333,6 +336,20 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                     Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType)),
                     code);
             mIsContentReady = true;
+        }
+    }
+
+    @Override
+    public Pair<Boolean, String> handleLink(String url) {
+        switch(mType) {
+            case AMP_READER:
+                return Pair.create(true, APIPaths.getMercuryAmpPath(url));
+            case TEXT_READER:
+                new TextLoader(this).loadArticle(url, true);
+                Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
+                return Pair.create(false, null);
+            default:
+                return Pair.create(true, url);
         }
     }
 

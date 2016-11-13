@@ -144,7 +144,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     @Override
     public void onBackPressed() {
-        if(mAdapter.onBackPressed()) super.onBackPressed();
+        if(mAdapter.onBackPressed()) finish();
     }
 
     private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {
@@ -152,6 +152,13 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);
+    }
+
+    @Override
+    public void itemLoaded(Item item, boolean success, int code) {
+        //This is only called when the Activity is launched from a link outside the app
+        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
+        setTitle(item);
     }
 
     private void setTitle(Item item) {
@@ -185,17 +192,11 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         mStoryPager.setSwipeEnabled(true);
     }
 
+
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.none, R.anim.slide_down);
-    }
-
-    @Override
-    public void itemLoaded(Item item, boolean success, int code) {
-        //This is only called when the Activity is launched from a link outside the app
-        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
-        setTitle(item);
     }
 
     @Override
