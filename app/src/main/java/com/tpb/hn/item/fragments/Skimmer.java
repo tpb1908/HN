@@ -95,12 +95,12 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @OnClick(R.id.spritzer_text_view)
     void onSpritzerClick() {
-       mTextView.showWPMDialog();
+        mTextView.showTextDialog();
     }
 
     @OnLongClick(R.id.spritzer_text_view)
     boolean onSpritzerLongClick() {
-        mTextView.showTextDialog();
+        mTextView.showWPMDialog();
         return true;
     }
 

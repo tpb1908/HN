@@ -24,28 +24,28 @@ import java.util.Arrays;
  */
 public class Spritzer {
     protected static final String TAG = "Spritzer";
-    protected static final boolean VERBOSE = false;
+    private static final boolean VERBOSE = false;
 
-    protected static final int MSG_PRINT_WORD = 1;
+    private static final int MSG_PRINT_WORD = 1;
 
-    protected static final int MAX_WORD_LENGTH = 13;
+    private static final int MAX_WORD_LENGTH = 13;
     protected static final int CHARS_LEFT_OF_PIVOT = 3;
 
-    protected String[] mWordArray;                  // A parsed list of words parsed from {@link #setText(String input)}
-    protected ArrayDeque<String> mWordQueue;        // The queue of words from mWordArray yet to be displayed
+    private String[] mWordArray;                  // A parsed list of words parsed from {@link #setText(String input)}
+    private ArrayDeque<String> mWordQueue;        // The queue of words from mWordArray yet to be displayed
 
-    protected TextView mTarget;
-    protected int mWPM;
+    private TextView mTarget;
+    private int mWPM;
 
-    protected Handler mSpritzHandler;
-    protected Object mPlayingSync = new Object();
-    protected boolean mPlaying;
-    protected boolean mPlayingRequested;
-    protected boolean mSpritzThreadStarted;
+    private Handler mSpritzHandler;
+    private Object mPlayingSync = new Object();
+    private boolean mPlaying;
+    private boolean mPlayingRequested;
+    private boolean mSpritzThreadStarted;
 
-    protected boolean mJustJumped;
+    private boolean mJustJumped;
 
-    protected int mCurWordIdx;
+    int mCurWordIdx;
     private SeekBar mSeekBar;
 
     public interface OnCompletionListener {
