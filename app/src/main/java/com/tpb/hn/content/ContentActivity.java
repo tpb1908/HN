@@ -58,7 +58,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         super.onCreate(savedInstanceState);
 
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
-        final SharedPrefsController prefs = SharedPrefsController.getInstance(this);
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
         prefs.setUseDarkTheme(true);
         prefs.setUseCards(true);
         if(prefs.getUseDarkTheme()) {
@@ -67,11 +67,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
 
-        AdBlocker.init(this);
+        AdBlocker.init(getApplicationContext());
         AndroidNetworking.initialize(getApplicationContext());
 
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ContentAdapter(this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
+        mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mAdapter = new ContentAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
 
         mNavSpinner.setAdapter(new ArrayAdapter<>(

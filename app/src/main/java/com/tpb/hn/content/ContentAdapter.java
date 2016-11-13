@@ -51,8 +51,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private LinearLayoutManager mManager;
     private SwipeRefreshLayout mSwiper;
 
-    ContentAdapter(ContentOpener opener, FastScrollRecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
-        mContext = recycler.getContext();
+    //TODO- Clean this up
+    ContentAdapter(Context context, ContentOpener opener, FastScrollRecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
+        mContext = context;
         mOpener = opener;
         mSwiper = swiper;
         mManager = manager;
