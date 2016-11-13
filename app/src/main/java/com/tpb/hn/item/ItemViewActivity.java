@@ -73,6 +73,8 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     private int originalFlags;
 
+    private boolean mShouldShowFab = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +121,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     }
 
     public void showFab() {
-        mFab.show();
+        if(mShouldShowFab) mFab.show();
     }
 
     public void hideFab() {
@@ -138,6 +140,13 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     @Override
     protected void onResume() {
         super.onResume();
+        mFab.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mShouldShowFab = true;
+                showFab();
+            }
+        }, 600);
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
