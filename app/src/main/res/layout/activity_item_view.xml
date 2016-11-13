@@ -40,43 +40,18 @@
                     android:src="@drawable/ic_arrow_back"
                     android:background="@android:color/transparent"
                     />
-
-                <TextView
-                    android:id="@+id/item_title"
-                    android:layout_toEndOf="@id/item_back_button"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:paddingEnd="8dp"
+                <!--TODO- Change the Relative to a horizontal Linear layout??? -->
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_title_empty"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+                    android:layout_toEndOf="@id/item_back_button">
 
-                <TextView
-                    android:id="@+id/item_stats"
-                    android:layout_toEndOf="@id/item_back_button"
-                    android:layout_below="@id/item_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_info_empty"
-                    android:textAppearance="@android:style/TextAppearance.Material.Small"/>
+                    <include layout="@layout/item_details">
 
-                <TextView
-                    android:id="@+id/item_author"
-                    android:layout_toEndOf="@id/item_back_button"
-                    android:layout_below="@id/item_stats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    </include>
 
-                <TextView
-                    android:id="@+id/item_url"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:layout_toEndOf="@id/item_author"
-                    android:layout_below="@id/item_stats"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
+                </FrameLayout>
+
 
             </RelativeLayout>
 

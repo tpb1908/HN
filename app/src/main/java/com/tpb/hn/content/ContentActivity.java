@@ -3,6 +3,7 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -103,8 +104,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
-    public void openItem(Item item) {
+    public void openItem(Item item, View view) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
+
         i.putExtra("item", item);
         startActivity(i);
         mAdapter.beginBackgroundLoading();
@@ -117,13 +119,17 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
-    public void openItem(Item item, FragmentPagerAdapter.PageType type) {
+    public void openItem(Item item, FragmentPagerAdapter.PageType type, View view) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
+
+        final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "details");
         i.putExtra("item", item);
         i.putExtra("type", type);
-        startActivity(i);
-        mAdapter.beginBackgroundLoading();
+        startActivity(i, options.toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
+        //startActivity(i);
+        mAdapter.beginBackgroundLoading();
+
     }
 
     @Override

@@ -155,6 +155,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     }
 
     private void setTitle(Item item) {
+        mTitle.setPaddingRelative(mTitle.getPaddingStart(), 16, mTitle.getPaddingEnd(), 16);
         mTitle.setText(item.getTitle());
         mUrl.setText(item.getFormattedURL());
         mStats.setText(item.getFormattedInfo());
