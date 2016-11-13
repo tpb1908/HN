@@ -20,13 +20,16 @@ import java.util.List;
 
 public class ClickableTextView extends TextView {
     private OnSpanClickListener mListener;
+    private final int currentPos;
 
-    public ClickableTextView(Context context) {
+    public ClickableTextView(Context context, int currentPos) {
         super(context);
+        this.currentPos = currentPos;
     }
 
-    public ClickableTextView(Context context, @NonNull AttributeSet attributeSet) {
+    public ClickableTextView(Context context, @NonNull AttributeSet attributeSet, int currentPos) {
         super(context, attributeSet);
+        this.currentPos = currentPos;
     }
 
     public void setListener(OnSpanClickListener listener) {
@@ -43,7 +46,7 @@ public class ClickableTextView extends TextView {
         int end = 0;
         // to cater last/only word loop will run equal to the length of indices.length
         for (int i = 0; i <= indices.length; i++) {
-            ClickableSpan clickSpan = getClickableSpan(i);
+            final ClickableSpan clickSpan = getClickableSpan(i, i == currentPos);
             // to cater last/only word
             end = (i < indices.length ? indices[i] : spans.length());
             spans.setSpan(clickSpan, start, end,
@@ -61,8 +64,8 @@ public class ClickableTextView extends TextView {
         setText(builder.toString());
     }
 
-    private CleanClickableSpan getClickableSpan(final int pos) {
-        return new CleanClickableSpan(pos) {
+    private CleanClickableSpan getClickableSpan(final int pos, boolean underline) {
+        return new CleanClickableSpan(pos, underline) {
             @Override
             public void onClick(View widget) {
                 if(mListener != null) mListener.spanClicked(pos);
@@ -82,14 +85,16 @@ public class ClickableTextView extends TextView {
 
     private abstract class CleanClickableSpan extends ClickableSpan {
         final int pos;
+        final boolean underline;
 
-        public CleanClickableSpan(int pos) {
+        public CleanClickableSpan(int pos, boolean underline) {
             this.pos = pos;
+            this.underline = underline;
         }
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            ds.setUnderlineText(false);
+            ds.setUnderlineText(underline);
         }
     }
 
