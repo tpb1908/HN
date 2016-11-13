@@ -66,7 +66,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     @OnClick(R.id.item_back_button)
     public void onClick() {
-        finish();
+        onBackPressed();
     }
 
     private FragmentPagerAdapter mAdapter;
@@ -153,7 +153,11 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     @Override
     public void onBackPressed() {
-        if(mAdapter.onBackPressed()) finish();
+        if(mAdapter.onBackPressed()) {
+            mStoryPager.setVisibility(View.INVISIBLE);
+            hideFab();
+            super.onBackPressed();
+        }
     }
 
     private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {
@@ -199,13 +203,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         mStoryAppbar.setExpanded(true, true);
         getWindow().getDecorView().setSystemUiVisibility(originalFlags);
         mStoryPager.setSwipeEnabled(true);
-    }
 
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.none, R.anim.slide_down);
     }
 
     @Override
