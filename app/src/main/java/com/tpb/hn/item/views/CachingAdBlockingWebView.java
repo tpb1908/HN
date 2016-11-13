@@ -114,7 +114,6 @@ public class CachingAdBlockingWebView extends WebView {
         mHandler = handler;
     }
 
-
     @Override
     public void loadUrl(String url) {
         super.loadUrl(url);

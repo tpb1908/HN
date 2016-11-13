@@ -219,13 +219,15 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
     private void toggleFullscreen(boolean fullscreen) {
 
         mIsFullscreen = fullscreen;
-        if(fullscreen) {
+        if(mIsFullscreen) {
             mWebView.getSettings().setSupportZoom(true);
             mWebView.getSettings().setBuiltInZoomControls(true);
             mWebView.getSettings().setDisplayZoomControls(false);
+            mToolbar.setVisibility(View.VISIBLE);
+            mScrollView.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
             mParent.hideFab();
             mParent.openFullScreen();
-            mToolbar.setVisibility(View.VISIBLE);
+            mWebView.setDrawingCacheEnabled(true);
             mWebContainer.removeView(mWebView);
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
@@ -237,10 +239,17 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
+            mWebView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.setDrawingCacheEnabled(false);
+                }
+            });
         } else {
             mWebView.getSettings().setSupportZoom(false);
             mParent.showFab();
             mToolbar.setVisibility(View.GONE);
+            mWebView.setDrawingCacheEnabled(true);
             mFullscreen.removeView(mWebView);
             if(mIsShowingPDF) {
                 mWebView.setVisibility(View.GONE);
@@ -252,6 +261,8 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 @Override
                 public void run() {
                     mParent.closeFullScreen();
+                    mScrollView.setBackgroundColor(darkBG);
+                    mWebView.setDrawingCacheEnabled(false);
                 }
             });
 
