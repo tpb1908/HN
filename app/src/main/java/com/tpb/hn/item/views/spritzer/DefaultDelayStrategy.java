@@ -1,4 +1,4 @@
-package com.tpb.hn.item.views.spritzer.src.main.java;
+package com.tpb.hn.item.views.spritzer;
 
 /**
  * Created by andrewgiang on 3/19/14.

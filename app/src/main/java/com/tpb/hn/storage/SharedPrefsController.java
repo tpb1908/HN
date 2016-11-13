@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
+ * TODO- Font sizes
  */
 
 public class SharedPrefsController {

@@ -26,7 +26,7 @@ import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
-import com.tpb.hn.item.views.spritzer.src.main.java.SpritzerTextView;
+import com.tpb.hn.item.views.spritzer.SpritzerTextView;
 import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 

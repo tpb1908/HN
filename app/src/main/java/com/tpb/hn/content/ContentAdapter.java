@@ -42,11 +42,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     private Context mContext;
     private HNItemLoader mLoader;
-    private String currentPage;
-    private boolean usingCards = false;
-    private boolean markReadWhenPassed = false;
-    private int[] ids;
-    private Item[] data = new Item[] {};
+    private String mCurrentPage;
+    private boolean mIsUsingCards = false;
+    private boolean mShouldMarkRead = false;
+    private int[] mIds;
+    private Item[] mData = new Item[] {};
     private ContentOpener mOpener;
     private int mLastPosition = 0;
     private LinearLayoutManager mManager;
@@ -59,17 +59,18 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         mSwiper = swiper;
         mManager = manager;
         mLoader = new HNItemLoader(mContext, this);
+
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
-        usingCards = prefs.getUseCards();
-        markReadWhenPassed = prefs.getMarkReadWhenPassed();
+        mIsUsingCards = prefs.getUseCards();
+        mShouldMarkRead = prefs.getMarkReadWhenPassed();
         mManager = manager;
-        if(!usingCards) {
+        if(!mIsUsingCards) {
             recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadItems(currentPage);
+                loadItems(mCurrentPage);
             }
         });
 
@@ -97,7 +98,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     private void loadItemsOnScroll(boolean fastScroll) {
         int pos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
-        if(ids != null) {
+        if(mIds != null) {
             int pos2;
             /*
             If we are scrolling down the list, we load the items below
@@ -106,7 +107,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             is no inertia and we have stopped at this point
              */
             if(pos > mLastPosition || fastScroll) {
-                pos2 = Math.min(pos + 15, ids.length);
+                pos2 = Math.min(pos + 15, mIds.length);
             } else {
                 pos2 = Math.max(pos - 15, 0);
             }
@@ -117,7 +118,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             }
             final ArrayList<Integer> toLoad = new ArrayList<>();
             for(int i = pos; i < pos2; i++) {
-                if(data[i] == null) toLoad.add(ids[i]);
+                if(mData[i] == null) toLoad.add(mIds[i]);
             }
             mLoader.loadItemsIndividually(Util.convertIntegers(toLoad), false);
         }
@@ -132,8 +133,8 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
-        this.ids = null;
-        this.data = new Item[0];
+        this.mIds = null;
+        this.mData = new Item[0];
         AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
@@ -156,11 +157,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 mLoader.getJobsIds(this);
                 break;
         }
-        currentPage = defaultPage;
+        mCurrentPage = defaultPage;
     }
 
     void beginBackgroundLoading() {
-        mLoader.loadItemsIndividually(ids, false, true);
+        mLoader.loadItemsIndividually(mIds, false, true);
     }
 
     void cancelBackgroundLoading() {
@@ -168,8 +169,8 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     private void attemptLoadAgain(int pos) {
-        if(pos < ids.length) {
-            mLoader.loadItem(ids[pos]);
+        if(pos < mIds.length) {
+            mLoader.loadItem(mIds[pos]);
             Toast.makeText(mContext, R.string.text_attempting_item_load, Toast.LENGTH_SHORT).show();
         }
     }
@@ -182,17 +183,17 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     @Override
     public void onBindViewHolder(ItemHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-        if(data.length > pos && data[pos] != null) {
-            holder.mTitle.setText(data[pos].getFormattedTitle());
-            holder.mInfo.setText(data[pos].getFormattedInfo());
-            holder.mAuthor.setText(data[pos].getFormattedBy());
-            holder.mURL.setText(data[pos].getFormattedURL());
+        if(mData.length > pos && mData[pos] != null) {
+            holder.mTitle.setText(mData[pos].getFormattedTitle());
+            holder.mInfo.setText(mData[pos].getFormattedInfo());
+            holder.mAuthor.setText(mData[pos].getFormattedBy());
+            holder.mURL.setText(mData[pos].getFormattedURL());
             holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
-            if(data[pos].isViewed()) {
+            if(mData[pos].isViewed()) {
                 holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.secondary_text_dark));
             }
         }
-        if(usingCards) {
+        if(mIsUsingCards) {
             holder.mCard.setUseCompatPadding(true);
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
@@ -203,7 +204,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     @Override
     public int getItemCount() {
         //TODO- Get an average value for each of the pages being loaded
-        return data.length == 0 ? 500 : data.length;
+        return mData.length == 0 ? 500 : mData.length;
     }
 
     @Override
@@ -225,24 +226,24 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     @Override
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
-        this.ids = ids;
+        this.mIds = ids;
         int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
             mManager.scrollToPosition(ids.length);
         }
-        data = new Item[ids.length + 1];
+        mData = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
         mSwiper.setRefreshing(false);
-        //Id loading will only happen once each time the data is to be set
+        //Id loading will only happen once each time the mData is to be set
     }
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         if(success) {
-            for(int i = 0; i < ids.length; i++) {
-                if(item.getId() == ids[i]) {
-                    data[i] = item;
+            for(int i = 0; i < mIds.length; i++) {
+                if(item.getId() == mIds[i]) {
+                    mData[i] = item;
                     notifyItemChanged(i);
                     break;
                 }
@@ -254,11 +255,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
         Collections.sort(items);
         final Item key = new Item();
-        for(int i = 0 ; i < ids.length; i++) {
-            key.setId(ids[i]);
+        for(int i = 0; i < mIds.length; i++) {
+            key.setId(mIds[i]);
             int index = Collections.binarySearch(items, key);
             if(index >= 0) {
-                data[i] = items.get(index);
+                mData[i] = items.get(index);
                 notifyItemChanged(index);
             }
         }
@@ -266,26 +267,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_card)
-        CardView mCard;
-
-        @BindView(R.id.item_title)
-        TextView mTitle;
-
-        @BindView(R.id.item_stats)
-        TextView mInfo;
-
-        @BindView(R.id.item_author)
-        TextView mAuthor;
-
-        @BindView(R.id.item_url)
-        TextView mURL;
-
-        @BindView(R.id.item_number)
-        TextView mNumber;
-
-        @BindView(R.id.item_details)
-        RelativeLayout mDetails;
+        @BindView(R.id.item_card) CardView mCard;
+        @BindView(R.id.item_title) TextView mTitle;
+        @BindView(R.id.item_stats) TextView mInfo;
+        @BindView(R.id.item_author) TextView mAuthor;
+        @BindView(R.id.item_url) TextView mURL;
+        @BindView(R.id.item_number) TextView mNumber;
+        @BindView(R.id.item_details) RelativeLayout mDetails;
 
         @OnClick(R.id.item_card)
         void cardClick() {
@@ -308,10 +296,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         }
 
         private void dispatchClick(FragmentPagerAdapter.PageType type) {
-            if(ContentAdapter.this.data != null &&
-                    ContentAdapter.this.data.length > getAdapterPosition() &&
-                    ContentAdapter.this.data[getAdapterPosition()] != null) {
-                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.data[getAdapterPosition()], type, mDetails);
+            if(ContentAdapter.this.mData != null &&
+                    ContentAdapter.this.mData.length > getAdapterPosition() &&
+                    ContentAdapter.this.mData[getAdapterPosition()] != null) {
+                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.mData[getAdapterPosition()], type, mDetails);
             }
             else {
                 ContentAdapter.this.attemptLoadAgain(getAdapterPosition());

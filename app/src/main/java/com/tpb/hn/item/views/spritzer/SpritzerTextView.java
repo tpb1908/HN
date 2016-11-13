@@ -1,4 +1,4 @@
-package com.tpb.hn.item.views.spritzer.src.main.java;
+package com.tpb.hn.item.views.spritzer;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package com.tpb.hn.item.views.spritzer.src.main.java;
+package com.tpb.hn.item.views.spritzer;
 
 import android.os.Handler;
 import android.os.Message;

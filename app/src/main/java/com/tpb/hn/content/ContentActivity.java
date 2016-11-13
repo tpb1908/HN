@@ -61,7 +61,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
         prefs.setUseDarkTheme(true);
-        prefs.setUseCards(true);
+        prefs.setUseCards(false);
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
         }

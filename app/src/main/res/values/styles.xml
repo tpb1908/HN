@@ -29,4 +29,8 @@
         <item name="drawableColor">@color/md_white_1000</item>
     </style>
 
+    <style name="PivotLetter">
+        <item name="android:textColor">@color/pivot_text</item>
+    </style>
+
 </resources>

@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.tpb.hn.item.views.spritzer.src.main.java.SpritzerTextView
+            <com.tpb.hn.item.views.spritzer.SpritzerTextView
                 android:id="@+id/spritzer_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
