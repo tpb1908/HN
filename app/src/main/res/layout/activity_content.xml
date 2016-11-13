@@ -21,6 +21,7 @@
 
             <Spinner
                 android:id="@+id/nav_spinner"
+                android:transitionName="button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

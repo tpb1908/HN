@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -29,9 +28,6 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
-
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,10 +109,10 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
-    public void openItem(Item item, View view) {
+    public void openItem(Item item) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
         i.putExtra("item", item);
-        startActivity(i, getSharedTransition(view).toBundle());
+        startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();
     }
@@ -127,30 +123,21 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
-    public void openItem(Item item, FragmentPagerAdapter.PageType type, View view) {
+    public void openItem(Item item, FragmentPagerAdapter.PageType type) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
         i.putExtra("item", item);
         i.putExtra("type", type);
 
-        startActivity(i, getSharedTransition(view).toBundle());
+        startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();
 
     }
 
-    private ActivityOptionsCompat getSharedTransition(View openView) {
+    private ActivityOptionsCompat getSharedTransition() {
         final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                Pair.create(openView, "details"),
+                Pair.create((View) mNavSpinner, "button"),
                 Pair.create((View) mAppBar, "appbar"));
-        setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                Log.i(TAG, "onMapSharedElements: Elements " + sharedElements.size());
-                names.remove("details");
-                sharedElements.remove("details");
-                super.onMapSharedElements(names, sharedElements);
-            }
-        });
         return options;
     }
 

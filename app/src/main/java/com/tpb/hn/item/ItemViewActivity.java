@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,9 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
 
     @BindView(R.id.item_fab)
     FloatingActionButton mFab;
+
+    @BindView(R.id.item_back_button)
+    ImageButton mBackButton;
 
     @OnClick(R.id.item_back_button)
     public void onClick() {
@@ -146,7 +150,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
                 mShouldShowFab = true;
                 showFab();
             }
-        }, 600);
+        }, 300);
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
@@ -155,6 +159,8 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     public void onBackPressed() {
         if(mAdapter.onBackPressed()) {
             mStoryPager.setVisibility(View.INVISIBLE);
+            mTitle.setVisibility(View.INVISIBLE);
+            mBackButton.setVisibility(View.INVISIBLE);
             hideFab();
             super.onBackPressed();
         }

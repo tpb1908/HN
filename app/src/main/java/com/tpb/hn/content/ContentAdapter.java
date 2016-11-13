@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -273,7 +272,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         @BindView(R.id.item_author) TextView mAuthor;
         @BindView(R.id.item_url) TextView mURL;
         @BindView(R.id.item_number) TextView mNumber;
-        @BindView(R.id.item_details) RelativeLayout mDetails;
 
         @OnClick(R.id.item_card)
         void cardClick() {
@@ -299,7 +297,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             if(ContentAdapter.this.mData != null &&
                     ContentAdapter.this.mData.length > getAdapterPosition() &&
                     ContentAdapter.this.mData[getAdapterPosition()] != null) {
-                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.mData[getAdapterPosition()], type, mDetails);
+                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.mData[getAdapterPosition()], type);
             }
             else {
                 ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
@@ -310,9 +308,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     interface ContentOpener {
 
-        void openItem(Item item, View view);
+        void openItem(Item item);
 
-        void openItem(Item item, FragmentPagerAdapter.PageType type, View view);
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
 
         void openUser(Item item);
 
