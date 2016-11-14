@@ -17,8 +17,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/skimmer_error_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:visibility="gone"
+                android:textAppearance="@android:style/TextAppearance.Material.Large"/>
+
             <com.tpb.hn.item.views.spritzer.SpritzerTextView
-                android:id="@+id/spritzer_text_view"
+                android:id="@+id/skimmer_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -28,7 +36,7 @@
                 android:visibility="invisible"/>
 
             <SeekBar
-                android:id="@+id/skimmer_spritzer_progress"
+                android:id="@+id/skimmer_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"

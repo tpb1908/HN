@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -48,15 +49,14 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     private ItemViewActivity mParent;
 
-    @BindView(R.id.spritzer_text_view)
-    SpritzerTextView mTextView;
-
-    @BindView(R.id.skimmer_spritzer_progress)
-    SeekBar mSkimmerProgress;
-
+    @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
+    @BindView(R.id.skimmer_progress) SeekBar mSkimmerProgress;
+    @BindView(R.id.skimmer_restart_button) Button mRestartButton;
+    @BindView(R.id.skimmer_error_textview) TextView mErrorView;
 
     private String article;
     private boolean isArticleReady = false;
+    private boolean mLoadSuccessful = false;
 
     @OnLongClick(R.id.skimmer_touch_area)
     boolean onLongClick() {
@@ -93,12 +93,12 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         }, 60000 / mTextView.getSpritzer().getWpm());
     }
 
-    @OnClick(R.id.spritzer_text_view)
+    @OnClick(R.id.skimmer_text_view)
     void onSpritzerClick() {
         mTextView.showTextDialog();
     }
 
-    @OnLongClick(R.id.spritzer_text_view)
+    @OnLongClick(R.id.skimmer_text_view)
     boolean onSpritzerLongClick() {
         mTextView.showWPMDialog();
         return true;
@@ -152,6 +152,7 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         } else {
             article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
             isArticleReady = true;
+            mLoadSuccessful = true;
         }
     }
 
@@ -161,25 +162,21 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
             try {
                 bindData((String) result.get("content"));
             } catch(Exception e) {
-                Log.e(TAG, "bindData: ", e);
+                success = false;
+                mLoadSuccessful = true;
             }
-        } else  {
-            mTextView.setVisibility(View.INVISIBLE);
-            mSkimmerProgress.setVisibility(View.INVISIBLE);
         }
+        if(!success) displayErrorMessage();
 
     }
 
-    @Override
-    public void loadDone(String result, boolean success, int code) {
-        if(success) {
-            bindData(result);
-        } else {
-            //TODO- Error handling
-            mTextView.setVisibility(View.INVISIBLE);
-            mSkimmerProgress.setVisibility(View.INVISIBLE);
 
-        }
+    private void displayErrorMessage() {
+        mTextView.setVisibility(View.INVISIBLE);
+        mSkimmerProgress.setVisibility(View.INVISIBLE);
+        mRestartButton.setVisibility(View.INVISIBLE);
+        mErrorView.setVisibility(View.VISIBLE);
+        mErrorView.setText(R.string.error_parsing_readable_text);
     }
 
     private void bindData(String content) {

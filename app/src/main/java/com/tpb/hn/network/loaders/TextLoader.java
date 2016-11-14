@@ -33,7 +33,7 @@ public class TextLoader {
 
     public void loadArticle(final String url, boolean forImmediateUse) {
         if(url.endsWith(".pdf")) {
-            listener.loadDone("", false, TextLoadDone.ERROR_PDF);
+            listener.loadDone(null, false, TextLoadDone.ERROR_PDF);
             return;
         }
         if(cache.containsKey(url)) {
@@ -56,23 +56,26 @@ public class TextLoader {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                for(TextLoadDone rld : listenerCache.get(url)) {
-                                    if(rld == null) {
-                                        listenerCache.get(url).removeAll(Collections.singleton(null)); //Remove all null
-                                    } else {
-                                        rld.loadDone(response, response != null, TextLoadDone.NO_ERROR);
+                                listenerCache.get(url).removeAll(Collections.<TextLoadDone>singleton(null));
+                                if(response.has("content")) {
+                                    cache.put(url, response);
+                                    for(TextLoadDone rld : listenerCache.get(url)) {
+                                        rld.loadDone(response, true, TextLoadDone.NO_ERROR);
+                                    }
+                                } else {
+                                    for(TextLoadDone rld : listenerCache.get(url)) {
+                                        rld.loadDone(response, false, TextLoadDone.ERROR_PARSING);
                                     }
                                 }
+
                                 listenerCache.remove(url);
-                                if(response != null) {
-                                    cache.put(url, response);
-                                }
-                                Log.i(TAG, "onResponse: " + response.get("title"));
+                                Log.i(TAG, "onResponse: Error getting " + APIPaths.getMercuryParserPath(url));
+                                Log.i(TAG, "onResponse: " + response.toString());
                             } catch(Exception e) {
                                 Log.e(TAG, "onResponse: ", e);
                                 Log.i(TAG, "onResponse: " + e.getMessage());
                                 for(TextLoadDone rld : listenerCache.get(url)) {
-                                    rld.loadDone("", false, TextLoadDone.ERROR_PARSING);
+                                    rld.loadDone(null, false, TextLoadDone.ERROR_PARSING);
                                 }
                             }
                         }
@@ -82,7 +85,7 @@ public class TextLoader {
                             Log.e(TAG, "onError: ", anError );
                             Log.i(TAG, "onError: " + anError.getErrorBody() );
                             for(TextLoadDone rld : listenerCache.get(url)) {
-                                rld.loadDone("", false, anError.getErrorCode());
+                                rld.loadDone(null, false, anError.getErrorCode());
                             }
 
                         }
@@ -109,8 +112,6 @@ public class TextLoader {
         int NO_ERROR = 0;
 
         void loadDone(JSONObject result, boolean success, int code);
-
-        void loadDone(String result, boolean success, int code);
 
     }
 

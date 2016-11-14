@@ -91,8 +91,10 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             @Override
             public void onPageSelected(int position) {
                 Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
-                ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
-                ((FragmentCycleListener) fragments[position]).onResumeFragment();
+                if(fragments[position] != null) {
+                    ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
+                    ((FragmentCycleListener) fragments[position]).onResumeFragment();
+                }
                 oldPos = position;
             }
 
@@ -154,9 +156,10 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     boolean onBackPressed() {
         for(Fragment f : fragments) {
-            if(!((FragmentCycleListener) f).onBackPressed()) return false;
+            if(f != null && !((FragmentCycleListener) f).onBackPressed()) return false;
         }
         return true;
+        //PhArbARYmporevEi
     }
 
     @Override

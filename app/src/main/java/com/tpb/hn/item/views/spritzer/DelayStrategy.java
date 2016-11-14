@@ -3,7 +3,7 @@ package com.tpb.hn.item.views.spritzer;
 /**
  * Created by andrewgiang on 3/19/14.
  */
-public interface DelayStrategy {
+interface DelayStrategy {
 
     /**
      * A delay strategy for @see{@link Spritzer#processNextWord()} that
@@ -18,6 +18,6 @@ public interface DelayStrategy {
      * @return int multiplier
      * @see {@link com.andrewgiang.textspritzer.lib.DefaultDelayStrategy}
      */
-    public int delayMultiplier(String word);
+    int delayMultiplier(String word);
 
 }

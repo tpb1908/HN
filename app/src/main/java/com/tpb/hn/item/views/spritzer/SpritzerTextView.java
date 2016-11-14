@@ -27,7 +27,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
      * Interface definition for a callback to be invoked when the
      * clickControls are enabled and the view is clicked
      */
-    public static interface OnClickControlListener {
+    public interface OnClickControlListener {
         /**
          * Called when the spritzer pauses upon click
          */

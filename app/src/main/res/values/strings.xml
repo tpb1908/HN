@@ -4,6 +4,7 @@
     <string name="error_no_item">No item loaded</string>
     <string name="error_loading_page">Error loading page</string>
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
+    <string name="error_parsing_readable_text">Error parsing text</string>
 
     <string name="error_http_400">400 Bad Request</string>
     <string name="error_http_401">401 Unauthorised</string>

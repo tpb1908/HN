@@ -54,6 +54,8 @@ public class Formatter {
     public static String formatHTTPError(Context context, String message, int code) {
 
         switch(code) {
+            case -100: //Custom error parsing
+                return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_parsing_readable_text));
             case 400: //Bad request
                 return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_http_400));
             case 401: //Unauthorised

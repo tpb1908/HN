@@ -50,7 +50,7 @@ public class Spritzer {
 
     public interface OnCompletionListener {
 
-        public void onComplete();
+        void onComplete();
 
     }
 
