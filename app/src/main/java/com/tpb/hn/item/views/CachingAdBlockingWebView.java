@@ -109,6 +109,12 @@ public class CachingAdBlockingWebView extends WebView {
         });
     }
 
+    public void setZoomEnabled(boolean canZoom) {
+        getSettings().setSupportZoom(canZoom);
+        getSettings().setBuiltInZoomControls(canZoom);
+        getSettings().setDisplayZoomControls(false);
+    }
+
     public void setLinkHandler(LinkHandler handler) {
         mHandler = handler;
     }

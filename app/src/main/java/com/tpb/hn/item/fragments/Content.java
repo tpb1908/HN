@@ -55,7 +55,10 @@ import butterknife.Unbinder;
  * Created by theo on 06/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener, CachingAdBlockingWebView.LinkHandler {
+public class Content extends Fragment implements ItemLoader,
+        TextLoader.TextLoadDone,
+        FragmentPagerAdapter.FragmentCycleListener,
+        CachingAdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -283,17 +286,13 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
     }
 
     private void toggleFullscreen(boolean fullscreen) {
-
         mIsFullscreen = fullscreen;
         if(mIsFullscreen) {
-            mWebView.getSettings().setSupportZoom(true);
-            mWebView.getSettings().setBuiltInZoomControls(true);
-            mWebView.getSettings().setDisplayZoomControls(false);
+            mWebView.setZoomEnabled(true);
             mToolbar.setVisibility(View.VISIBLE);
             mScrollView.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
             mParent.hideFab();
             mParent.openFullScreen();
-            mWebView.setDrawingCacheEnabled(true);
             mWebContainer.removeView(mWebView);
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
@@ -305,14 +304,9 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
-            mWebView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mWebView.setDrawingCacheEnabled(false);
-                }
-            });
+
         } else {
-            mWebView.getSettings().setSupportZoom(false);
+            mWebView.setZoomEnabled(false);
             mParent.showFab();
             mToolbar.setVisibility(View.GONE);
             mWebView.setDrawingCacheEnabled(true);
@@ -328,7 +322,6 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 public void run() {
                     mParent.closeFullScreen();
                     mScrollView.setBackgroundColor(darkBG);
-                    mWebView.setDrawingCacheEnabled(false);
                 }
             });
 
@@ -435,6 +428,7 @@ public class Content extends Fragment implements ItemLoader, TextLoader.TextLoad
                 }
             }
         });
+
         if(mIsShowingPDF) {
             ButterKnife.findById(mToolbar, R.id.button_find_in_page).setVisibility(View.INVISIBLE);
             mParent.hideFab();
