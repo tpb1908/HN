@@ -45,7 +45,6 @@ public class CachingAdBlockingWebView extends WebView {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                //TODO- Redirect through mercury
                 boolean ad;
                 if(!loadedUrls.containsKey(request.getUrl().toString())) {
                     ad = AdBlocker.isAd(request.getUrl().toString());

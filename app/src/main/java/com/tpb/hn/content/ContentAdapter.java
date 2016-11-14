@@ -132,7 +132,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
-        this.mIds = null;
+        this.mIds = new int[0];
         this.mData = new Item[0];
         AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
@@ -264,6 +264,14 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         }
     }
 
+    private void openItem(int pos, FragmentPagerAdapter.PageType type) {
+        if(mData != null && pos < mData.length && mData[pos] != null) {
+            mOpener.openItem(mData[pos], type);
+        } else {
+            attemptLoadAgain(pos);
+        }
+    }
+
     class ItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_card) CardView mCard;
@@ -273,35 +281,20 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         @BindView(R.id.item_url) TextView mURL;
         @BindView(R.id.item_number) TextView mNumber;
 
-        @OnClick(R.id.item_card)
-        void cardClick() {
-            dispatchClick(null);
-        }
-
-        @OnClick(R.id.item_stats)
-        void statsClick() {
-            dispatchClick(FragmentPagerAdapter.PageType.COMMENTS);
-        }
-
         @OnClick(R.id.item_url)
         void urlClick() {
-            dispatchClick(FragmentPagerAdapter.PageType.BROWSER);
+            ContentAdapter.this.openItem(getAdapterPosition(), FragmentPagerAdapter.PageType.BROWSER);
         }
 
         ItemHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-
-        private void dispatchClick(FragmentPagerAdapter.PageType type) {
-            if(ContentAdapter.this.mData != null &&
-                    ContentAdapter.this.mData.length > getAdapterPosition() &&
-                    ContentAdapter.this.mData[getAdapterPosition()] != null) {
-                ContentAdapter.this.mOpener.openItem(ContentAdapter.this.mData[getAdapterPosition()], type);
-            }
-            else {
-                ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
-            }
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ContentAdapter.this.openItem(getAdapterPosition(), null);
+                }
+            });
         }
 
     }
