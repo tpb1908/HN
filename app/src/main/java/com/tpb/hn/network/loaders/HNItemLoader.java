@@ -117,7 +117,7 @@ public class HNItemLoader {
             if(cachePos >= 0 && getFromCache) {
                 itemListener.itemLoaded(cache.getItems().get(cachePos), true, 200);
             } else if(!getFromCache) {
-                AndroidNetworking.get(APIPaths.getItemPath(i))
+                AndroidNetworking.get(APIPaths.getAlgoliaItemPath(i))
                         .setTag(inBackground ? "background" : i)
                         .setPriority(inBackground ? Priority.LOW : Priority.HIGH)
                         .build()
@@ -125,8 +125,8 @@ public class HNItemLoader {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    final Item item = HNParser.JSONToItem(response);
-                                    if(item != null) cache.insert(item, inBackground);
+                                    final Item item = HNParser.AlgoliaJSONToItem(response);
+                                    cache.insert(item, inBackground);
                                     itemListener.itemLoaded(item, item != null, 200);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);
@@ -166,7 +166,7 @@ public class HNItemLoader {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            final Item item = HNParser.JSONToItem(response);
+                            final Item item = HNParser.AlgoliaJSONToItem(response, false);
 
                             for(HNItemLoadDone ild : listenerCache.get(id)) {
                                 ild.itemLoaded(item, item != null, 200);

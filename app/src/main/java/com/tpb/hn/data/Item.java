@@ -4,6 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.tpb.hn.network.HNParser;
+
+import org.json.JSONException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -29,8 +33,10 @@ public class Item implements Parcelable, Comparable<Item> {
     private int[] parts;
     private int descendants;
     private boolean viewed;
-
     private long lastUpdated;
+
+    private String commentJSON = "";
+    private Item[] comments = new Item[0];
 
     public Item() {
         lastUpdated = System.currentTimeMillis();
@@ -217,6 +223,21 @@ public class Item implements Parcelable, Comparable<Item> {
         return "By " + by;
     }
 
+    public String getCommentJSON() {
+        return commentJSON;
+    }
+
+    public void setCommentJSON(String commentJSON) throws JSONException {
+        this.commentJSON = commentJSON;
+        comments = HNParser.parseComments(commentJSON);
+        descendants = comments.length;
+
+    }
+
+    public Item[] getComments() {
+        return comments;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -240,6 +261,7 @@ public class Item implements Parcelable, Comparable<Item> {
         dest.writeInt(this.descendants);
         dest.writeByte(this.viewed ? (byte) 1 : (byte) 0);
         dest.writeLong(this.lastUpdated);
+        dest.writeString(this.commentJSON);
     }
 
 
@@ -261,6 +283,7 @@ public class Item implements Parcelable, Comparable<Item> {
         this.descendants = in.readInt();
         this.viewed = in.readByte() != 0;
         this.lastUpdated = in.readLong();
+        this.commentJSON = in.readString();
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {

@@ -56,7 +56,8 @@ public class APIPaths {
     private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
 
     //https://hn.algolia.com/api
-    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/search?query=";
+    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
+    private static final String ALGOLIA_ITEM_PATH = "items/";
     private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
 
     public static final String JSON = ".json";
@@ -70,7 +71,6 @@ public class APIPaths {
     private String searchStoryComments(int storyId) {
         return ALGOLIA_BASE + "?tags=comment," + storyId;
     }
-
 
 
     public static String getItemPath(int itemId) {
@@ -135,6 +135,10 @@ public class APIPaths {
 
     public static String getPDFDisplayPath(String url) {
         return DOCS_PDF_BASE + url;
+    }
+
+    public static String getAlgoliaItemPath(int id) {
+        return ALGOLIA_BASE + ALGOLIA_ITEM_PATH + id;
     }
 
     public static int parseUrl(String url) {

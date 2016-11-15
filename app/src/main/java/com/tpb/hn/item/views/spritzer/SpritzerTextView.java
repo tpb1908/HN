@@ -142,6 +142,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
                                         error = true;
                                     } else {
                                         prefs.setSkimmerWPM(wpm);
+                                        mSpritzer.setWpm(wpm);
                                     }
                                 } catch(Exception e) {
                                     error = true;

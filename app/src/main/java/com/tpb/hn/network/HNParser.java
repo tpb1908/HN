@@ -27,6 +27,11 @@ public class HNParser {
     private static final String KEY_TEXT = "text";
     private static final String KEY_PARENT = "parent";
     private static final String KEY_ASK_TITLE = "Ask HN:";
+    
+    private static final String KEY_AUTHOR = "authoer";
+    private static final String KEY_POINTS = "points";
+    private static final String KEY_PARENT_ID = "parent_id";
+    private static final String KEY_CHILDREN = "children";
 
     private static final String KEY_DEAD = "dead";
     private static final String KEY_DELETED = "deleted";
@@ -36,25 +41,55 @@ public class HNParser {
     private static final String KEY_ABOUT = "about";
     private static final String KEY_SUBMITTED = "submitted";
 
-    public static Item JSONToItem(JSONObject obj) throws JSONException {
+
+    public static Item AlgoliaJSONToItem(JSONObject obj) throws JSONException {
+        return AlgoliaJSONToItem(obj, false);
+    }
+
+    public static Item AlgoliaJSONToItem(JSONObject obj, boolean isChild) throws JSONException {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
-        item.setTime(obj.getLong(KEY_TIME));
+        //item.setTime(obj.getLong(KEY_TIME));
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
-        if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
+        if(isChild) {
+          item.setType(ItemType.COMMENT);
+        } else if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
             item.setType(ItemType.ASK);
         } else {
             item.setType(getType(obj.getString(KEY_TYPE)));
         }
-        if(obj.has(KEY_BY)) item.setBy(obj.getString(KEY_BY));
-        if(obj.has(KEY_SCORE)) item.setScore(obj.getInt(KEY_SCORE));
-        if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));
-        if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
-        if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
-        if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
-        if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
+        if(obj.has(KEY_AUTHOR)) item.setBy(obj.getString(KEY_AUTHOR));
+        if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals("null")) item.setScore(obj.getInt(KEY_POINTS));
 
+        if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
+        if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
+        if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
+        if(obj.has(KEY_CHILDREN) && !isChild) item.setCommentJSON(obj.getString(KEY_CHILDREN));
         return item;
+    }
+
+    public static JSONObject itemToJSON(Item item) {
+        final JSONObject object = new JSONObject();
+        try {
+            object.put(KEY_ID, item.getId());
+            object.put(KEY_TYPE, item.getType());
+            object.put(KEY_PARENT_ID, item.getParent());
+            object.put(KEY_POINTS, item.getScore());
+            object.put(KEY_DEAD, item.isDead());
+            object.put(KEY_DELETED, item.isDeleted());
+
+            if(item.getBy() != null) object.put(KEY_BY, item.getBy());
+            if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
+            if(item.getText() != null) object.put(KEY_TEXT, item.getText());
+            if(item.getParent() != 0) object.put(KEY_PARENT, item.getParent());
+            if(item.getCommentJSON() != null) object.put(KEY_CHILDREN, item.getCommentJSON());
+            if(item.getUrl() != null) object.put(KEY_URL, item.getUrl());
+            if(item.getTitle() != null) object.put(KEY_TITLE, item.getTitle());
+
+        } catch(JSONException je) {
+
+        }
+        return object;
     }
 
     public static User JSONToUser(JSONObject obj) throws JSONException {
@@ -73,29 +108,14 @@ public class HNParser {
         return user;
     }
 
-    public static JSONObject itemToJSON(Item item) {
-        final JSONObject object = new JSONObject();
-        try {
-            object.put(KEY_ID, item.getId());
-            object.put(KEY_TYPE, item.getType());
-            object.put(KEY_TEXT, item.getType());
-            object.put(KEY_SCORE, item.getScore());
-            object.put(KEY_DESCENDANTS, item.getDescendants());
-            object.put(KEY_DEAD, item.isDead());
-            object.put(KEY_DELETED, item.isDeleted());
+    public static Item[] parseComments(String json) throws JSONException {
+        final JSONArray carray = new JSONArray(json);
 
-            if(item.getBy() != null) object.put(KEY_BY, item.getBy());
-            if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
-            if(item.getText() != null) object.put(KEY_TEXT, item.getText());
-            if(item.getParent() != 0) object.put(KEY_PARENT, item.getParent());
-            if(item.getKids() != null) object.put(KEY_KIDS, toJSONArray(item.getKids()));
-            if(item.getUrl() != null) object.put(KEY_URL, item.getUrl());
-            if(item.getTitle() != null) object.put(KEY_TITLE, item.getTitle());
-
-        } catch(JSONException je) {
-
+        final Item[] children = new Item[carray.length()];
+        for(int i = 0; i < carray.length(); i++) {
+            children[i] = AlgoliaJSONToItem(carray.getJSONObject(i), true);
         }
-        return object;
+        return children;
     }
 
     public static JSONArray toJSONArray(int[] array ) {
