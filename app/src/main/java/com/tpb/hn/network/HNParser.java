@@ -28,6 +28,8 @@ public class HNParser {
     private static final String KEY_PARENT = "parent";
     private static final String KEY_ASK_TITLE = "Ask HN:";
 
+    private static final String KEY_DEAD = "dead";
+    private static final String KEY_DELETED = "deleted";
     private static final String KEY_DELAY = "delay";
     private static final String KEY_CREATED = "created";
     private static final String KEY_KARMA = "karma";
@@ -79,7 +81,9 @@ public class HNParser {
             object.put(KEY_TEXT, item.getType());
             object.put(KEY_SCORE, item.getScore());
             object.put(KEY_DESCENDANTS, item.getDescendants());
-            //TODO- Dead delete, and parts
+            object.put(KEY_DEAD, item.isDead());
+            object.put(KEY_DELETED, item.isDeleted());
+
             if(item.getBy() != null) object.put(KEY_BY, item.getBy());
             if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
             if(item.getText() != null) object.put(KEY_TEXT, item.getText());
