@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/comment_card"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="64dp">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:id="@+id/comment_card"
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
 
+    >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="64dp">
 
-        <LinearLayout
-            android:id="@+id/comment_content"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:id="@+id/comment_padding"
+            android:layout_width="48dp"
+            android:layout_height="match_parent">
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/comment_color"
+            android:layout_width="4dp"
+            android:background="@color/colorPrimary"
+            android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/comment_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/text_title_empty"
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-            <View
-                android:id="@+id/comment_color_bar"
-                android:layout_width="match_parent"
-                android:layout_height="4dp">
-            </View>
+        <TextView
+            android:id="@+id/comment_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/comment_title"
+            android:text="@string/text_info_empty"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/comment_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="16dp">
+    </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/comment_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_title_empty"
-                    android:textAppearance="@android:style/TextAppearance.Material.Title"/>
-
-            </android.support.v7.widget.Toolbar>
-
-            <TextView
-                android:id="@+id/comment_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_title_empty"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:textAppearance="@android:style/TextAppearance.Material.Small"/>
-
-        </LinearLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

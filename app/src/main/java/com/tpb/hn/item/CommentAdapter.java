@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -21,6 +21,7 @@ import com.tpb.hn.storage.SharedPrefsController;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -30,6 +31,8 @@ import butterknife.ButterKnife;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> implements ItemLoader {
     private static final String TAG = CommentAdapter.class.getSimpleName();
+
+    @BindArray(R.array.comment_colors) int[] mCommentColors;
 
     private Item mRootItem;
     private RecyclerView mRecycler;
@@ -44,6 +47,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
+        ButterKnife.bind(this, recycler);
     }
 
     @Override
@@ -54,15 +58,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     @Override
     public void onBindViewHolder(CommentHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-        if(pos < mComments.size() && mComments.get(pos) != null) {
-            if(mComments.get(pos).item.getText() != null) {
-                holder.mBody.setText(Html.fromHtml(mComments.get(pos).item.getText()));
-            }
-
-            holder.mInfo.setText(mComments.get(pos).item.getBy() + " " + mComments.get(pos).depth);
+        final Comment comment = mComments.get(pos);
+        if(comment.item.getText() != null) {
+            holder.mBody.setText(Html.fromHtml(comment.item.getText()));
         }
-        holder.itemView.setPaddingRelative(Util.pxFromDp(mComments.get(pos).depth), 0, 0, 0);
-        holder.itemView.requestLayout();
+        holder.mTitle.setText(comment.item.getBy() + " " + comment.depth);
+        holder.mColorBar.setBackgroundColor(mCommentColors[pos%mCommentColors.length]);
+        holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
+
         if(usingCards) {
             holder.mCard.setUseCompatPadding(true);
             holder.mCard.setCardElevation(Util.pxFromDp(4));
@@ -130,9 +133,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     class CommentHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.comment_card) CardView mCard;
-        @BindView(R.id.comment_info) TextView mInfo;
+        @BindView(R.id.comment_title) TextView mTitle;
         @BindView(R.id.comment_body) TextView mBody;
-        @BindView(R.id.comment_content) LinearLayout mContent;
+        @BindView(R.id.comment_color) FrameLayout mColorBar;
+        @BindView(R.id.comment_padding) FrameLayout mPadding;
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
