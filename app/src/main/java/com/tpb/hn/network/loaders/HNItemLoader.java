@@ -125,7 +125,7 @@ public class HNItemLoader {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    final Item item = HNParser.AlgoliaJSONToItem(response);
+                                    final Item item = HNParser.JSONToItem(response);
                                     cache.insert(item, inBackground);
                                     itemListener.itemLoaded(item, item != null, 200);
                                 } catch(Exception e) {
@@ -166,7 +166,7 @@ public class HNItemLoader {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            final Item item = HNParser.AlgoliaJSONToItem(response, false);
+                            final Item item = HNParser.JSONToItem(response, false);
 
                             for(HNItemLoadDone ild : listenerCache.get(id)) {
                                 ild.itemLoaded(item, item != null, 200);

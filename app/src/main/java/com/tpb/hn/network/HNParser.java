@@ -42,11 +42,12 @@ public class HNParser {
     private static final String KEY_SUBMITTED = "submitted";
 
 
-    public static Item AlgoliaJSONToItem(JSONObject obj) throws JSONException {
-        return AlgoliaJSONToItem(obj, false);
+    public static Item JSONToItem(JSONObject obj) throws JSONException {
+        return JSONToItem(obj, false);
     }
 
-    public static Item AlgoliaJSONToItem(JSONObject obj, boolean isChild) throws JSONException {
+    public static Item JSONToItem(JSONObject obj, boolean isChild) throws JSONException {
+
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         //item.setTime(obj.getLong(KEY_TIME)); TODO Time parsing
@@ -65,6 +66,9 @@ public class HNParser {
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
         if(obj.has(KEY_CHILDREN)) item.setCommentJSON(obj.getString(KEY_CHILDREN));
+
+        //TODO Get correct descendants value
+
         return item;
     }
 
@@ -113,7 +117,7 @@ public class HNParser {
 
         final Item[] children = new Item[carray.length()];
         for(int i = 0; i < carray.length(); i++) {
-            children[i] = AlgoliaJSONToItem(carray.getJSONObject(i), true);
+            children[i] = JSONToItem(carray.getJSONObject(i), true);
         }
         return children;
     }

@@ -72,7 +72,8 @@ class DB extends SQLiteOpenHelper {
     }
 
     void loadRecentItems(DBCallback callback, long timescale) {
-        new LoadItemsTask(callback).doInBackground(100L, timescale);
+        return;
+        //new LoadItemsTask(callback).doInBackground(100L, timescale);
 
     }
 
@@ -112,7 +113,7 @@ class DB extends SQLiteOpenHelper {
                     do {
                         final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                         try {
-                            final Item i = HNParser.AlgoliaJSONToItem(new JSONObject(s), false);
+                            final Item i = HNParser.JSONToItem(new JSONObject(s), false);
                             items.add(i);
                         } catch(Exception e) {
                             Log.e(TAG, "loadRecentItems: Exception parsing ", e);

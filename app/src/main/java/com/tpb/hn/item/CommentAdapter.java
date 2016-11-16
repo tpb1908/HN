@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -34,7 +35,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private RecyclerView mRecycler;
 
     private ArrayList<Comment> mComments = new ArrayList<>();
-    private ArrayList<Comment> mVisibleComments = new ArrayList<>();
     private boolean usingCards;
 
     public CommentAdapter(RecyclerView recycler) {
@@ -59,8 +59,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 holder.mBody.setText(Html.fromHtml(mComments.get(pos).item.getText()));
             }
 
-            holder.mInfo.setText(Integer.toString(mComments.get(pos).item.getId()));
+            holder.mInfo.setText(mComments.get(pos).item.getBy() + " " + mComments.get(pos).depth);
         }
+        holder.itemView.setPaddingRelative(Util.pxFromDp(mComments.get(pos).depth), 0, 0, 0);
+        holder.itemView.requestLayout();
         if(usingCards) {
             holder.mCard.setUseCompatPadding(true);
             holder.mCard.setCardElevation(Util.pxFromDp(4));
@@ -75,29 +77,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public int getItemCount() {
-        //TODO- Display message for item with no mComments
-        return mRootItem == null ? 0 : mRootItem.getKids() == null ? 0 : mRootItem.getDescendants();
+        //TODO- Display message for item with no comments
+        return mComments.size();
     }
-
-    /*
-    We have the top level items
-
-    We add each item.
-    We iterate through the items, and if any has a child, we add it
-    We repeat until none have any children
-     */
-
     @Override
     public void loadItem(Item item) {
         Log.i(TAG, "loadItem: Adapter loading items");
         mRootItem = item;
         Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
-
-        Log.i(TAG, "loadItem: Items " + flatten(item.getComments(), 0));
-
-
-
-        //FIXME
+        mComments = flatten(mRootItem.getComments(), 0);
+        notifyDataSetChanged();
         //TODO- Sort the top comments by points or time
 
     }
@@ -140,15 +129,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     class CommentHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.comment_card)
-        CardView mCard;
-
-        @BindView(R.id.comment_info)
-        TextView mInfo;
-
-        @BindView(R.id.comment_body)
-        TextView mBody;
-
+        @BindView(R.id.comment_card) CardView mCard;
+        @BindView(R.id.comment_info) TextView mInfo;
+        @BindView(R.id.comment_body) TextView mBody;
+        @BindView(R.id.comment_content) LinearLayout mContent;
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

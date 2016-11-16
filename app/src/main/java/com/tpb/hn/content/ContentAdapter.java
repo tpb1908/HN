@@ -243,7 +243,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             for(int i = 0; i < mIds.length; i++) {
                 if(item.getId() == mIds[i]) {
                     mData[i] = item;
-                    Log.i(TAG, "itemLoaded: " + item.getComments().length);
                     notifyItemChanged(i);
                     break;
                 }
