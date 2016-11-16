@@ -18,6 +18,8 @@ import java.util.Comparator;
  */
 
 public class Item implements Parcelable, Comparable<Item> {
+    private static final String TAG = Item.class.getSimpleName();
+
     private int id;
     private boolean deleted;
     private ItemType type;
@@ -261,7 +263,7 @@ public class Item implements Parcelable, Comparable<Item> {
         dest.writeInt(this.descendants);
         dest.writeByte(this.viewed ? (byte) 1 : (byte) 0);
         dest.writeLong(this.lastUpdated);
-        dest.writeString(this.commentJSON);
+        //dest.writeString(this.commentJSON);
     }
 
 
@@ -283,7 +285,20 @@ public class Item implements Parcelable, Comparable<Item> {
         this.descendants = in.readInt();
         this.viewed = in.readByte() != 0;
         this.lastUpdated = in.readLong();
-        this.commentJSON = in.readString();
+//        this.commentJSON = in.readString();
+//        try {
+//            setCommentJSON(commentJSON);
+//        } catch(Exception e) {
+//            Log.e(TAG, "Item: ", e);
+//        }
+//        final Parcelable[] parcels =  in.readParcelableArray(Item.class.getClassLoader());
+//        this.comments = CREATOR.newArray(parcels.length);
+//        //TODO- Is this the right way to do it
+//        for(int i = 0; i < parcels.length; i++) {
+//            final Parcel parcel = Parcel.obtain();
+//            parcel.writeParcelable(parcels[i], 0);
+//            this.comments[i] = CREATOR.createFromParcel(parcel);
+//        }
     }
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {

@@ -8,15 +8,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.views.LockableViewPager;
 import com.tpb.hn.network.APIPaths;
@@ -25,6 +26,7 @@ import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -100,25 +102,45 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
             final String data = launchIntent.getDataString();
             new HNItemLoader(this, this).loadItem(APIPaths.parseUrl(data));
         } else {
-            if(launchIntent.getParcelableExtra("item") != null) {
-                final Item item = launchIntent.getParcelableExtra("item");
-                setupFragments(prefs.getPageTypes(), item);
-                setTitle(item);
-                if(launchIntent.getSerializableExtra("type") != null) {
-                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
-                    final int index = mAdapter.indexOf(type);
-                    mStoryPager.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(index != -1) mStoryPager.setCurrentItem(index);
-                        }
-                    });
+            final Item item = ContentActivity.mLaunchItem;
+            setupFragments(prefs.getPageTypes(), item);
+            setTitle(item);
+            if(launchIntent.getSerializableExtra("type") != null) {
+                final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
+                final int index = mAdapter.indexOf(type);
+                mStoryPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(index != -1) mStoryPager.setCurrentItem(index);
+                    }
+                });
 
-                }
-            } else {
-                Toast.makeText(this, R.string.error_no_item, Toast.LENGTH_LONG).show();
-                finish();
             }
+//            if(launchIntent.getParcelableExtra("item") != null) {
+//                final Item item = launchIntent.getParcelableExtra("item");
+////                final String commentJSON = launchIntent.getStringExtra("comments");
+////                try {
+////                    item.setCommentJSON(commentJSON);
+////                } catch(JSONException jse) {
+////                    Log.e(TAG, "onCreate: ", jse);
+////                }
+//                setupFragments(prefs.getPageTypes(), item);
+//                setTitle(item);
+//                if(launchIntent.getSerializableExtra("type") != null) {
+//                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
+//                    final int index = mAdapter.indexOf(type);
+//                    mStoryPager.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if(index != -1) mStoryPager.setCurrentItem(index);
+//                        }
+//                    });
+//
+//                }
+//            } else {
+//                Toast.makeText(this, R.string.error_no_item, Toast.LENGTH_LONG).show();
+//                finish();
+//            }
         }
 
         originalFlags = getWindow().getDecorView().getSystemUiVisibility();
@@ -181,6 +203,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     }
 
     private void setTitle(Item item) {
+        Log.i(TAG, "setTitle: " + item.toString() + ", " + Arrays.toString(item.getComments()));
         mTitle.setPaddingRelative(mTitle.getPaddingStart(), 16, mTitle.getPaddingEnd(), 16);
         mTitle.setText(item.getTitle());
         mUrl.setText(item.getFormattedURL());

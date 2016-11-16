@@ -28,7 +28,7 @@ public class HNParser {
     private static final String KEY_PARENT = "parent";
     private static final String KEY_ASK_TITLE = "Ask HN:";
     
-    private static final String KEY_AUTHOR = "authoer";
+    private static final String KEY_AUTHOR = "author";
     private static final String KEY_POINTS = "points";
     private static final String KEY_PARENT_ID = "parent_id";
     private static final String KEY_CHILDREN = "children";
@@ -49,7 +49,7 @@ public class HNParser {
     public static Item AlgoliaJSONToItem(JSONObject obj, boolean isChild) throws JSONException {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
-        //item.setTime(obj.getLong(KEY_TIME));
+        //item.setTime(obj.getLong(KEY_TIME)); TODO Time parsing
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
         if(isChild) {
           item.setType(ItemType.COMMENT);
@@ -64,7 +64,7 @@ public class HNParser {
         if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
-        if(obj.has(KEY_CHILDREN) && !isChild) item.setCommentJSON(obj.getString(KEY_CHILDREN));
+        if(obj.has(KEY_CHILDREN)) item.setCommentJSON(obj.getString(KEY_CHILDREN));
         return item;
     }
 

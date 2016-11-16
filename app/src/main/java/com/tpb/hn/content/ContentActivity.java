@@ -59,6 +59,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     private ContentAdapter mAdapter;
 
+    public static  Item mLaunchItem;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,10 +128,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     public void openItem(Item item, FragmentPagerAdapter.PageType type) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
-        i.putExtra("item", item);
+        mLaunchItem = item;
+        //i.putExtra("item", item);
         i.putExtra("type", type);
-
+        //i.putExtra("comments", item.getCommentJSON());
         startActivity(i, getSharedTransition().toBundle());
+        //FIXME Item too large error
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();
 

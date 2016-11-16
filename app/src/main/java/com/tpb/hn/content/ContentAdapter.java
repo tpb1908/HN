@@ -243,6 +243,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             for(int i = 0; i < mIds.length; i++) {
                 if(item.getId() == mIds[i]) {
                     mData[i] = item;
+                    Log.i(TAG, "itemLoaded: " + item.getComments().length);
                     notifyItemChanged(i);
                     break;
                 }
@@ -266,6 +267,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     private void openItem(int pos, FragmentPagerAdapter.PageType type) {
         if(mData != null && pos < mData.length && mData[pos] != null) {
+            Log.i(TAG, "openItem: " + mData[pos].getComments().length);
             mOpener.openItem(mData[pos], type);
         } else {
             attemptLoadAgain(pos);
