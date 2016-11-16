@@ -21,6 +21,7 @@ public class HNParser {
     private static final String KEY_KIDS = "kids";
     private static final String KEY_SCORE = "score";
     private static final String KEY_TIME = "time";
+    private static final String KEY_CREATED_AT =  "created_at_i";
     private static final String KEY_TITLE = "title";
     private static final String KEY_TYPE = "type";
     private static final String KEY_URL = "url";
@@ -51,6 +52,7 @@ public class HNParser {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         //item.setTime(obj.getLong(KEY_TIME)); TODO Time parsing
+        if(obj.has(KEY_CREATED_AT)) item.setTime(obj.getLong(KEY_CREATED_AT));
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
         if(isChild) {
           item.setType(ItemType.COMMENT);

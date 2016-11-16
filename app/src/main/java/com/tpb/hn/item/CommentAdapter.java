@@ -1,10 +1,12 @@
 package com.tpb.hn.item;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +62,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final int pos = holder.getAdapterPosition();
         final Comment comment = mComments.get(pos);
         if(comment.item.getText() != null) {
-            holder.mBody.setText(Html.fromHtml(comment.item.getText()));
+            final Spanned text;
+            if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                text = Html.fromHtml(comment.item.getText(), Html.FROM_HTML_MODE_COMPACT);
+            } else {
+                text = Html.fromHtml(comment.item.getText());
+            }
+
+            holder.mBody.setText(text.toString().substring(0, text.toString().length() - 2));
         }
         holder.mTitle.setText(comment.item.getBy() + " " + comment.depth);
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth%mCommentColors.length]);
