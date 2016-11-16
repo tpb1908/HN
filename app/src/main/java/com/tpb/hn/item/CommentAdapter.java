@@ -2,6 +2,7 @@ package com.tpb.hn.item;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -97,8 +98,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         Log.i(TAG, "loadItem: Adapter loading items");
         mRootItem = item;
         Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
-        mComments = flatten(mRootItem.getComments(), 0);
-        notifyDataSetChanged();
+        new Thread() {
+            @Override
+            public void run() {
+                mRootItem.parseComments();
+                mComments = flatten(mRootItem.getComments(), 0);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                }, 300);
+            }
+        }.run();
+
         //TODO- Sort the top comments by points or time
 
     }
@@ -107,6 +120,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final ArrayList<Comment> list = new ArrayList<>();
         for(Item i : items) {
             list.add(new Comment(i, depth));
+            i.parseComments();
             if(i.getComments().length > 0) {
                 list.addAll(flatten(i.getComments(), depth + 1));
             }

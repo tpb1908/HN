@@ -190,6 +190,7 @@ public class Content extends Fragment implements ItemLoader,
     public void loadDone(JSONObject result, boolean success, int code) {
         if(success) {
             try {
+                Log.i(TAG, "loadDone: Got readable page");
                 readablePage = result.get("content").toString();
                 mIsContentReady = true;
                 bindData();

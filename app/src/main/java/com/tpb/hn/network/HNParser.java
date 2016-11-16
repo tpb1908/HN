@@ -67,6 +67,8 @@ public class HNParser {
         if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
+
+        //TODO- This must be done in a thread
         if(obj.has(KEY_CHILDREN)) item.setCommentJSON(obj.getString(KEY_CHILDREN));
 
         //TODO Get correct descendants value

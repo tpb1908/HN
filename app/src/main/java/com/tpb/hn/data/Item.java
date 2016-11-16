@@ -229,11 +229,18 @@ public class Item implements Parcelable, Comparable<Item> {
         return commentJSON;
     }
 
-    public void setCommentJSON(String commentJSON) throws JSONException {
+    public void setCommentJSON(final String commentJSON) throws JSONException {
         this.commentJSON = commentJSON;
-        comments = HNParser.parseComments(commentJSON);
-        descendants = comments.length;
 
+
+
+    }
+
+    public void parseComments() {
+        try {
+            comments = HNParser.parseComments(commentJSON);
+        } catch(Exception e) {}
+        descendants = comments.length;
     }
 
     public Item[] getComments() {

@@ -57,7 +57,7 @@ public class TextLoader {
                         public void onResponse(JSONObject response) {
                             try {
                                 listenerCache.get(url).removeAll(Collections.<TextLoadDone>singleton(null));
-                                if(response.has("content")) {
+                                if(response.has("content") && !response.getString("content").equals("<div></div>")) {
                                     cache.put(url, response);
                                     for(TextLoadDone rld : listenerCache.get(url)) {
                                         rld.loadDone(response, true, TextLoadDone.NO_ERROR);
@@ -69,8 +69,6 @@ public class TextLoader {
                                 }
 
                                 listenerCache.remove(url);
-                                Log.i(TAG, "onResponse: Error getting " + APIPaths.getMercuryParserPath(url));
-                                Log.i(TAG, "onResponse: " + response.toString());
                             } catch(Exception e) {
                                 Log.e(TAG, "onResponse: ", e);
                                 Log.i(TAG, "onResponse: " + e.getMessage());

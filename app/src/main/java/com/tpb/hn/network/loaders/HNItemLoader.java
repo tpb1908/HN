@@ -130,6 +130,7 @@ public class HNItemLoader {
                                     itemListener.itemLoaded(item, item != null, 200);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);
+                                    itemListener.itemLoaded(null, false, -100);
                                 }
                             }
 

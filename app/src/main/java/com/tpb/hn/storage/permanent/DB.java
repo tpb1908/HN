@@ -52,7 +52,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item item) {
-        new WriteItemTask(callback).doInBackground(item);
+       // new WriteItemTask(callback).doInBackground(item);
     }
 
     void writeOrUpdate(Item item) {
@@ -60,7 +60,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item... items) {
-        new WriteItemTask(callback).doInBackground(items);
+       // new WriteItemTask(callback).doInBackground(items);
     }
 
     void writeOrUpdate(Item... items) {
