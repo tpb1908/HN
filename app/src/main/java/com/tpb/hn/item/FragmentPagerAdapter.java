@@ -159,7 +159,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             if(f != null && !((FragmentCycleListener) f).onBackPressed()) return false;
         }
         return true;
-        //PhArbARYmporevEi
+
     }
 
     @Override

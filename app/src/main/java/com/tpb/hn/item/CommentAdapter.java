@@ -1,6 +1,7 @@
 package com.tpb.hn.item;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -62,15 +63,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     public void onBindViewHolder(CommentHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
         final Comment comment = mComments.get(pos);
-        if(comment.item.getText() != null) {
-            final Spanned text;
-            if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                text = Html.fromHtml(comment.item.getText(), Html.FROM_HTML_MODE_COMPACT);
-            } else {
-                text = Html.fromHtml(comment.item.getText());
+        if(comment.parsedText == null) {
+            if(comment.item.getText() != null) {
+                final Spanned text;
+                if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    text = Html.fromHtml(comment.item.getText(), Html.FROM_HTML_MODE_COMPACT);
+                } else {
+                    text = Html.fromHtml(comment.item.getText());
+                }
+                comment.parsedText = text.toString().substring(0, text.toString().length() - 2);
             }
-
-            holder.mBody.setText(text.toString().substring(0, text.toString().length() - 2));
+            holder.mBody.setText(comment.parsedText);
         }
         holder.mTitle.setText(comment.item.getBy() + " " + comment.depth);
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth%mCommentColors.length]);
@@ -98,19 +101,41 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         Log.i(TAG, "loadItem: Adapter loading items");
         mRootItem = item;
         Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
-        new Thread() {
-            @Override
-            public void run() {
-                mRootItem.parseComments();
-                mComments = flatten(mRootItem.getComments(), 0);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                }, 300);
-            }
-        }.run();
+        final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
+        if(mRootItem.getComments().length == 0) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mRootItem.parseComments();
+                    mComments = flatten(mRootItem.getComments(), 0);
+                    /*
+                        FIXME
+                        WTF postDelayed doesn't work
+                     */
+                    try {
+                        Thread.sleep(800);
+                    } catch(Exception e) {}
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+
+                }
+            });
+        } else {
+            uiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(800);
+                    } catch(Exception e) {}
+                    notifyDataSetChanged();
+                }
+            });
+
+        }
 
         //TODO- Sort the top comments by points or time
 
@@ -134,6 +159,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         Item item;
         int depth = 0;
         boolean visible = true;
+        String parsedText;
 
         Comment(Item item) {
             this.item = item;
