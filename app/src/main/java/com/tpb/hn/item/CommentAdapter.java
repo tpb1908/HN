@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -40,19 +43,25 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     private Item mRootItem;
     private RecyclerView mRecycler;
+    private SwipeRefreshLayout mSwiper;
+    private int mScreenWidth;
 
     private ArrayList<Comment> mComments = new ArrayList<>();
     private boolean usingCards;
 
-    public CommentAdapter(RecyclerView recycler) {
+    public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper) {
         mRecycler = recycler;
+        mSwiper = swiper;
         final Context context = mRecycler.getContext();
         usingCards = SharedPrefsController.getInstance(context).getUseCards();
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
+        mScreenWidth = ((WindowManager) mRecycler.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
+
         ButterKnife.bind(this, recycler);
     }
+
 
     @Override
     public CommentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -84,6 +93,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
         }
+        if(!comment.bound){
+            setTranslateANimation(holder.itemView, comment.depth);
+            comment.bound = true;
+        }
+    }
+
+    private void setTranslateANimation(View view, int multiplier) {
+        final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
+        animation.setDuration(Math.max(300, Math.min(800, multiplier * 150)));
+        view.startAnimation(animation);
+    }
+
+    public void clear() {
+        mComments.clear();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -98,7 +122,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
     @Override
     public void loadItem(Item item) {
-        Log.i(TAG, "loadItem: Adapter loading items");
+
         mRootItem = item;
         Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
@@ -119,6 +143,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                         @Override
                         public void run() {
                             notifyDataSetChanged();
+                            mSwiper.setRefreshing(false);
                         }
                     });
 
@@ -132,6 +157,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                         Thread.sleep(800);
                     } catch(Exception e) {}
                     notifyDataSetChanged();
+                    mSwiper.setRefreshing(false);
                 }
             });
 
@@ -158,6 +184,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private class Comment {
         Item item;
         int depth = 0;
+        boolean bound = false;
         boolean visible = true;
         String parsedText;
 
@@ -180,12 +207,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     class CommentHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.comment_card) CardView mCard;
         @BindView(R.id.comment_title) TextView mTitle;
         @BindView(R.id.comment_body) TextView mBody;
         @BindView(R.id.comment_color) FrameLayout mColorBar;
         @BindView(R.id.comment_padding) FrameLayout mPadding;
+
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

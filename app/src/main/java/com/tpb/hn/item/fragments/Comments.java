@@ -55,13 +55,15 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
         unbinder = ButterKnife.bind(this, view);
-        mAdapter = new CommentAdapter(mRecycler);
+        mAdapter = new CommentAdapter(mRecycler, mSwiper);
         mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mAdapter.clear();
                 loadItem(mRootItem);
             }
         });
+        mSwiper.setRefreshing(true);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
@@ -77,7 +79,6 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         mAdapter.loadItem(item);
-        mSwiper.setRefreshing(false);
     }
 
     @Override
