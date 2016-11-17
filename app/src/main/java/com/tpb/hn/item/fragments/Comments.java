@@ -3,6 +3,7 @@ package com.tpb.hn.item.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,6 +39,9 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     @BindView(R.id.comment_recycler)
     RecyclerView mRecycler;
 
+    @BindView(R.id.comment_swiper)
+    SwipeRefreshLayout mSwiper;
+
 
     private Item mRootItem;
     private CommentAdapter mAdapter;
@@ -51,8 +55,13 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         mAdapter = new CommentAdapter(mRecycler);
+        mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadItem(mRootItem);
+            }
+        });
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
@@ -61,12 +70,14 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
 
     @Override
     public void loadItem(Item item) {
+        mRootItem = item;
         new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
     }
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         mAdapter.loadItem(item);
+        mSwiper.setRefreshing(false);
     }
 
     @Override
