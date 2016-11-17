@@ -133,7 +133,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         i.putExtra("type", type);
         //i.putExtra("comments", item.getCommentJSON());
         startActivity(i, getSharedTransition().toBundle());
-        //FIXME Item too large error
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();
 

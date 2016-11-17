@@ -44,23 +44,35 @@ public class HNParser {
 
 
     public static Item JSONToItem(JSONObject obj) throws JSONException {
-        return JSONToItem(obj, false);
+        final Item item = new Item();
+        item.setId(obj.getInt(KEY_ID));
+        item.setTime(obj.getLong(KEY_TIME));
+        if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
+        if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
+            item.setType(ItemType.ASK);
+        } else {
+            item.setType(getType(obj.getString(KEY_TYPE)));
+        }
+        if(obj.has(KEY_BY)) item.setBy(obj.getString(KEY_BY));
+        if(obj.has(KEY_SCORE)) item.setScore(obj.getInt(KEY_SCORE));
+        if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));
+        if(obj.has(KEY_URL)) item.setUrl(obj.getString(KEY_URL));
+        if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
+        if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
+        if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
+
+        return item;
     }
 
-    public static Item JSONToItem(JSONObject obj, boolean isChild) throws JSONException {
+    public static Item commentJSONToItem(JSONObject obj) throws JSONException {
 
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         //item.setTime(obj.getLong(KEY_TIME)); TODO Time parsing
         if(obj.has(KEY_CREATED_AT)) item.setTime(obj.getLong(KEY_CREATED_AT));
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
-        if(isChild) {
-          item.setType(ItemType.COMMENT);
-        } else if(item.getTitle() != null && item.getTitle().contains(KEY_ASK_TITLE)) {
-            item.setType(ItemType.ASK);
-        } else {
-            item.setType(getType(obj.getString(KEY_TYPE)));
-        }
+        item.setType(ItemType.COMMENT);
+
         if(obj.has(KEY_AUTHOR)) item.setBy(obj.getString(KEY_AUTHOR));
         if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals("null")) item.setScore(obj.getInt(KEY_POINTS));
 
@@ -68,13 +80,16 @@ public class HNParser {
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
 
-        //TODO- This must be done in a thread
         if(obj.has(KEY_CHILDREN)) item.setCommentJSON(obj.getString(KEY_CHILDREN));
 
-        //TODO Get correct descendants value
 
         return item;
     }
+
+    public static String getCommentJSON(JSONObject obj) throws JSONException {
+        return obj.getString(KEY_CHILDREN);
+    }
+
 
     public static JSONObject itemToJSON(Item item) {
         final JSONObject object = new JSONObject();
@@ -121,7 +136,7 @@ public class HNParser {
 
         final Item[] children = new Item[carray.length()];
         for(int i = 0; i < carray.length(); i++) {
-            children[i] = JSONToItem(carray.getJSONObject(i), true);
+            children[i] = commentJSONToItem(carray.getJSONObject(i));
         }
         return children;
     }

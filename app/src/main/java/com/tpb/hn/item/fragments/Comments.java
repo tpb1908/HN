@@ -17,6 +17,9 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.item.CommentAdapter;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
+import com.tpb.hn.network.loaders.HNItemLoader;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +29,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener {
+public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener, HNItemLoader.HNItemLoadDone {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 
@@ -52,14 +55,23 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         mAdapter = new CommentAdapter(mRecycler);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter.loadItem(mRootItem);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         return view;
     }
 
     @Override
     public void loadItem(Item item) {
-        mRootItem = item;
+        new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
+    }
+
+    @Override
+    public void itemLoaded(Item item, boolean success, int code) {
+        mAdapter.loadItem(item);
+    }
+
+    @Override
+    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
+
     }
 
     @Override

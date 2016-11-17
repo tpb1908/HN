@@ -73,8 +73,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 }
                 comment.parsedText = text.toString().substring(0, text.toString().length() - 2);
             }
-            holder.mBody.setText(comment.parsedText);
         }
+        holder.mBody.setText(comment.parsedText);
         holder.mTitle.setText(comment.item.getBy() + " " + comment.depth);
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth%mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);

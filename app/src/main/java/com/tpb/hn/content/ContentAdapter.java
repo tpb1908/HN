@@ -116,7 +116,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 pos2 = t;
             }
             final ArrayList<Integer> toLoad = new ArrayList<>();
-            for(int i = pos; i < pos2; i++) {
+            for(int i = pos; i < pos2 && pos2 < mData.length; i++) {
                 if(mData[i] == null) toLoad.add(mIds[i]);
             }
             mLoader.loadItemsIndividually(Util.convertIntegers(toLoad), false);
@@ -160,7 +160,15 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     void beginBackgroundLoading() {
-        mLoader.loadItemsIndividually(mIds, false, true);
+        final int[] notLoaded = new int[mIds.length];
+        int count = 0;
+        for(Item i : mData) {
+            if(i != null) {
+                final int pos = Arrays.binarySearch(mIds, i.getId());
+                if(pos < 0 || pos > mData.length) notLoaded[count++] = i.getId();
+            }
+        }
+        mLoader.loadItemsIndividually(Arrays.copyOfRange(notLoaded, 0, count) , false, true);
     }
 
     void cancelBackgroundLoading() {

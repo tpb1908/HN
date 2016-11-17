@@ -37,6 +37,8 @@ public class HNItemLoader {
     private static int[] jobs = new int[200];
 
 
+    //TODO- Move back to HN API for data, and use Algolia for comments
+
     private HNItemLoadDone itemListener;
 
     public HNItemLoader(Context context, HNItemLoadDone itemListener) {
@@ -117,7 +119,7 @@ public class HNItemLoader {
             if(cachePos >= 0 && getFromCache) {
                 itemListener.itemLoaded(cache.getItems().get(cachePos), true, 200);
             } else if(!getFromCache) {
-                AndroidNetworking.get(APIPaths.getAlgoliaItemPath(i))
+                AndroidNetworking.get(APIPaths.getItemPath(i))
                         .setTag(inBackground ? "background" : i)
                         .setPriority(inBackground ? Priority.LOW : Priority.HIGH)
                         .build()
@@ -143,6 +145,7 @@ public class HNItemLoader {
         }
     }
 
+
     public void cancelBackgroundLoading() {
         AndroidNetworking.cancel("background");
     }
@@ -167,12 +170,40 @@ public class HNItemLoader {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            final Item item = HNParser.JSONToItem(response, false);
+                            final Item item = HNParser.JSONToItem(response);
 
                             for(HNItemLoadDone ild : listenerCache.get(id)) {
                                 ild.itemLoaded(item, item != null, 200);
                             }
                             listenerCache.remove(id);
+
+                            cache.update(item);
+                        } catch(Exception e) {
+                            loadItem(id);
+                            Log.e(TAG, "onResponse error : ", e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        //TODO- Get code like this anError.getResponse().code();
+                        Log.e(TAG, "onError: ", anError );
+                    }
+                });
+    }
+
+    public void loadItemForComments(final int id) {
+        AndroidNetworking.get(APIPaths.getAlgoliaItemPath(id))
+                .setTag(id)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            final Item item = HNParser.commentJSONToItem(response);
+
+                            itemListener.itemLoaded(item, true, 200);
 
                             cache.update(item);
                         } catch(Exception e) {

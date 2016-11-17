@@ -158,7 +158,6 @@ public class Content extends Fragment implements ItemLoader,
                     will return null
                      */
                     readablePage = TextLoader.setTextColor(getContext(), readablePage, darkBG, darkText);
-                    Log.d(TAG, "bindData: Readablepage " + readablePage);
                     mWebView.loadData(readablePage, "text/html", "utf-8");
                 }
             }
@@ -190,7 +189,6 @@ public class Content extends Fragment implements ItemLoader,
     public void loadDone(JSONObject result, boolean success, int code) {
         if(success) {
             try {
-                Log.i(TAG, "loadDone: Got readable page");
                 readablePage = result.get("content").toString();
                 mIsContentReady = true;
                 bindData();
@@ -206,7 +204,6 @@ public class Content extends Fragment implements ItemLoader,
                     code));
             mIsContentReady = true;
             bindData();
-            Log.d(TAG, "loadDone: " + readablePage);
         }
     }
 
