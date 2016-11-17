@@ -117,7 +117,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     @Override
     public int getItemCount() {
-        //TODO- Display message for item with no comments
         return mComments.size();
     }
     @Override
@@ -132,6 +131,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 public void run() {
                     mRootItem.parseComments();
                     mComments = flatten(mRootItem.getComments(), 0);
+                    mRootItem.setDescendants(mComments.size());
                     /*
                         FIXME
                         WTF postDelayed doesn't work

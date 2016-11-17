@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -43,6 +44,9 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     SwipeRefreshLayout mSwiper;
 
 
+    @BindView(R.id.comment_no_comments)
+    TextView mNoCommentsView;
+
     private Item mRootItem;
     private CommentAdapter mAdapter;
 
@@ -70,15 +74,34 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         return view;
     }
 
+    private void showNoCommentsMessage(boolean error) {
+        mNoCommentsView.setVisibility(View.VISIBLE);
+        mSwiper.setVisibility(View.GONE);
+        mNoCommentsView.setText(error ? R.string.error_comment_loading : R.string.text_no_comments);
+    }
+
     @Override
     public void loadItem(Item item) {
         mRootItem = item;
-        new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
+        if(item.getDescendants() == 0) {
+            showNoCommentsMessage(false);
+        } else {
+            new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
+        }
+
     }
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
-        mAdapter.loadItem(item);
+        if(item.getCommentJSON().equals("[]")) {
+            showNoCommentsMessage(false);
+        } else if(!success) {
+            showNoCommentsMessage(true);
+        } else {
+            mSwiper.setVisibility(View.VISIBLE);
+            mNoCommentsView.setVisibility(View.GONE);
+            mAdapter.loadItem(item);
+        }
     }
 
     @Override
