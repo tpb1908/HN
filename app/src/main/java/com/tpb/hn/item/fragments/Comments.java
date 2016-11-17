@@ -45,10 +45,14 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
 
 
     @BindView(R.id.comment_no_comments)
-    TextView mNoCommentsView;
+    TextView mMessageView;
 
     private Item mRootItem;
+    private Item mCommentItem;
     private CommentAdapter mAdapter;
+
+    private boolean itemReady = false;
+    private boolean viewsReady = false;
 
     public static Comments newInstance() {
         return new Comments();
@@ -71,20 +75,33 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
+
+        if(itemReady) bindItem();
+        viewsReady = true;
         return view;
     }
 
-    private void showNoCommentsMessage(boolean error) {
-        mNoCommentsView.setVisibility(View.VISIBLE);
+    private void showMessage(boolean error) {
+        mMessageView.setVisibility(View.VISIBLE);
         mSwiper.setVisibility(View.GONE);
-        mNoCommentsView.setText(error ? R.string.error_comment_loading : R.string.text_no_comments);
+        mMessageView.setText(error ? R.string.error_comment_loading : R.string.text_no_comments);
+    }
+
+    private void bindItem() {
+        if(mRootItem.getDescendants() == 0) {
+            showMessage(false);
+        } else {
+            mSwiper.setVisibility(View.VISIBLE);
+            mMessageView.setVisibility(View.GONE);
+            mAdapter.loadItem(mCommentItem);
+        }
     }
 
     @Override
     public void loadItem(Item item) {
         mRootItem = item;
         if(item.getDescendants() == 0) {
-            showNoCommentsMessage(false);
+            itemReady = true;
         } else {
             new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
         }
@@ -93,14 +110,14 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
 
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
+        itemReady = true;
         if(item.getCommentJSON().equals("[]")) {
-            showNoCommentsMessage(false);
+            if(viewsReady) showMessage(false);
         } else if(!success) {
-            showNoCommentsMessage(true);
+            if(viewsReady) showMessage(true);
         } else {
-            mSwiper.setVisibility(View.VISIBLE);
-            mNoCommentsView.setVisibility(View.GONE);
-            mAdapter.loadItem(item);
+            mCommentItem = item;
+            if(viewsReady) bindItem();
         }
     }
 
