@@ -37,8 +37,6 @@ public class HNItemLoader {
     private static int[] jobs = new int[200];
 
 
-    //TODO- Move back to HN API for data, and use Algolia for comments
-
     private HNItemLoadDone itemListener;
 
     public HNItemLoader(Context context, HNItemLoadDone itemListener) {
@@ -186,8 +184,7 @@ public class HNItemLoader {
 
                     @Override
                     public void onError(ANError anError) {
-                        //TODO- Get code like this anError.getResponse().code();
-                        Log.e(TAG, "onError: ", anError );
+                        itemListener.itemLoaded(null, false, anError.getResponse().code());
                     }
                 });
     }
@@ -214,41 +211,11 @@ public class HNItemLoader {
 
                     @Override
                     public void onError(ANError anError) {
-                        //TODO- Get code like this anError.getResponse().code();
-                        Log.e(TAG, "onError: ", anError );
+                        itemListener.itemLoaded(null, false, anError.getResponse().code());
                     }
                 });
     }
 
-    //TODO- Deal with failed requests
-    private class MultiLoadListener implements HNItemLoadDone {
-        private final HNItemLoadDone listener;
-        private final ArrayList<Item> items;
-        private final int count;
-
-        MultiLoadListener(HNItemLoadDone listener, ArrayList<Item> items, int count) {
-            this.listener = listener;
-            this.items = items;
-            this.count = count;
-        }
-
-
-        @Override
-        public void itemLoaded(Item item, boolean success, int code) {
-            items.add(item);
-            if(items.size() == count) {
-                listener.itemsLoaded(items, true, 200);
-            }
-        }
-
-        @Override
-        public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
-
-        }
-    }
-
-
-    //TODO- Send error codes
     public interface HNItemLoadDone {
 
         void itemLoaded(Item item, boolean success, int code);

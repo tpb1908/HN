@@ -178,7 +178,7 @@ public class Content extends Fragment implements ItemLoader,
                     it will be returned before the Fragment has been attached and getContext()
                     will return null
                      */
-                    readablePage = TextLoader.setTextColor(getContext(), readablePage, darkBG, darkText);
+                    readablePage = Formatter.setTextColor(getContext(), readablePage, darkBG, darkText);
                     mWebView.loadData(readablePage, "text/html", "utf-8");
                 }
             }

@@ -45,7 +45,6 @@
     <string name="pref_content_cards">Display items as cards</string>
     <string name="pref_content_read_behaviour">Mark read when passed</string>
     <string name="pref_content_mark_new_items">Mark new items</string>
-    <!--TODO Add colors to all possible HTML tags -->
     <string name="html" translatable="false">
         <![CDATA[
         <html>

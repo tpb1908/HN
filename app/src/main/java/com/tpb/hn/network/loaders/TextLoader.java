@@ -1,14 +1,11 @@
 package com.tpb.hn.network.loaders;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.tpb.hn.R;
-import com.tpb.hn.Util;
 import com.tpb.hn.network.APIPaths;
 
 import org.json.JSONObject;
@@ -90,18 +87,6 @@ public class TextLoader {
                     });
         }
 
-    }
-
-    //TODO- Move to formatter
-    public static String setTextColor(Context context, String markup, int bgColor, int textColor) {
-            return context.getString(R.string.html,
-                    14f,
-                    Util.toHtmlColor(bgColor),
-                    10f, 10f, 10f, 10f,
-                    1f,
-                    Util.toHtmlColor(textColor),
-                    markup,
-                    Util.toHtmlColor(textColor));
     }
 
     public interface TextLoadDone {

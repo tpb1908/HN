@@ -4,6 +4,7 @@ package com.tpb.hn.data;
 import android.content.Context;
 
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 
 import java.util.Date;
 
@@ -83,6 +84,17 @@ public class Formatter {
 
     public static String wrapInDiv(String text) {
         return "<div>" + text + "</div>";
+    }
+
+    public static String setTextColor(Context context, String markup, int bgColor, int textColor) {
+        return context.getString(R.string.html,
+                14f,
+                Util.toHtmlColor(bgColor),
+                10f, 10f, 10f, 10f,
+                1f,
+                Util.toHtmlColor(textColor),
+                markup,
+                Util.toHtmlColor(textColor));
     }
 
 }

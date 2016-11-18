@@ -68,7 +68,6 @@ public class HNParser {
 
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
-        //item.setTime(obj.getLong(KEY_TIME)); TODO Time parsing
         if(obj.has(KEY_CREATED_AT)) item.setTime(obj.getLong(KEY_CREATED_AT));
         if(obj.has(KEY_TITLE)) item.setTitle(obj.getString(KEY_TITLE));
         item.setType(ItemType.COMMENT);
