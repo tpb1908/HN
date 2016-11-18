@@ -96,38 +96,42 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.mCard.setRadius(Util.pxFromDp(3));
         }
         if(!comment.bound){
-            setTranslateANimation(holder.itemView, comment.depth);
+            setTranslateAnimation(holder.itemView, comment.depth);
             comment.bound = true;
         }
     }
 
-    private void setTranslateANimation(View view, int multiplier) {
+    private void setTranslateAnimation(View view, int multiplier) {
         final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
         animation.setDuration(Math.max(300, Math.min(800, multiplier * 150)));
         view.startAnimation(animation);
     }
 
     private void switchItemVisibility(int pos) {
-        final int cPos = mVisibleItems.get(pos);
+        int cPos = mVisibleItems.get(pos);
         final int depth = mComments.get(cPos).depth;
         final boolean visibility = !mComments.get(cPos).childrenVisible;
         mComments.get(cPos).childrenVisible = visibility;
-        int end = cPos + 1;
+        Log.i(TAG, "switchItemVisibility: Positions " + mVisibleItems.toString());
+        int end = ++cPos;
         for(; end < mComments.size(); end++) {
             Log.i(TAG, "switchItemVisibility: Comment " + mComments.get(end));
             if(mComments.get(end).depth > depth) {
-                mComments.get(end).visible = visibility;
-            } else break;
-        }
-        Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
-        if(cPos != end) {
-            buildPositions();
-            if(visibility) {
-                notifyItemRangeInserted(cPos + 1, end - 1);
+                if(mComments.get(end).depth == depth + 1) { //Direct descendant
+                    mComments.get(end).pVisible = visibility;
+                } else {
+                    mComments.get(end).hVisible = visibility;
+                }
             } else {
-                notifyItemRangeRemoved(cPos + 1, end - 1);
+                end--;
+                break;
             }
         }
+        Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
+
+        buildPositions();
+        Log.i(TAG, "switchItemVisibility: Positions " + mVisibleItems.toString());
+        notifyDataSetChanged();
     }
 
     public void clear() {
@@ -207,7 +211,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private void buildPositions() {
         mVisibleItems.clear();
         for(int i = 0; i < mComments.size(); i++) {
-            if(mComments.get(i).visible) mVisibleItems.add(i);
+            if(mComments.get(i).hVisible && mComments.get(i).pVisible) mVisibleItems.add(i);
         }
     }
 
@@ -216,13 +220,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         Item item;
         int depth = 0;
         boolean bound = false;
-        boolean visible = true;
+        boolean pVisible = true; //Visibility set by direct parent
+        boolean hVisible = true; //Visibility set by lower depth comment
         boolean childrenVisible = true;
         String parsedText;
-
-        Comment(Item item) {
-            this.item = item;
-        }
 
         Comment(Item item, int depth) {
             this.item = item;
