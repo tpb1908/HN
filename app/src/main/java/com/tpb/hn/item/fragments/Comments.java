@@ -37,18 +37,12 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
 
     private Unbinder unbinder;
 
-    @BindView(R.id.comment_recycler)
-    RecyclerView mRecycler;
+    @BindView(R.id.comment_recycler) RecyclerView mRecycler;
+    @BindView(R.id.comment_swiper) SwipeRefreshLayout mSwiper;
+    @BindView(R.id.comment_no_comments) TextView mMessageView;
 
-    @BindView(R.id.comment_swiper)
-    SwipeRefreshLayout mSwiper;
-
-
-    @BindView(R.id.comment_no_comments)
-    TextView mMessageView;
-
-    private Item mRootItem;
-    private Item mCommentItem;
+    private Item mRootItem; //The Item from the HN api
+    private Item mCommentItem; //The Item from Algolia, with comments
     private CommentAdapter mAdapter;
 
     private boolean itemReady = false;

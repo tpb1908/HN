@@ -27,6 +27,7 @@ public class CachingAdBlockingWebView extends WebView {
 
     private ProgressBar mBoundProgressBar;
     private LinkHandler mHandler;
+    private LoadListener mLoadListener;
 
     public CachingAdBlockingWebView(Context context) {
         this(context, null);
@@ -62,6 +63,12 @@ public class CachingAdBlockingWebView extends WebView {
             }
 
             @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if(mLoadListener != null) mLoadListener.loadDone();
+            }
+
+            @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if(mHandler != null) {
                     final Pair<Boolean, String> val = mHandler.handleLink(request.getUrl().toString());
@@ -88,6 +95,7 @@ public class CachingAdBlockingWebView extends WebView {
             }
         });
     }
+
 
     public void bindProgressBar(final ProgressBar progressBar, final boolean animate, final boolean hideWhenDone) {
         mBoundProgressBar = progressBar;
@@ -119,6 +127,10 @@ public class CachingAdBlockingWebView extends WebView {
         mHandler = handler;
     }
 
+    public void setLoadDoneListener(LoadListener listener) {
+        mLoadListener = listener;
+    }
+
     @Override
     public void loadUrl(String url) {
         super.loadUrl(url);
@@ -136,5 +148,12 @@ public class CachingAdBlockingWebView extends WebView {
         Pair<Boolean, String> handleLink(String url);
 
     }
+
+    public interface LoadListener {
+
+        void loadDone();
+
+    }
+
 
 }

@@ -13,151 +13,142 @@
         android:visibility="invisible"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
-    <com.tpb.hn.item.views.LockableNestedScrollView
-        android:id="@+id/webview_scroller"
-        android:scrollbarStyle="insideOverlay"
-        android:scrollbars="vertical"
+    <Toolbar
+        android:id="@+id/content_fragment_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:contentInsetLeft="0dp"
+        android:contentInsetStart="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        android:contentInsetRight="0dp"
+        android:contentInsetEnd="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
+        android:visibility="gone"
+        >
 
-        <LinearLayout
-            android:id="@+id/scroll_content"
-            android:orientation="vertical"
-            android:animateLayoutChanges="true"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:targetApi="honeycomb">
+            android:layout_height="wrap_content">
 
-            <Toolbar
-                android:id="@+id/content_fragment_toolbar"
+            <ImageButton
+                android:id="@+id/button_content_toolbar_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:padding="16dp"
+                android:background="@drawable/md_transparent"
+                android:src="@drawable/ic_close"
+                />
+
+            <ImageButton
+                android:id="@+id/button_find_in_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="16dp"
+                android:background="@drawable/md_transparent"
+                android:src="@drawable/ic_find_in_page"/>
+
+            <ViewSwitcher
+                android:id="@+id/content_toolbar_switcher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:contentInsetLeft="0dp"
-                android:contentInsetStart="0dp"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                android:contentInsetRight="0dp"
-                android:contentInsetEnd="0dp"
-                app:contentInsetRight="0dp"
-                app:contentInsetEnd="0dp"
-                android:visibility="gone"
-                >
+                android:inAnimation="@anim/expand_horizontal"
+                android:outAnimation="@android:anim/fade_out"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/button_content_toolbar_close"
+                android:layout_toStartOf="@id/button_find_in_page">
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    >
 
                     <ImageButton
-                        android:id="@+id/button_content_toolbar_close"
+                        android:id="@+id/button_content_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:padding="16dp"
+                        android:layout_marginEnd="8dp"
                         android:background="@drawable/md_transparent"
-                        android:src="@drawable/ic_close"
+                        android:src="@drawable/ic_arrow_back"
                         />
 
                     <ImageButton
-                        android:id="@+id/button_find_in_page"
+                        android:id="@+id/button_content_forward"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:padding="16dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_toEndOf="@id/button_content_back"
                         android:background="@drawable/md_transparent"
-                        android:src="@drawable/ic_find_in_page"/>
+                        android:src="@drawable/ic_arrow_forward"
+                        />
 
-                    <ViewSwitcher
-                        android:id="@+id/content_toolbar_switcher"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inAnimation="@anim/expand_horizontal"
-                        android:outAnimation="@android:anim/fade_out"
-                        android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@id/button_content_toolbar_close"
-                        android:layout_toStartOf="@id/button_find_in_page">
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="16dp"
-                            >
-
-                            <ImageButton
-                                android:id="@+id/button_content_back"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginEnd="8dp"
-                                android:background="@drawable/md_transparent"
-                                android:src="@drawable/ic_arrow_back"
-                                />
-
-                            <ImageButton
-                                android:id="@+id/button_content_forward"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_toEndOf="@id/button_content_back"
-                                android:background="@drawable/md_transparent"
-                                android:src="@drawable/ic_arrow_forward"
-                                />
-
-
-                        </RelativeLayout>
-
-                        <EditText
-                            android:id="@+id/content_find_edittext"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:imeOptions="actionSearch"
-                            android:inputType="text"
-                            android:focusable="true">
-
-                            <requestFocus />
-
-                        </EditText>
-
-                    </ViewSwitcher>
 
                 </RelativeLayout>
 
-            </Toolbar>
-
-            <FrameLayout
-                android:id="@+id/webview_container"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <com.tpb.hn.item.views.CachingAdBlockingWebView
-                    android:id="@+id/webview"
-                    android:scrollbarStyle="insideOverlay"
-                    android:scrollbars="vertical"
-                    android:focusableInTouchMode="true"
+                <EditText
+                    android:id="@+id/content_find_edittext"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:focusable="true">
 
-                </com.tpb.hn.item.views.CachingAdBlockingWebView>
+                    <requestFocus />
+
+                </EditText>
+
+            </ViewSwitcher>
+
+        </RelativeLayout>
+
+    </Toolbar>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/webview_swiper"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/webview_scroller"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-            </FrameLayout>
+            <com.tpb.hn.item.views.CachingAdBlockingWebView
+                android:id="@+id/webview"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="vertical"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
+            </com.tpb.hn.item.views.CachingAdBlockingWebView>
 
-    </com.tpb.hn.item.views.LockableNestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fullscreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

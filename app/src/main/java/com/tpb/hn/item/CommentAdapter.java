@@ -170,10 +170,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private ArrayList<Comment> flatten(Item[] items, int depth) {
         final ArrayList<Comment> list = new ArrayList<>();
         for(Item i : items) {
-            list.add(new Comment(i, depth));
-            i.parseComments();
-            if(i.getComments().length > 0) {
-                list.addAll(flatten(i.getComments(), depth + 1));
+            if(i.getBy() != null) {
+                list.add(new Comment(i, depth));
+                i.parseComments();
+                if(i.getComments().length > 0) {
+                    list.addAll(flatten(i.getComments(), depth + 1));
+                }
             }
         }
         return list;

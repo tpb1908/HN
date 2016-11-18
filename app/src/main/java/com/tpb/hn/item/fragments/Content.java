@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.CachingAdBlockingWebView;
-import com.tpb.hn.item.views.LockableNestedScrollView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.TextLoader;
 
@@ -71,9 +71,9 @@ public class Content extends Fragment implements ItemLoader,
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
 
-    @BindView(R.id.fullscreen) LinearLayout mFullscreen;
-    @BindView(R.id.webview_scroller) LockableNestedScrollView mScrollView;
-    @BindView(R.id.webview_container) FrameLayout mWebContainer;
+    @BindView(R.id.fullscreen) SwipeRefreshLayout mFullscreen;
+    @BindView(R.id.webview_swiper) SwipeRefreshLayout mSwiper;
+    @BindView(R.id.webview_scroller) NestedScrollView mScrollView;
     @BindView(R.id.webview) CachingAdBlockingWebView mWebView;
     @BindView(R.id.content_fragment_toolbar) android.widget.Toolbar mToolbar;
     @BindView(R.id.content_progressbar) ProgressBar mProgressBar;
@@ -98,7 +98,6 @@ public class Content extends Fragment implements ItemLoader,
         }
         final Content content = new Content();
         content.mType = type;
-
         return content;
     }
 
@@ -126,7 +125,21 @@ public class Content extends Fragment implements ItemLoader,
                 bindData();
             }
         }
-
+        final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mWebView.setLoadDoneListener(new CachingAdBlockingWebView.LoadListener() {
+                    @Override
+                    public void loadDone() {
+                        mSwiper.setRefreshing(false);
+                        mFullscreen.setRefreshing(false);
+                    }
+                });
+                mWebView.reload();
+            }
+        };
+        mSwiper.setOnRefreshListener(onRefreshListener);
+        mFullscreen.setOnRefreshListener(onRefreshListener);
         return inflated;
     }
 
@@ -288,17 +301,18 @@ public class Content extends Fragment implements ItemLoader,
         if(mIsFullscreen) {
             mWebView.setZoomEnabled(true);
             mToolbar.setVisibility(View.VISIBLE);
-            mScrollView.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
             mParent.hideFab();
             mParent.openFullScreen();
-            mWebContainer.removeView(mWebView);
+            mScrollView.removeView(mWebView);
+            mSwiper.setVisibility(View.GONE);
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
                 mWebView.setVisibility(View.VISIBLE);
             }
             mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
+            mFullscreen.setVisibility(View.VISIBLE);
             mFullscreen.addView(mWebView);
-            mScrollView.setScrollingEnabled(false);
+        //    mScrollView.setScrollingEnabled(false);
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
@@ -309,13 +323,15 @@ public class Content extends Fragment implements ItemLoader,
             mToolbar.setVisibility(View.GONE);
             mWebView.setDrawingCacheEnabled(true);
             mFullscreen.removeView(mWebView);
+            mFullscreen.setVisibility(View.GONE);
             if(mIsShowingPDF) {
                 mWebView.setVisibility(View.GONE);
                 setupPDFButtons();
             }
-            mWebContainer.addView(mWebView);
-            mScrollView.setScrollingEnabled(true);
-            mWebContainer.post(new Runnable() {
+            mSwiper.setVisibility(View.VISIBLE);
+            mScrollView.addView(mWebView);
+        //    mScrollView.setScrollingEnabled(true);
+            mScrollView.post(new Runnable() {
                 @Override
                 public void run() {
                     mParent.closeFullScreen();
