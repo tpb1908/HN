@@ -168,7 +168,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 if(pos < 0 || pos > mData.length) notLoaded[count++] = i.getId();
             }
         }
-        mLoader.loadItemsIndividually(Arrays.copyOfRange(notLoaded, 0, count) , false, true);
+        mLoader.loadItemsIndividually(Arrays.copyOfRange(notLoaded, 0, count), false, true);
     }
 
     void cancelBackgroundLoading() {
@@ -221,7 +221,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
-       // holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
+        // holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");

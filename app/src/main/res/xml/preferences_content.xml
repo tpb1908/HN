@@ -2,15 +2,23 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        android:key="key_content_cards"
         android:title="@string/pref_content_cards"
         />
 
     <SwitchPreference
+        android:key="key_mark_read"
         android:title="@string/pref_content_read_behaviour"
         />
 
     <SwitchPreference
+        android:key="key_mark_new_items"
         android:title="@string/pref_content_mark_new_items"
+        />
+
+    <SwitchPreference
+        android:key="key_block_ads"
+        android:title="Block ads"
         />
 
 

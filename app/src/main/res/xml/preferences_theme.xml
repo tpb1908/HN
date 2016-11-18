@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:key="key_dark_theme"
+        android:title="Use dark theme"
+        />
+    <!--TODO if this is enabled, get the time on start -->
+    <SwitchPreference
+        android:key="auto_dark_theme"
+        android:title="Auto dark theme"
+        />
+
+    <ListPreference
+        android:key="key_font_size"
+        android:title="Text size"
+        />
+
+    <ListPreference
+        android:key="key_font"
+        android:title="Font"
+        />
+
+</PreferenceScreen>

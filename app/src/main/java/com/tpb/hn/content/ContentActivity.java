@@ -22,6 +22,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.SettingsActivity;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
@@ -103,7 +104,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             }
         });
 
-
+        startActivity(new Intent(ContentActivity.this, SettingsActivity.class));
     }
 
     @Override

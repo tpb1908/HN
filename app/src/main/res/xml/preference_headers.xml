@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Theme"
+        android:summary="Set color theme and style"
+        android:icon="@drawable/ic_theme">
+        <extra
+            android:name="settings"
+            android:value="prefs_theme"/>
+    </header>
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Content"
+        android:icon="@drawable/ic_content"
+        android:summary="Set behaviour of the content feed">
+        <extra
+            android:name="settings"
+            android:value="prefs_content"/>
+    </header>
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Comments"
+        android:icon="@drawable/ic_comments"
+        android:summary="Set behaviour of the comment page">
+        <extra
+            android:name="settings"
+            android:value="prefs_comments"/>
+    </header>
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Browser"
+        android:icon="@drawable/ic_web"
+        android:summary="Set behaviour and type of the browser page">
+        <extra
+            android:name="settings"
+            android:value="prefs_browser"/>
+    </header>
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Data"
+        android:icon="@drawable/ic_network"
+        android:summary="Set network and caching behaviour">
+        <extra
+            android:name="settings"
+            android:value="prefs_data"/>
+    </header>
+
+    <header
+        android:fragment="com.tpb.hn.SettingsActivity$PreferenceFragment"
+        android:title="Info"
+        android:icon="@drawable/ic_info"
+        android:summary="Changelog and licenses">
+        <extra
+            android:name="settings"
+            android:value="prefs_info"/>
+    </header>
+
+</preference-headers>
