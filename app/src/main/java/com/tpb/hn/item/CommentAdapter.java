@@ -47,6 +47,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private int mScreenWidth;
 
     private ArrayList<Comment> mComments = new ArrayList<>();
+    private ArrayList<Integer> mVisibleItems = new ArrayList<>();
     private boolean usingCards;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper) {
@@ -71,7 +72,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     @Override
     public void onBindViewHolder(CommentHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
-        final Comment comment = mComments.get(pos);
+
+        final Comment comment = mComments.get(mVisibleItems.get(pos));
         if(comment.parsedText == null) {
             if(comment.item.getText() != null) {
                 final Spanned text;
@@ -105,19 +107,38 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         view.startAnimation(animation);
     }
 
+    private void switchItemVisibility(int pos) {
+        final int cPos = mVisibleItems.get(pos);
+        final int depth = mComments.get(cPos).depth;
+        final boolean visibility = !mComments.get(cPos).childrenVisible;
+        mComments.get(cPos).childrenVisible = visibility;
+        int end = cPos + 1;
+        for(; end < mComments.size(); end++) {
+            Log.i(TAG, "switchItemVisibility: Comment " + mComments.get(end));
+            if(mComments.get(end).depth > depth) {
+                mComments.get(end).visible = visibility;
+            } else break;
+        }
+        Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
+        if(cPos != end) {
+            buildPositions();
+            if(visibility) {
+                notifyItemRangeInserted(cPos + 1, end - 1);
+            } else {
+                notifyItemRangeRemoved(cPos + 1, end - 1);
+            }
+        }
+    }
+
     public void clear() {
         mComments.clear();
+        mVisibleItems.clear();
         notifyDataSetChanged();
     }
 
     @Override
-    public void onViewRecycled(CommentHolder holder) {
-
-    }
-
-    @Override
     public int getItemCount() {
-        return mComments.size();
+        return mVisibleItems.size();
     }
     @Override
     public void loadItem(Item item) {
@@ -142,6 +163,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     uiHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                            buildPositions();
                             notifyDataSetChanged();
                             mSwiper.setRefreshing(false);
                         }
@@ -156,6 +178,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     try {
                         Thread.sleep(800);
                     } catch(Exception e) {}
+                    buildPositions();
                     notifyDataSetChanged();
                     mSwiper.setRefreshing(false);
                 }
@@ -181,6 +204,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         return list;
     }
 
+    private void buildPositions() {
+        mVisibleItems.clear();
+        for(int i = 0; i < mComments.size(); i++) {
+            if(mComments.get(i).visible) mVisibleItems.add(i);
+        }
+    }
 
 
     private class Comment {
@@ -188,6 +217,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         int depth = 0;
         boolean bound = false;
         boolean visible = true;
+        boolean childrenVisible = true;
         String parsedText;
 
         Comment(Item item) {
@@ -218,6 +248,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    CommentAdapter.this.switchItemVisibility(getAdapterPosition());
+                    return false;
+                }
+            });
         }
 
     }
