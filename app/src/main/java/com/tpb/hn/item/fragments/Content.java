@@ -314,7 +314,6 @@ public class Content extends Fragment implements ItemLoader,
             mWebView.scrollTo(mScrollView.getScrollX(), mScrollView.getScrollY());
             mFullscreen.setVisibility(View.VISIBLE);
             mFullscreen.addView(mWebView);
-        //    mScrollView.setScrollingEnabled(false);
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
@@ -332,12 +331,11 @@ public class Content extends Fragment implements ItemLoader,
             }
             mSwiper.setVisibility(View.VISIBLE);
             mScrollView.addView(mWebView);
-        //    mScrollView.setScrollingEnabled(true);
             mScrollView.post(new Runnable() {
                 @Override
                 public void run() {
                     mParent.closeFullScreen();
-                    mScrollView.setBackgroundColor(darkBG);
+                    mScrollView.scrollTo(mWebView.getScrollX(), mWebView.getScrollY());
                 }
             });
 
