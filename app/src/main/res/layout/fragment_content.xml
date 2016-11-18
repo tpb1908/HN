@@ -65,14 +65,24 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
                     >
+
+                    <ImageButton
+                        android:id="@+id/button_content_refresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/md_transparent"
+                        android:src="@drawable/ic_refresh_"/>
 
                     <ImageButton
                         android:id="@+id/button_content_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
+                        android:layout_toEndOf="@id/button_content_refresh"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/md_transparent"
                         android:src="@drawable/ic_arrow_back"
@@ -141,14 +151,14 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <LinearLayout
         android:id="@+id/fullscreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

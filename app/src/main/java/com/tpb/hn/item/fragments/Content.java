@@ -71,7 +71,7 @@ public class Content extends Fragment implements ItemLoader,
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
 
-    @BindView(R.id.fullscreen) SwipeRefreshLayout mFullscreen;
+    @BindView(R.id.fullscreen) LinearLayout mFullscreen;
     @BindView(R.id.webview_swiper) SwipeRefreshLayout mSwiper;
     @BindView(R.id.webview_scroller) NestedScrollView mScrollView;
     @BindView(R.id.webview) CachingAdBlockingWebView mWebView;
@@ -125,21 +125,18 @@ public class Content extends Fragment implements ItemLoader,
                 bindData();
             }
         }
-        final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mWebView.setLoadDoneListener(new CachingAdBlockingWebView.LoadListener() {
-                    @Override
-                    public void loadDone() {
-                        mSwiper.setRefreshing(false);
-                        mFullscreen.setRefreshing(false);
-                    }
-                });
                 mWebView.reload();
             }
-        };
-        mSwiper.setOnRefreshListener(onRefreshListener);
-        mFullscreen.setOnRefreshListener(onRefreshListener);
+        });
+        mWebView.setLoadDoneListener(new CachingAdBlockingWebView.LoadListener() {
+            @Override
+            public void loadDone() {
+                mSwiper.setRefreshing(false);
+            }
+        });
         return inflated;
     }
 
@@ -294,6 +291,11 @@ public class Content extends Fragment implements ItemLoader,
     @OnClick(R.id.button_content_forward)
     void webViewForward() {
         if(mWebView.canGoForward()) mWebView.goForward();
+    }
+
+    @OnClick(R.id.button_content_refresh)
+    void refresh() {
+        mWebView.reload();
     }
 
     private void toggleFullscreen(boolean fullscreen) {
