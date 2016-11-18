@@ -424,10 +424,11 @@ public class Spritzer {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
                     if(fromUser) {
-                        mCurWordIdx = pos;
-                        Log.i(TAG, "onProgressChanged: Change " + pos + " of " + mSeekBar.getMax());
-                        mJustJumped = true;
-                        step();
+                        if((float) Math.abs(mCurWordIdx - pos) > 0.01f * mWordArray.length) {
+                            mCurWordIdx = pos;
+                            mJustJumped = true;
+                            step();
+                        }
                     }
                 }
 

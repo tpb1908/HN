@@ -49,7 +49,6 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     private String mTestString;
     private boolean mDefaultClickListener = false;
     private int mAdditonalPadding;
-
     /**
      * Register a callback for when the view has been clicked
      * <p/>

@@ -55,6 +55,7 @@ public class ClickableTextView extends TextView {
         }
     }
 
+
     public void setText(String[] text) {
         final StringBuilder builder = new StringBuilder();
         for(String s : text) {

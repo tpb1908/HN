@@ -134,9 +134,20 @@ public class Content extends Fragment implements ItemLoader,
         mWebView.setLoadDoneListener(new CachingAdBlockingWebView.LoadListener() {
             @Override
             public void loadDone() {
-                mSwiper.setRefreshing(false);
+                if(mSwiper != null) mSwiper.setRefreshing(false);
             }
         });
+        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if(scrollY > oldScrollY) {
+                    mParent.hideFab();
+                } else {
+                    mParent.showFab();
+                }
+            }
+        });
+
         return inflated;
     }
 
