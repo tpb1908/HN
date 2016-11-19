@@ -49,12 +49,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private ArrayList<Comment> mComments = new ArrayList<>();
     private ArrayList<Integer> mVisibleItems = new ArrayList<>();
     private boolean usingCards;
+    private boolean expandComments;
+    private boolean shouldAnimate;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper) {
         mRecycler = recycler;
         mSwiper = swiper;
         final Context context = mRecycler.getContext();
-        usingCards = SharedPrefsController.getInstance(context).getUseCards();
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
+        usingCards = prefs.getUseCardsComments();
+        expandComments = prefs.getExpandComments();
+        shouldAnimate = prefs.getAnimateComments();
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
@@ -95,13 +100,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
         }
-        if(!comment.bound){
-            setTranslateANimation(holder.itemView, comment.depth);
+        if(!comment.bound && shouldAnimate){
+            setTranslateAnimation(holder.itemView, comment.depth);
             comment.bound = true;
         }
     }
 
-    private void setTranslateANimation(View view, int multiplier) {
+    private void setTranslateAnimation(View view, int multiplier) {
         final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
         animation.setDuration(Math.max(300, Math.min(800, multiplier * 150)));
         view.startAnimation(animation);
@@ -194,7 +199,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final ArrayList<Comment> list = new ArrayList<>();
         for(Item i : items) {
             if(i.getBy() != null) {
-                list.add(new Comment(i, depth));
+                final Comment c = new Comment(i, depth);
+                if(!expandComments) {
+                    c.visible = depth == 0;
+                }
+                list.add(c);
                 i.parseComments();
                 if(i.getComments().length > 0) {
                     list.addAll(flatten(i.getComments(), depth + 1));

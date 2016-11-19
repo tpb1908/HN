@@ -24,16 +24,22 @@ public class SharedPrefsController {
     private static final String KEY_STORY_TABS = "STORY_TABS";
     private static final String KEY_SKIMMER_WPM = "SKIMMER_WPM";
     private static final String KEY_DEFAULT_PAGE = "DEFAULT_PAGE";
-    private static final String KEY_USE_CARDS = "USE_FALSE";
+    private static final String KEY_USE_CARDS = "USE_CARDS";
     private static final String KEY_MARK_READ_WHEN_PASSED = "MARK_READ_WHEN_PASSED";
     private static final String KEY_DARK_THEME = "DARK_THEME";
+    private static final String KEY_USE_CARDS_COMMENTS = "CARD_COMMENTS";
+    private static final String KEY_EXPAND_COMMENTS = "EXPAND_COMMENTS";
+    private static final String KEY_ANIMATE_COMMENTS = "ANIMATE_COMMENTS";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
     private static boolean useCards;
+    private static boolean useCardsComments;
     private static boolean markReadWhenPassed;
     private static boolean useDarkTheme;
+    private static boolean expandComments;
+    private static boolean animateComments;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -52,6 +58,9 @@ public class SharedPrefsController {
         useCards = prefs.getBoolean(KEY_USE_CARDS, false);
         markReadWhenPassed = prefs.getBoolean(KEY_USE_CARDS, false);
         useDarkTheme = prefs.getBoolean(KEY_DARK_THEME, false);
+        useCardsComments = prefs.getBoolean(KEY_USE_CARDS_COMMENTS, false);
+        expandComments = prefs.getBoolean(KEY_EXPAND_COMMENTS, true);
+        animateComments = prefs.getBoolean(KEY_ANIMATE_COMMENTS, true);
         editor.apply();
 
     }
@@ -60,7 +69,6 @@ public class SharedPrefsController {
         final String defaultPages = "BCRS";
         editor.putString(KEY_STORY_TABS, defaultPages);
         editor.putInt(KEY_SKIMMER_WPM, 500);
-
         editor.putString(KEY_DEFAULT_PAGE, "TOP");
 
         editor.apply();
@@ -119,6 +127,36 @@ public class SharedPrefsController {
     public void setUseDarkTheme(boolean shouldUseDarkTheme) {
         useDarkTheme = shouldUseDarkTheme;
         editor.putBoolean(KEY_DARK_THEME, useDarkTheme);
+        editor.commit();
+    }
+
+    public boolean getUseCardsComments() {
+        return useCardsComments;
+    }
+
+    public void setUseCardsComments(boolean shouldUseCardsComments) {
+        useCardsComments = shouldUseCardsComments;
+        editor.putBoolean(KEY_USE_CARDS_COMMENTS, useCardsComments);
+        editor.commit();
+    }
+
+    public boolean getExpandComments() {
+        return expandComments;
+    }
+
+    public void setExpandComments(boolean shouldExpandComments) {
+        expandComments = shouldExpandComments;
+        editor.putBoolean(KEY_EXPAND_COMMENTS, expandComments);
+        editor.commit();
+    }
+
+    public boolean getAnimateComments() {
+        return animateComments;
+    }
+
+    public void setAnimateComments(boolean shouldAnimateComments) {
+        animateComments = shouldAnimateComments;
+        editor.putBoolean(KEY_ANIMATE_COMMENTS, animateComments);
         editor.commit();
     }
 

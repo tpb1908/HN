@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -44,6 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
     private void initViewValues() {
         ((Switch)ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
         ((Switch)ButterKnife.findById(this, R.id.switch_content_cards)).setChecked(prefs.getUseCards());
+        ((Switch)ButterKnife.findById(this, R.id.switch_comment_cards)).setChecked(prefs.getUseCardsComments());
+        ((Switch)ButterKnife.findById(this, R.id.switch_comment_expansion)).setChecked(prefs.getExpandComments());
+        ((Switch)ButterKnife.findById(this, R.id.switch_comment_animation)).setChecked(prefs.getAnimateComments());
     }
 
     private void setViews() {
@@ -71,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.i(TAG, "onClick: Title click");
                     if(current == -1) {
                         show(mSettings.get(index));
                     } else if(current == index){
@@ -111,6 +116,15 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.switch_content_cards:
                 prefs.setUseCards(sView.isChecked());
                 restartRequired = true;
+                break;
+            case R.id.switch_comment_cards:
+                prefs.setUseCardsComments(sView.isChecked());
+                break;
+            case R.id.switch_comment_expansion:
+                prefs.setExpandComments(sView.isChecked());
+                break;
+            case R.id.switch_comment_animation:
+                prefs.setAnimateComments(sView.isChecked());
                 break;
         }
     }

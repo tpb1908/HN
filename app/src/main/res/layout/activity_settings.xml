@@ -55,12 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Use dark theme"
-                android:textOn="Using dark theme"
-                android:textOff="Using light theme"
-                />
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
 
             <Switch
@@ -69,12 +66,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/switch_dark_theme"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
-                android:text="Auto theme"
-                android:textOn="Autotheme on"
-                android:textOff="Autotheme off"
-                />
+                android:text="Set dark theme at time"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
             <Spinner
                 android:id="@+id/spinner_font_size"
@@ -130,9 +124,8 @@
                 android:layout_alignParentEnd="true"
                 android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
-                android:text="Use cards"
-                android:textOn="Using cards"
-                android:textOff="Using sheets"
+                android:text="Show content as cards"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
 
@@ -144,9 +137,8 @@
                 android:layout_below="@id/switch_content_cards"
                 android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
-                android:text="Auto theme"
-                android:textOn="Marking read on scroll"
-                android:textOff="Marking when opened"
+                android:text="Mark read when passed"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
             <Switch
@@ -158,8 +150,7 @@
                 android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Mark new items"
-                android:textOn="Marking new items"
-                android:textOff="Not marking new items"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
             <View
@@ -194,10 +185,49 @@
             android:layout_height="wrap_content"
             android:visibility="gone">
 
-            <!-- Show expanded -->
+            <Switch
+                android:id="@+id/switch_comment_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="viewStart"
+                android:onClick="onSwitchClick"
+                android:text="Show comments as cards"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                />
+
+            <Switch
+                android:id="@+id/switch_comment_expansion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/switch_comment_cards"
+                android:textAlignment="viewStart"
+                android:onClick="onSwitchClick"
+                android:text="Expand comments"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                />
+
+            <Switch
+                android:id="@+id/switch_comment_animation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/switch_comment_expansion"
+                android:textAlignment="viewStart"
+                android:onClick="onSwitchClick"
+                android:text="Animate comment insertion"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                />
             <!-- Sort order-->
             <!-- Animate -->
             <!-- Mark new comments-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/switch_comment_animation"
+                android:background="?android:attr/listDivider"/>
 
         </RelativeLayout>
 
