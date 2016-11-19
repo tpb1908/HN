@@ -32,7 +32,7 @@
                 >
 
                 <ImageButton
-                    android:id="@+id/item_back_button"
+                    android:id="@+id/user_back_button"
                     android:transitionName="button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

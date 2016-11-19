@@ -312,6 +312,12 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         }
     }
 
+    private void openUser(int pos) {
+        if(mData != null && pos < mData.length && mData[pos] != null) {
+            mManager.openUser(mData[pos]);
+        }
+    }
+
     class ItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_card) CardView mCard;
@@ -324,6 +330,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         @OnClick(R.id.item_url)
         void urlClick() {
             ContentAdapter.this.openItem(getAdapterPosition(), FragmentPagerAdapter.PageType.BROWSER);
+        }
+
+        @OnClick(R.id.item_author)
+        void authorClick() {
+            ContentAdapter.this.openUser(getAdapterPosition());
         }
 
         ItemHolder(@NonNull View itemView) {

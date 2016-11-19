@@ -117,7 +117,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             }
         }, 1000 * 60);
 
-        startActivity(new Intent(ContentActivity.this, UserViewActivity.class));
     }
 
     @Override
@@ -157,7 +156,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void openUser(Item item) {
-
+        mLaunchItem = item;
+        final Intent i = new Intent(ContentActivity.this, UserViewActivity.class);
+        startActivity(i);
     }
 
     @Override

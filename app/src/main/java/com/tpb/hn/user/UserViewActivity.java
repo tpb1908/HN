@@ -23,6 +23,7 @@ import com.tpb.hn.storage.SharedPrefsController;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by theo on 19/11/16.
@@ -36,6 +37,11 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @BindView(R.id.user_name) TextView mName;
     @BindView(R.id.user_account_info) TextView mInfo;
     @BindView(R.id.user_account_about) TextView mAbout;
+
+    @OnClick(R.id.user_back_button)
+    void onClick() {
+        onBackPressed();
+    }
 
     private User mUser;
     private boolean viewsReady = false;
@@ -63,7 +69,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
 
         } else {
             final Item item = ContentActivity.mLaunchItem;
-           // new HNUserLoader(this).loadUser(item.getBy());
+            new HNUserLoader(this).loadUser(item.getBy());
         }
         viewsReady = true;
         if(userReady) bindData();
