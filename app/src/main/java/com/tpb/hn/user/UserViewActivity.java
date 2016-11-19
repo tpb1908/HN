@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
+import com.tpb.hn.content.ContentAdapter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
@@ -30,7 +33,7 @@ import butterknife.OnClick;
  * Created by theo on 19/11/16.
  */
 
-public class UserViewActivity extends AppCompatActivity implements HNUserLoader.HNUserLoadDone {
+public class UserViewActivity extends AppCompatActivity implements HNUserLoader.HNUserLoadDone, ContentAdapter.ContentManager {
     private static final String TAG = UserViewActivity.class.getSimpleName();
 
     @BindView(R.id.user_content_recycler) RecyclerView mRecycler;
@@ -48,6 +51,10 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     private boolean viewsReady = false;
     private boolean userReady = false;
 
+    public static Item mLaunchItem;
+
+    private ContentAdapter mAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +68,9 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         }
         setContentView(R.layout.activity_user_view);
         ButterKnife.bind(this);
-
+        mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mAdapter = new ContentAdapter(getApplication(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mSwiper);
+        mRecycler.setAdapter(mAdapter);
         final Intent launchIntent = getIntent();
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
@@ -73,7 +82,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             if(ContentActivity.mLaunchItem != null) {
                 item = ContentActivity.mLaunchItem;
             } else {
-                item = ItemViewActivity.mItem;
+                item = ItemViewActivity.mLaunchItem;
             }
             new HNUserLoader(this).loadUser(item.getBy());
         }
@@ -93,6 +102,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             //TODO- Find out how to deal with links that aren't <a></a>
             mAbout.setMovementMethod(LinkMovementMethod.getInstance());
         }
+        mAdapter.IdLoadDone(mUser.getSubmitted());
     }
 
     @Override
@@ -101,5 +111,26 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         userReady = true;
         if(viewsReady) bindData();
         Log.i(TAG, "userLoaded: " + user.toString());
+    }
+
+    @Override
+    public void openItem(Item item) {
+        mLaunchItem = item;
+        startActivity(new Intent(UserViewActivity.this, ItemViewActivity.class));
+    }
+
+    @Override
+    public void openItem(Item item, FragmentPagerAdapter.PageType type) {
+        openItem(item);
+    }
+
+    @Override
+    public void openUser(Item item) {
+        //Ignored
+    }
+
+    @Override
+    public void displayLastUpdate(long lastUpdate) {
+        //Ignored
     }
 }

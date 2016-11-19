@@ -59,12 +59,12 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
 
     @OnClick(R.id.item_author)
     void onAuthorClick() {
-        if(mItem != null) {
+        if(mLaunchItem != null) {
             startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class));
         }
     }
 
-    public static Item mItem;
+    public static Item mLaunchItem;
 
     private FragmentPagerAdapter mAdapter;
 
@@ -92,9 +92,13 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             final String data = launchIntent.getDataString();
             new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
-            mItem = ContentActivity.mLaunchItem;
-            setupFragments(prefs.getPageTypes(), mItem);
-            setTitle(mItem);
+            if(ContentActivity.mLaunchItem != null) {
+                mLaunchItem = ContentActivity.mLaunchItem;
+            } else {
+                mLaunchItem = UserViewActivity.mLaunchItem;
+            }
+            setupFragments(prefs.getPageTypes(), mLaunchItem);
+            setTitle(mLaunchItem);
             if(launchIntent.getSerializableExtra("type") != null) {
                 final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
                 final int index = mAdapter.indexOf(type);
@@ -163,9 +167,9 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         //This is only called when the Activity is launched from a link outside the app
-        mItem = item;
-        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mItem);
-        setTitle(mItem);
+        mLaunchItem = item;
+        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
+        setTitle(mLaunchItem);
     }
 
     private void setTitle(Item item) {

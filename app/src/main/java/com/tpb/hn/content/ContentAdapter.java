@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateCh
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
+import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -38,7 +40,7 @@ import butterknife.OnClick;
  * Created by theo on 18/10/16.
  */
 
-class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
+public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         HNItemLoader.HNItemLoadDone,
         HNItemLoader.HNItemIdLoadDone,
         FastScrollRecyclerView.SectionedAdapter {
@@ -60,9 +62,9 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
     private SwipeRefreshLayout mSwiper;
 
     //TODO- Clean this up
-    ContentAdapter(Context context,
+    public ContentAdapter(Context context,
                    ContentManager manager,
-                   FastScrollRecyclerView recycler,
+                   RecyclerView recycler,
                    final LinearLayoutManager layoutManager,
                    final SwipeRefreshLayout swiper) {
         mIsContent = manager instanceof ContentActivity;
@@ -97,17 +99,20 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
             }
 
         });
-        recycler.setStateChangeListener(new OnFastScrollStateChangeListener() {
-            @Override
-            public void onFastScrollStart() {
+        if(recycler instanceof FastScrollRecyclerView) {
+            ((FastScrollRecyclerView)recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
+                @Override
+                public void onFastScrollStart() {
 
-            }
+                }
 
-            @Override
-            public void onFastScrollStop() {
-                loadItemsOnScroll(true);
-            }
-        });
+                @Override
+                public void onFastScrollStop() {
+                    loadItemsOnScroll(true);
+                }
+            });
+        }
+
     }
 
     private void loadItemsOnScroll(boolean fastScroll) {
@@ -229,7 +234,10 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
             if(mData.length > pos && mData[pos] != null) {
                 holder.mTitle.setText(mData[pos].getFormattedTitle());
                 holder.mInfo.setText(mData[pos].getFormattedInfo());
-                holder.mAuthor.setText(mData[pos].getFormattedBy());
+                if(mIsContent) {
+                    holder.mAuthor.setVisibility(View.VISIBLE);
+                    holder.mAuthor.setText(mData[pos].getFormattedBy());
+                }
                 holder.mURL.setText(mData[pos].getFormattedURL());
                 holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
                 if(mData[pos].isViewed()) {
@@ -252,8 +260,8 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
         } else if(viewHolder instanceof CommentHolder) {
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
-                commentHolder.mTime.setText("Some time ago");
-                commentHolder.mBody.setText(mData[pos].getText());
+                commentHolder.mTime.setText(Formatter.timeAgo(mData[pos].getTime()) + " ago");
+                commentHolder.mBody.setText(Html.fromHtml(mData[pos].getText()));
             }
 
 
@@ -287,6 +295,7 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
             holder.mTitle.setText(R.string.text_title_empty);
             holder.mInfo.setText(R.string.text_info_empty);
             holder.mAuthor.setText("");
+            holder.mAuthor.setVisibility(View.INVISIBLE);
             holder.mURL.setText("");
             holder.mNumber.setText("");
             holder.mTitle.requestLayout();
@@ -316,8 +325,10 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
             for(int i = 0; i < mIds.length; i++) {
                 if(item.getId() == mIds[i]) {
                     mData[i] = item;
-                    final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
-                    item.setNew(possiblePos > 0 && possiblePos < mIds.length);
+                    if(mOldIds != null) {
+                        final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
+                        item.setNew(possiblePos > 0 && possiblePos < mIds.length);
+                    }
 
                     notifyItemChanged(i);
                     break;
@@ -416,7 +427,7 @@ class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
 
     }
 
-    interface ContentManager {
+    public interface ContentManager {
 
         void openItem(Item item);
 
