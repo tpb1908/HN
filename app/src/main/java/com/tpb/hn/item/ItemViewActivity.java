@@ -24,6 +24,7 @@ import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.user.UserViewActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,10 +57,18 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
         onBackPressed();
     }
 
+    @OnClick(R.id.item_author)
+    void onAuthorClick() {
+        if(mItem != null) {
+            startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class));
+        }
+    }
+
+    public static Item mItem;
+
     private FragmentPagerAdapter mAdapter;
 
     private int originalFlags;
-
     private boolean mShouldShowFab = false;
 
     @Override
@@ -83,9 +92,9 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             final String data = launchIntent.getDataString();
             new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
-            final Item item = ContentActivity.mLaunchItem;
-            setupFragments(prefs.getPageTypes(), item);
-            setTitle(item);
+            mItem = ContentActivity.mLaunchItem;
+            setupFragments(prefs.getPageTypes(), mItem);
+            setTitle(mItem);
             if(launchIntent.getSerializableExtra("type") != null) {
                 final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
                 final int index = mAdapter.indexOf(type);
@@ -154,8 +163,9 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         //This is only called when the Activity is launched from a link outside the app
-        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), item);
-        setTitle(item);
+        mItem = item;
+        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mItem);
+        setTitle(mItem);
     }
 
     private void setTitle(Item item) {

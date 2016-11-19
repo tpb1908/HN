@@ -16,6 +16,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
+import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.loaders.HNUserLoader;
@@ -68,7 +69,12 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             new HNUserLoader(this).loadUser(APIPaths.parseUserUrl(data));
 
         } else {
-            final Item item = ContentActivity.mLaunchItem;
+            final Item item;
+            if(ContentActivity.mLaunchItem != null) {
+                item = ContentActivity.mLaunchItem;
+            } else {
+                item = ItemViewActivity.mItem;
+            }
             new HNUserLoader(this).loadUser(item.getBy());
         }
 
