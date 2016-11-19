@@ -69,6 +69,10 @@ public class User implements Parcelable {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getInfo() {
+        return submitted.length + " posts | " + karma + " karma | since " + Formatter.timeAgo(created);
+    }
     //</editor-fold>s console (text)
 
     @Override

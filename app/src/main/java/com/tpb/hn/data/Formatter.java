@@ -21,23 +21,23 @@ public class Formatter {
         
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
-            return  div + (div == 1 ? " year" : " years") + " ago";
+            return  div + (div == 1 ? " year" : " years");
         } else if(delta / (28 * 24 * 3600) > 0) {
             final long div = delta / (28 * 24 * 3600);
-            return  div + (div == 1 ? " month" : " months") + " ago";
+            return  div + (div == 1 ? " month" : " months");
         } else if(delta / (7 * 24 * 3600) > 0) {
             final long div = delta / (7 * 24 * 3600);
-            return  div + (div == 1 ? " week" : " weeks") + " ago";
+            return  div + (div == 1 ? " week" : " weeks");
         } else if(delta / (24 * 3600) > 0) {
             final long div = delta / (24 * 3600);
-            return div + (div == 1 ? " day" : " days") + " ago";
+            return div + (div == 1 ? " day" : " days");
         } else if(delta / (3600) > 0) {
             final long div = delta / (3600);
-            return div + (div == 1 ? " hour" : " hours") + " ago";
+            return div + (div == 1 ? " hour" : " hours");
         } else {
             final long div = delta / 60;
             if(div > 5) {
-                return div + (div == 1 ? " minute" : " minutes") + " ago";
+                return div + (div == 1 ? " minute" : " minutes");
             } else {
                 return "just now";
             }
@@ -50,23 +50,23 @@ public class Formatter {
 
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
-            return  div + (div == 1 ? " yr" : " yrs") + " ago";
+            return  div + (div == 1 ? " yr" : " yrs"); 
         } else if(delta / (28 * 24 * 3600) > 0) {
             final long div = delta / (28 * 24 * 3600);
-            return  div + (div == 1 ? " mo" : " mos") + " ago";
+            return  div + (div == 1 ? " mo" : " mos");
         } else if(delta / (7 * 24 * 3600) > 0) {
             final long div = delta / (7 * 24 * 3600);
-            return  div + (div == 1 ? " wk" : " wks") + " ago";
+            return  div + (div == 1 ? " wk" : " wks");
         } else if(delta / (24 * 3600) > 0) {
             final long div = delta / (24 * 3600);
-            return div + (div == 1 ? " d" : " ds") + " ago";
+            return div + (div == 1 ? " d" : " ds");
         } else if(delta / (3600) > 0) {
             final long div = delta / (3600);
-            return div + (div == 1 ? " hr" : " hrs") + " ago";
+            return div + (div == 1 ? " hr" : " hrs");
         } else {
             final long div = delta / 60;
             if(div > 5) {
-                return div + (div == 1 ? " min" : " mins") + " ago";
+                return div + (div == 1 ? " min" : " mins");
             } else {
                 return "just now";
             }

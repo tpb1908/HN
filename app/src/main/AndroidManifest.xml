@@ -35,9 +35,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingsActivity"
-                  >
+        <activity android:name=".SettingsActivity">
 
+        </activity>
+
+        <activity android:name=".user.UserViewActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"/>
+                <data android:scheme="http" />
+                <data android:host="news.ycombinator.com" android:pathPrefix="/user"/>
+            </intent-filter>
         </activity>
 
         <service
@@ -46,7 +56,8 @@
             android:exported="false"/>
 
         <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-                  android:enabled="true">
+                  android:enabled="true"
+                  android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
             </intent-filter>

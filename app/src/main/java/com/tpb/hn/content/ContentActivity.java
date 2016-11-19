@@ -34,6 +34,7 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.user.UserViewActivity;
 
 import java.util.Date;
 
@@ -115,6 +116,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 }
             }
         }, 1000 * 60);
+
+        startActivity(new Intent(ContentActivity.this, UserViewActivity.class));
     }
 
     @Override

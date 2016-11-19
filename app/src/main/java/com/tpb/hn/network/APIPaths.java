@@ -141,13 +141,13 @@ public class APIPaths {
         return ALGOLIA_BASE + ALGOLIA_ITEM_PATH + id;
     }
 
-    public static int parseUrl(String url) {
+    public static int parseItemUrl(String url) {
         if(url.contains("item?")) {
             try {
                 final String idString = (String) url.subSequence(url.indexOf("=") + 1, url.length());
-                Log.i(TAG, "parseUrl: idString " + idString);
+                Log.i(TAG, "parseItemUrl: idString " + idString);
                 final int id = Integer.parseInt(idString);
-                Log.i(TAG, "parseUrl: id is " + id);
+                Log.i(TAG, "parseItemUrl: id is " + id);
                 return id;
 
             } catch(Exception e) {
@@ -155,6 +155,13 @@ public class APIPaths {
             }
         }
         return -1;
+    }
+
+    public static String parseUserUrl(String url) {
+        if(url.contains("user?")) {
+            return url.substring(url.indexOf("=") + 1);
+        }
+        return "";
     }
 
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<LinearLayout android:id="@+id/settings_root"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:id="@+id/settings_root"  >
+              android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,14 +12,14 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/toolbar"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:minHeight="?attr/actionBarSize"
+            android:selectableItemBackground="?attr/colorPrimary"
             app:navigationContentDescription="@string/abc_action_bar_up_description"
-            android:background="?attr/colorPrimary"
             app:navigationIcon="@drawable/ic_arrow_back"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:title="Settings">
 
         </android.support.v7.widget.Toolbar>
@@ -30,17 +30,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:animateLayoutChanges="true">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/title_settings_theme"
             android:layout_width="match_parent"
-            android:text="Theme"
-            android:drawableStart="@drawable/ic_theme"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_theme"
+            android:text="Theme"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/spinner_font"
-                android:background="?android:attr/listDivider"/>
+                android:selectableItemBackground="?android:attr/listDivider"/>
 
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -96,17 +96,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:animateLayoutChanges="true">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/title_settings_content"
             android:layout_width="match_parent"
-            android:text="Content"
-            android:drawableStart="@drawable/ic_content"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_content"
+            android:text="Content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -120,9 +120,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Show content as cards"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
@@ -133,9 +133,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/switch_content_cards"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Mark read when passed"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
@@ -145,9 +145,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/switch_mark_read"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Mark new items"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
@@ -155,7 +155,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/switch_mark_new_items"
-                android:background="?android:attr/listDivider"/>
+                android:selectableItemBackground="?android:attr/listDivider"/>
 
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -164,17 +164,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:animateLayoutChanges="true">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/title_settings_comments"
             android:layout_width="match_parent"
-            android:text="Comments"
-            android:drawableStart="@drawable/ic_comments"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_comments"
+            android:text="Comments"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -187,9 +187,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Show comments as cards"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
@@ -199,9 +199,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/switch_comment_cards"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Expand comments"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
 
@@ -211,9 +211,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/switch_comment_expansion"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Animate comment insertion"
+                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 />
             <!-- Sort order-->
@@ -224,7 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/switch_comment_animation"
-                android:background="?android:attr/listDivider"/>
+                android:selectableItemBackground="?android:attr/listDivider"/>
 
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -239,10 +239,10 @@
         <TextView
             android:id="@+id/title_settings_browser"
             android:layout_width="match_parent"
-            android:text="Browser"
-            android:drawableStart="@drawable/ic_web"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_web"
+            android:text="Browser"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -255,16 +255,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:textAlignment="viewStart"
                 android:onClick="onSwitchClick"
                 android:text="Block ads in browser"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+                android:textAlignment="viewStart"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@id/switch_browser_ads"
-                android:background="?android:attr/listDivider"/>
+                android:selectableItemBackground="?android:attr/listDivider"/>
 
             <!--Default browser page -->
             <!-- Open links in system browser -->
@@ -282,10 +282,10 @@
         <TextView
             android:id="@+id/title_settings_data"
             android:layout_width="match_parent"
-            android:text="Data"
-            android:drawableStart="@drawable/ic_network"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_network"
+            android:text="Data"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -306,10 +306,10 @@
         <TextView
             android:id="@+id/title_settings_info"
             android:layout_width="match_parent"
-            android:text="Info"
-            android:drawableStart="@drawable/ic_info"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_info"
+            android:text="Info"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout

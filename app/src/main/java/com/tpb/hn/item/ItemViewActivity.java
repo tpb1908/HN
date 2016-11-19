@@ -36,39 +36,20 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
+public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 
-    @BindView(R.id.item_toolbar)
-    Toolbar mStoryToolbar;
-
-    @BindView(R.id.item_viewpager)
-    LockableViewPager mStoryPager;
-
-    @BindView(R.id.item_appbar)
-    AppBarLayout mStoryAppbar;
-
-    @BindView(R.id.item_tabs)
-    TabLayout mStoryTabs;
-
-    @BindView(R.id.item_title)
-    TextView mTitle;
-
-    @BindView(R.id.item_url)
-    TextView mUrl;
-
-    @BindView(R.id.item_stats)
-    TextView mStats;
-
-    @BindView(R.id.item_author)
-    TextView mAuthor;
-
-    @BindView(R.id.item_fab)
-    FloatingActionButton mFab;
-
-    @BindView(R.id.item_back_button)
-    ImageButton mBackButton;
+    @BindView(R.id.item_toolbar) Toolbar mStoryToolbar;
+    @BindView(R.id.item_viewpager) LockableViewPager mStoryPager;
+    @BindView(R.id.item_appbar) AppBarLayout mStoryAppbar;
+    @BindView(R.id.item_tabs) TabLayout mStoryTabs;
+    @BindView(R.id.item_title) TextView mTitle;
+    @BindView(R.id.item_url) TextView mUrl;
+    @BindView(R.id.item_stats) TextView mStats;
+    @BindView(R.id.item_author) TextView mAuthor;
+    @BindView(R.id.item_fab) FloatingActionButton mFab;
+    @BindView(R.id.item_back_button) ImageButton mBackButton;
 
     @OnClick(R.id.item_back_button)
     public void onClick() {
@@ -100,7 +81,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            new HNItemLoader(this, this).loadItem(APIPaths.parseUrl(data));
+            new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
             final Item item = ContentActivity.mLaunchItem;
             setupFragments(prefs.getPageTypes(), item);
@@ -116,31 +97,6 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
                 });
 
             }
-//            if(launchIntent.getParcelableExtra("item") != null) {
-//                final Item item = launchIntent.getParcelableExtra("item");
-////                final String commentJSON = launchIntent.getStringExtra("comments");
-////                try {
-////                    item.setCommentJSON(commentJSON);
-////                } catch(JSONException jse) {
-////                    Log.e(TAG, "onCreate: ", jse);
-////                }
-//                setupFragments(prefs.getPageTypes(), item);
-//                setTitle(item);
-//                if(launchIntent.getSerializableExtra("type") != null) {
-//                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
-//                    final int index = mAdapter.indexOf(type);
-//                    mStoryPager.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if(index != -1) mStoryPager.setCurrentItem(index);
-//                        }
-//                    });
-//
-//                }
-//            } else {
-//                Toast.makeText(this, R.string.error_no_item, Toast.LENGTH_LONG).show();
-//                finish();
-//            }
         }
 
         originalFlags = getWindow().getDecorView().getSystemUiVisibility();
@@ -211,10 +167,10 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
         mAuthor.setText(String.format(getResources().getString(R.string.text_item_by), item.getBy()));
 
         mTracker.send(new HitBuilders.EventBuilder()
-            .setCategory(Analytics.CATEGORY_ITEM)
-            .setAction(Analytics.KEY_OPEN_ITEM)
-            .setLabel(item.toString())
-            .build());
+                .setCategory(Analytics.CATEGORY_ITEM)
+                .setAction(Analytics.KEY_OPEN_ITEM)
+                .setLabel(item.toString())
+                .build());
 
     }
 
@@ -222,7 +178,7 @@ public class ItemViewActivity extends AppCompatActivity  implements HNItemLoader
     public void openFullScreen() {
         mStoryAppbar.setExpanded(false, true);
         getWindow().getDecorView().setSystemUiVisibility(originalFlags |
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION  |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         mStoryPager.setSwipeEnabled(false);
     }
