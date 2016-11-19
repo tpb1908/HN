@@ -173,8 +173,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     public void displayLastUpdate(long lastUpdate) {
         final long now = new Date().getTime() / 1000;
-        if((now - lastUpdate) > 60) {
-            mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.timeAgo(lastUpdate)));
+        if((now - lastUpdate) > 60 * 5) {
+            mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.shortTimeAgo(lastUpdate)));
         }
     }
 
