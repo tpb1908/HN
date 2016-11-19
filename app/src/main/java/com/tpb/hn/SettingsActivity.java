@@ -1,5 +1,6 @@
 package com.tpb.hn;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     SharedPrefsController prefs;
 
+    private boolean restartRequired = false;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = SharedPrefsController.getInstance(getApplicationContext());
@@ -40,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initViewValues() {
         ((Switch)ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
+        ((Switch)ButterKnife.findById(this, R.id.switch_content_cards)).setChecked(prefs.getUseCards());
     }
 
     private void setViews() {
@@ -101,13 +105,21 @@ public class SettingsActivity extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.switch_dark_theme:
                 prefs.setUseDarkTheme(sView.isChecked());
+                restartRequired = true;
                 setViews();
+                break;
+            case R.id.switch_content_cards:
+                prefs.setUseCards(sView.isChecked());
+                restartRequired = true;
                 break;
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final Intent i = new Intent();
+        i.putExtra("restart", restartRequired);
+        setResult(RESULT_OK, i);
         onBackPressed();
         return true;
     }

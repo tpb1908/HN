@@ -65,10 +65,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
-        prefs.setUseDarkTheme(true);
-        prefs.setUseCards(true);
+
         if(prefs.getUseDarkTheme()) {
             setTheme(R.style.AppTheme_Dark);
+        } else {
+            setTheme(R.style.AppTheme);
         }
         setContentView(R.layout.activity_content);
         ButterKnife.bind(this);
@@ -103,6 +104,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
         lastUpdateTime = System.currentTimeMillis();
+        Log.i(TAG, "onCreate: Starting");
     }
 
     @Override
@@ -113,8 +115,17 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(ContentActivity.this, SettingsActivity.class));
+        startActivityForResult(new Intent(ContentActivity.this, SettingsActivity.class), 1);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final boolean shouldRestart = data.getBooleanExtra("restart", false);
+        Log.i(TAG, "onActivityResult: " + shouldRestart);
+        if(shouldRestart) {
+            recreate();
+        }
     }
 
     @Override
