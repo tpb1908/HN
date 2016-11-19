@@ -26,6 +26,7 @@ import com.tpb.hn.storage.SharedPrefsController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -46,24 +47,28 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private boolean mShouldMarkRead = false;
     private int[] mIds;
     private int[] mOldIds;
+    private long mLastUpdateTime;
     private Item[] mData = new Item[] {};
-    private ContentOpener mOpener;
+    private ContentManager mManager;
     private int mLastPosition = 0;
-    private LinearLayoutManager mManager;
+    private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwiper;
 
     //TODO- Clean this up
-    ContentAdapter(Context context, ContentOpener opener, FastScrollRecyclerView recycler, final LinearLayoutManager manager, final SwipeRefreshLayout swiper) {
+    ContentAdapter(Context context, ContentManager manager,
+                   FastScrollRecyclerView recycler,
+                   final LinearLayoutManager layoutManager,
+                   final SwipeRefreshLayout swiper) {
         mContext = context;
-        mOpener = opener;
-        mSwiper = swiper;
         mManager = manager;
+        mSwiper = swiper;
+        mLayoutManager = layoutManager;
         mLoader = new HNItemLoader(mContext, this);
-
+        mLastUpdateTime = new Date().getTime() / 1000;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         mIsUsingCards = prefs.getUseCards();
         mShouldMarkRead = prefs.getMarkReadWhenPassed();
-        mManager = manager;
+        mLayoutManager = layoutManager;
         if(!mIsUsingCards) {
             recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
@@ -98,7 +103,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     private void loadItemsOnScroll(boolean fastScroll) {
-        int pos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+        int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(pos > mLastPosition && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
                 if(mData[i] != null) mData[i].setViewed(true);
@@ -165,6 +170,8 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                 break;
         }
         mCurrentPage = defaultPage;
+        mLastUpdateTime = new Date().getTime() / 1000;
+        mManager.displayLastUpdate(mLastUpdateTime);
     }
 
     void beginBackgroundLoading() {
@@ -188,6 +195,10 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             mLoader.loadItem(mIds[pos]);
             Toast.makeText(mContext, R.string.text_attempting_item_load, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void getLastUpdate() {
+        mManager.displayLastUpdate(mLastUpdateTime);
     }
 
     @Override
@@ -249,9 +260,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
         Log.i(TAG, "IdLoadDone: ");
         this.mOldIds = mIds;
         this.mIds = ids;
-        int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+        int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
-            mManager.scrollToPosition(ids.length);
+            mLayoutManager.scrollToPosition(ids.length);
         }
         mData = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
@@ -295,7 +306,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             Log.i(TAG, "openItem: " + mData[pos].getComments().length);
             mData[pos].setViewed(true);
             notifyItemChanged(pos);
-            mOpener.openItem(mData[pos], type);
+            mManager.openItem(mData[pos], type);
         } else {
             attemptLoadAgain(pos);
         }
@@ -335,13 +346,15 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     }
 
-    interface ContentOpener {
+    interface ContentManager {
 
         void openItem(Item item);
 
         void openItem(Item item, FragmentPagerAdapter.PageType type);
 
         void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
 
     }
 

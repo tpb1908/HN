@@ -27,6 +27,7 @@
 
     <string name="button_skimmer_restart">Restart</string>
 
+    <string name="text_last_updated">Last updated %1$s</string>
     <string name="text_item_by">By %1$s</string>
     <string name="text_title_empty"><b>\u2026</b></string>
     <string name="text_info_empty">\u2026</string>

@@ -2,6 +2,7 @@ package com.tpb.hn.content;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -26,12 +27,15 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.SettingsActivity;
+import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +46,7 @@ import butterknife.ButterKnife;
  * Displays the content feed
  */
 
-public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentOpener, Login.LoginListener {
+public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
     private Tracker mTracker;
 
@@ -56,8 +60,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private ContentAdapter mAdapter;
 
     public static Item mLaunchItem;
-
-    private long lastUpdateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,8 +105,16 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         });
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
-        lastUpdateTime = System.currentTimeMillis();
-        Log.i(TAG, "onCreate: Starting");
+        final Handler timeAgoHandler = new Handler();
+        timeAgoHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mSubtitle != null) {
+                    mAdapter.getLastUpdate();
+                    timeAgoHandler.postDelayed(this, 1000 * 60);
+                }
+            }
+        }, 1000 * 60);
     }
 
     @Override
@@ -160,6 +170,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     }
 
+    @Override
+    public void displayLastUpdate(long lastUpdate) {
+        final long now = new Date().getTime() / 1000;
+        if((now - lastUpdate) > 60) {
+            mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.timeAgo(lastUpdate)));
+        }
+    }
+
     private ActivityOptionsCompat getSharedTransition() {
         return ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                 Pair.create((View) mNavSpinner, "button"),
@@ -172,6 +190,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mAdapter.cancelBackgroundLoading();
+        mAdapter.getLastUpdate();
     }
 
 }

@@ -35,10 +35,10 @@ public class Formatter {
             return div + (div == 1 ? " hour" : " hours") + " ago";
         } else {
             final long div = delta / 60;
-            if(div > 15) {
+            if(div > 5) {
                 return div + (div == 1 ? " minute" : " minutes") + " ago";
             } else {
-                return " just now";
+                return "just now";
             }
         }
     }
