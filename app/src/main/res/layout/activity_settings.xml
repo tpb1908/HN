@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:minHeight="?attr/actionBarSize"
+            app:navigationContentDescription="@string/abc_action_bar_up_description"
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Settings">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:id="@+id/title_settings_theme"
+            android:layout_width="match_parent"
+            android:text="Theme"
+            android:drawableStart="@drawable/ic_theme"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <Switch
+                android:id="@+id/switch_dark_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="viewStart"
+                android:text="Use dark theme"
+                android:textOn="Using dark theme"
+                android:textOff="Using light theme"
+                />
+
+
+            <Switch
+                android:id="@+id/switch_auto_dark_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/switch_dark_theme"
+                android:textAlignment="viewStart"
+                android:text="Auto theme"
+                android:textOn="Autotheme on"
+                android:textOff="Autotheme off"
+                />
+
+            <Spinner
+                android:id="@+id/spinner_font_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/switch_auto_dark_theme">
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/spinner_font"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/spinner_font_size">
+            </Spinner>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/spinner_font"
+                android:background="?android:attr/listDivider"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:id="@+id/title_settings_content"
+            android:layout_width="match_parent"
+            android:text="Content"
+            android:drawableStart="@drawable/ic_content"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <Switch
+                android:id="@+id/switch_content_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="viewStart"
+                android:text="Use cards"
+                android:textOn="Using cards"
+                android:textOff="Using sheets"
+                />
+
+
+            <Switch
+                android:id="@+id/switch_mark_read"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/switch_content_cards"
+                android:textAlignment="viewStart"
+                android:text="Auto theme"
+                android:textOn="Marking read on scroll"
+                android:textOff="Marking when opened"
+                />
+
+            <Switch
+                android:id="@+id/switch_mark_new_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/switch_mark_read"
+                android:textAlignment="viewStart"
+                android:text="Mark new items"
+                android:textOn="Marking new items"
+                android:textOff="Not marking new items"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/switch_mark_new_items"
+                android:background="?android:attr/listDivider"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:id="@+id/title_settings_comments"
+            android:layout_width="match_parent"
+            android:text="Comments"
+            android:drawableStart="@drawable/ic_comments"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <!-- Show expanded -->
+            <!-- Sort order-->
+            <!-- Animate -->
+            <!-- Mark new comments-->
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title_settings_browser"
+            android:layout_width="match_parent"
+            android:text="Browser"
+            android:drawableStart="@drawable/ic_web"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_browser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <!--Default browser page -->
+            <!-- Block ads-->
+            <!-- Open links in system browser -->
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title_settings_data"
+            android:layout_width="match_parent"
+            android:text="Data"
+            android:drawableStart="@drawable/ic_network"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title_settings_info"
+            android:layout_width="match_parent"
+            android:text="Info"
+            android:drawableStart="@drawable/ic_info"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+        <RelativeLayout
+            android:id="@+id/settings_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
