@@ -33,6 +33,7 @@
     <string name="text_info_empty">\u2026</string>
     <string name="text_attempting_item_load">Loading item</string>
     <string name="text_no_comments">No comments yet</string>
+    <string name="text_user_without_about">User has no about</string>
 
     <string name="text_redirecting_reader">Redirecting through parser service</string>
 

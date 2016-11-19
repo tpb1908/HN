@@ -71,7 +71,7 @@ public class User implements Parcelable {
     }
 
     public String getInfo() {
-        return submitted.length + " posts | " + karma + " karma | since " + Formatter.timeAgo(created);
+        return submitted.length + " posts | " + karma + " karma | " + (created > 5 * 60 ? "in " + Formatter.timeAgo(created) : "since just now");
     }
     //</editor-fold>s console (text)
 

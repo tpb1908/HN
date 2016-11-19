@@ -6,7 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -69,6 +72,14 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     private void bindData() {
         mName.setText(mUser.getId());
         mInfo.setText(mUser.getInfo());
+        if(mUser.getAbout() == null) {
+            mAbout.setVisibility(View.GONE);
+        } else {
+            mAbout.setVisibility(View.VISIBLE); //This will only be needed if we refresh and the user has created an about
+            mAbout.setText(Html.fromHtml(mUser.getAbout()));
+            //TODO- Find out how to deal with links that aren't <a></a>
+            mAbout.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     @Override
