@@ -139,10 +139,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
         final Intent i = new Intent();
         i.putExtra("restart", restartRequired);
         setResult(RESULT_OK, i);
-        onBackPressed();
-        return true;
+        super.onBackPressed();
     }
 }
