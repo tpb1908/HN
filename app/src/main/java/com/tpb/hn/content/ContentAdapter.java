@@ -19,6 +19,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -37,12 +38,16 @@ import butterknife.OnClick;
  * Created by theo on 18/10/16.
  */
 
-class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> implements HNItemLoader.HNItemLoadDone, HNItemLoader.HNItemIdLoadDone, FastScrollRecyclerView.SectionedAdapter {
+class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
+        HNItemLoader.HNItemLoadDone,
+        HNItemLoader.HNItemIdLoadDone,
+        FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
     private HNItemLoader mLoader;
     private String mCurrentPage;
+    private boolean mIsContent;
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
     private int[] mIds;
@@ -55,10 +60,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private SwipeRefreshLayout mSwiper;
 
     //TODO- Clean this up
-    ContentAdapter(Context context, ContentManager manager,
+    ContentAdapter(Context context,
+                   ContentManager manager,
                    FastScrollRecyclerView recycler,
                    final LinearLayoutManager layoutManager,
                    final SwipeRefreshLayout swiper) {
+        mIsContent = manager instanceof ContentActivity;
+        Log.i(TAG, "ContentAdapter: " + mIsContent);
         mContext = context;
         mManager = manager;
         mSwiper = swiper;
@@ -202,36 +210,55 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     @Override
-    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == 0) {
+            return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false));
+        } else if(viewType == 1) {
+            return new CommentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_user_comment, parent, false));
+        } else {
+            return new EmptyHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_empty, parent, false));
+        }
+
     }
 
     @Override
-    public void onBindViewHolder(ItemHolder holder, int position) {
-        final int pos = holder.getAdapterPosition();
-        if(mData.length > pos && mData[pos] != null) {
-            holder.mTitle.setText(mData[pos].getFormattedTitle());
-            holder.mInfo.setText(mData[pos].getFormattedInfo());
-            holder.mAuthor.setText(mData[pos].getFormattedBy());
-            holder.mURL.setText(mData[pos].getFormattedURL());
-            holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
-            if(mData[pos].isViewed()) {
-                holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
-            } else {
-                holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        final int pos = viewHolder.getAdapterPosition();
+        if(viewHolder instanceof ItemHolder) {
+            final ItemHolder holder = (ItemHolder) viewHolder;
+            if(mData.length > pos && mData[pos] != null) {
+                holder.mTitle.setText(mData[pos].getFormattedTitle());
+                holder.mInfo.setText(mData[pos].getFormattedInfo());
+                holder.mAuthor.setText(mData[pos].getFormattedBy());
+                holder.mURL.setText(mData[pos].getFormattedURL());
+                holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                if(mData[pos].isViewed()) {
+                    holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
+                } else {
+                    holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
+                }
+                if(mData[pos].isNew()) {
+                    holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
+                } else {
+                    holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
+                }
             }
-            if(mData[pos].isNew()) {
-                holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
-            } else {
-                holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
+            if(mIsUsingCards) {
+                holder.mCard.setUseCompatPadding(true);
+                holder.mCard.setCardElevation(Util.pxFromDp(4));
+                holder.mCard.setRadius(Util.pxFromDp(3));
+                holder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
             }
+        } else if(viewHolder instanceof CommentHolder) {
+            final CommentHolder commentHolder = (CommentHolder) viewHolder;
+            if(mData.length > pos && mData[pos] != null) {
+                commentHolder.mTime.setText("Some time ago");
+                commentHolder.mBody.setText(mData[pos].getText());
+            }
+
+
         }
-        if(mIsUsingCards) {
-            holder.mCard.setUseCompatPadding(true);
-            holder.mCard.setCardElevation(Util.pxFromDp(4));
-            holder.mCard.setRadius(Util.pxFromDp(3));
-            holder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
-        }
+
     }
 
     @Override
@@ -241,18 +268,30 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     }
 
     @Override
-    public void onViewRecycled(ItemHolder holder) {
-        super.onViewRecycled(holder);
-        if(holder.mTitle.getLineCount() > 1) {
-            holder.mTitle.setText("");
-            holder.itemView.requestLayout();
+    public int getItemViewType(int position) {
+        if(position < mData.length && mData[position] != null) {
+            return mData[position].getType() == ItemType.COMMENT ?  mIsContent ? 0 : 1 : 0;
         }
-        holder.mTitle.setText(R.string.text_title_empty);
-        holder.mInfo.setText(R.string.text_info_empty);
-        holder.mAuthor.setText("");
-        holder.mURL.setText("");
-        holder.mNumber.setText("");
-        holder.mTitle.requestLayout();
+        return mIsContent ? 0 : -1;
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder viewHolder) {
+        super.onViewRecycled(viewHolder);
+        if(viewHolder instanceof ItemHolder) {
+            final ItemHolder holder = (ItemHolder) viewHolder;
+            if(holder.mTitle.getLineCount() > 1) {
+                holder.mTitle.setText("");
+                holder.itemView.requestLayout();
+            }
+            holder.mTitle.setText(R.string.text_title_empty);
+            holder.mInfo.setText(R.string.text_info_empty);
+            holder.mAuthor.setText("");
+            holder.mURL.setText("");
+            holder.mNumber.setText("");
+            holder.mTitle.requestLayout();
+        }
+
     }
 
     @Override
@@ -353,6 +392,26 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                     return true;
                 }
             });
+        }
+
+    }
+
+    class CommentHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.comment_time) TextView mTime;
+        @BindView(R.id.comment_body) TextView mBody;
+
+        CommentHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+    }
+
+    class EmptyHolder extends RecyclerView.ViewHolder {
+
+        EmptyHolder(@NonNull View itemView) {
+            super(itemView);
         }
 
     }
