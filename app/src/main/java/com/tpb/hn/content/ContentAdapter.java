@@ -324,6 +324,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                     ContentAdapter.this.openItem(getAdapterPosition(), null);
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    ContentAdapter.this.attemptLoadAgain(getAdapterPosition());
+                    return true;
+                }
+            });
         }
 
     }
