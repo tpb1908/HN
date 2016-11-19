@@ -43,12 +43,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:padding="8dp">
 
             <Switch
                 android:id="@+id/switch_dark_theme"
@@ -90,7 +89,7 @@
                 android:layout_below="@id/spinner_font"
                 android:background="?android:attr/listDivider"/>
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 
@@ -110,12 +109,11 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:visibility="gone">
+            android:padding="8dp">
 
             <Switch
                 android:id="@+id/switch_content_cards"
@@ -159,7 +157,7 @@
                 android:layout_below="@id/switch_mark_new_items"
                 android:background="?android:attr/listDivider"/>
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 
@@ -179,11 +177,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_comments"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <Switch
                 android:id="@+id/switch_comment_cards"
@@ -229,7 +226,7 @@
                 android:layout_below="@id/switch_comment_animation"
                 android:background="?android:attr/listDivider"/>
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 
@@ -248,11 +245,10 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_browser"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <Switch
                 android:id="@+id/switch_browser_ads"
@@ -273,7 +269,7 @@
             <!--Default browser page -->
             <!-- Open links in system browser -->
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 
@@ -292,13 +288,12 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 
@@ -317,13 +312,12 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        <RelativeLayout
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/settings_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
-        </RelativeLayout>
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
     </LinearLayout>
 

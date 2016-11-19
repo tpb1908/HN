@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @BindViews({R.id.title_settings_theme, R.id.title_settings_content, R.id.title_settings_comments, R.id.title_settings_browser, R.id.title_settings_data, R.id.title_settings_info}) List<TextView> mSettingsTitles;
-    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info }) List<RelativeLayout> mSettings;
+    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info }) List<ExpandableRelativeLayout> mSettings;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     SharedPrefsController prefs;
@@ -71,33 +70,20 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private final ButterKnife.Action<View> TOGGLE = new ButterKnife.Action<View>() {
-        int current = -1;
         @Override
         public void apply(@NonNull View view, final int index) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.i(TAG, "onClick: Title click");
-                    if(current == -1) {
-                        show(mSettings.get(index));
-                    } else if(current == index){
-                        if(mSettings.get(index).getVisibility() == View.VISIBLE) {
-                            hide(mSettings.get(index));
-                        } else {
-                            show(mSettings.get(index));
-                        }
-                    } else {
-                        hide(mSettings.get(current));
-                        show(mSettings.get(index));
-
-                    }
-                    current = index;
+                    mSettings.get(index).toggle();
                 }
             });
 
         }
 
         void show(@NonNull final View view) {
+
+            ((ExpandableRelativeLayout) view).toggle();
             view.setVisibility(View.VISIBLE);
         }
 
