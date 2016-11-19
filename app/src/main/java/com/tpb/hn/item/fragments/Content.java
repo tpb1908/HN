@@ -147,7 +147,6 @@ public class Content extends Fragment implements ItemLoader,
                 }
             }
         });
-
         return inflated;
     }
 
@@ -313,6 +312,7 @@ public class Content extends Fragment implements ItemLoader,
             mParent.openFullScreen();
             mScrollView.removeView(mWebView);
             mSwiper.setVisibility(View.GONE);
+            mWebView.enableHorizontalScrolling();
             if(mIsShowingPDF) {
                 mFullscreen.removeAllViews();
                 mWebView.setVisibility(View.VISIBLE);
@@ -330,7 +330,7 @@ public class Content extends Fragment implements ItemLoader,
             mToolbar.setVisibility(View.GONE);
             mWebView.setDrawingCacheEnabled(true);
             mFullscreen.removeView(mWebView);
-
+            mWebView.disableHorizontalScrolling();
             if(mIsShowingPDF) {
                 mWebView.setVisibility(View.GONE);
                 setupPDFButtons();

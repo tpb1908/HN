@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -92,6 +94,19 @@ public class CachingAdBlockingWebView extends WebView {
                     loadUrl(url);
                 }
                 return true;
+            }
+        });
+    }
+
+    public void enableHorizontalScrolling() {
+        setOnTouchListener(null);
+    }
+
+    public void disableHorizontalScrolling() {
+        setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return motionEvent.getAction() == MotionEvent.ACTION_MOVE;
             }
         });
     }
