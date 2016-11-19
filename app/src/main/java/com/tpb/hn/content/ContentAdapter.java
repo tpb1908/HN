@@ -45,6 +45,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
     private int[] mIds;
+    private int[] mOldIds;
     private Item[] mData = new Item[] {};
     private ContentOpener mOpener;
     private int mLastPosition = 0;
@@ -81,6 +82,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
                     loadItemsOnScroll(false);
                 }
             }
+
         });
         recycler.setStateChangeListener(new OnFastScrollStateChangeListener() {
             @Override
@@ -97,6 +99,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     private void loadItemsOnScroll(boolean fastScroll) {
         int pos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
+        if(pos > mLastPosition && mShouldMarkRead) {
+            for(int i = mLastPosition; i < pos; i++) {
+                if(mData[i] != null) mData[i].setViewed(true);
+            }
+        }
         if(mIds != null) {
             int pos2;
             /*
@@ -132,6 +139,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
 
     void loadItems(String defaultPage) {
         Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
+        this.mOldIds = new int[0];
         this.mIds = new int[0];
         this.mData = new Item[0];
         AndroidNetworking.forceCancelAll();
@@ -197,7 +205,14 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mURL.setText(mData[pos].getFormattedURL());
             holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
             if(mData[pos].isViewed()) {
-                holder.mTitle.setTextColor(holder.mTitle.getResources().getColor(android.R.color.secondary_text_dark));
+                holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
+            } else {
+                holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
+            }
+            if(mData[pos].isNew()) {
+                holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
+            } else {
+                holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
             }
         }
         if(mIsUsingCards) {
@@ -221,7 +236,6 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             holder.mTitle.setText("");
             holder.itemView.requestLayout();
         }
-        // holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorSecondaryText));
         holder.mTitle.setText(R.string.text_title_empty);
         holder.mInfo.setText(R.string.text_info_empty);
         holder.mAuthor.setText("");
@@ -233,6 +247,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     @Override
     public void IdLoadDone(int[] ids) {
         Log.i(TAG, "IdLoadDone: ");
+        this.mOldIds = mIds;
         this.mIds = ids;
         int currentPos = Math.max(mManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
@@ -251,6 +266,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
             for(int i = 0; i < mIds.length; i++) {
                 if(item.getId() == mIds[i]) {
                     mData[i] = item;
+                    final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
+                    item.setNew(possiblePos > 0 && possiblePos < mIds.length);
+
                     notifyItemChanged(i);
                     break;
                 }
@@ -275,6 +293,8 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ItemHolder> imp
     private void openItem(int pos, FragmentPagerAdapter.PageType type) {
         if(mData != null && pos < mData.length && mData[pos] != null) {
             Log.i(TAG, "openItem: " + mData[pos].getComments().length);
+            mData[pos].setViewed(true);
+            notifyItemChanged(pos);
             mOpener.openItem(mData[pos], type);
         } else {
             attemptLoadAgain(pos);

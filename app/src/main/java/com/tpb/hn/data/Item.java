@@ -36,6 +36,7 @@ public class Item implements Parcelable, Comparable<Item> {
     private int descendants;
     private boolean viewed;
     private long lastUpdated;
+    private boolean isNew;
 
     private String commentJSON = "";
     private Item[] comments = new Item[0];
@@ -182,6 +183,15 @@ public class Item implements Parcelable, Comparable<Item> {
 
     //</editor-fold>
 
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Item) {
@@ -231,9 +241,6 @@ public class Item implements Parcelable, Comparable<Item> {
 
     public void setCommentJSON(final String commentJSON) throws JSONException {
         this.commentJSON = commentJSON;
-
-
-
     }
 
     public void parseComments() {

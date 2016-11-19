@@ -7,7 +7,7 @@
     <color name="colorPrimaryText">@color/md_grey_900</color>
     <color name="colorPrimaryTextInverse">@color/md_grey_50</color>
     <color name="colorSecondaryText">@color/md_grey_600</color>
-    <color name="colorSecondaryTextInverse">@color/md_grey_500</color>
+    <color name="colorSecondaryTextInverse">@color/md_grey_400</color>
     <color name="colorDivider">@color/md_grey_400</color>
     <color name="pivot_text">#fff7000e</color>
 

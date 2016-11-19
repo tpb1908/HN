@@ -330,27 +330,31 @@ public class Content extends Fragment implements ItemLoader,
             mToolbar.setVisibility(View.GONE);
             mWebView.setDrawingCacheEnabled(true);
             mFullscreen.removeView(mWebView);
-            mFullscreen.setVisibility(View.GONE);
+
             if(mIsShowingPDF) {
                 mWebView.setVisibility(View.GONE);
                 setupPDFButtons();
-            }
-            mSwiper.setVisibility(View.VISIBLE);
-            mScrollView.addView(mWebView);
-            mScrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mParent.closeFullScreen();
-                    mScrollView.scrollTo(mWebView.getScrollX(), mWebView.getScrollY());
-                }
-            });
+                mParent.closeFullScreen();
+            } else {
+                mFullscreen.setVisibility(View.GONE);
+                mSwiper.setVisibility(View.VISIBLE);
+                mScrollView.addView(mWebView);
+                mScrollView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mParent.closeFullScreen();
+                        mScrollView.scrollTo(mWebView.getScrollX(), mWebView.getScrollY());
+                    }
+                });
 
-            final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            mWebView.setLayoutParams(params);
-            mWebView.clearMatches();
-            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
-            mIsSearchComplete = false;
+                final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mWebView.setLayoutParams(params);
+                mWebView.clearMatches();
+                mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
+                mIsSearchComplete = false;
+            }
+
         }
     }
 
@@ -385,7 +389,7 @@ public class Content extends Fragment implements ItemLoader,
 
     private void setupPDFButtons() {
         mParent.hideFab();
-        mWebView.setVisibility(View.GONE);
+        mSwiper.setVisibility(View.GONE);
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
 
@@ -396,6 +400,7 @@ public class Content extends Fragment implements ItemLoader,
         final Button downloadButton = new Button(getContext());
         downloadButton.setLayoutParams(params);
         downloadButton.setText(R.string.text_download_pdf);
+        mFullscreen.setVisibility(View.VISIBLE);
         mFullscreen.addView(browserButton);
         mFullscreen.addView(downloadButton);
 

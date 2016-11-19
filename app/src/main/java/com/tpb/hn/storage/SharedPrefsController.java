@@ -56,7 +56,7 @@ public class SharedPrefsController {
             initInitialValues();
         }
         useCards = prefs.getBoolean(KEY_USE_CARDS, false);
-        markReadWhenPassed = prefs.getBoolean(KEY_USE_CARDS, false);
+        markReadWhenPassed = prefs.getBoolean(KEY_MARK_READ_WHEN_PASSED, false);
         useDarkTheme = prefs.getBoolean(KEY_DARK_THEME, false);
         useCardsComments = prefs.getBoolean(KEY_USE_CARDS_COMMENTS, false);
         expandComments = prefs.getBoolean(KEY_EXPAND_COMMENTS, true);
