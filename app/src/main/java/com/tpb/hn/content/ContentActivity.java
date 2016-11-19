@@ -11,10 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.gms.analytics.HitBuilders;
@@ -43,24 +46,18 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private static final String TAG = ContentActivity.class.getSimpleName();
     private Tracker mTracker;
 
-    @BindView(R.id.content_toolbar)
-    Toolbar mContentToolbar;
-
-    @BindView(R.id.content_appbar)
-    AppBarLayout mAppBar;
-
-    @BindView(R.id.nav_spinner)
-    Spinner mNavSpinner;
-
-    @BindView(R.id.content_recycler)
-    FastScrollRecyclerView mRecycler;
-
-    @BindView(R.id.content_swiper)
-    SwipeRefreshLayout mRefreshSwiper;
+    @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
+    @BindView(R.id.content_appbar) AppBarLayout mAppBar;
+    @BindView(R.id.nav_spinner) Spinner mNavSpinner;
+    @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
+    @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
+    @BindView(R.id.content_subtitle) TextView mSubtitle;
 
     private ContentAdapter mAdapter;
 
-    public static  Item mLaunchItem;
+    public static Item mLaunchItem;
+
+    private long lastUpdateTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,8 +100,21 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
             }
         });
+        mContentToolbar.setTitle("");
+        setSupportActionBar(mContentToolbar);
+        lastUpdateTime = System.currentTimeMillis();
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_content, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         startActivity(new Intent(ContentActivity.this, SettingsActivity.class));
+        return true;
     }
 
     @Override

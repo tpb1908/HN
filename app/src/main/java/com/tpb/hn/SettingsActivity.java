@@ -7,7 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+
+import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.List;
 
@@ -26,12 +29,35 @@ public class SettingsActivity extends AppCompatActivity {
     @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info }) List<RelativeLayout> mSettings;
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
+    SharedPrefsController prefs;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = SharedPrefsController.getInstance(getApplicationContext());
+        setViews();
+
+    }
+
+    private void initViewValues() {
+        ((Switch)ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
+    }
+
+    private void setViews() {
+        if(prefs.getUseDarkTheme()) {
+            setTheme(R.style.AppTheme_Dark);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         ButterKnife.apply(mSettingsTitles, TOGGLE);
         setSupportActionBar(mToolbar);
+        if(prefs.getUseDarkTheme()) {
+            ButterKnife.findById(this, R.id.settings_root).setBackgroundColor(getResources().getColor(R.color.md_grey_bg));
+        } else {
+            ButterKnife.findById(this, R.id.settings_root).setBackgroundColor(getResources().getColor(R.color.md_grey_50));
+        }
+        initViewValues();
     }
 
     private final ButterKnife.Action<View> TOGGLE = new ButterKnife.Action<View>() {
@@ -69,6 +95,16 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
     };
+
+    public void onSwitchClick(@NonNull View view) {
+        final Switch sView = (Switch) view;
+        switch(view.getId()) {
+            case R.id.switch_dark_theme:
+                prefs.setUseDarkTheme(sView.isChecked());
+                setViews();
+                break;
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

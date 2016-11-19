@@ -85,6 +85,11 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         if(mRootItem.getDescendants() == 0) {
             showMessage(false);
         } else {
+            if(mSwiper == null) {
+                viewsReady = false;
+                return;
+            }
+
             mSwiper.setVisibility(View.VISIBLE);
             mMessageView.setVisibility(View.GONE);
             mAdapter.loadItem(mCommentItem);
