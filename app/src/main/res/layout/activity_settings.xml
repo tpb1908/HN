@@ -254,8 +254,23 @@
             android:layout_height="wrap_content"
             android:visibility="gone">
 
+            <Switch
+                android:id="@+id/switch_browser_ads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="viewStart"
+                android:onClick="onSwitchClick"
+                android:text="Block ads in browser"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/switch_browser_ads"
+                android:background="?android:attr/listDivider"/>
+
             <!--Default browser page -->
-            <!-- Block ads-->
             <!-- Open links in system browser -->
 
         </RelativeLayout>

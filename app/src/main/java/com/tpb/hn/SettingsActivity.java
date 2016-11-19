@@ -49,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch)ButterKnife.findById(this, R.id.switch_comment_expansion)).setChecked(prefs.getExpandComments());
         ((Switch)ButterKnife.findById(this, R.id.switch_comment_animation)).setChecked(prefs.getAnimateComments());
         ((Switch)ButterKnife.findById(this, R.id.switch_mark_read)).setChecked(prefs.getMarkReadWhenPassed());
+        ((Switch)ButterKnife.findById(this, R.id.switch_browser_ads)).setChecked(prefs.getBlockAds());
     }
 
     private void setViews() {
@@ -129,6 +130,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_mark_read:
                 prefs.setMarkReadWhenPassed(sView.isChecked());
+                break;
+            case R.id.switch_browser_ads:
+                prefs.setBlockAds(sView.isChecked());
                 break;
         }
     }

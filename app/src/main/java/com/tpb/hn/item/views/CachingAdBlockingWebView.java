@@ -30,6 +30,7 @@ public class CachingAdBlockingWebView extends WebView {
     private ProgressBar mBoundProgressBar;
     private LinkHandler mHandler;
     private LoadListener mLoadListener;
+    private boolean shouldBlockAds = true;
 
     public CachingAdBlockingWebView(Context context) {
         this(context, null);
@@ -48,14 +49,17 @@ public class CachingAdBlockingWebView extends WebView {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                boolean ad;
-                if(!loadedUrls.containsKey(request.getUrl().toString())) {
-                    ad = AdBlocker.isAd(request.getUrl().toString());
-                    loadedUrls.put(request.getUrl().toString(), ad);
-                } else {
-                    ad = loadedUrls.get(request.getUrl().toString());
+                if(shouldBlockAds) {
+                    boolean ad;
+                    if(!loadedUrls.containsKey(request.getUrl().toString())) {
+                        ad = AdBlocker.isAd(request.getUrl().toString());
+                        loadedUrls.put(request.getUrl().toString(), ad);
+                    } else {
+                        ad = loadedUrls.get(request.getUrl().toString());
+                    }
+                    return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
                 }
-                return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
+                return super.shouldInterceptRequest(view, request);
             }
 
             @Override
@@ -109,6 +113,10 @@ public class CachingAdBlockingWebView extends WebView {
                 return motionEvent.getAction() == MotionEvent.ACTION_MOVE;
             }
         });
+    }
+
+    public void setShouldBlockAds(boolean shouldBlock) {
+        shouldBlockAds = shouldBlock;
     }
 
 

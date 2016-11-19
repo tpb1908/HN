@@ -41,6 +41,7 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.CachingAdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.TextLoader;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,7 +114,7 @@ public class Content extends Fragment implements ItemLoader,
         mWebView.bindProgressBar(mProgressBar, true, true);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setLinkHandler(this);
-
+        mWebView.setShouldBlockAds(SharedPrefsController.getInstance(getContext()).getBlockAds());
         mParent.showFab();
 
         if(mIsContentReady) {
