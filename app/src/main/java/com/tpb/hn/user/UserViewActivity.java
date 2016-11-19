@@ -71,6 +71,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             final Item item = ContentActivity.mLaunchItem;
             new HNUserLoader(this).loadUser(item.getBy());
         }
+
         viewsReady = true;
         if(userReady) bindData();
     }

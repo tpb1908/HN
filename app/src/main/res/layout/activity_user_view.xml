@@ -39,6 +39,7 @@
                     android:padding="16dp"
                     android:src="@drawable/ic_arrow_back"
                     android:background="@android:color/transparent"
+                    android:clickable="true"
                     />
 
                 <RelativeLayout
@@ -79,10 +80,12 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/user_content_swiper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/user_content_recycler"
