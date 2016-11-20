@@ -27,298 +27,314 @@
     </android.support.design.widget.AppBarLayout>
 
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
-        <TextView
-            android:id="@+id/title_settings_theme"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_theme"
-            android:text="Theme"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+            android:orientation="vertical">
 
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_theme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
-
-            <Switch
-                android:id="@+id/switch_dark_theme"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onSwitchClick"
-                android:text="Use dark theme"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/title_settings_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_theme"
+                    android:text="Theme"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <Switch
+                        android:id="@+id/switch_dark_theme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="onSwitchClick"
+                        android:text="Use dark theme"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
 
-            <Switch
-                android:id="@+id/switch_auto_dark_theme"
+                    <Switch
+                        android:id="@+id/switch_auto_dark_theme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_dark_theme"
+                        android:onClick="onSwitchClick"
+                        android:text="Set dark theme at time"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_font_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_auto_dark_theme">
+                    </Spinner>
+
+                    <Spinner
+                        android:id="@+id/spinner_font"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/spinner_font_size">
+                    </Spinner>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_below="@id/spinner_font"
+                        android:selectableItemBackground="?android:attr/listDivider"/>
+
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/switch_dark_theme"
-                android:onClick="onSwitchClick"
-                android:text="Set dark theme at time"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <Spinner
-                android:id="@+id/spinner_font_size"
+                <TextView
+                    android:id="@+id/title_settings_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_content"
+                    android:text="Content"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp">
+
+                    <Switch
+                        android:id="@+id/switch_content_cards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="onSwitchClick"
+                        android:text="Show content as cards"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+
+
+                    <Switch
+                        android:id="@+id/switch_mark_read"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_content_cards"
+                        android:onClick="onSwitchClick"
+                        android:text="Mark read when passed"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+
+                    <Switch
+                        android:id="@+id/switch_mark_new_items"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_mark_read"
+                        android:onClick="onSwitchClick"
+                        android:text="Mark new items"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_below="@id/switch_mark_new_items"
+                        android:selectableItemBackground="?android:attr/listDivider"/>
+
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/switch_auto_dark_theme">
-            </Spinner>
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <Spinner
-                android:id="@+id/spinner_font"
+                <TextView
+                    android:id="@+id/title_settings_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_comments"
+                    android:text="Comments"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Switch
+                        android:id="@+id/switch_comment_cards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="onSwitchClick"
+                        android:text="Show comments as cards"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+
+                    <Switch
+                        android:id="@+id/switch_comment_expansion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_comment_cards"
+                        android:onClick="onSwitchClick"
+                        android:text="Expand comments"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+
+                    <Switch
+                        android:id="@+id/switch_comment_animation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_comment_expansion"
+                        android:onClick="onSwitchClick"
+                        android:text="Animate comment insertion"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
+                    <!-- Sort order-->
+                    <!-- Animate -->
+                    <!-- Mark new comments-->
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_below="@id/switch_comment_animation"
+                        android:selectableItemBackground="?android:attr/listDivider"/>
+
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/spinner_font_size">
-            </Spinner>
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/spinner_font"
-                android:selectableItemBackground="?android:attr/listDivider"/>
+                <TextView
+                    android:id="@+id/title_settings_browser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_web"
+                    android:text="Browser"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_browser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    </LinearLayout>
+                    <Switch
+                        android:id="@+id/switch_browser_ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:onClick="onSwitchClick"
+                        android:text="Block ads in browser"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical"
-        android:padding="16dp">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_below="@id/switch_browser_ads"
+                        android:selectableItemBackground="?android:attr/listDivider"/>
 
-        <TextView
-            android:id="@+id/title_settings_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_content"
-            android:text="Content"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+                    <!--Default browser page -->
+                    <!-- Open links in system browser -->
 
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
-            <Switch
-                android:id="@+id/switch_content_cards"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onSwitchClick"
-                android:text="Show content as cards"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
+            </LinearLayout>
 
-
-            <Switch
-                android:id="@+id/switch_mark_read"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/switch_content_cards"
-                android:onClick="onSwitchClick"
-                android:text="Mark read when passed"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <Switch
-                android:id="@+id/switch_mark_new_items"
+                <TextView
+                    android:id="@+id/title_settings_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_network"
+                    android:text="Data"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/switch_mark_read"
-                android:onClick="onSwitchClick"
-                android:text="Mark new items"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/switch_mark_new_items"
-                android:selectableItemBackground="?android:attr/listDivider"/>
+                <TextView
+                    android:id="@+id/title_settings_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_info"
+                    android:text="Info"
+                    android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/settings_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-    </LinearLayout>
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical"
-        android:padding="16dp">
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/title_settings_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_comments"
-            android:text="Comments"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
+        </LinearLayout>
 
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    </ScrollView>
 
-            <Switch
-                android:id="@+id/switch_comment_cards"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onSwitchClick"
-                android:text="Show comments as cards"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
 
-            <Switch
-                android:id="@+id/switch_comment_expansion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/switch_comment_cards"
-                android:onClick="onSwitchClick"
-                android:text="Expand comments"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
-
-            <Switch
-                android:id="@+id/switch_comment_animation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/switch_comment_expansion"
-                android:onClick="onSwitchClick"
-                android:text="Animate comment insertion"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                />
-            <!-- Sort order-->
-            <!-- Animate -->
-            <!-- Mark new comments-->
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/switch_comment_animation"
-                android:selectableItemBackground="?android:attr/listDivider"/>
-
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/title_settings_browser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_web"
-            android:text="Browser"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
-
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_browser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Switch
-                android:id="@+id/switch_browser_ads"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onSwitchClick"
-                android:text="Block ads in browser"
-                android:textAlignment="viewStart"
-                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/switch_browser_ads"
-                android:selectableItemBackground="?android:attr/listDivider"/>
-
-            <!--Default browser page -->
-            <!-- Open links in system browser -->
-
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/title_settings_data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_network"
-            android:text="Data"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
-
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/title_settings_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_info"
-            android:text="Info"
-            android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
-
-        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/settings_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-
-    </LinearLayout>
 
 </LinearLayout>
