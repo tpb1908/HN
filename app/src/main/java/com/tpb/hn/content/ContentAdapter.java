@@ -90,7 +90,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(mIsContent) {
                     loadItems(mCurrentPage);
                 } else {
-                    IdLoadDone(mIds);
+                    mIds = new int[0];
+                    notifyDataSetChanged();
+                    mManager.openUser(null);
                 }
             }
         });

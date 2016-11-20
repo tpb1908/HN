@@ -137,7 +137,8 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
 
     @Override
     public void openUser(Item item) {
-        //Ignored
+        //Used on refresh
+        new HNUserLoader(this).loadUser(mUser.getId());
     }
 
     @Override
