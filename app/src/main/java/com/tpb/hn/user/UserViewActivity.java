@@ -22,6 +22,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.content.ContentAdapter;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.data.User;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
@@ -123,7 +124,10 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @Override
     public void openItem(Item item) {
         if(item.isDeleted()) {
-            Toast.makeText(getApplicationContext(), R.string.error_opening_deleted, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    String.format(getString(R.string.error_opening_deleted),
+                            item.getType() == ItemType.COMMENT ? "comment" : "item"),
+                    Toast.LENGTH_LONG).show();
         } else {
             mLaunchItem = item;
             Log.i(TAG, "openItem: " + item.toString());
