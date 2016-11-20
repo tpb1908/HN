@@ -29,6 +29,7 @@ class DB extends SQLiteOpenHelper {
     private static final String KEY_ID = "ID";
     private static final String KEY_LAST_UPDATE = "LAST_UPDATE";
     private static final String KEY_JSON = "JSON";
+    private static final String KEY_PERMANENT = "PERMANENT";
     private static final String KEY_WEB_TEXT = "TEXT";
 
     DB(Context context) {
@@ -41,7 +42,9 @@ class DB extends SQLiteOpenHelper {
                 "(" +
                 KEY_ID + " INTEGER PRIMARY KEY, " +
                 KEY_LAST_UPDATE + " INTEGER, " +
-                KEY_JSON + " VARCHAR " +
+                KEY_JSON + " VARCHAR, " +
+                KEY_WEB_TEXT + " VARCHAR, " +
+                KEY_PERMANENT + " BOOLEAN ence" +
                 ");";
         db.execSQL(CREATE);
 
@@ -73,8 +76,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void loadRecentItems(DBCallback callback, long timescale) {
-        return;
-        //new LoadItemsTask(callback).doInBackground(100L, timescale);
+        new LoadItemsTask(callback).doInBackground(100L, timescale);
 
     }
 
@@ -150,6 +152,7 @@ class DB extends SQLiteOpenHelper {
                 values.put(KEY_ID, i.getId());
                 values.put(KEY_LAST_UPDATE, i.getLastUpdated());
                 values.put(KEY_JSON, JSON.toString());
+                values.put(KEY_PERMANENT, false);
                 final boolean success = db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
                 allSuccessful &= success;
                 //if(callback != null) callback.writeComplete(success, i);
