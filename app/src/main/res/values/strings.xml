@@ -23,6 +23,7 @@
 
     <string name="title_wpm_dialog">Enter words per minute</string>
     <string name="title_text_dialog">Jump to a word</string>
+    <string name="title_settings">Settings</string>
 
     <string name="hint_wpm_input">Currently %1$d</string>
 
@@ -39,6 +40,25 @@
     <string name="text_deleted_comment">[Deleted comment]</string>
     <string name="text_redirecting_reader">Redirecting through parser service</string>
     <string name="text_item_deleted">[Deleted item]</string>
+    <string name="text_settings_theme">Theme</string>
+    <string name="text_use_dark_theme">Use dark theme</string>
+    <string name="text_auto_dark_theme">Set dark theme at time</string>
+    <string name="text_settings_content">Content</string>
+    <string name="text_content_cards">Show content as cards</string>
+    <string name="text_mark_when_passed">Mark read when passed</string>
+    <string name="text_mark_new_items">Mark new items</string>
+    <string name="text_scroll_to_top">Scroll to top on change</string>
+    <string name="text_volume_navigation">Navigate with volume keys</string>
+    <string name="text_settings_comments">Comments</string>
+    <string name="text_comments_cards">Show comments as cards</string>
+    <string name="text_expand_comments">Expand comments by default</string>
+    <string name="text_animate_comments">Animate comment insertion</string>
+    <string name="text_settings_browser">Browser</string>
+    <string name="text_block_ads">Block ads in browser</string>
+    <string name="text_disable_horizontal_scrolling">Disable horizontal scrolling in browser</string>
+    <string name="text_lazy_load">Lazy load content</string>
+    <string name="text_settings_data">Data</string>
+    <string name="text_settings_info">Info</string>
 
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
@@ -47,11 +67,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_reset">Reset settings</string>
 
-    <string name="pref_content">Content page</string>
-    <string name="pref_content_summary">How the content feed is displayed</string>
-    <string name="pref_content_cards">Display items as cards</string>
-    <string name="pref_content_read_behaviour">Mark read when passed</string>
-    <string name="pref_content_mark_new_items">Mark new items</string>
     <string name="html" translatable="false">
         <![CDATA[
         <html>

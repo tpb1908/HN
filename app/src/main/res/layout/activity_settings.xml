@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/title_settings"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"/>
 
         </android.support.v7.widget.Toolbar>
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_theme"
-                    android:text="Theme"
+                    android:text="@string/text_settings_theme"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -86,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:onClick="onSwitchClick"
-                        android:text="Use dark theme"
+                        android:text="@string/text_use_dark_theme"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
 
@@ -97,7 +97,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_dark_theme"
                         android:onClick="onSwitchClick"
-                        android:text="Set dark theme at time"
+                        android:text="@string/text_auto_dark_theme"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
 
@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_content"
-                    android:text="Content"
+                    android:text="@string/text_settings_content"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -153,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:onClick="onSwitchClick"
-                        android:text="Show content as cards"
+                        android:text="@string/text_content_cards"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -166,7 +166,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_content_cards"
                         android:onClick="onSwitchClick"
-                        android:text="Mark read when passed"
+                        android:text="@string/text_mark_when_passed"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -178,7 +178,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_mark_read"
                         android:onClick="onSwitchClick"
-                        android:text="Mark new items"
+                        android:text="@string/text_mark_new_items"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -190,7 +190,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_mark_new_items"
                         android:onClick="onSwitchClick"
-                        android:text="Scroll to top on change"
+                        android:text="@string/text_scroll_to_top"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
                     <Switch
@@ -200,7 +200,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_scroll_to_top"
                         android:onClick="onSwitchClick"
-                        android:text="Navigate with volume keys"
+                        android:text="@string/text_volume_navigation"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
                     <View
@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_comments"
-                    android:text="Comments"
+                    android:text="@string/text_settings_comments"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -240,7 +240,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:onClick="onSwitchClick"
-                        android:text="Show comments as cards"
+                        android:text="@string/text_comments_cards"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -252,7 +252,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_comment_cards"
                         android:onClick="onSwitchClick"
-                        android:text="Expand comments"
+                        android:text="@string/text_expand_comments"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -264,7 +264,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/switch_comment_expansion"
                         android:onClick="onSwitchClick"
-                        android:text="Animate comment insertion"
+                        android:text="@string/text_animate_comments"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
@@ -287,16 +287,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
-        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
-        int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
-        mRecycler.smoothScrollToPosition(Math.min(currentPos + height, mData.length));
+
                 <TextView
                     android:id="@+id/title_settings_browser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_web"
-                    android:text="Browser"
+                    android:text="@string/text_settings_browser"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -310,7 +308,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:onClick="onSwitchClick"
-                        android:text="Block ads in browser"
+                        android:text="@string/text_block_ads"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
@@ -320,7 +318,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/switch_browser_ads"
                         android:onClick="onSwitchClick"
-                        android:text="Disable browser horizontal scrolling"
+                        android:text="@string/text_disable_horizontal_scrolling"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
@@ -330,7 +328,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/switch_browser_scrolling"
                         android:onClick="onSwitchClick"
-                        android:text="Lazy load content"
+                        android:text="@string/text_lazy_load"
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
@@ -359,7 +357,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_network"
-                    android:text="Data"
+                    android:text="@string/text_settings_data"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
@@ -383,7 +381,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_info"
-                    android:text="Info"
+                    android:text="@string/text_settings_info"
                     android:textAppearance="@android:style/TextAppearance.Material.WindowTitle"/>
 
                 <com.github.aakira.expandablelayout.ExpandableRelativeLayout
