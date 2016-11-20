@@ -138,7 +138,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void loadItemsOnScroll(boolean fastScroll) {
         int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
-        if(pos > mLastPosition && mShouldMarkRead) {
+        if(pos > mLastPosition && pos < mData.length && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
                 if(mData[i] != null) mData[i].setViewed(true);
             }

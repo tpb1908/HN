@@ -1,5 +1,6 @@
 package com.tpb.hn.user;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.content.ContentAdapter;
@@ -109,8 +111,33 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             mAbout.setVisibility(View.VISIBLE); //This will only be needed if we refresh and the user has created an about
             mAbout.setText(Html.fromHtml(mUser.getAbout()));
             mAbout.setMovementMethod(LinkMovementMethod.getInstance());
+            if(mAbout.getLineCount() > mAbout.getMaxLines()) {
+                mAbout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showLongAboutPopup();
+                    }
+                });
+            }
         }
         mAdapter.IdLoadDone(mUser.getSubmitted());
+    }
+
+    private void showLongAboutPopup() {
+        //TODO- Linkify
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(mUser.getId())
+                .linkColor(getResources().getColor(R.color.colorAccent))
+                .content(Html.fromHtml(mUser.getAbout()))
+                .show();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+//                ((TextView) dialog.getContentView().findViewById(R.id.md_content)).setMovementMethod(LinkMovementMethod.getInstance());
+//                ((TextView) dialog.getContentView().findViewById(R.id.md_content)).setAutoLinkMask(Linkify.ALL);
+            }
+        });
+        Log.i(TAG, "showLongAboutPopup: " + dialog.getCustomView());
     }
 
     @Override
