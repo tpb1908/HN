@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/comment_title"
             android:text="@string/text_info_empty"
+            android:autoLink="web|email"
             android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
     </RelativeLayout>
