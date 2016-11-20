@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -37,7 +39,7 @@ import butterknife.OnClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen {
+public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 
@@ -59,12 +61,14 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
 
     @OnClick(R.id.item_author)
     void onAuthorClick() {
-        if(mLaunchItem != null) {
-            startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class));
+        if(mRootItem != null) {
+            mLaunchItem = mRootItem;
+            openUser(mLaunchItem);
         }
     }
 
     public static Item mLaunchItem;
+    private Item mRootItem;
 
     private FragmentPagerAdapter mAdapter;
 
@@ -94,9 +98,11 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
         } else {
             if(ContentActivity.mLaunchItem != null) {
                 mLaunchItem = ContentActivity.mLaunchItem;
+                ContentActivity.mLaunchItem = null;
             } else {
                 mLaunchItem = UserViewActivity.mLaunchItem;
             }
+            mRootItem = mLaunchItem;
             setupFragments(prefs.getPageTypes(), mLaunchItem);
             setTitle(mLaunchItem);
             if(launchIntent.getSerializableExtra("type") != null) {
@@ -113,6 +119,17 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
         }
 
         originalFlags = getWindow().getDecorView().getSystemUiVisibility();
+    }
+
+    @Override
+    public void openUser(Item item) {
+        Log.i(TAG, "openUser: " + item.toString());
+        mLaunchItem = item;
+        startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class),
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        Pair.create((View) mBackButton, "button"),
+                        Pair.create((View) mStoryAppbar, "appbar")).toBundle());
+        overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
     public void showFab() {

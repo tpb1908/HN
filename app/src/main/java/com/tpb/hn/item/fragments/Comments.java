@@ -1,5 +1,6 @@
 package com.tpb.hn.item.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener, HNItemLoader.HNItemLoadDone {
+public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener, HNItemLoader.HNItemLoadDone, CommentAdapter.UserOpener {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 
@@ -44,6 +45,7 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     private Item mRootItem; //The Item from the HN api
     private Item mCommentItem; //The Item from Algolia, with comments
     private CommentAdapter mAdapter;
+    private CommentAdapter.UserOpener mOpener;
 
     private boolean itemReady = false;
     private boolean viewsReady = false;
@@ -57,7 +59,7 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
         unbinder = ButterKnife.bind(this, view);
-        mAdapter = new CommentAdapter(mRecycler, mSwiper);
+        mAdapter = new CommentAdapter(mRecycler, mSwiper, this);
         mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -94,6 +96,21 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
             mMessageView.setVisibility(View.GONE);
             mAdapter.loadItem(mCommentItem);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof CommentAdapter.UserOpener) {
+            mOpener = (CommentAdapter.UserOpener) context;
+        } else {
+            throw new IllegalArgumentException("Context must implement " + CommentAdapter.UserOpener.class.getSimpleName());
+        }
+    }
+
+    @Override
+    public void openUser(Item item) {
+        mOpener.openUser(item);
     }
 
     @Override

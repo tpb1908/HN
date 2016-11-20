@@ -158,16 +158,15 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     public void openUser(Item item) {
         mLaunchItem = item;
         final Intent i = new Intent(ContentActivity.this, UserViewActivity.class);
-        startActivity(i);
+        startActivity(i, getSharedTransition().toBundle());
+        overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
     @Override
     public void openItem(Item item, FragmentPagerAdapter.PageType type) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
         mLaunchItem = item;
-        //i.putExtra("item", item);
         i.putExtra("type", type);
-        //i.putExtra("comments", item.getCommentJSON());
         startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();

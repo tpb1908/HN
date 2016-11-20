@@ -44,6 +44,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private Item mRootItem;
     private RecyclerView mRecycler;
     private SwipeRefreshLayout mSwiper;
+    private UserOpener mOpener;
     private int mScreenWidth;
 
     private ArrayList<Comment> mComments = new ArrayList<>();
@@ -52,9 +53,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private boolean expandComments;
     private boolean shouldAnimate;
 
-    public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper) {
+    public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener) {
         mRecycler = recycler;
         mSwiper = swiper;
+        mOpener = opener;
         final Context context = mRecycler.getContext();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
         usingCards = prefs.getUseCardsComments();
@@ -220,6 +222,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
     }
 
+    private void openUser(int pos) {
+        mOpener.openUser(mComments.get(mVisibleItems.get(pos)).item);
+    }
+
 
     private class Comment {
         Item item;
@@ -264,7 +270,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     return false;
                 }
             });
+            mTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CommentAdapter.this.openUser(getAdapterPosition());
+                }
+            });
         }
+
+    }
+
+    public interface UserOpener {
+
+        void openUser(Item item);
 
     }
 

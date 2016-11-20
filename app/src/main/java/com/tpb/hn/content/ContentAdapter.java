@@ -1,12 +1,14 @@
 package com.tpb.hn.content;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +87,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadItems(mCurrentPage);
+                if(mIsContent) {
+                    loadItems(mCurrentPage);
+                } else {
+                    IdLoadDone(mIds);
+                }
             }
         });
 
@@ -239,7 +245,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.mAuthor.setText(mData[pos].getFormattedBy());
                 }
                 holder.mURL.setText(mData[pos].getFormattedURL());
-                holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                if(mIsContent) {
+                    holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                } else {
+                    holder.mNumber.setVisibility(View.GONE);
+                }
                 if(mData[pos].isViewed()) {
                     holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
                 } else {
@@ -261,7 +271,23 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
                 commentHolder.mTime.setText(Formatter.timeAgo(mData[pos].getTime()) + " ago");
-                commentHolder.mBody.setText(Html.fromHtml(mData[pos].getText()));
+                if(mData[pos].getText() != null) {
+                    final Spanned text;
+                    if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        text = Html.fromHtml(mData[pos].getText(), Html.FROM_HTML_MODE_COMPACT);
+                    } else {
+                        text = Html.fromHtml(mData[pos].getText());
+                    }
+                    commentHolder.mBody.setText(text.toString().substring(0, text.toString().length() - 2));
+                }
+
+
+            }
+            if(mIsUsingCards) {
+                commentHolder.mCard.setUseCompatPadding(true);
+                commentHolder.mCard.setCardElevation(Util.pxFromDp(4));
+                commentHolder.mCard.setRadius(Util.pxFromDp(3));
+                commentHolder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
             }
 
 
@@ -409,6 +435,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class CommentHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.comment_card) CardView mCard;
         @BindView(R.id.comment_time) TextView mTime;
         @BindView(R.id.comment_body) TextView mBody;
 

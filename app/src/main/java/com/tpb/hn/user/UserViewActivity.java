@@ -3,6 +3,9 @@ package com.tpb.hn.user;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +14,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
@@ -41,6 +45,8 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @BindView(R.id.user_name) TextView mName;
     @BindView(R.id.user_account_info) TextView mInfo;
     @BindView(R.id.user_account_about) TextView mAbout;
+    @BindView(R.id.user_back_button) ImageButton mBackButton;
+    @BindView(R.id.user_appbar) AppBarLayout mAppBar;
 
     @OnClick(R.id.user_back_button)
     void onClick() {
@@ -81,6 +87,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             final Item item;
             if(ContentActivity.mLaunchItem != null) {
                 item = ContentActivity.mLaunchItem;
+                ContentActivity.mLaunchItem = null;
             } else {
                 item = ItemViewActivity.mLaunchItem;
             }
@@ -116,7 +123,11 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @Override
     public void openItem(Item item) {
         mLaunchItem = item;
-        startActivity(new Intent(UserViewActivity.this, ItemViewActivity.class));
+        final Intent i = new Intent(UserViewActivity.this, ItemViewActivity.class);
+        startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                Pair.create((View) mBackButton, "button"),
+                Pair.create((View) mAppBar, "appbar")).toBundle());
+        overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
     @Override
