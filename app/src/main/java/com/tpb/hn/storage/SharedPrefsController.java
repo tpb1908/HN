@@ -33,6 +33,7 @@ public class SharedPrefsController {
     private static final String KEY_BLOCK_ADS = "BLOCK_ADS";
     private static final String KEY_SCROLL_TO_TOP = "SCROLL_TO_TOP";
     private static final String KEY_DISABLE_HORIZONTAL_SCROLLING = "HORIZONTAL_SCROLLING";
+    private static final String KEY_LAZY_LOAD = "LAZY_LOAD";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -46,6 +47,7 @@ public class SharedPrefsController {
     private static boolean shouldBlockAds;
     private static boolean shouldScrollToTop;
     private static boolean disableHorizontalScrolling;
+    private static boolean lazyLoad;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -70,6 +72,7 @@ public class SharedPrefsController {
         shouldBlockAds = prefs.getBoolean(KEY_BLOCK_ADS, true);
         shouldScrollToTop = prefs.getBoolean(KEY_SCROLL_TO_TOP, true);
         disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
+        lazyLoad = prefs.getBoolean(KEY_LAZY_LOAD, false);
         editor.apply();
 
     }
@@ -196,6 +199,16 @@ public class SharedPrefsController {
     public void setDisableHorizontalScrolling(boolean shouldDisable) {
         disableHorizontalScrolling = shouldDisable;
         editor.putBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, disableHorizontalScrolling);
+        editor.commit();
+    }
+
+    public boolean getLazyLoad() {
+        return lazyLoad;
+    }
+
+    public void setLazyLoad(boolean shouldLazyLoad) {
+        lazyLoad = shouldLazyLoad;
+        editor.putBoolean(KEY_LAZY_LOAD, lazyLoad);
         editor.commit();
     }
 

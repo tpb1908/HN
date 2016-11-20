@@ -84,12 +84,15 @@ public class Content extends Fragment implements ItemLoader,
     private boolean mIsFindShown = false;
     private boolean mIsSearchComplete = false;
     private boolean mIsShowingPDF = false;
+    private boolean mLazyLoadCanStart;
     private boolean mDisableHorizontalScrolling;
 
     private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;
     private boolean mIsContentReady;
+    private boolean mIsViewReady = false;
+    private boolean mShown = false;
 
     private String url;
     private String readablePage;
@@ -112,6 +115,8 @@ public class Content extends Fragment implements ItemLoader,
 
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        mDisableHorizontalScrolling = prefs.getDisableHorizontalScrolling();
+        mLazyLoadCanStart = !prefs.getLazyLoad();
         mWebView.setHorizontalScrollingEnabled(!prefs.getDisableHorizontalScrolling());
         mWebView.bindProgressBar(mProgressBar, true, true);
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -150,6 +155,7 @@ public class Content extends Fragment implements ItemLoader,
                 }
             }
         });
+        mIsViewReady = true;
         return inflated;
     }
 
@@ -165,7 +171,7 @@ public class Content extends Fragment implements ItemLoader,
 
     //<editor-fold desc="Data loading and binding">
     private void bindData() {
-        if(mIsContentReady && mWebView != null) {
+        if(mIsContentReady && mIsViewReady && mLazyLoadCanStart) {
             if(mIsShowingPDF) {
                 setupPDFButtons();
             } else {
@@ -448,6 +454,9 @@ public class Content extends Fragment implements ItemLoader,
     public void onResumeFragment() {
         mTracker.setScreenName(TAG + "_" + mType);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mLazyLoadCanStart = true;
+        if(mIsViewReady && mIsContentReady && !mShown) bindData();
+        mShown = true;
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
                 new View.OnClickListener() {
             @Override

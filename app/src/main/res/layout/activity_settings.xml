@@ -312,10 +312,20 @@
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_browser_lazy_load"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_browser_scrolling"
+                        android:onClick="onSwitchClick"
+                        android:text="Lazy load content"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_browser_ads"
+                        android:layout_below="@id/switch_browser_lazy_load"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                     <!--Default browser page -->
