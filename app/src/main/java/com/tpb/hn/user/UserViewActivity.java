@@ -134,6 +134,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             final Intent i = new Intent(UserViewActivity.this, ItemViewActivity.class);
             startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                     Pair.create((View) mBackButton, "button"),
+                    Pair.create((View) mAbout, "details"),
                     Pair.create((View) mAppBar, "appbar")).toBundle());
             overridePendingTransition(R.anim.slide_up, R.anim.none);
         }
