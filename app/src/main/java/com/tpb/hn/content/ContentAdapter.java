@@ -278,10 +278,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
             if(mIsUsingCards) {
-                holder.mCard.setUseCompatPadding(true);
-                holder.mCard.setCardElevation(Util.pxFromDp(4));
-                holder.mCard.setRadius(Util.pxFromDp(3));
-                holder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+                setCardParams(holder.mCard);
             }
         } else if(viewHolder instanceof CommentHolder) {
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
@@ -300,12 +297,19 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
             if(mIsUsingCards) {
-                commentHolder.mCard.setUseCompatPadding(true);
-                commentHolder.mCard.setCardElevation(Util.pxFromDp(4));
-                commentHolder.mCard.setRadius(Util.pxFromDp(3));
-                commentHolder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+                setCardParams(commentHolder.mCard);
             }
+        } else {
+            setCardParams(((EmptyHolder) viewHolder).mCard);
+
         }
+    }
+
+    private void setCardParams(CardView card) {
+       card.setUseCompatPadding(true);
+       card.setCardElevation(Util.pxFromDp(4));
+       card.setRadius(Util.pxFromDp(3));
+       card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
     }
 
     @Override
@@ -465,9 +469,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     class EmptyHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.empty_card) CardView mCard;
 
         EmptyHolder(@NonNull View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
 
     }
