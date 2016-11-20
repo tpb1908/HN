@@ -21,14 +21,14 @@ public class HNParser {
     private static final String KEY_KIDS = "kids";
     private static final String KEY_SCORE = "score";
     private static final String KEY_TIME = "time";
-    private static final String KEY_CREATED_AT =  "created_at_i";
+    private static final String KEY_CREATED_AT = "created_at_i";
     private static final String KEY_TITLE = "title";
     private static final String KEY_TYPE = "type";
     private static final String KEY_URL = "url";
     private static final String KEY_TEXT = "text";
     private static final String KEY_PARENT = "parent";
     private static final String KEY_ASK_TITLE = "Ask HN:";
-    
+
     private static final String KEY_AUTHOR = "author";
     private static final String KEY_POINTS = "points";
     private static final String KEY_PARENT_ID = "parent_id";
@@ -73,11 +73,13 @@ public class HNParser {
         item.setType(ItemType.COMMENT);
 
         if(obj.has(KEY_AUTHOR)) item.setBy(obj.getString(KEY_AUTHOR));
-        if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals("null")) item.setScore(obj.getInt(KEY_POINTS));
+        if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals("null"))
+            item.setScore(obj.getInt(KEY_POINTS));
 
-        if(obj.has(KEY_URL))  item.setUrl(obj.getString(KEY_URL));
+        if(obj.has(KEY_URL)) item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
-        if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null")) item.setParent(obj.getInt(KEY_PARENT_ID));
+        if(obj.has(KEY_PARENT_ID) && !obj.getString(KEY_PARENT_ID).equals("null"))
+            item.setParent(obj.getInt(KEY_PARENT_ID));
 
         if(obj.has(KEY_CHILDREN)) item.setCommentJSON(obj.getString(KEY_CHILDREN));
 
@@ -115,10 +117,10 @@ public class HNParser {
     }
 
     public static User JSONToUser(JSONObject obj) throws JSONException {
-        final User user =  new User();
+        final User user = new User();
         user.setId(obj.getString(KEY_ID));
         if(obj.has(KEY_ABOUT)) user.setAbout(obj.getString(KEY_ABOUT));
-        if(obj.has(KEY_DELAY)) user.setDelay((byte)obj.getInt(KEY_DELAY));
+        if(obj.has(KEY_DELAY)) user.setDelay((byte) obj.getInt(KEY_DELAY));
         if(obj.has(KEY_SUBMITTED)) {
             user.setSubmitted(extractIntArray(obj.getJSONArray(KEY_SUBMITTED)));
         } else {
@@ -140,7 +142,7 @@ public class HNParser {
         return children;
     }
 
-    public static JSONArray toJSONArray(int[] array ) {
+    public static JSONArray toJSONArray(int[] array) {
         final JSONArray jsonArray = new JSONArray();
         for(int i : array) {
             jsonArray.put(i);
@@ -161,7 +163,7 @@ public class HNParser {
         //Log.i(TAG, "extractIntArray: Extracting int array " + Arrays.toString(items));
         final int[] results = new int[items.length];
 
-        for (int i = 0; i < items.length; i++) {
+        for(int i = 0; i < items.length; i++) {
             try {
                 results[i] = Integer.parseInt(items[i]);
             } catch(NumberFormatException nfe) {

@@ -1,51 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    android:id="@+id/comment_card"
-                                    android:orientation="vertical"
+<android.support.v7.widget.CardView android:id="@+id/comment_card"
+                                    xmlns:android="http://schemas.android.com/apk/res/android"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:orientation="vertical"
 
     >
+
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/comment_padding"
             android:layout_width="48dp"
-            android:background="@color/md_grey_bg"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/md_grey_bg">
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/comment_color"
             android:layout_width="4dp"
-            android:background="@color/colorPrimary"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"/>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/comment_title"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_title_empty"
-            android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/comment_body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/comment_title"
-            android:text="@string/text_info_empty"
-            android:autoLink="web|email"
-            android:textAppearance="@android:style/TextAppearance.Material.Small"/>
+            <TextView
+                android:id="@+id/comment_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_title_empty"
+                android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/comment_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comment_title"
+                android:autoLink="web|email"
+                android:text="@string/text_info_empty"
+                android:textAppearance="@android:style/TextAppearance.Material.Small"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

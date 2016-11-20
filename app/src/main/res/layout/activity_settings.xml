@@ -8,34 +8,34 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:transitionName="appbar"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:transitionName="appbar">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:contentInsetEnd="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetStart="0dp"
             android:minHeight="?attr/actionBarSize"
             android:selectableItemBackground="?attr/colorPrimary"
-            android:contentInsetLeft="0dp"
-            android:contentInsetStart="0dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            android:contentInsetRight="0dp"
-            android:contentInsetEnd="0dp"
-            app:contentInsetRight="0dp"
             app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <ImageButton
                 android:id="@+id/settings_back_button"
-                android:transitionName="button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/action_back"
                 android:padding="16dp"
                 android:src="@drawable/ic_arrow_back"
-                android:contentDescription="@string/action_back"
-                android:background="@android:color/transparent"
+                android:transitionName="button"
                 />
 
             <TextView
@@ -105,17 +105,17 @@
                         android:id="@+id/settings_text_auto_start"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_auto_dark_theme"
                         android:onClick="onTimeClick"
-                        android:text="Start time"
-                        android:layout_below="@id/switch_auto_dark_theme"/>
+                        android:text="Start time"/>
 
                     <TextView
                         android:id="@+id/settings_text_auto_end"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/settings_text_auto_start"
                         android:onClick="onTimeClick"
-                        android:text="End time"
-                        android:layout_below="@id/settings_text_auto_start"/>
+                        android:text="End time"/>
 
                     <Spinner
                         android:id="@+id/spinner_font_size"
@@ -412,7 +412,6 @@
         </LinearLayout>
 
     </ScrollView>
-
 
 
 </LinearLayout>

@@ -56,7 +56,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item item) {
-       new WriteItemTask(callback).doInBackground(item);
+        new WriteItemTask(callback).doInBackground(item);
     }
 
     void writeOrUpdate(Item item) {
@@ -64,7 +64,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item... items) {
-       new WriteItemTask(callback).doInBackground(items);
+        new WriteItemTask(callback).doInBackground(items);
     }
 
     void writeOrUpdate(Item... items) {
@@ -104,9 +104,10 @@ class DB extends SQLiteOpenHelper {
             if(params.length == 1) {
                 bound = params[0];
 
-            } if(params.length == 2) {
+            }
+            if(params.length == 2) {
                 bound = params[0];
-                timescale =  System.currentTimeMillis() - params[1];
+                timescale = System.currentTimeMillis() - params[1];
                 QUERY = "SELECT * FROM " + TABLE; // + " WHERE " + KEY_LAST_UPDATE + " > ?";
                 cursor = db.rawQuery(QUERY, new String[] {}); // Long.toString(timescale)});
 
@@ -135,7 +136,8 @@ class DB extends SQLiteOpenHelper {
     private class WriteItemTask extends AsyncTask<Item, Void, Boolean> {
         private DBCallback callback;
 
-        WriteItemTask() {}
+        WriteItemTask() {
+        }
 
         WriteItemTask(DBCallback callback) {
             this.callback = callback;

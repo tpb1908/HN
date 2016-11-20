@@ -93,7 +93,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
         holder.mBody.setText(comment.parsedText);
         holder.mTitle.setText(comment.item.getBy());
-        holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth%mCommentColors.length]);
+        holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 
         if(usingCards) {
@@ -101,7 +101,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
         }
-        if(!comment.bound && shouldAnimate){
+        if(!comment.bound && shouldAnimate) {
             setTranslateAnimation(holder.itemView, comment.depth);
             comment.bound = true;
         }
@@ -146,6 +146,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     public int getItemCount() {
         return mVisibleItems.size();
     }
+
     @Override
     public void loadItem(Item item) {
 
@@ -236,10 +237,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         @Override
         public String toString() {
-            return  "{" +item.getId() + ", "
-                   + item.getBy() + ", "
+            return "{" + item.getId() + ", "
+                    + item.getBy() + ", "
                     + (item.getKids() == null ? "" : Arrays.toString(item.getKids()) + ", ") +
-                    + depth + "}";
+                    +depth + "}";
         }
     }
 

@@ -49,6 +49,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     private String mTestString;
     private boolean mDefaultClickListener = false;
     private int mAdditonalPadding;
+
     /**
      * Register a callback for when the view has been clicked
      * <p/>
@@ -93,7 +94,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     @SuppressWarnings("ResourceType")
     private void setAdditionalPadding(AttributeSet attrs) {
         //check padding attributes
-        int[] attributes = new int[]{android.R.attr.padding, android.R.attr.paddingTop,
+        int[] attributes = new int[] {android.R.attr.padding, android.R.attr.paddingTop,
                 android.R.attr.paddingBottom};
 
         final TypedArray paddingArray = getContext().obtainStyledAttributes(attrs, attributes);
@@ -117,7 +118,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         mPaintGuides.setColor(getCurrentTextColor());
         mPaintGuides.setStrokeWidth(mPaintWidthPx);
         mPaintGuides.setAlpha(128);
-        if (mDefaultClickListener) {
+        if(mDefaultClickListener) {
             this.setOnClickListener(this);
         }
 
@@ -230,7 +231,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     private float calculatePivotXOffset() {
         // Craft a test String of precise length
         // to reach pivot character
-        if (mTestString == null) {
+        if(mTestString == null) {
             // Spritzer requires monospace font so character is irrelevant
             mTestString = "a";
         }
@@ -315,13 +316,13 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (mSpritzer.isPlaying()) {
-            if (mClickControlListener != null) {
+        if(mSpritzer.isPlaying()) {
+            if(mClickControlListener != null) {
                 mClickControlListener.onPause();
             }
             pause();
         } else {
-            if (mClickControlListener != null) {
+            if(mClickControlListener != null) {
                 mClickControlListener.onPlay();
             }
             play();

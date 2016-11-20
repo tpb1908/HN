@@ -33,7 +33,7 @@ public class ClickableTextView extends TextView {
     }
 
     public void setListener(OnSpanClickListener listener) {
-           mListener = listener;
+        mListener = listener;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ClickableTextView extends TextView {
         int start = 0;
         int end = 0;
         // to cater last/only word loop will run equal to the length of indices.length
-        for (int i = 0; i <= indices.length; i++) {
+        for(int i = 0; i <= indices.length; i++) {
             final ClickableSpan clickSpan = getClickableSpan(i, i == currentPos);
             // to cater last/only word
             end = (i < indices.length ? indices[i] : spans.length());
@@ -77,7 +77,7 @@ public class ClickableTextView extends TextView {
     public static Integer[] getIndices(String s, char c) {
         int pos = s.indexOf(c, 0);
         List<Integer> indices = new ArrayList<>();
-        while (pos != -1) {
+        while(pos != -1) {
             indices.add(pos);
             pos = s.indexOf(c, pos + 1);
         }

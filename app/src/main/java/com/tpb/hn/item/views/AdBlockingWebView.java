@@ -132,8 +132,8 @@ public class AdBlockingWebView extends WebView {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                if(Build.VERSION.SDK_INT >= 24 ) {
-                    progressBar.setProgress(newProgress,  animate);
+                if(Build.VERSION.SDK_INT >= 24) {
+                    progressBar.setProgress(newProgress, animate);
                 } else {
                     progressBar.setProgress(newProgress);
                 }

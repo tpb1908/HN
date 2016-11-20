@@ -218,7 +218,7 @@ public class Item implements Parcelable, Comparable<Item> {
     public String getFormattedInfo() {
         String info = score + " points | ";
         if(descendants > 0) {
-            info +=  descendants + " comments | ";
+            info += descendants + " comments | ";
         }
         return info + Formatter.timeAgo(time);
     }
@@ -246,7 +246,8 @@ public class Item implements Parcelable, Comparable<Item> {
     public void parseComments() {
         try {
             comments = HNParser.parseComments(commentJSON);
-        } catch(Exception e) {}
+        } catch(Exception e) {
+        }
         descendants = comments.length;
     }
 

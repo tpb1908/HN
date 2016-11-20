@@ -156,7 +156,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             startActivity(new Intent(getApplicationContext(), ContentActivity.class));
-            return  true;
+            return true;
         }
         return super.onKeyLongPress(keyCode, event);
     }

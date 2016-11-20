@@ -36,7 +36,7 @@ public class Util {
     public static int[] convertIntegers(List<Integer> integers) {
         final int[] ret = new int[integers.size()];
         final Iterator<Integer> iterator = integers.iterator();
-        for (int i = 0; i < ret.length; i++) {
+        for(int i = 0; i < ret.length; i++) {
             ret[i] = iterator.next();
         }
         return ret;
@@ -63,7 +63,7 @@ public class Util {
 
     public static void largeDebugDump(String tag, String dump) {
         final int len = dump.length();
-        for(int i = 0; i < len; i+= 1024) {
+        for(int i = 0; i < len; i += 1024) {
             if(i + 1024 < len) {
                 Log.d(tag, dump.substring(i, i + 1024));
             } else {
@@ -72,7 +72,7 @@ public class Util {
         }
     }
 
-    public static String toHtmlColor(int color ) {
+    public static String toHtmlColor(int color) {
         return String.format("#%06X", 0xFFFFFF & color);
     }
 

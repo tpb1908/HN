@@ -166,7 +166,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                                     mThemePostponeTime = time;
                                 }
                             })
-                    .show();
+                            .show();
                 }
             }
         }

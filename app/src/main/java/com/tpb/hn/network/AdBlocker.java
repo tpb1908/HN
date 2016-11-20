@@ -44,7 +44,7 @@ public class AdBlocker {
         InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
         BufferedSource buffer = Okio.buffer(Okio.source(stream));
         String line;
-        while ((line = buffer.readUtf8Line()) != null) {
+        while((line = buffer.readUtf8Line()) != null) {
             AD_HOSTS.add(line);
         }
         buffer.close();
@@ -57,7 +57,7 @@ public class AdBlocker {
     }
 
     private static boolean isAdHost(String host) {
-        if (TextUtils.isEmpty(host)) {
+        if(TextUtils.isEmpty(host)) {
             return false;
         }
         int index = host.indexOf(".");

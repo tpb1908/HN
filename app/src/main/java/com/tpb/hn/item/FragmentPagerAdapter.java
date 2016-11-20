@@ -28,7 +28,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
-        possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER,  PageType.SKIMMER};
+        possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER, PageType.SKIMMER};
         final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]") ||
                 (item.getUrl() != null && item.getUrl().endsWith(".pdf"));
 
@@ -83,6 +83,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         fragments = new Fragment[pages.size()];
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int oldPos = 0;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -119,7 +120,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 break;
             case TEXT_READER:
                 page = Content.newInstance(PageType.TEXT_READER);
-                fragments[position] =  page;
+                fragments[position] = page;
                 break;
             case AMP_READER:
                 page = Content.newInstance(PageType.AMP_READER);

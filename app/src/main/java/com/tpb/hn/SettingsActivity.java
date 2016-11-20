@@ -34,10 +34,11 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @BindViews({R.id.title_settings_theme, R.id.title_settings_content, R.id.title_settings_comments, R.id.title_settings_browser, R.id.title_settings_data, R.id.title_settings_info}) List<TextView> mSettingsTitles;
-    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info }) List<ExpandableRelativeLayout> mSettings;
+    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info}) List<ExpandableRelativeLayout> mSettings;
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.settings_text_auto_start) TextView mThemeStart;
     @BindView(R.id.settings_text_auto_end) TextView mThemeEnd;
+
     @OnClick(R.id.settings_back_button)
     void onClick() {
         onBackPressed();
@@ -56,18 +57,18 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     private void initViewValues() {
-        ((Switch)ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
-        ((Switch)ButterKnife.findById(this, R.id.switch_content_cards)).setChecked(prefs.getUseCards());
-        ((Switch)ButterKnife.findById(this, R.id.switch_comment_cards)).setChecked(prefs.getUseCardsComments());
-        ((Switch)ButterKnife.findById(this, R.id.switch_comment_expansion)).setChecked(prefs.getExpandComments());
-        ((Switch)ButterKnife.findById(this, R.id.switch_comment_animation)).setChecked(prefs.getAnimateComments());
-        ((Switch)ButterKnife.findById(this, R.id.switch_mark_read)).setChecked(prefs.getMarkReadWhenPassed());
-        ((Switch)ButterKnife.findById(this, R.id.switch_browser_ads)).setChecked(prefs.getBlockAds());
-        ((Switch)ButterKnife.findById(this, R.id.switch_scroll_to_top)).setChecked(prefs.getShouldScrollToTop());
-        ((Switch)ButterKnife.findById(this, R.id.switch_browser_scrolling)).setChecked(prefs.getDisableHorizontalScrolling());
-        ((Switch)ButterKnife.findById(this, R.id.switch_browser_lazy_load)).setChecked(prefs.getLazyLoad());
-        ((Switch)ButterKnife.findById(this, R.id.switch_auto_dark_theme)).setChecked(prefs.getAutoDark());
-        ((Switch)ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
+        ((Switch) ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
+        ((Switch) ButterKnife.findById(this, R.id.switch_content_cards)).setChecked(prefs.getUseCards());
+        ((Switch) ButterKnife.findById(this, R.id.switch_comment_cards)).setChecked(prefs.getUseCardsComments());
+        ((Switch) ButterKnife.findById(this, R.id.switch_comment_expansion)).setChecked(prefs.getExpandComments());
+        ((Switch) ButterKnife.findById(this, R.id.switch_comment_animation)).setChecked(prefs.getAnimateComments());
+        ((Switch) ButterKnife.findById(this, R.id.switch_mark_read)).setChecked(prefs.getMarkReadWhenPassed());
+        ((Switch) ButterKnife.findById(this, R.id.switch_browser_ads)).setChecked(prefs.getBlockAds());
+        ((Switch) ButterKnife.findById(this, R.id.switch_scroll_to_top)).setChecked(prefs.getShouldScrollToTop());
+        ((Switch) ButterKnife.findById(this, R.id.switch_browser_scrolling)).setChecked(prefs.getDisableHorizontalScrolling());
+        ((Switch) ButterKnife.findById(this, R.id.switch_browser_lazy_load)).setChecked(prefs.getLazyLoad());
+        ((Switch) ButterKnife.findById(this, R.id.switch_auto_dark_theme)).setChecked(prefs.getAutoDark());
+        ((Switch) ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
         final Pair<Integer, Integer> timeRange = prefs.getDarkTimeRange();
         if(timeRange.first != -1) {
             final Pair<Integer, Integer> start = Formatter.intTohm(timeRange.first);

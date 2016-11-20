@@ -36,17 +36,17 @@ public class APIPaths {
     private static final String MERCURY_HEADER_KEY = "x-api-key";
     private static final String MERCURY_KEY = BuildConfig.MERCURY_API_TOKEN;
     public static OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        final Request request = chain.request();
-                        final Request newRequest = request.newBuilder()
-                                .addHeader(MERCURY_HEADER_KEY, MERCURY_KEY)
-                                .build();
-                        return chain.proceed(newRequest);
-                    }
-                })
-                .build();
+            .addInterceptor(new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    final Request request = chain.request();
+                    final Request newRequest = request.newBuilder()
+                            .addHeader(MERCURY_HEADER_KEY, MERCURY_KEY)
+                            .build();
+                    return chain.proceed(newRequest);
+                }
+            })
+            .build();
 
     private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
 
@@ -130,7 +130,7 @@ public class APIPaths {
     }
 
     public static String getBoilerpipePath(String url) {
-        return  BOILERPIPE_PATH + url + "&output=htmlFragment";
+        return BOILERPIPE_PATH + url + "&output=htmlFragment";
     }
 
     public static String getPDFDisplayPath(String url) {

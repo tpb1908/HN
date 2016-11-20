@@ -100,7 +100,7 @@ public class Spritzer {
     }
 
     public int getMinutesRemainingInQueue() {
-        if (mWordQueue.size() == 0) {
+        if(mWordQueue.size() == 0) {
             return 0;
         }
         return mWordQueue.size() / mWPM;
@@ -129,7 +129,7 @@ public class Spritzer {
      */
     public void swapTextView(TextView target) {
         mTarget = target;
-        if (!mPlaying) {
+        if(!mPlaying) {
             printLastWord();
         }
 
@@ -140,10 +140,10 @@ public class Spritzer {
      * fed to {@link #setText(String)}
      */
     public void start() {
-        if (mPlaying || mWordArray == null) {
+        if(mPlaying || mWordArray == null) {
             return;
         }
-        if (mWordQueue.isEmpty()) {
+        if(mWordQueue.isEmpty()) {
             refillWordQueue();
         }
 
@@ -184,8 +184,8 @@ public class Spritzer {
     }
 
     private void updateProgress() {
-        if (mSeekBar != null && !mJustJumped && !mWordQueue.isEmpty()) {
-            final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress())/ (float) mWordQueue.size());
+        if(mSeekBar != null && !mJustJumped && !mWordQueue.isEmpty()) {
+            final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up
                 mSeekBar.setProgress(mCurWordIdx);
             }
@@ -214,7 +214,7 @@ public class Spritzer {
      * @throws InterruptedException
      */
     protected void processNextWord() throws InterruptedException {
-        if (!mWordQueue.isEmpty()) {
+        if(!mWordQueue.isEmpty()) {
             String word = mWordQueue.remove();
             mCurWordIdx += 1;
             // Split long words, at hyphen if present
@@ -240,15 +240,15 @@ public class Spritzer {
      * @return
      */
     protected String splitLongWord(String word) {
-        if (word.length() > MAX_WORD_LENGTH) {
+        if(word.length() > MAX_WORD_LENGTH) {
             int splitIndex = findSplitIndex(word);
             String firstSegment;
-            if (VERBOSE) {
+            if(VERBOSE) {
                 Log.i(TAG, "Splitting long word " + word + " into " + word.substring(0, splitIndex) + " and " + word.substring(splitIndex));
             }
             firstSegment = word.substring(0, splitIndex);
             // A word split is always indicated with a hyphen unless ending in a period
-            if (!firstSegment.contains("-") && !firstSegment.endsWith(".")) {
+            if(!firstSegment.contains("-") && !firstSegment.endsWith(".")) {
                 firstSegment = firstSegment + "-";
             }
             mCurWordIdx--; //have to account for the added word in the queue
@@ -269,11 +269,11 @@ public class Spritzer {
     private int findSplitIndex(String thisWord) {
         int splitIndex;
         // Split long words, at hyphen or dot if present.
-        if (thisWord.contains("-")) {
+        if(thisWord.contains("-")) {
             splitIndex = thisWord.indexOf("-") + 1;
-        } else if (thisWord.contains(".")) {
+        } else if(thisWord.contains(".")) {
             splitIndex = thisWord.indexOf(".") + 1;
-        } else if (thisWord.length() > MAX_WORD_LENGTH * 2) {
+        } else if(thisWord.length() > MAX_WORD_LENGTH * 2) {
             // if the word is floccinaucinihilipilifcation, for example.
             splitIndex = MAX_WORD_LENGTH - 1;
             // 12 characters plus a "-" == 13.
@@ -282,14 +282,14 @@ public class Spritzer {
             splitIndex = Math.round(thisWord.length() / 2F);
         }
         // in case we found a split character that was > MAX_WORD_LENGTH characters in.
-        if (splitIndex > MAX_WORD_LENGTH) {
+        if(splitIndex > MAX_WORD_LENGTH) {
             // If we split the word at a splitting char like "-" or ".", we added one to the splitIndex
             // in order to ensure the splitting char appears at the head of the split. Not accounting
             // for this in the recursive call will cause a StackOverflowException
             return findSplitIndex(thisWord.substring(0,
                     wordContainsSplittingCharacter(thisWord) ? splitIndex - 1 : splitIndex));
         }
-        if (VERBOSE) {
+        if(VERBOSE) {
             Log.i(TAG, "Splitting long word " + thisWord + " into " + thisWord.substring(0, splitIndex) +
                     " and " + thisWord.substring(splitIndex));
         }
@@ -302,7 +302,7 @@ public class Spritzer {
 
 
     private void printLastWord() {
-        if (mWordArray != null) {
+        if(mWordArray != null) {
             printWord(mWordArray[mWordArray.length - 1]);
         }
     }
@@ -318,28 +318,28 @@ public class Spritzer {
         int startSpan = 0;
         int endSpan = 0;
         word = word.trim();
-        if (VERBOSE) Log.i(TAG + word.length(), word);
-        if (word.length() == 1) {
+        if(VERBOSE) Log.i(TAG + word.length(), word);
+        if(word.length() == 1) {
             StringBuilder builder = new StringBuilder();
-            for (int x = 0; x < CHARS_LEFT_OF_PIVOT; x++) {
+            for(int x = 0; x < CHARS_LEFT_OF_PIVOT; x++) {
                 builder.append(" ");
             }
             builder.append(word);
             word = builder.toString();
             startSpan = CHARS_LEFT_OF_PIVOT;
             endSpan = startSpan + 1;
-        } else if (word.length() <= CHARS_LEFT_OF_PIVOT * 2) {
+        } else if(word.length() <= CHARS_LEFT_OF_PIVOT * 2) {
             StringBuilder builder = new StringBuilder();
             int halfPoint = word.length() / 2;
             int beginPad = CHARS_LEFT_OF_PIVOT - halfPoint;
-            for (int x = 0; x <= beginPad; x++) {
+            for(int x = 0; x <= beginPad; x++) {
                 builder.append(" ");
             }
             builder.append(word);
             word = builder.toString();
             startSpan = halfPoint + beginPad;
             endSpan = startSpan + 1;
-            if (VERBOSE) Log.i(TAG + word.length(), "pivot: " + word.substring(startSpan, endSpan));
+            if(VERBOSE) Log.i(TAG + word.length(), "pivot: " + word.substring(startSpan, endSpan));
         } else {
             startSpan = CHARS_LEFT_OF_PIVOT;
             endSpan = startSpan + 1;
@@ -363,27 +363,27 @@ public class Spritzer {
      * Begin the background timer thread
      */
     private void startTimerThread() {
-        synchronized (mPlayingSync) {
-            if (!mSpritzThreadStarted) {
+        synchronized(mPlayingSync) {
+            if(!mSpritzThreadStarted) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (VERBOSE) {
+                        if(VERBOSE) {
                             Log.i(TAG, "Starting spritzThread with queue length " + mWordQueue.size());
                         }
                         mPlaying = true;
                         mSpritzThreadStarted = true;
-                        while (mPlayingRequested) {
+                        while(mPlayingRequested) {
                             try {
                                 processNextWord();
-                                if (mWordQueue.isEmpty()) {
-                                    if (VERBOSE) {
+                                if(mWordQueue.isEmpty()) {
+                                    if(VERBOSE) {
                                         Log.i(TAG, "Queue is empty after processNextWord. Pausing");
                                     }
                                     mTarget.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (mOnCompletionListener != null) {
+                                            if(mOnCompletionListener != null) {
                                                 mOnCompletionListener.onComplete();
                                             }
                                         }
@@ -391,13 +391,13 @@ public class Spritzer {
                                     mPlayingRequested = false;
 
                                 }
-                            } catch (InterruptedException e) {
+                            } catch(InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
 
 
-                        if (VERBOSE)
+                        if(VERBOSE)
                             Log.i(TAG, "Stopping spritzThread");
                         mPlaying = false;
                         mSpritzThreadStarted = false;
@@ -418,7 +418,7 @@ public class Spritzer {
     }
 
     public void attachSeekBar(SeekBar bar) {
-        if (bar != null) {
+        if(bar != null) {
             mSeekBar = bar;
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -473,11 +473,11 @@ public class Spritzer {
             Object obj = inputMessage.obj;
 
             Spritzer spritzer = mWeakSpritzer.get();
-            if (spritzer == null) {
+            if(spritzer == null) {
                 return;
             }
 
-            switch (what) {
+            switch(what) {
                 case MSG_PRINT_WORD:
                     spritzer.printWord((String) obj);
                     break;

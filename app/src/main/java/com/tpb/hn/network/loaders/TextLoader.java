@@ -77,8 +77,8 @@ public class TextLoader {
 
                         @Override
                         public void onError(ANError anError) {
-                            Log.e(TAG, "onError: ", anError );
-                            Log.i(TAG, "onError: " + anError.getErrorBody() );
+                            Log.e(TAG, "onError: ", anError);
+                            Log.i(TAG, "onError: " + anError.getErrorBody());
                             for(TextLoadDone rld : listenerCache.get(url)) {
                                 rld.loadDone(null, false, anError.getErrorCode());
                             }

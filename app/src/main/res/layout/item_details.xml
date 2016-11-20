@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/item_details"
+<RelativeLayout android:id="@+id/item_details"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:transitionName="details"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                android:transitionName="details">
 
     <TextView
         android:id="@+id/item_title"
-        android:transitionName="title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingEnd="8dp"
         android:text="@string/text_title_empty"
-        android:textAppearance="@android:style/TextAppearance.Material.Title"/>
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
+        android:transitionName="title"/>
 
     <TextView
         android:id="@+id/item_stats"
-        android:layout_below="@id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/item_title"
         android:text="@string/text_info_empty"
         android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
     <TextView
         android:id="@+id/item_author"
-        android:layout_below="@id/item_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/item_stats"
         android:paddingEnd="8dp"/>
 
     <TextView
         android:id="@+id/item_url"
-        android:layout_toEndOf="@id/item_author"
-        android:layout_below="@id/item_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
+        android:layout_below="@id/item_stats"
+        android:layout_toEndOf="@id/item_author"
         android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"/>
 
 </RelativeLayout>

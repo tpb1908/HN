@@ -204,7 +204,7 @@ public class Content extends Fragment implements ItemLoader,
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
             mIsContentReady = true;
             bindData();
-        }  else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+        } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
                 readablePage = Formatter.wrapInDiv(item.getText());
@@ -232,8 +232,8 @@ public class Content extends Fragment implements ItemLoader,
             Log.d(TAG, "loadDone: Error");
             readablePage = Formatter.wrapInDiv(
                     Formatter.formatHTTPError(getContext(),
-                    Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType) + ":"),
-                    code));
+                            Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType) + ":"),
+                            code));
             mIsContentReady = true;
             bindData();
         }
@@ -250,11 +250,14 @@ public class Content extends Fragment implements ItemLoader,
             mFindEditText.requestFocus();
             mFindEditText.addTextChangedListener(new TextWatcher() {
                 long lastUpdate = System.currentTimeMillis();
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
                 @Override
-                public void afterTextChanged(Editable editable) {}
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -459,15 +462,15 @@ public class Content extends Fragment implements ItemLoader,
         mShown = true;
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mIsSearchComplete) {
-                    mWebView.findNext(true);
-                } else {
-                    toggleFullscreen(!mIsFullscreen);
-                }
-            }
-        });
+                    @Override
+                    public void onClick(View view) {
+                        if(mIsSearchComplete) {
+                            mWebView.findNext(true);
+                        } else {
+                            toggleFullscreen(!mIsFullscreen);
+                        }
+                    }
+                });
 
         if(mIsShowingPDF) {
             ButterKnife.findById(mToolbar, R.id.button_find_in_page).setVisibility(View.INVISIBLE);

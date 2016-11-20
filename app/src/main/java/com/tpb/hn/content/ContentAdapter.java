@@ -74,10 +74,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
-                   ContentManager manager,
-                   RecyclerView recycler,
-                   final LinearLayoutManager layoutManager,
-                   final SwipeRefreshLayout swiper) {
+                          ContentManager manager,
+                          RecyclerView recycler,
+                          final LinearLayoutManager layoutManager,
+                          final SwipeRefreshLayout swiper) {
         ButterKnife.bind(this, recycler);
         mIsContent = manager instanceof ContentActivity;
         mContext = context;
@@ -122,7 +122,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         });
         if(recycler instanceof FastScrollRecyclerView) {
-            ((FastScrollRecyclerView)recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
+            ((FastScrollRecyclerView) recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
                 public void onFastScrollStart() {
 
@@ -348,10 +348,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void setCardParams(CardView card) {
-       card.setUseCompatPadding(true);
-       card.setCardElevation(Util.pxFromDp(4));
-       card.setRadius(Util.pxFromDp(3));
-       card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+        card.setUseCompatPadding(true);
+        card.setCardElevation(Util.pxFromDp(4));
+        card.setRadius(Util.pxFromDp(3));
+        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
     }
 
     @Override
@@ -362,7 +362,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         if(position < mData.length && mData[position] != null) {
-            return mData[position].getType() == ItemType.COMMENT ?  mIsContent ? 0 : 1 : 0;
+            return mData[position].getType() == ItemType.COMMENT ? mIsContent ? 0 : 1 : 0;
         }
         return mIsContent ? 0 : -1;
     }

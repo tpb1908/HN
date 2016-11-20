@@ -6,16 +6,16 @@
 
     <EditText
         android:id="@+id/input_wpm"
+        style="@android:style/Widget.Material.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        style="@android:style/Widget.Material.EditText"
-        android:focusableInTouchMode="true"
+        android:layout_marginStart="24dp"
         android:digits="0123456789"
+        android:focusableInTouchMode="true"
         android:inputType="number">
 
-        <requestFocus />
+        <requestFocus/>
     </EditText>
 
 </FrameLayout>

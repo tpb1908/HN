@@ -29,11 +29,11 @@ public class LockableNestedScrollView extends NestedScrollView {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mIsScrollingEnabled && super.onInterceptTouchEvent(ev);
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return mIsScrollingEnabled && super.onTouchEvent(ev);
     }
-
 
 
     public boolean isScrollingEnabled() {

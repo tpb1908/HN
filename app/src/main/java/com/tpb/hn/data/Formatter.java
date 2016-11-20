@@ -17,18 +17,18 @@ public class Formatter {
     private static final String TAG = Formatter.class.getSimpleName();
 
     public static String timeAgo(long time) {
-        final long now = new Date().getTime()/1000;
+        final long now = new Date().getTime() / 1000;
         final long delta = (now - time);
-        
+
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
-            return  div + (div == 1 ? " year" : " years");
+            return div + (div == 1 ? " year" : " years");
         } else if(delta / (28 * 24 * 3600) > 0) {
             final long div = delta / (28 * 24 * 3600);
-            return  div + (div == 1 ? " month" : " months");
+            return div + (div == 1 ? " month" : " months");
         } else if(delta / (7 * 24 * 3600) > 0) {
             final long div = delta / (7 * 24 * 3600);
-            return  div + (div == 1 ? " week" : " weeks");
+            return div + (div == 1 ? " week" : " weeks");
         } else if(delta / (24 * 3600) > 0) {
             final long div = delta / (24 * 3600);
             return div + (div == 1 ? " day" : " days");
@@ -44,20 +44,20 @@ public class Formatter {
             }
         }
     }
-    
+
     public static String shortTimeAgo(long time) {
-        final long now = new Date().getTime()/1000;
+        final long now = new Date().getTime() / 1000;
         final long delta = (now - time);
 
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
-            return  div + (div == 1 ? " yr" : " yrs"); 
+            return div + (div == 1 ? " yr" : " yrs");
         } else if(delta / (28 * 24 * 3600) > 0) {
             final long div = delta / (28 * 24 * 3600);
-            return  div + (div == 1 ? " mo" : " mos");
+            return div + (div == 1 ? " mo" : " mos");
         } else if(delta / (7 * 24 * 3600) > 0) {
             final long div = delta / (7 * 24 * 3600);
-            return  div + (div == 1 ? " wk" : " wks");
+            return div + (div == 1 ? " wk" : " wks");
         } else if(delta / (24 * 3600) > 0) {
             final long div = delta / (24 * 3600);
             return div + (div == 1 ? " d" : " ds");
@@ -93,8 +93,8 @@ public class Formatter {
     }
 
     public static Pair<Integer, Integer> intTohm(int time) {
-        final int min = time%60;
-        return new Pair<>((time-min)/60, min);
+        final int min = time % 60;
+        return new Pair<>((time - min) / 60, min);
     }
 
     public static String capitaliseFirst(String original) {

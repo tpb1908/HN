@@ -35,7 +35,7 @@ public class Login {
     }
 
     public void getCookie() {
-                AndroidNetworking.post("https://news.ycombinator.com/login?goto=news")
+        AndroidNetworking.post("https://news.ycombinator.com/login?goto=news")
                 .addBodyParameter("acct", user)
                 .addBodyParameter("pw", pass)
                 .setTag("LOGIN")
@@ -44,7 +44,7 @@ public class Login {
                 .getAsOkHttpResponse(new OkHttpResponseListener() {
                     @Override
                     public void onResponse(Response response) {
-                        if(response.code() >=200 && response.code() < 400) {//Success
+                        if(response.code() >= 200 && response.code() < 400) {//Success
                             try {
 //                            Log.i(TAG, "onResponse: Login loginResponse " + loginResponse.toString());
 //                            Log.i(TAG, "onResponse: Network loginResponse " + loginResponse.networkResponse().toString());
@@ -89,7 +89,7 @@ public class Login {
                 .getAsOkHttpResponse(new OkHttpResponseListener() {
                     @Override
                     public void onResponse(Response response) {
-                        if(response.code() >=200 && response.code() < 400) {
+                        if(response.code() >= 200 && response.code() < 400) {
                             try {
                                 final boolean success = checkIfLoggedIn(response.body().string());
                                 if(setCookie && success) Login.this.cookie = cookie;

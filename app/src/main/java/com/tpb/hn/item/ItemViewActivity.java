@@ -113,7 +113,7 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
                 if(ContentActivity.mLaunchItem != null) {
                     mLaunchItem = ContentActivity.mLaunchItem;
                     ContentActivity.mLaunchItem = null;
-                } else  {
+                } else {
                     mLaunchItem = UserViewActivity.mLaunchItem;
                 }
                 mRootItem = mLaunchItem;
@@ -193,7 +193,7 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             startActivity(new Intent(getApplicationContext(), ContentActivity.class));
-            return  true;
+            return true;
         }
         return super.onKeyLongPress(keyCode, event);
     }

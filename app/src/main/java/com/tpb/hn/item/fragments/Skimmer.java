@@ -180,7 +180,7 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
     }
 
     private void bindData(String content) {
-        if(content== null) content = " ";
+        if(content == null) content = " ";
         article = Html.fromHtml(content).
                 toString().
                 replace("\n", " ");

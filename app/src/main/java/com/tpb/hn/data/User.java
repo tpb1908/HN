@@ -91,7 +91,6 @@ public class User implements Parcelable {
     }
 
 
-
     protected User(Parcel in) {
         this.id = in.readString();
         this.delay = in.readByte();
