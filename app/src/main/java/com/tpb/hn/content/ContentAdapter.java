@@ -442,6 +442,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ContentAdapter.this.openItem(getAdapterPosition(), null);
+                }
+            });
         }
 
     }

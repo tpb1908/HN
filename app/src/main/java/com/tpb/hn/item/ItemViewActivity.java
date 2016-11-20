@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -21,6 +22,7 @@ import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.views.LockableViewPager;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
@@ -99,22 +101,27 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             if(ContentActivity.mLaunchItem != null) {
                 mLaunchItem = ContentActivity.mLaunchItem;
                 ContentActivity.mLaunchItem = null;
+            } else if(UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT) {
+                loadCommentParent(UserViewActivity.mLaunchItem);
+                Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
             } else {
                 mLaunchItem = UserViewActivity.mLaunchItem;
             }
-            mRootItem = mLaunchItem;
-            setupFragments(prefs.getPageTypes(), mLaunchItem);
-            setTitle(mLaunchItem);
-            if(launchIntent.getSerializableExtra("type") != null) {
-                final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
-                final int index = mAdapter.indexOf(type);
-                mStoryPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(index != -1) mStoryPager.setCurrentItem(index);
-                    }
-                });
+            if(mLaunchItem != null) {
+                mRootItem = mLaunchItem;
+                setupFragments(prefs.getPageTypes(), mLaunchItem);
+                setTitle(mLaunchItem);
+                if(launchIntent.getSerializableExtra("type") != null) {
+                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
+                    final int index = mAdapter.indexOf(type);
+                    mStoryPager.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(index != -1) mStoryPager.setCurrentItem(index);
+                        }
+                    });
 
+                }
             }
         }
 
@@ -181,12 +188,20 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
         mStoryTabs.setupWithViewPager(mStoryPager);
     }
 
+    private void loadCommentParent(Item item) {
+        new HNItemLoader(this, this).loadItem(item.getParent());
+    }
+
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         //This is only called when the Activity is launched from a link outside the app
-        mLaunchItem = item;
-        setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
-        setTitle(mLaunchItem);
+        if(item.getType() == ItemType.COMMENT) {
+            loadCommentParent(item);
+        } else {
+            mLaunchItem = item;
+            setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
+            setTitle(mLaunchItem);
+        }
     }
 
     private void setTitle(Item item) {
