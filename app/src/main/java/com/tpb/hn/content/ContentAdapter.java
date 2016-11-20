@@ -61,9 +61,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Item[] mData = new Item[] {};
     private ContentManager mManager;
     private int mLastPosition = 0;
+    private RecyclerView mRecycler;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwiper;
     private boolean mIsDarkTheme;
+    private boolean mShouldScrollOnChange;
     private int mCountGuess;
 
     @BindColor(R.color.colorPrimaryText) int lightText;
@@ -81,12 +83,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mManager = manager;
         mSwiper = swiper;
         mLayoutManager = layoutManager;
+        mRecycler = recycler;
         mLoader = new HNItemLoader(mContext, this);
         mLastUpdateTime = new Date().getTime() / 1000;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         mIsUsingCards = prefs.getUseCards();
         mShouldMarkRead = prefs.getMarkReadWhenPassed();
         mIsDarkTheme = prefs.getUseDarkTheme();
+        mShouldScrollOnChange = prefs.getShouldScrollToTop();
         mLayoutManager = layoutManager;
         if(!mIsUsingCards) {
             recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
@@ -101,9 +105,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     notifyDataSetChanged();
                     mManager.openUser(null);
                 }
+                if(mShouldScrollOnChange) {
+                    mRecycler.scrollToPosition(0);
+                }
             }
         });
-
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -205,6 +211,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             default:
                 mCountGuess = 100;
         }
+        if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mCurrentPage = defaultPage;
         mLastUpdateTime = new Date().getTime() / 1000;
         mManager.displayLastUpdate(mLastUpdateTime);

@@ -79,6 +79,7 @@
                         android:text="Set dark theme at time"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+
                     <Spinner
                         android:id="@+id/spinner_font_size"
                         android:layout_width="match_parent"
@@ -161,10 +162,20 @@
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
 
+                    <Switch
+                        android:id="@+id/switch_scroll_to_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_mark_new_items"
+                        android:onClick="onSwitchClick"
+                        android:text="Scroll to top on change"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_mark_new_items"
+                        android:layout_below="@id/switch_scroll_to_top"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>

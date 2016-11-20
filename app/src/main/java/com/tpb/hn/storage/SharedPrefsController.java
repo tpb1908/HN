@@ -31,6 +31,7 @@ public class SharedPrefsController {
     private static final String KEY_EXPAND_COMMENTS = "EXPAND_COMMENTS";
     private static final String KEY_ANIMATE_COMMENTS = "ANIMATE_COMMENTS";
     private static final String KEY_BLOCK_ADS = "BLOCK_ADS";
+    private static final String KEY_SCROLL_TO_TOP = "SCROLL_TO_TOP";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -42,6 +43,7 @@ public class SharedPrefsController {
     private static boolean expandComments;
     private static boolean animateComments;
     private static boolean shouldBlockAds;
+    private static boolean shouldScrollToTop;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -64,6 +66,7 @@ public class SharedPrefsController {
         expandComments = prefs.getBoolean(KEY_EXPAND_COMMENTS, true);
         animateComments = prefs.getBoolean(KEY_ANIMATE_COMMENTS, true);
         shouldBlockAds = prefs.getBoolean(KEY_BLOCK_ADS, true);
+        shouldScrollToTop = prefs.getBoolean(KEY_SCROLL_TO_TOP, true);
         editor.apply();
 
     }
@@ -170,6 +173,16 @@ public class SharedPrefsController {
     public void setBlockAds(boolean blockAds) {
         shouldBlockAds = blockAds;
         editor.putBoolean(KEY_ANIMATE_COMMENTS, shouldBlockAds);
+        editor.commit();
+    }
+
+    public boolean getShouldScrollToTop() {
+        return shouldScrollToTop;
+    }
+
+    public void setShouldScrollToTop(boolean shouldScroll) {
+        shouldScrollToTop = shouldScroll;
+        editor.putBoolean(KEY_SCROLL_TO_TOP, shouldScrollToTop);
         editor.commit();
     }
 
