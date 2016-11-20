@@ -272,7 +272,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if(viewHolder instanceof CommentHolder) {
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
-                commentHolder.mTime.setText(Formatter.timeAgo(mData[pos].getTime()) + " ago");
+                commentHolder.mTime.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
                 if(mData[pos].getText() != null) {
                     final Spanned text;
                     if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -282,8 +282,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     commentHolder.mBody.setText(text.toString().substring(0, text.toString().length() - 2));
                 }
-
-
             }
             if(mIsUsingCards) {
                 commentHolder.mCard.setUseCompatPadding(true);
@@ -291,10 +289,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 commentHolder.mCard.setRadius(Util.pxFromDp(3));
                 commentHolder.mCard.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
             }
-
-
         }
-
     }
 
     @Override
