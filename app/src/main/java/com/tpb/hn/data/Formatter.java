@@ -87,7 +87,7 @@ public class Formatter {
     }
 
     public static String formatHTTPError(Context context, String message, int code) {
-
+        if(context == null) return "Error";
         switch(code) {
             case -100: //Custom error parsing
                 return String.format(context.getString(R.string.error_http_format_string), message, context.getString(R.string.error_parsing_readable_text));

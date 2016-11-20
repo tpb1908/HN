@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,6 +63,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private int mLastPosition = 0;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwiper;
+    private boolean mIsDarkTheme;
+
+    @BindColor(R.color.colorPrimaryText) int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
@@ -69,8 +74,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                    RecyclerView recycler,
                    final LinearLayoutManager layoutManager,
                    final SwipeRefreshLayout swiper) {
+        ButterKnife.bind(this, recycler);
         mIsContent = manager instanceof ContentActivity;
-        Log.i(TAG, "ContentAdapter: " + mIsContent);
         mContext = context;
         mManager = manager;
         mSwiper = swiper;
@@ -80,6 +85,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         mIsUsingCards = prefs.getUseCards();
         mShouldMarkRead = prefs.getMarkReadWhenPassed();
+        mIsDarkTheme = prefs.getUseDarkTheme();
         mLayoutManager = layoutManager;
         if(!mIsUsingCards) {
             recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
@@ -269,11 +275,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
                     } else {
                         holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
+                        holder.mTitle.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
                     if(item.isNew()) {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
                     } else {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
+                        holder.mNumber.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
                 }
             }
