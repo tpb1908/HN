@@ -98,16 +98,16 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             final String data = launchIntent.getDataString();
             new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
-            if(ContentActivity.mLaunchItem != null) {
-                mLaunchItem = ContentActivity.mLaunchItem;
-                ContentActivity.mLaunchItem = null;
-            } else if(UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT) {
+            if(UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT) {
                 loadCommentParent(UserViewActivity.mLaunchItem);
                 Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
             } else {
-                mLaunchItem = UserViewActivity.mLaunchItem;
-            }
-            if(mLaunchItem != null) {
+                if(ContentActivity.mLaunchItem != null) {
+                    mLaunchItem = ContentActivity.mLaunchItem;
+                    ContentActivity.mLaunchItem = null;
+                } else  {
+                    mLaunchItem = UserViewActivity.mLaunchItem;
+                }
                 mRootItem = mLaunchItem;
                 setupFragments(prefs.getPageTypes(), mLaunchItem);
                 setTitle(mLaunchItem);
