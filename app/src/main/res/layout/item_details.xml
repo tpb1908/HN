@@ -27,12 +27,11 @@
         android:id="@+id/item_author"
         android:layout_below="@id/item_stats"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingEnd="8dp"/>
 
     <TextView
         android:id="@+id/item_url"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:layout_toEndOf="@id/item_author"
         android:layout_below="@id/item_stats"
         android:layout_width="wrap_content"

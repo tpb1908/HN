@@ -242,24 +242,21 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if(mData.length > pos && mData[pos] != null) {
                 final Item item = mData[pos];
                 holder.mTitle.setText(item.getFormattedTitle());
-
                 holder.mInfo.setText(item.getFormattedInfo());
                 if(mIsContent) {
                     holder.mAuthor.setVisibility(View.VISIBLE);
                     holder.mAuthor.setText(item.getFormattedBy());
+                    holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
                 } else {
                     holder.mAuthor.setVisibility(View.GONE);
+                    holder.mNumber.setVisibility(View.GONE);
                 }
+
                 if(item.getUrl() == null)  {
                     holder.mURL.setVisibility(View.GONE);
                 } else {
                     holder.mURL.setVisibility(View.VISIBLE);
                     holder.mURL.setText(item.getFormattedURL());
-                }
-                if(mIsContent) {
-                    holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
-                } else {
-                    holder.mNumber.setVisibility(View.GONE);
                 }
                 if(item.isViewed()) {
                     holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
