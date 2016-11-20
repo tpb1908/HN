@@ -151,9 +151,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 } else if(time - mThemePostponeTime > 5) { //Wait 5 minutes to remind
                     //FIXME- Dialogs stacking up
                     new MaterialDialog.Builder(this)
-                            .title("Change theme")
-                            .positiveText("OK")
-                            .negativeText("LATER")
+                            .title(R.string.title_change_theme)
+                            .positiveText(android.R.string.ok)
+                            .negativeText(R.string.action_later)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
