@@ -36,8 +36,6 @@ import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.user.UserViewActivity;
 
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -175,10 +173,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void displayLastUpdate(long lastUpdate) {
-        final long now = new Date().getTime() / 1000;
-        if((now - lastUpdate) > 60 * 5) {
-            mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.shortTimeAgo(lastUpdate)));
-        }
+        mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.shortTimeAgo(lastUpdate)));
     }
 
     private ActivityOptionsCompat getSharedTransition() {
