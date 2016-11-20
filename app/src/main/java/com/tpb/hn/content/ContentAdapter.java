@@ -240,24 +240,33 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(viewHolder instanceof ItemHolder) {
             final ItemHolder holder = (ItemHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
-                holder.mTitle.setText(mData[pos].getFormattedTitle());
-                holder.mInfo.setText(mData[pos].getFormattedInfo());
+                final Item item = mData[pos];
+                holder.mTitle.setText(item.getFormattedTitle());
+
+                holder.mInfo.setText(item.getFormattedInfo());
                 if(mIsContent) {
                     holder.mAuthor.setVisibility(View.VISIBLE);
-                    holder.mAuthor.setText(mData[pos].getFormattedBy());
+                    holder.mAuthor.setText(item.getFormattedBy());
+                } else {
+                    holder.mAuthor.setVisibility(View.GONE);
                 }
-                holder.mURL.setText(mData[pos].getFormattedURL());
+                if(item.getUrl() == null)  {
+                    holder.mURL.setVisibility(View.GONE);
+                } else {
+                    holder.mURL.setVisibility(View.VISIBLE);
+                    holder.mURL.setText(item.getFormattedURL());
+                }
                 if(mIsContent) {
                     holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
                 } else {
                     holder.mNumber.setVisibility(View.GONE);
                 }
-                if(mData[pos].isViewed()) {
+                if(item.isViewed()) {
                     holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
                 } else {
                     holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
                 }
-                if(mData[pos].isNew()) {
+                if(item.isNew()) {
                     holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
                 } else {
                     holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
@@ -320,7 +329,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.mTitle.setText(R.string.text_title_empty);
             holder.mInfo.setText(R.string.text_info_empty);
             holder.mAuthor.setText("");
-            holder.mAuthor.setVisibility(View.INVISIBLE);
             holder.mURL.setText("");
             holder.mNumber.setText("");
             holder.mTitle.requestLayout();
