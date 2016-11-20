@@ -3,6 +3,7 @@ package com.tpb.hn.storage;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.util.Pair;
 
 import com.tpb.hn.item.FragmentPagerAdapter;
 
@@ -36,6 +37,9 @@ public class SharedPrefsController {
     private static final String KEY_DISABLE_HORIZONTAL_SCROLLING = "HORIZONTAL_SCROLLING";
     private static final String KEY_LAZY_LOAD = "LAZY_LOAD";
     private static final String KEY_VOLUME_NAVIGATION = "VOLUME_NAVIGATION";
+    private static final String KEY_DARK_START = "DARK_START";
+    private static final String KEY_DARK_END = "DARK_END";
+    private static final String KEY_AUTO_DARK = "AUTO_DARK";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -51,6 +55,9 @@ public class SharedPrefsController {
     private static boolean disableHorizontalScrolling;
     private static boolean lazyLoad;
     private static boolean volumeNavigation;
+    private static boolean autoDarkTheme;
+    private static int darkThemeStart;
+    private static int darkThemeEnd;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -83,6 +90,9 @@ public class SharedPrefsController {
         disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
         lazyLoad = prefs.getBoolean(KEY_LAZY_LOAD, false);
         volumeNavigation = prefs.getBoolean(KEY_VOLUME_NAVIGATION, false);
+        darkThemeStart = prefs.getInt(KEY_DARK_START, -1);
+        darkThemeEnd = prefs.getInt(KEY_DARK_END, -1);
+        autoDarkTheme = prefs.getBoolean(KEY_AUTO_DARK, false);
     }
 
     private void initInitialValues() {
@@ -236,6 +246,28 @@ public class SharedPrefsController {
         volumeNavigation = useVolume;
         editor.putBoolean(KEY_VOLUME_NAVIGATION, volumeNavigation);
         editor.commit();
+    }
+
+    public boolean getAutoDark() {
+        return autoDarkTheme;
+    }
+
+    public void setAutoDark(boolean autoDark) {
+        autoDarkTheme = autoDark;
+        editor.putBoolean(KEY_AUTO_DARK, autoDarkTheme);
+        editor.commit();
+    }
+
+    public void setDarkTimes(int start, int end) {
+        darkThemeStart = start;
+        darkThemeEnd = end;
+        editor.putInt(KEY_DARK_START, darkThemeStart);
+        editor.putInt(KEY_DARK_END, darkThemeEnd);
+        editor.commit();
+    }
+
+    public Pair<Integer, Integer> getDarkTimeRange() {
+        return new Pair<>(darkThemeStart, darkThemeEnd);
     }
 
     public FragmentPagerAdapter.PageType[] getPageTypes() {

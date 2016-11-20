@@ -2,6 +2,7 @@ package com.tpb.hn.data;
 
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
@@ -75,6 +76,25 @@ public class Formatter {
 
     public static String appendAgo(String time) {
         return time.contains("just") ? time : time + " ago";
+    }
+
+    public static String hmToString(int hour, int minute, String separator) {
+        String val = Integer.toString(hour);
+
+        val += separator;
+        if(minute == 0) {
+            val += "0";
+        }
+        return val + Integer.toString(minute);
+    }
+
+    public static int hmToInt(int h, int m) {
+        return h * 60 + m;
+    }
+
+    public static Pair<Integer, Integer> intTohm(int time) {
+        final int min = time%60;
+        return new Pair<>((time-min)/60, min);
     }
 
     public static String capitaliseFirst(String original) {

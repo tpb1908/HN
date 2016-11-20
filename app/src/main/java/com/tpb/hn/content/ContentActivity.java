@@ -117,8 +117,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             }
         }, 1000 * 60);
 
-
-
     }
 
     @Override
