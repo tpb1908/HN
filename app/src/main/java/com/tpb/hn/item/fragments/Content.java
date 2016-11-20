@@ -38,7 +38,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
-import com.tpb.hn.item.views.CachingAdBlockingWebView;
+import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -59,7 +59,7 @@ import butterknife.Unbinder;
 public class Content extends Fragment implements ItemLoader,
         TextLoader.TextLoadDone,
         FragmentPagerAdapter.FragmentCycleListener,
-        CachingAdBlockingWebView.LinkHandler {
+        AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
     private Tracker mTracker;
 
@@ -75,7 +75,7 @@ public class Content extends Fragment implements ItemLoader,
     @BindView(R.id.fullscreen) LinearLayout mFullscreen;
     @BindView(R.id.webview_swiper) SwipeRefreshLayout mSwiper;
     @BindView(R.id.webview_scroller) NestedScrollView mScrollView;
-    @BindView(R.id.webview) CachingAdBlockingWebView mWebView;
+    @BindView(R.id.webview) AdBlockingWebView mWebView;
     @BindView(R.id.content_fragment_toolbar) android.widget.Toolbar mToolbar;
     @BindView(R.id.content_progressbar) ProgressBar mProgressBar;
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
@@ -132,7 +132,7 @@ public class Content extends Fragment implements ItemLoader,
                 mWebView.reload();
             }
         });
-        mWebView.setLoadDoneListener(new CachingAdBlockingWebView.LoadListener() {
+        mWebView.setLoadDoneListener(new AdBlockingWebView.LoadListener() {
             @Override
             public void loadDone() {
                 if(mSwiper != null) mSwiper.setRefreshing(false);

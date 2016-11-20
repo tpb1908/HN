@@ -2,7 +2,6 @@ package com.tpb.hn.item.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -24,26 +23,25 @@ import java.util.Map;
  * Created by theo on 09/11/16.
  */
 
-public class CachingAdBlockingWebView extends WebView {
-    private static final String TAG = CachingAdBlockingWebView.class.getSimpleName();
+public class AdBlockingWebView extends WebView {
+    private static final String TAG = AdBlockingWebView.class.getSimpleName();
 
     private ProgressBar mBoundProgressBar;
     private LinkHandler mHandler;
     private LoadListener mLoadListener;
     private boolean shouldBlockAds = true;
 
-    public CachingAdBlockingWebView(Context context) {
+    public AdBlockingWebView(Context context) {
         this(context, null);
     }
 
-    public CachingAdBlockingWebView(Context context, AttributeSet attrs) {
+    public AdBlockingWebView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.webViewStyle);
     }
 
-    public CachingAdBlockingWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AdBlockingWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         getSettings().setSupportZoom(true);
-        this.setBackgroundColor(Color.TRANSPARENT);
         this.setWebViewClient(new WebViewClient() {
             private Map<String, Boolean> loadedUrls = new HashMap<>();
 
@@ -133,7 +131,6 @@ public class CachingAdBlockingWebView extends WebView {
                 }
                 if(hideWhenDone && newProgress == 100) {
                     progressBar.setVisibility(GONE);
-                    CachingAdBlockingWebView.this.setBackgroundColor(Color.WHITE);
                 }
 
             }

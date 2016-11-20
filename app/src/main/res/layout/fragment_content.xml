@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.tpb.hn.item.views.CachingAdBlockingWebView
+            <com.tpb.hn.item.views.AdBlockingWebView
                 android:id="@+id/webview"
                 android:scrollbarStyle="insideOverlay"
                 android:scrollbars="vertical"
@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </com.tpb.hn.item.views.CachingAdBlockingWebView>
+            </com.tpb.hn.item.views.AdBlockingWebView>
 
         </android.support.v4.widget.NestedScrollView>
 
