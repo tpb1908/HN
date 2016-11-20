@@ -98,7 +98,7 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             final String data = launchIntent.getDataString();
             new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
-            if(UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT) {
+            if(UserViewActivity.mLaunchItem != null && UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT && ContentActivity.mLaunchItem == null) {
                 loadCommentParent(UserViewActivity.mLaunchItem);
                 Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
             } else {
