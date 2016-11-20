@@ -281,6 +281,16 @@
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_browser_scrolling"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_browser_ads"
+                        android:onClick="onSwitchClick"
+                        android:text="Disable browser horizontal scrolling"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"

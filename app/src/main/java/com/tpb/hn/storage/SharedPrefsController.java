@@ -32,6 +32,7 @@ public class SharedPrefsController {
     private static final String KEY_ANIMATE_COMMENTS = "ANIMATE_COMMENTS";
     private static final String KEY_BLOCK_ADS = "BLOCK_ADS";
     private static final String KEY_SCROLL_TO_TOP = "SCROLL_TO_TOP";
+    private static final String KEY_DISABLE_HORIZONTAL_SCROLLING = "HORIZONTAL_SCROLLING";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -44,6 +45,7 @@ public class SharedPrefsController {
     private static boolean animateComments;
     private static boolean shouldBlockAds;
     private static boolean shouldScrollToTop;
+    private static boolean disableHorizontalScrolling;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -67,6 +69,7 @@ public class SharedPrefsController {
         animateComments = prefs.getBoolean(KEY_ANIMATE_COMMENTS, true);
         shouldBlockAds = prefs.getBoolean(KEY_BLOCK_ADS, true);
         shouldScrollToTop = prefs.getBoolean(KEY_SCROLL_TO_TOP, true);
+        disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
         editor.apply();
 
     }
@@ -183,6 +186,16 @@ public class SharedPrefsController {
     public void setShouldScrollToTop(boolean shouldScroll) {
         shouldScrollToTop = shouldScroll;
         editor.putBoolean(KEY_SCROLL_TO_TOP, shouldScrollToTop);
+        editor.commit();
+    }
+
+    public boolean getDisableHorizontalScrolling() {
+        return disableHorizontalScrolling;
+    }
+
+    public void setDisableHorizontalScrolling(boolean shouldDisable) {
+        disableHorizontalScrolling = shouldDisable;
+        editor.putBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, disableHorizontalScrolling);
         editor.commit();
     }
 

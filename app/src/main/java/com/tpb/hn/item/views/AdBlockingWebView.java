@@ -100,6 +100,14 @@ public class AdBlockingWebView extends WebView {
         });
     }
 
+    public void setHorizontalScrollingEnabled(boolean enabled) {
+        if(enabled) {
+            enableHorizontalScrolling();
+        } else {
+            disableHorizontalScrolling();
+        }
+    }
+
     public void enableHorizontalScrolling() {
         setOnTouchListener(null);
     }

@@ -50,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch)ButterKnife.findById(this, R.id.switch_mark_read)).setChecked(prefs.getMarkReadWhenPassed());
         ((Switch)ButterKnife.findById(this, R.id.switch_browser_ads)).setChecked(prefs.getBlockAds());
         ((Switch)ButterKnife.findById(this, R.id.switch_scroll_to_top)).setChecked(prefs.getShouldScrollToTop());
+        ((Switch)ButterKnife.findById(this, R.id.switch_browser_scrolling)).setChecked(prefs.getDisableHorizontalScrolling());
     }
 
     private void setViews() {
@@ -123,6 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_scroll_to_top:
                 prefs.setShouldScrollToTop(sView.isChecked());
+                break;
+            case R.id.switch_browser_scrolling:
+                prefs.setDisableHorizontalScrolling(sView.isChecked());
                 break;
         }
     }

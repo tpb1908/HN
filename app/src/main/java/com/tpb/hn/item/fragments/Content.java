@@ -84,6 +84,7 @@ public class Content extends Fragment implements ItemLoader,
     private boolean mIsFindShown = false;
     private boolean mIsSearchComplete = false;
     private boolean mIsShowingPDF = false;
+    private boolean mDisableHorizontalScrolling;
 
     private FragmentPagerAdapter.PageType mType;
 
@@ -110,11 +111,12 @@ public class Content extends Fragment implements ItemLoader,
         unbinder = ButterKnife.bind(this, inflated);
 
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
-
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        mWebView.setHorizontalScrollingEnabled(!prefs.getDisableHorizontalScrolling());
         mWebView.bindProgressBar(mProgressBar, true, true);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setLinkHandler(this);
-        mWebView.setShouldBlockAds(SharedPrefsController.getInstance(getContext()).getBlockAds());
+        mWebView.setShouldBlockAds(prefs.getBlockAds());
         mParent.showFab();
 
         if(mIsContentReady) {
@@ -334,7 +336,7 @@ public class Content extends Fragment implements ItemLoader,
             mToolbar.setVisibility(View.GONE);
             mWebView.setDrawingCacheEnabled(true);
             mFullscreen.removeView(mWebView);
-            mWebView.disableHorizontalScrolling();
+            mWebView.setHorizontalScrollingEnabled(!mDisableHorizontalScrolling);
             if(mIsShowingPDF) {
                 mWebView.setVisibility(View.GONE);
                 setupPDFButtons();
