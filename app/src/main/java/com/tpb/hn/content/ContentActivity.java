@@ -3,6 +3,7 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -21,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -36,6 +39,8 @@ import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.user.UserViewActivity;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,8 +64,10 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
+    private int mThemePostponeTime = Integer.MAX_VALUE;
 
     public static Item mLaunchItem;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,10 +119,58 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             public void run() {
                 if(mSubtitle != null) {
                     mAdapter.getLastUpdate();
+
+                    checkThemeChange(true);
+
                     timeAgoHandler.postDelayed(this, 1000 * 60);
                 }
             }
         }, 1000 * 60);
+        checkThemeChange(false);
+    }
+
+    private void checkThemeChange(boolean showDialog) {
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
+        if(prefs.getAutoDark()) {
+            final Calendar c = Calendar.getInstance();
+            final int time = Formatter.hmToInt(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
+
+            final android.util.Pair<Integer, Integer> times = prefs.getDarkTimeRange();
+
+        /*
+            time greater than start and last time less than start
+            time greater than end and last time less than end
+         */
+            final boolean dark = (time >= times.first && time < times.second) //Standard s t e
+                    || (time < times.first && times.second < times.first && time < times.second); // s mid t e
+            Log.i(TAG, "checkThemeChange: " + dark);
+            if(dark != prefs.getUseDarkTheme()) {
+                if(!showDialog) {
+                    prefs.setUseDarkTheme(dark);
+                    recreate();
+                } else if(time - mThemePostponeTime > 5) { //Wait 5 minutes to remind
+                    //FIXME- Dialogs stacking up
+                    new MaterialDialog.Builder(this)
+                            .title("Change theme")
+                            .positiveText("OK")
+                            .negativeText("LATER")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    prefs.setUseDarkTheme(dark);
+                                    ContentActivity.this.recreate();
+                                }
+                            })
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    mThemePostponeTime = time;
+                                }
+                            })
+                    .show();
+                }
+            }
+        }
 
     }
 
@@ -212,6 +267,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mAdapter.cancelBackgroundLoading();
         mAdapter.getLastUpdate();
+        checkThemeChange(true);
     }
 
 }
