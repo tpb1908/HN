@@ -198,6 +198,7 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
         if(item.getType() == ItemType.COMMENT) {
             loadCommentParent(item);
         } else {
+            mRootItem = item;
             mLaunchItem = item;
             setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
             setTitle(mLaunchItem);
