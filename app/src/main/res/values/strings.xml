@@ -38,6 +38,7 @@
     <string name="text_traversing_comments">Traversing comments to find parent Item</string>
     <string name="text_deleted_comment">[Deleted comment]</string>
     <string name="text_redirecting_reader">Redirecting through parser service</string>
+    <string name="text_item_deleted">[Deleted item]</string>
 
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
