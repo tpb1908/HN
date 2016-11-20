@@ -11,6 +11,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Created by theo on 25/10/16.
@@ -59,6 +61,12 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
     @OnClick(R.id.item_back_button)
     public void onClick() {
         onBackPressed();
+    }
+
+    @OnLongClick(R.id.item_back_button)
+    boolean onLongClick() {
+        startActivity(new Intent(getApplicationContext(), ContentActivity.class));
+        return true;
     }
 
     @OnClick(R.id.item_author)
@@ -179,6 +187,15 @@ public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.
             hideFab();
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            startActivity(new Intent(getApplicationContext(), ContentActivity.class));
+            return  true;
+        }
+        return super.onKeyLongPress(keyCode, event);
     }
 
     private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {

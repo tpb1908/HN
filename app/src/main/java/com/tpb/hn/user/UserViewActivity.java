@@ -37,6 +37,7 @@ import com.tpb.hn.storage.SharedPrefsController;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 
 /**
  * Created by theo on 19/11/16.
@@ -56,6 +57,12 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @OnClick(R.id.user_back_button)
     void onClick() {
         onBackPressed();
+    }
+
+    @OnLongClick(R.id.user_back_button)
+    boolean onLongClick() {
+        startActivity(new Intent(getApplicationContext(), ContentActivity.class));
+        return true;
     }
 
     private User mUser;
@@ -143,6 +150,15 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            startActivity(new Intent(getApplicationContext(), ContentActivity.class));
+            return  true;
+        }
+        return super.onKeyLongPress(keyCode, event);
     }
 
     private void showLongAboutPopup() {

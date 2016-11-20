@@ -60,7 +60,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
 
-
     public static Item mLaunchItem;
 
     @Override
