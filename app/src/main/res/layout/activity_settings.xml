@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:id="@+id/settings_root"
               xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
+        android:transitionName="appbar"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
@@ -17,10 +17,31 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:selectableItemBackground="?attr/colorPrimary"
-            app:navigationContentDescription="@string/abc_action_bar_up_description"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="Settings">
+            android:contentInsetLeft="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <ImageButton
+                android:id="@+id/settings_back_button"
+                android:transitionName="button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="@android:color/transparent"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"/>
 
         </android.support.v7.widget.Toolbar>
 

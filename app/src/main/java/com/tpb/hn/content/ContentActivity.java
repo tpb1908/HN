@@ -125,7 +125,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivityForResult(new Intent(ContentActivity.this, SettingsActivity.class), 1);
+        startActivityForResult(new Intent(ContentActivity.this, SettingsActivity.class),
+                1,
+                getSharedTransition().toBundle());
         return true;
     }
 
