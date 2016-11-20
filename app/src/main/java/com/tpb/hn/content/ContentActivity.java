@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,13 +58,15 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.content_subtitle) TextView mSubtitle;
 
     private ContentAdapter mAdapter;
+    private boolean mVolumeNavigation;
+
 
     public static Item mLaunchItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //TODO- Get settings again on resume
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
 
@@ -81,7 +84,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mAdapter = new ContentAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
-
+        mVolumeNavigation = prefs.getVolumeNavigation();
         mNavSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -115,6 +118,25 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             }
         }, 1000 * 60);
 
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

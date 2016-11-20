@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch)ButterKnife.findById(this, R.id.switch_scroll_to_top)).setChecked(prefs.getShouldScrollToTop());
         ((Switch)ButterKnife.findById(this, R.id.switch_browser_scrolling)).setChecked(prefs.getDisableHorizontalScrolling());
         ((Switch)ButterKnife.findById(this, R.id.switch_browser_lazy_load)).setChecked(prefs.getLazyLoad());
+        ((Switch)ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
     }
 
     private void setViews() {
@@ -127,6 +128,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_browser_lazy_load:
                 prefs.setLazyLoad(sView.isChecked());
+                break;
+            case R.id.switch_volume_navigation:
+                prefs.setVolumeNavigation(sView.isChecked());
                 break;
         }
     }

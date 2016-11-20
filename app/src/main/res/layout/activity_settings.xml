@@ -193,10 +193,20 @@
                         android:text="Scroll to top on change"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_volume_navigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_scroll_to_top"
+                        android:onClick="onSwitchClick"
+                        android:text="Navigate with volume keys"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_scroll_to_top"
+                        android:layout_below="@id/switch_volume_navigation"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
@@ -277,7 +287,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
-
+        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
+        int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
+        mRecycler.smoothScrollToPosition(Math.min(currentPos + height, mData.length));
                 <TextView
                     android:id="@+id/title_settings_browser"
                     android:layout_width="match_parent"

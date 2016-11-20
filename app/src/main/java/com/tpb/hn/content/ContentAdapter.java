@@ -170,6 +170,18 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mLastPosition = pos;
     }
 
+    public void scrollDown() {
+        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
+        int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
+        mRecycler.smoothScrollToPosition(Math.min(currentPos + height, mData.length));
+    }
+
+    public void scrollUp() {
+        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
+        int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
+        mRecycler.smoothScrollToPosition(Math.max(currentPos - height, 0));
+    }
+
     @NonNull
     @Override
     public String getSectionName(int position) {
@@ -338,7 +350,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return mData.length > 0 ? mData.length : mCountGuess;
+        return mData.length > 0 ? mData.length - 1 : mCountGuess;
     }
 
     @Override

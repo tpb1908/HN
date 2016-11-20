@@ -34,6 +34,7 @@ public class SharedPrefsController {
     private static final String KEY_SCROLL_TO_TOP = "SCROLL_TO_TOP";
     private static final String KEY_DISABLE_HORIZONTAL_SCROLLING = "HORIZONTAL_SCROLLING";
     private static final String KEY_LAZY_LOAD = "LAZY_LOAD";
+    private static final String KEY_VOLUME_NAVIGATION = "VOLUME_NAVIGATION";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -48,6 +49,7 @@ public class SharedPrefsController {
     private static boolean shouldScrollToTop;
     private static boolean disableHorizontalScrolling;
     private static boolean lazyLoad;
+    private static boolean volumeNavigation;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -73,6 +75,7 @@ public class SharedPrefsController {
         shouldScrollToTop = prefs.getBoolean(KEY_SCROLL_TO_TOP, true);
         disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
         lazyLoad = prefs.getBoolean(KEY_LAZY_LOAD, false);
+        volumeNavigation = prefs.getBoolean(KEY_VOLUME_NAVIGATION, false);
         editor.apply();
 
     }
@@ -209,6 +212,16 @@ public class SharedPrefsController {
     public void setLazyLoad(boolean shouldLazyLoad) {
         lazyLoad = shouldLazyLoad;
         editor.putBoolean(KEY_LAZY_LOAD, lazyLoad);
+        editor.commit();
+    }
+
+    public boolean getVolumeNavigation() {
+        return volumeNavigation;
+    }
+
+    public void setVolumeNavigation(boolean useVolume) {
+        volumeNavigation = useVolume;
+        editor.putBoolean(KEY_VOLUME_NAVIGATION, volumeNavigation);
         editor.commit();
     }
 

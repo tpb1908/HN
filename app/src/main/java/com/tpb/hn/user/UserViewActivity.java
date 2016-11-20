@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     private User mUser;
     private boolean viewsReady = false;
     private boolean userReady = false;
+    private boolean mVolumeNavigation;
 
     public static Item mLaunchItem;
 
@@ -81,6 +83,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mAdapter = new ContentAdapter(getApplication(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mSwiper);
         mRecycler.setAdapter(mAdapter);
+        mVolumeNavigation = prefs.getVolumeNavigation();
         final Intent launchIntent = getIntent();
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
@@ -121,6 +124,25 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             }
         }
         mAdapter.IdLoadDone(mUser.getSubmitted());
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private void showLongAboutPopup() {
