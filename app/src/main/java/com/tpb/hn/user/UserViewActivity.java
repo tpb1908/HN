@@ -34,8 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.R.attr.type;
-
 /**
  * Created by theo on 19/11/16.
  */
@@ -109,7 +107,6 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         } else {
             mAbout.setVisibility(View.VISIBLE); //This will only be needed if we refresh and the user has created an about
             mAbout.setText(Html.fromHtml(mUser.getAbout()));
-            //TODO- Find out how to deal with links that aren't <a></a>
             mAbout.setMovementMethod(LinkMovementMethod.getInstance());
         }
         mAdapter.IdLoadDone(mUser.getSubmitted());
