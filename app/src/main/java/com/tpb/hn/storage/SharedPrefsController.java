@@ -65,6 +65,12 @@ public class SharedPrefsController {
             editor.putBoolean(KEY_FIRST_RUN, false);
             initInitialValues();
         }
+        getValues();
+        editor.apply();
+
+    }
+
+    private void getValues() {
         useCards = prefs.getBoolean(KEY_USE_CARDS, false);
         markReadWhenPassed = prefs.getBoolean(KEY_MARK_READ_WHEN_PASSED, false);
         useDarkTheme = prefs.getBoolean(KEY_DARK_THEME, false);
@@ -76,8 +82,6 @@ public class SharedPrefsController {
         disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
         lazyLoad = prefs.getBoolean(KEY_LAZY_LOAD, false);
         volumeNavigation = prefs.getBoolean(KEY_VOLUME_NAVIGATION, false);
-        editor.apply();
-
     }
 
     private void initInitialValues() {
@@ -87,6 +91,14 @@ public class SharedPrefsController {
         editor.putString(KEY_DEFAULT_PAGE, "TOP");
 
         editor.apply();
+    }
+
+    public void reset() {
+        editor.clear();
+        editor.commit();
+        getValues();
+        initInitialValues();
+
     }
 
     public int getSkimmerWPM() {

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -88,9 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
                     mSettings.get(index).toggle();
                 }
             });
-
         }
-
     };
 
     public void onSwitchClick(@NonNull View view) {
@@ -133,6 +133,20 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.setVolumeNavigation(sView.isChecked());
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        prefs.reset();
+        restartRequired = true;
+        setViews();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
     }
 
     @Override
