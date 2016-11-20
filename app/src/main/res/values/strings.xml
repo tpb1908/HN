@@ -6,6 +6,7 @@
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
     <string name="error_parsing_readable_text">Error parsing text</string>
     <string name="error_comment_loading">Couldn"'"t load comments. Swipe to retry</string>
+    <string name="error_opening_deleted">Can"'"t open deleted comment</string>
 
     <string name="error_http_400">400 Bad Request</string>
     <string name="error_http_401">401 Unauthorised</string>
@@ -35,7 +36,7 @@
     <string name="text_no_comments">No comments yet</string>
     <string name="text_user_without_about">User has no about</string>
     <string name="text_traversing_comments">Traversing comments to find parent Item</string>
-
+    <string name="text_deleted_comment">[Deleted comment]</string>
     <string name="text_redirecting_reader">Redirecting through parser service</string>
 
     <string name="text_open_with_docs">Open in app with Google Docs</string>

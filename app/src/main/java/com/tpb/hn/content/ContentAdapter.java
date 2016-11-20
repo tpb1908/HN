@@ -273,7 +273,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
                 commentHolder.mTime.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
-                if(mData[pos].getText() != null) {
+                if(mData[pos].isDeleted()) {
+                    commentHolder.mBody.setText(R.string.text_deleted_comment);
+                } else if(mData[pos].getText() != null) {
                     final Spanned text;
                     if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         text = Html.fromHtml(mData[pos].getText(), Html.FROM_HTML_MODE_COMPACT);

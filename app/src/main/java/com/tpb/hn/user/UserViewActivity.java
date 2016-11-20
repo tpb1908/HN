@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
@@ -32,6 +33,8 @@ import com.tpb.hn.storage.SharedPrefsController;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.R.attr.type;
 
 /**
  * Created by theo on 19/11/16.
@@ -122,12 +125,17 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
 
     @Override
     public void openItem(Item item) {
-        mLaunchItem = item;
-        final Intent i = new Intent(UserViewActivity.this, ItemViewActivity.class);
-        startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                Pair.create((View) mBackButton, "button"),
-                Pair.create((View) mAppBar, "appbar")).toBundle());
-        overridePendingTransition(R.anim.slide_up, R.anim.none);
+        if(item.isDeleted()) {
+            Toast.makeText(getApplicationContext(), R.string.error_opening_deleted, Toast.LENGTH_LONG).show();
+        } else {
+            mLaunchItem = item;
+            Log.i(TAG, "openItem: " + item.toString());
+            final Intent i = new Intent(UserViewActivity.this, ItemViewActivity.class);
+            startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                    Pair.create((View) mBackButton, "button"),
+                    Pair.create((View) mAppBar, "appbar")).toBundle());
+            overridePendingTransition(R.anim.slide_up, R.anim.none);
+        }
     }
 
     @Override
