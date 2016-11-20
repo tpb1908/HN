@@ -171,14 +171,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void scrollDown() {
-        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
+        final int currentPos = mLayoutManager.findLastVisibleItemPosition();
         int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
         mRecycler.smoothScrollToPosition(Math.min(currentPos + height, mData.length));
     }
 
     public void scrollUp() {
-        final int currentPos = mLayoutManager.findLastCompletelyVisibleItemPosition();
-        int height = currentPos - mLayoutManager.findFirstVisibleItemPosition();
+        final int currentPos = mLayoutManager.findFirstVisibleItemPosition();
+        int height = mLayoutManager.findLastVisibleItemPosition() - currentPos;
         mRecycler.smoothScrollToPosition(Math.max(currentPos - height, 0));
     }
 
