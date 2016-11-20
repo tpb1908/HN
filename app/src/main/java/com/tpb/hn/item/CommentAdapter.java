@@ -1,7 +1,6 @@
 package com.tpb.hn.item;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -154,42 +153,33 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
         if(mRootItem.getComments().length == 0) {
-            AsyncTask.execute(new Runnable() {
+            new Handler().post(new Runnable() {
                 @Override
                 public void run() {
                     mRootItem.parseComments();
                     mComments = flatten(mRootItem.getComments(), 0);
                     mRootItem.setDescendants(mComments.size());
-                    /*
-                        FIXME
-                        WTF postDelayed doesn't work
-                     */
-                    try {
-                        Thread.sleep(800);
-                    } catch(Exception e) {} //Ignored
-                    uiHandler.post(new Runnable() {
+
+                    uiHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             buildPositions();
                             notifyDataSetChanged();
                             mSwiper.setRefreshing(false);
                         }
-                    });
-
+                    }, 300);
                 }
             });
+
         } else {
-            uiHandler.post(new Runnable() {
+            uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(800);
-                    } catch(Exception e) {} //Ignored
                     buildPositions();
                     notifyDataSetChanged();
                     mSwiper.setRefreshing(false);
                 }
-            });
+            }, 500);
 
         }
 

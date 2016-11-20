@@ -72,7 +72,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO- Get settings again on resume
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
 
@@ -171,7 +170,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 }
             }
         }
-
     }
 
     @Override
@@ -257,7 +255,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private ActivityOptionsCompat getSharedTransition() {
         return ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                 Pair.create((View) mNavSpinner, "button"),
-                Pair.create((View) mAppBar, "appbar"));
+                Pair.create((View) mAppBar, "appbar")
+        );
     }
 
     @Override
