@@ -64,6 +64,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwiper;
     private boolean mIsDarkTheme;
+    private int mCountGuess;
 
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
@@ -178,23 +179,31 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
             case "top":
+                mCountGuess = 500;
                 mLoader.getTopIds(this);
                 break;
             case "best":
+                mCountGuess = 500;
                 mLoader.getBestIds(this);
                 break;
             case "ask":
+                mCountGuess = 100;
                 mLoader.getAskIds(this);
                 break;
             case "new":
+                mCountGuess = 500;
                 mLoader.getNewIds(this);
                 break;
             case "show":
+                mCountGuess = 50;
                 mLoader.getShowIds(this);
                 break;
             case "job":
+                mCountGuess = 25;
                 mLoader.getJobsIds(this);
                 break;
+            default:
+                mCountGuess = 100;
         }
         mCurrentPage = defaultPage;
         mLastUpdateTime = new Date().getTime() / 1000;
@@ -322,8 +331,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        //TODO- Get an average value for each of the pages being loaded
-        return mData.length == 0 ? 500 : mData.length;
+        return mData.length > 0 ? mData.length : mCountGuess;
     }
 
     @Override
