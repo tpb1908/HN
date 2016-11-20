@@ -76,7 +76,7 @@ public class ClickableTextView extends TextView {
 
     public static Integer[] getIndices(String s, char c) {
         int pos = s.indexOf(c, 0);
-        List<Integer> indices = new ArrayList<Integer>();
+        List<Integer> indices = new ArrayList<>();
         while (pos != -1) {
             indices.add(pos);
             pos = s.indexOf(c, pos + 1);

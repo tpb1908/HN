@@ -31,7 +31,8 @@
                 android:id="@+id/content_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"/>
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
+                android:textSize="16sp"/>
 
         </android.support.v7.widget.Toolbar>
 

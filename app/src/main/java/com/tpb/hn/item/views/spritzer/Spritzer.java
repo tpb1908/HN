@@ -464,7 +464,7 @@ public class Spritzer {
         private WeakReference<Spritzer> mWeakSpritzer;
 
         public SpritzHandler(Spritzer muxer) {
-            mWeakSpritzer = new WeakReference<Spritzer>(muxer);
+            mWeakSpritzer = new WeakReference<>(muxer);
         }
 
         @Override

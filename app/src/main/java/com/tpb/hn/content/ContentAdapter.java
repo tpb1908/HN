@@ -1,6 +1,7 @@
 package com.tpb.hn.content;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -230,15 +231,20 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     void beginBackgroundLoading() {
-        final int[] notLoaded = new int[mIds.length];
-        int count = 0;
-        for(Item i : mData) {
-            if(i != null) {
-                final int pos = Arrays.binarySearch(mIds, i.getId());
-                if(pos < 0 || pos > mData.length) notLoaded[count++] = i.getId();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                final int[] notLoaded = new int[mIds.length];
+                int count = 0;
+                for(Item i : mData) {
+                    if(i != null) {
+                        final int pos = Arrays.binarySearch(mIds, i.getId());
+                        if(pos < 0 || pos > mData.length) notLoaded[count++] = i.getId();
+                    }
+                }
+                mLoader.loadItemsIndividually(Arrays.copyOfRange(notLoaded, 0, count), false, true);
             }
-        }
-        mLoader.loadItemsIndividually(Arrays.copyOfRange(notLoaded, 0, count), false, true);
+        });
     }
 
     void cancelBackgroundLoading() {

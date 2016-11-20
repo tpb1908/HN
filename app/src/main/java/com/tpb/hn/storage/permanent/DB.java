@@ -29,6 +29,7 @@ class DB extends SQLiteOpenHelper {
     private static final String KEY_ID = "ID";
     private static final String KEY_LAST_UPDATE = "LAST_UPDATE";
     private static final String KEY_JSON = "JSON";
+    private static final String KEY_WEB_TEXT = "TEXT";
 
     DB(Context context) {
         super(context, NAME, null, VERSION);
@@ -52,7 +53,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item item) {
-       // new WriteItemTask(callback).doInBackground(item);
+       new WriteItemTask(callback).doInBackground(item);
     }
 
     void writeOrUpdate(Item item) {
@@ -60,7 +61,7 @@ class DB extends SQLiteOpenHelper {
     }
 
     void writeOrUpdate(DBCallback callback, Item... items) {
-       // new WriteItemTask(callback).doInBackground(items);
+       new WriteItemTask(callback).doInBackground(items);
     }
 
     void writeOrUpdate(Item... items) {

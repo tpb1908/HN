@@ -33,4 +33,44 @@
         <item name="android:textColor">@color/pivot_text</item>
     </style>
 
+    <declare-styleable name="FontStyle">
+        <attr name="font_small" format="dimension" />
+        <attr name="font_medium" format="dimension" />
+        <attr name="font_large" format="dimension" />
+        <attr name="font_xlarge" format="dimension" />
+    </declare-styleable>
+    
+    <style name="FontSize">
+        
+    </style>
+
+    <style name="FontSize.Small">
+        <item name="font_small">14sp</item>
+        <item name="font_medium">16sp</item>
+        <item name="font_large">18sp</item>
+        <item name="font_xlarge">20sp</item>
+    </style>
+
+    <style name="FontSize.Medium">
+        <item name="font_small">18sp</item>
+        <item name="font_medium">20sp</item>
+        <item name="font_large">22sp</item>
+        <item name="font_xlarge">24sp</item>
+    </style>
+
+    <style name="FontSize.Large">
+        <item name="font_small">26sp</item>
+        <item name="font_medium">28sp</item>
+        <item name="font_large">30sp</item>
+        <item name="font_xlarge">32sp</item>
+    </style>
+
+    <style name="Font">
+
+    </style>
+
+    <style name="Font.Roboto">
+
+    </style>
+
 </resources>

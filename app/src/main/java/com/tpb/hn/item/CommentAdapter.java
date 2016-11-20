@@ -166,7 +166,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                      */
                     try {
                         Thread.sleep(800);
-                    } catch(Exception e) {}
+                    } catch(Exception e) {} //Ignored
                     uiHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -184,7 +184,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 public void run() {
                     try {
                         Thread.sleep(800);
-                    } catch(Exception e) {}
+                    } catch(Exception e) {} //Ignored
                     buildPositions();
                     notifyDataSetChanged();
                     mSwiper.setRefreshing(false);

@@ -41,6 +41,7 @@
                     android:padding="16dp"
                     android:src="@drawable/ic_arrow_back"
                     android:background="@android:color/transparent"
+                    android:contentDescription="@string/action_back"
                     android:clickable="true"
                     />
 
