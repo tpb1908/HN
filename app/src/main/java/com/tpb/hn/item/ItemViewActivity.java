@@ -21,6 +21,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
@@ -105,7 +106,7 @@ public class ItemViewActivity extends AppCompatActivity implements ItemManager.I
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            new HNItemLoader(this, this).loadItem(APIPaths.parseItemUrl(data));
+            Util.getItemManager(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
             if(UserViewActivity.mLaunchItem != null && UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT && ContentActivity.mLaunchItem == null) {
                 loadCommentParent(UserViewActivity.mLaunchItem);

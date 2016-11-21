@@ -7,6 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 
+import com.tpb.hn.network.loaders.CachedItemLoader;
+import com.tpb.hn.network.loaders.HNItemLoader;
+import com.tpb.hn.network.loaders.ItemManager;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,5 +80,11 @@ public class Util {
         return String.format("#%06X", 0xFFFFFF & color);
     }
 
-
+    public static ItemManager getItemManager(Context context, ItemManager.ItemLoadListener listener) {
+        if(isNetworkAvailable(context)) {
+            return new HNItemLoader(context, listener);
+        } else {
+            return new CachedItemLoader(context, listener);
+        }
+    }
 }

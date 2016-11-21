@@ -25,9 +25,9 @@ public class CachedItemLoader implements ItemManager {
 
     private ItemLoadListener mListener;
 
-    public CachedItemLoader(Context context, ItemLoadListener loader) {
+    public CachedItemLoader(Context context, ItemLoadListener listener) {
         db = DB.getDB(context);
-        mListener = loader;
+        mListener = listener;
     }
 
     @Override

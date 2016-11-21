@@ -26,7 +26,6 @@ import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
-import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -52,7 +51,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
     private Context mContext;
-    private HNItemLoader mLoader;
+    private ItemManager mLoader;
     private String mCurrentPage;
     private boolean mIsContent;
     private boolean mIsUsingCards = false;
@@ -86,7 +85,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mSwiper = swiper;
         mLayoutManager = layoutManager;
         mRecycler = recycler;
-        mLoader = new HNItemLoader(mContext, this);
+        mLoader = Util.getItemManager(context, this);
         mLastUpdateTime = new Date().getTime() / 1000;
         final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
         mIsUsingCards = prefs.getUseCards();
