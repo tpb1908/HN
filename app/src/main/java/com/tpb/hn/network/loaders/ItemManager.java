@@ -10,14 +10,16 @@ import java.util.ArrayList;
 
 public interface ItemManager {
 
-    void getIds(HNItemLoader.HNItemIdLoadDone listener, String page);
 
-    void getTopIds(HNItemLoader.HNItemIdLoadDone listener);
-    void getNewIds(HNItemLoader.HNItemIdLoadDone listener);
-    void getBestIds(HNItemLoader.HNItemIdLoadDone listener);
-    void getAskIds(HNItemLoader.HNItemIdLoadDone listener);
-    void getShowIds(HNItemLoader.HNItemIdLoadDone listener);
-    void getJobsIds(HNItemLoader.HNItemIdLoadDone listener);
+
+    void getIds(ItemIdLoadListener listener, String page);
+
+    void getTopIds(ItemIdLoadListener listener);
+    void getNewIds(ItemIdLoadListener listener);
+    void getBestIds(ItemIdLoadListener listener);
+    void getAskIds(ItemIdLoadListener listener);
+    void getShowIds(ItemIdLoadListener listener);
+    void getJobsIds(ItemIdLoadListener listener);
 
     void loadItemsIndividually(final int[] ids, boolean getFromCache);
 
@@ -29,7 +31,7 @@ public interface ItemManager {
 
     void loadItemForComments(final int id);
 
-    public interface HNItemLoadDone {
+    public interface ItemLoadListener {
 
         void itemLoaded(Item item, boolean success, int code);
 
@@ -37,8 +39,10 @@ public interface ItemManager {
 
     }
 
-    public interface HNItemIdLoadDone {
+    public interface ItemIdLoadListener {
 
         void IdLoadDone(int[] ids);
+
+        void IdLoadError(int errorCode);
     }
 }

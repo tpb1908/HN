@@ -48,7 +48,7 @@ public class Login {
                             try {
 //                            Log.i(TAG, "onResponse: Login loginResponse " + loginResponse.toString());
 //                            Log.i(TAG, "onResponse: Network loginResponse " + loginResponse.networkResponse().toString());
-//                            Log.i(TAG, "onResponse: Cache control " + loginResponse.cacheControl().toString());
+//                            Log.i(TAG, "onResponse: ItemCache control " + loginResponse.cacheControl().toString());
 //                            Log.i(TAG, "onResponse: Body " + loginResponse.body().string());
 //                            Log.i(TAG, "onResponse: Response headers" + loginResponse.headers().toString());
 

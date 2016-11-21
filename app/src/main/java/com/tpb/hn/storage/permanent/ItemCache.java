@@ -13,12 +13,13 @@ import java.util.HashMap;
 
 /**
  * Created by theo on 03/11/16.
+ * The Cache used for Items loaded from HN it will write to DB
  */
 
-public class Cache {
-    private static final String TAG = Cache.class.getSimpleName();
+public class ItemCache {
+    private static final String TAG = ItemCache.class.getSimpleName();
 
-    private static Cache instance;
+    private static ItemCache instance;
     private static DB db;
     private SharedPreferences sp;
 
@@ -35,17 +36,17 @@ public class Cache {
     private int[] show = new int[200];
     private int[] jobs = new int[200];
 
-    public static Cache getInstance(Context context) {
+    public static ItemCache getInstance(Context context) {
         if(instance == null) {
-            instance = new Cache(context);
+            instance = new ItemCache(context);
         }
         return instance;
     }
 
-    private Cache(Context context) {
-        db = new DB(context);
+    private ItemCache(Context context) {
+        db = DB.getDB(context);
         sp = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        db.loadRecentItems(null, 1000L * 3600 * 24 * 100);
+        //db.loadRecentItems(null, 1000L * 3600 * 24 * 100);
     }
 
 

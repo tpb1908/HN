@@ -28,6 +28,7 @@ import com.tpb.hn.item.views.LockableViewPager;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.loaders.HNItemLoader;
+import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.user.UserViewActivity;
 
@@ -43,7 +44,7 @@ import butterknife.OnLongClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewActivity extends AppCompatActivity implements HNItemLoader.HNItemLoadDone, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
+public class ItemViewActivity extends AppCompatActivity implements ItemManager.ItemLoadListener, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 

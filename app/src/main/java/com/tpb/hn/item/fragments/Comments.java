@@ -21,6 +21,7 @@ import com.tpb.hn.item.CommentAdapter;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.network.loaders.HNItemLoader;
+import com.tpb.hn.network.loaders.ItemManager;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ import butterknife.Unbinder;
  * Created by theo on 18/10/16.
  */
 
-public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener, HNItemLoader.HNItemLoadDone, CommentAdapter.UserOpener {
+public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapter.FragmentCycleListener, ItemManager.ItemLoadListener, CommentAdapter.UserOpener {
     private static final String TAG = Comments.class.getSimpleName();
     private Tracker mTracker;
 

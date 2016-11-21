@@ -27,6 +27,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.network.loaders.HNItemLoader;
+import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ import butterknife.OnClick;
  */
 
 public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        HNItemLoader.HNItemLoadDone,
-        HNItemLoader.HNItemIdLoadDone,
+        ItemManager.ItemLoadListener,
+        ItemManager.ItemIdLoadListener,
         FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
 
@@ -400,6 +401,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
         mSwiper.setRefreshing(false);
         //Id loading will only happen once each time the mData is to be set
+    }
+
+    @Override
+    public void IdLoadError(int errorCode) {
+
     }
 
     @Override

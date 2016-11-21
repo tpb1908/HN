@@ -189,7 +189,7 @@ public class Content extends Fragment implements ItemLoader,
                 } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
                     /*
                     We have to do the theming on bind
-                    If we do when the JSON is returned, and the JSON is returned from Cache
+                    If we do when the JSON is returned, and the JSON is returned from ItemCache
                     it will be returned before the Fragment has been attached and getContext()
                     will return null
                      */

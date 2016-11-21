@@ -11,6 +11,7 @@ import android.util.Log;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.HNParser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -19,8 +20,10 @@ import java.util.ArrayList;
  * Created by theo on 03/11/16.
  */
 
-class DB extends SQLiteOpenHelper {
+public class DB extends SQLiteOpenHelper {
     private static final String TAG = DB.class.getSimpleName();
+
+    private static DB instance;
 
     private static final String NAME = "CACHE";
     private static final int VERSION = 1;
@@ -32,7 +35,14 @@ class DB extends SQLiteOpenHelper {
     private static final String KEY_PERMANENT = "PERMANENT";
     private static final String KEY_WEB_TEXT = "TEXT";
 
-    DB(Context context) {
+    public static DB getDB(Context context) {
+        if(instance == null) {
+            instance = new DB(context);
+        }
+        return instance;
+    }
+
+    private DB(Context context) {
         super(context, NAME, null, VERSION);
     }
 
@@ -71,6 +81,10 @@ class DB extends SQLiteOpenHelper {
         new WriteItemTask().doInBackground(items);
     }
 
+    public void loadItem(DBLoadCallback callback, int id) {
+        new LoadItemTask(callback).execute(id);
+    }
+
     void loadRecentItems(int count) {
         //final String QUERY = "SELECT * FROM " + TABLE + " LIMIT 10 ";
     }
@@ -80,12 +94,48 @@ class DB extends SQLiteOpenHelper {
 
     }
 
+    public interface DBLoadCallback {
+
+        void loadComplete(boolean success, Item item);
+
+    }
+
     public interface DBCallback {
 
         void writeComplete(boolean success, Item item);
 
-        void loadComplete(boolean success, ArrayList<Item> items);
+        void loadComplete(boolean success, Item item);
 
+        void loadMultipleComplete(boolean success, ArrayList<Item> items);
+
+    }
+
+    private class LoadItemTask extends AsyncTask<Integer, Void, Boolean> {
+        private DBLoadCallback callback;
+
+        LoadItemTask(DBLoadCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            final SQLiteDatabase db = DB.this.getReadableDatabase();
+            final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
+            final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(integers[0])} );
+            boolean success = false;
+            if(cursor.moveToFirst()) {
+                final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                try {
+                    final Item i = HNParser.JSONToItem(new JSONObject(s));
+                    success = true;
+                    callback.loadComplete(true, i);
+                } catch(JSONException e) {
+                    callback.loadComplete(false, null);
+                }
+            }
+            cursor.close();
+            return success;
+        }
     }
 
     private class LoadItemsTask extends AsyncTask<Long, Void, Boolean> {
