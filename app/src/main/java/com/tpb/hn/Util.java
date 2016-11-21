@@ -1,6 +1,7 @@
 package com.tpb.hn;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import com.tpb.hn.network.loaders.ItemManager;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by theo on 24/10/16.
@@ -86,5 +88,19 @@ public class Util {
         } else {
             return new CachedItemLoader(context, listener);
         }
+    }
+
+    public static void putIntArrayInPrefs(SharedPreferences.Editor editor, String key, int[] data) {
+        final StringBuilder builder = new StringBuilder();
+        for(int i : data) builder.append(i).append(",");
+        editor.putString(key, builder.toString());
+    }
+
+    public static int[] getIntArrayFromPrefs(SharedPreferences prefs, String key) {
+        final String tokens = prefs.getString(key, "");
+        final StringTokenizer tokenizer = new StringTokenizer(tokens,  ",");
+        final int[] ints = new int[tokenizer.countTokens()];
+        for(int i = 0; i < ints.length; i++) ints[i] = Integer.parseInt(tokenizer.nextToken());
+        return ints;
     }
 }

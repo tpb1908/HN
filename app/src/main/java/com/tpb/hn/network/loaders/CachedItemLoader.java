@@ -1,6 +1,7 @@
 package com.tpb.hn.network.loaders;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.tpb.hn.data.Item;
@@ -15,6 +16,9 @@ public class CachedItemLoader implements ItemManager {
     private static final String TAG = CachedItemLoader.class.getSimpleName();
 
     private static DB db;
+    private static SharedPreferences prefs;
+
+    private static final String KEY_SHARED_PREFS = "CACHE";
 
     private static final String KEY_TOP_IDS = "TOP";
     private static final String KEY_NEW_IDS = "NEW";
@@ -27,11 +31,13 @@ public class CachedItemLoader implements ItemManager {
 
     public CachedItemLoader(Context context, ItemLoadListener listener) {
         db = DB.getDB(context);
+        prefs = context.getSharedPreferences(KEY_SHARED_PREFS, Context.MODE_PRIVATE);
         mListener = listener;
     }
 
     @Override
     public void getIds(ItemIdLoadListener listener, String page) {
+
     }
 
     @Override
