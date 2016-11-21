@@ -33,6 +33,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -122,6 +123,12 @@ public class Content extends Fragment implements ItemLoader,
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setLinkHandler(this);
         mWebView.setShouldBlockAds(prefs.getBlockAds());
+        mWebView.setCacheEnabled(true);
+        if(Util.isNetworkAvailable(getContext())) {
+            mWebView.setLoadFromNetwork();
+        } else {
+            mWebView.setLoadFromCache();
+        }
         mParent.showFab();
 
         if(mIsContentReady) {

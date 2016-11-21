@@ -10,6 +10,7 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -30,6 +31,9 @@ public class AdBlockingWebView extends WebView {
     private LinkHandler mHandler;
     private LoadListener mLoadListener;
     private boolean shouldBlockAds = true;
+    private boolean shouldOverrideHeaders;
+    //TODO- Allow setting max cache size, and clearing cache
+    //http://stackoverflow.com/questions/14670638/webview-load-website-when-online-load-local-file-when-offline
 
     public AdBlockingWebView(Context context) {
         this(context, null);
@@ -72,6 +76,8 @@ public class AdBlockingWebView extends WebView {
                 if(mLoadListener != null) mLoadListener.loadDone();
             }
 
+
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 if(mHandler != null) {
@@ -106,6 +112,21 @@ public class AdBlockingWebView extends WebView {
         } else {
             disableHorizontalScrolling();
         }
+    }
+
+    public void setCacheEnabled(boolean enabled) {
+        getSettings().setAppCachePath(getContext().getApplicationContext().getCacheDir().getAbsolutePath());
+        getSettings().setAllowFileAccess(true);
+        getSettings().setAppCacheEnabled(true);
+        getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+    }
+
+    public void setLoadFromCache() {
+        getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+    }
+
+    public void setLoadFromNetwork() {
+        getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
     }
 
     public void enableHorizontalScrolling() {
