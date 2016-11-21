@@ -23,7 +23,7 @@ import java.util.Collections;
  * Created by theo on 21/10/16.
  */
 
-public class HNItemLoader {
+public class HNItemLoader implements ItemManager {
     private static final String TAG = HNItemLoader.class.getSimpleName();
 
     private static Cache cache;
@@ -44,31 +44,37 @@ public class HNItemLoader {
         this.itemListener = itemListener;
     }
 
-
+    @Override
     public void getIds(HNItemIdLoadDone listener, String page) {
         getItemIds(listener, page);
     }
 
+    @Override
     public void getTopIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getTopPath());
     }
 
+    @Override
     public void getNewIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getNewPath());
     }
 
+    @Override
     public void getBestIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getBestPath());
     }
 
+    @Override
     public void getAskIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getAskPath());
     }
 
+    @Override
     public void getShowIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getShowPath());
     }
 
+    @Override
     public void getJobsIds(HNItemIdLoadDone listener) {
         getItemIds(listener, APIPaths.getJobPath());
     }
@@ -106,12 +112,13 @@ public class HNItemLoader {
                 });
     }
 
+    @Override
     public void loadItemsIndividually(final int[] ids, boolean getFromCache) {
         loadItemsIndividually(ids, getFromCache, false);
     }
 
+    @Override
     public void loadItemsIndividually(final int[] ids, boolean getFromCache, final boolean inBackground) {
-        if(inBackground) Log.i(TAG, "loadItemsIndividually: Background load started");
         for(int i : ids) {
             int cachePos = cache.position(i);
             if(cachePos >= 0 && getFromCache) {
@@ -143,11 +150,12 @@ public class HNItemLoader {
         }
     }
 
-
+    @Override
     public void cancelBackgroundLoading() {
         AndroidNetworking.cancel("background");
     }
 
+    @Override
     public void loadItem(final int id) {
         for(Item i : cache.getItems()) {
             if(i.getId() == id) {
@@ -189,6 +197,7 @@ public class HNItemLoader {
                 });
     }
 
+    @Override
     public void loadItemForComments(final int id) {
         AndroidNetworking.get(APIPaths.getAlgoliaItemPath(id))
                 .setTag(id)
@@ -216,17 +225,5 @@ public class HNItemLoader {
                 });
     }
 
-    public interface HNItemLoadDone {
-
-        void itemLoaded(Item item, boolean success, int code);
-
-        void itemsLoaded(ArrayList<Item> items, boolean success, int code);
-
-    }
-
-    public interface HNItemIdLoadDone {
-
-        void IdLoadDone(int[] ids);
-    }
 
 }
