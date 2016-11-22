@@ -61,6 +61,7 @@
     <string name="text_settings_data">Data</string>
     <string name="text_settings_info">Info</string>
 
+    <string name="text_comment_title_date">%1$s | %2$s</string>
 
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
