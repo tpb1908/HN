@@ -341,9 +341,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if(mIsUsingCards) {
                 setCardParams(commentHolder.mCard);
             }
-        } else {
+        } else if(mIsUsingCards) {
             setCardParams(((EmptyHolder) viewHolder).mCard);
-
         }
     }
 

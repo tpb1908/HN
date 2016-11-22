@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public interface ItemManager {
 
-
-
     void getIds(ItemIdLoadListener listener, String page);
 
     void getTopIds(ItemIdLoadListener listener);

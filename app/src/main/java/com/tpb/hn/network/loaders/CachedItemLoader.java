@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.storage.permanent.DB;
 
@@ -27,6 +28,9 @@ public class CachedItemLoader implements ItemManager {
     private static final String KEY_SHOW_IDS = "SHOW";
     private static final String KEY_JOBS_IDS = "JOBS";
 
+    public static int ERROR_IDS_NOT_CACHED = 100;
+
+
     private ItemLoadListener mListener;
 
     public CachedItemLoader(Context context, ItemLoadListener listener) {
@@ -42,32 +46,56 @@ public class CachedItemLoader implements ItemManager {
 
     @Override
     public void getTopIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_TOP_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_TOP_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
     public void getNewIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_NEW_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_NEW_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
     public void getBestIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_BEST_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_BEST_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
     public void getAskIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_ASK_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_ASK_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
     public void getShowIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_SHOW_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_SHOW_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
     public void getJobsIds(ItemIdLoadListener listener) {
-
+        if(prefs.contains(KEY_JOBS_IDS)) {
+            listener.IdLoadDone(Util.getIntArrayFromPrefs(prefs, KEY_JOBS_IDS));
+        } else {
+            listener.IdLoadError(ERROR_IDS_NOT_CACHED);
+        }
     }
 
     @Override
