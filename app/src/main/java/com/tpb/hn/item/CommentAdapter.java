@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.content.DividerItemDecoration;
+import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -92,7 +93,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             }
         }
         holder.mBody.setText(comment.parsedText);
-        holder.mTitle.setText(comment.item.getBy());
+        holder.mTitle.setText(
+                String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date),
+                        comment.item.getBy(), Formatter.timeAgo(comment.item.getTime())));
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 

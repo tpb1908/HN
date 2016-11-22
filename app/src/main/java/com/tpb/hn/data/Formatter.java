@@ -2,6 +2,7 @@ package com.tpb.hn.data;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import com.tpb.hn.R;
@@ -19,7 +20,7 @@ public class Formatter {
     public static String timeAgo(long time) {
         final long now = new Date().getTime() / 1000;
         final long delta = (now - time);
-
+        Log.i(TAG, "timeAgo: Delata is " + delta);
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
             return div + (div == 1 ? " year" : " years");
