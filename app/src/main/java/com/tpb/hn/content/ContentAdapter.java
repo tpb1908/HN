@@ -26,6 +26,7 @@ import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
+import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -230,6 +231,60 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mManager.displayLastUpdate(mLastUpdateTime);
     }
 
+    @Override
+    public void IdLoadDone(int[] ids) {
+        Log.i(TAG, "IdLoadDone: ");
+        this.mOldIds = mIds;
+        this.mIds = ids;
+        int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
+        if(currentPos > ids.length) {
+            mLayoutManager.scrollToPosition(ids.length);
+        }
+        mData = new Item[ids.length + 1];
+        mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
+        notifyDataSetChanged();
+        mSwiper.setRefreshing(false);
+        //Id loading will only happen once each time the mData is to be set
+    }
+
+    @Override
+    public void IdLoadError(int errorCode) {
+        if(errorCode == HNItemLoader.ERROR_NETWORK_ITEM_LOADING) { //We try again
+            loadItems(mCurrentPage);
+        }
+    }
+
+    @Override
+    public void itemLoaded(Item item, boolean success, int code) {
+        if(success) {
+            for(int i = 0; i < mIds.length; i++) {
+                if(item.getId() == mIds[i]) {
+                    mData[i] = item;
+                    if(mOldIds != null) {
+                        final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
+                        item.setNew(possiblePos > 0 && possiblePos < mIds.length);
+                    }
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
+        Collections.sort(items);
+        final Item key = new Item();
+        for(int i = 0; i < mIds.length; i++) {
+            key.setId(mIds[i]);
+            int index = Collections.binarySearch(items, key);
+            if(index >= 0) {
+                mData[i] = items.get(index);
+                notifyItemChanged(index);
+            }
+        }
+    }
+
     void beginBackgroundLoading() {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -261,6 +316,25 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     void getLastUpdate() {
         mManager.displayLastUpdate(mLastUpdateTime);
     }
+
+    private void openItem(int pos, FragmentPagerAdapter.PageType type) {
+        if(mData != null && pos < mData.length && mData[pos] != null) {
+            Log.i(TAG, "openItem: " + mData[pos].getComments().length);
+            mData[pos].setViewed(true);
+            notifyItemChanged(pos);
+            mManager.openItem(mData[pos], type);
+        } else {
+            attemptLoadAgain(pos);
+        }
+    }
+
+    private void openUser(int pos) {
+        if(mData != null && pos < mData.length && mData[pos] != null) {
+            mManager.openUser(mData[pos]);
+        }
+    }
+
+    //<editor-fold-desc="Viewholders" >
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -294,6 +368,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.mAuthor.setVisibility(View.VISIBLE);
                         holder.mAuthor.setText(item.getFormattedBy());
                         holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                        if(item.isOffline()) {
+                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_offline);
+                        } else {
+                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
                     } else {
                         holder.mAuthor.setVisibility(View.GONE);
                         holder.mNumber.setVisibility(View.GONE);
@@ -317,6 +396,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
                         holder.mNumber.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
+                    Log.i(TAG, "onBindViewHolder: Is Item offline? " + item.isOffline());
                 }
             }
             if(mIsUsingCards) {
@@ -385,75 +465,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    @Override
-    public void IdLoadDone(int[] ids) {
-        Log.i(TAG, "IdLoadDone: ");
-        this.mOldIds = mIds;
-        this.mIds = ids;
-        int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
-        if(currentPos > ids.length) {
-            mLayoutManager.scrollToPosition(ids.length);
-        }
-        mData = new Item[ids.length + 1];
-        mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
-        notifyDataSetChanged();
-        mSwiper.setRefreshing(false);
-        //Id loading will only happen once each time the mData is to be set
-    }
+    //</editor-fold>
 
-    @Override
-    public void IdLoadError(int errorCode) {
-
-    }
-
-    @Override
-    public void itemLoaded(Item item, boolean success, int code) {
-        if(success) {
-            for(int i = 0; i < mIds.length; i++) {
-                if(item.getId() == mIds[i]) {
-                    mData[i] = item;
-                    if(mOldIds != null) {
-                        final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
-                        item.setNew(possiblePos > 0 && possiblePos < mIds.length);
-                    }
-
-                    notifyItemChanged(i);
-                    break;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
-        Collections.sort(items);
-        final Item key = new Item();
-        for(int i = 0; i < mIds.length; i++) {
-            key.setId(mIds[i]);
-            int index = Collections.binarySearch(items, key);
-            if(index >= 0) {
-                mData[i] = items.get(index);
-                notifyItemChanged(index);
-            }
-        }
-    }
-
-    private void openItem(int pos, FragmentPagerAdapter.PageType type) {
-        if(mData != null && pos < mData.length && mData[pos] != null) {
-            Log.i(TAG, "openItem: " + mData[pos].getComments().length);
-            mData[pos].setViewed(true);
-            notifyItemChanged(pos);
-            mManager.openItem(mData[pos], type);
-        } else {
-            attemptLoadAgain(pos);
-        }
-    }
-
-    private void openUser(int pos) {
-        if(mData != null && pos < mData.length && mData[pos] != null) {
-            mManager.openUser(mData[pos]);
-        }
-    }
+    //<editor-fold-desc="Viewholder classes">
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
@@ -522,6 +536,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
     }
+
+    //</editor-fold>
 
     public interface ContentManager {
 

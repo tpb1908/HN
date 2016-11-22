@@ -85,12 +85,16 @@ public class DB extends SQLiteOpenHelper {
         new LoadItemTask(callback).execute(id);
     }
 
+    public void loadItems(DBCallback callback, int[] items, boolean notifyIndividually) {
+      //  new LoadItemsTask(callback, notifyIndividually).execute(items);
+    }
+
     void loadRecentItems(int count) {
         //final String QUERY = "SELECT * FROM " + TABLE + " LIMIT 10 ";
     }
 
     void loadRecentItems(DBCallback callback, long timescale) {
-        new LoadItemsTask(callback).doInBackground(100L, timescale);
+        new LoadItemsTask(callback, false).doInBackground(100L, timescale);
 
     }
 
@@ -140,9 +144,11 @@ public class DB extends SQLiteOpenHelper {
 
     private class LoadItemsTask extends AsyncTask<Long, Void, Boolean> {
         private DBCallback callback;
+        private boolean notifyIndividually;
 
-        LoadItemsTask(DBCallback callback) {
+        LoadItemsTask(DBCallback callback, boolean notifyIndividually) {
             this.callback = callback;
+            this.notifyIndividually = notifyIndividually;
         }
 
         @Override
@@ -168,7 +174,12 @@ public class DB extends SQLiteOpenHelper {
                         final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                         try {
                             final Item i = HNParser.JSONToItem(new JSONObject(s));
-                            items.add(i);
+                            if(notifyIndividually && callback != null) {
+                                callback.loadComplete(true, i);
+                            } else if(callback != null) {
+                                items.add(i);
+                            }
+
                         } catch(Exception e) {
                             Log.e(TAG, "loadRecentItems: Exception parsing ", e);
                         }
@@ -176,7 +187,7 @@ public class DB extends SQLiteOpenHelper {
                 }
                 cursor.close();
                 Log.i(TAG, "doInBackground: Items loaded " + items.size() + " " + items.toString());
-                //callback.loadComplete(true, items);
+                if(!notifyIndividually && callback != null) callback.loadMultipleComplete(true, items);
             }
 
             return null;

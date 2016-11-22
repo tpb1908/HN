@@ -37,6 +37,7 @@ public class Item implements Parcelable, Comparable<Item> {
     private boolean viewed;
     private long lastUpdated;
     private boolean isNew;
+    private boolean isOffline;
 
     private String commentJSON = "";
     private Item[] comments = new Item[0];
@@ -190,6 +191,14 @@ public class Item implements Parcelable, Comparable<Item> {
 
     public void setNew(boolean aNew) {
         isNew = aNew;
+    }
+
+    public boolean isOffline() {
+        return isOffline;
+    }
+
+    public void setOffline(boolean offline) {
+        isOffline = offline;
     }
 
     @Override

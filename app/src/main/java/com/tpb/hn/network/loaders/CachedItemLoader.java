@@ -113,6 +113,7 @@ public class CachedItemLoader implements ItemManager {
                     db.loadItem(new DB.DBLoadCallback() {
                         @Override
                         public void loadComplete(boolean success, Item item) {
+                            item.setOffline(true);
                             mListener.itemLoaded(item, success, 0);
                         }
                     }, id);

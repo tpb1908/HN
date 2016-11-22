@@ -32,6 +32,8 @@ public class HNItemLoader implements ItemManager {
 
     private ItemLoadListener itemListener;
 
+    public static int ERROR_NETWORK_ITEM_LOADING = 50;
+
     public HNItemLoader(Context context, ItemLoadListener itemListener) {
         cache = ItemCache.getInstance(context);
         this.itemListener = itemListener;
@@ -87,7 +89,7 @@ public class HNItemLoader implements ItemManager {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        IdListener.IdLoadError(ERROR_NETWORK_ITEM_LOADING);
                     }
                 });
     }
@@ -113,8 +115,9 @@ public class HNItemLoader implements ItemManager {
                             public void onResponse(JSONObject response) {
                                 try {
                                     final Item item = HNParser.JSONToItem(response);
+                                    item.setOffline(false);
                                     cache.insert(item, inBackground);
-                                    itemListener.itemLoaded(item, item != null, 200);
+                                    itemListener.itemLoaded(item, true, 200);
                                 } catch(Exception e) {
                                     Log.e(TAG, "onResponse error: ", e);
                                     itemListener.itemLoaded(null, false, -100);
@@ -157,9 +160,9 @@ public class HNItemLoader implements ItemManager {
                     public void onResponse(JSONObject response) {
                         try {
                             final Item item = HNParser.JSONToItem(response);
-
+                            item.setOffline(false);
                             for(ItemLoadListener ild : listenerCache.get(id)) {
-                                ild.itemLoaded(item, item != null, 200);
+                                ild.itemLoaded(item, true, 200);
                             }
                             listenerCache.remove(id);
 
@@ -188,7 +191,6 @@ public class HNItemLoader implements ItemManager {
                     public void onResponse(JSONObject response) {
                         try {
                             final Item item = HNParser.commentJSONToItem(response);
-
                             itemListener.itemLoaded(item, true, 200);
 
                             cache.update(item);
