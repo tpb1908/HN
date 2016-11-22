@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
+import com.tpb.hn.network.loaders.CachedItemLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,14 +29,6 @@ public class ItemCache {
 
     private ArrayList<Item> backgroundChunk = new ArrayList<>();
 
-
-    private int[] top = new int[500];
-    private int[] newstories = new int[500];
-    private int[] best = new int[200];
-    private int[] ask = new int[200];
-    private int[] show = new int[200];
-    private int[] jobs = new int[200];
-
     public static ItemCache getInstance(Context context) {
         if(instance == null) {
             instance = new ItemCache(context);
@@ -49,13 +42,16 @@ public class ItemCache {
         //db.loadRecentItems(null, 1000L * 3600 * 24 * 100);
     }
 
-
     public ArrayList<Item> getItems() {
         return items;
     }
 
     public ArrayList<Item> getKids(Item parent) {
         return kids.get(parent);
+    }
+
+    public static void writeIds(Context context, int[] ids, String key) {
+        CachedItemLoader.writeItemIds(context, ids, key);
     }
 
     public void insert(Item item, boolean background) {

@@ -101,7 +101,8 @@ public class HNParser {
             object.put(KEY_POINTS, item.getScore());
             object.put(KEY_DEAD, item.isDead());
             object.put(KEY_DELETED, item.isDeleted());
-
+            object.put(KEY_DESCENDANTS, item.getDescendants());
+            object.put(KEY_SCORE, item.getScore());
             if(item.getBy() != null) object.put(KEY_BY, item.getBy());
             if(item.getTime() != 0) object.put(KEY_TIME, item.getTime());
             if(item.getText() != null) object.put(KEY_TEXT, item.getText());

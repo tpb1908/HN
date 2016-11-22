@@ -29,6 +29,7 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.storage.permanent.ItemCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,10 +192,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     void loadItems(String defaultPage) {
-        Log.i(TAG, "loadItemsIndividually: Loading items for page " + defaultPage.toLowerCase());
+        //TODO- Refactor the swich below on the grounds that the page is always valid
         this.mOldIds = new int[0];
         this.mIds = new int[0];
         this.mData = new Item[0];
+        mCurrentPage = defaultPage;
         AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
         switch(defaultPage.toLowerCase()) {
@@ -226,7 +228,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mCountGuess = 100;
         }
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
-        mCurrentPage = defaultPage;
         mLastUpdateTime = new Date().getTime() / 1000;
         mManager.displayLastUpdate(mLastUpdateTime);
     }
@@ -240,6 +241,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(currentPos > ids.length) {
             mLayoutManager.scrollToPosition(ids.length);
         }
+        ItemCache.writeIds(mContext, ids, mCurrentPage.toUpperCase());
         mData = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
@@ -396,7 +398,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
                         holder.mNumber.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
-                    Log.i(TAG, "onBindViewHolder: Is Item offline? " + item.isOffline());
                 }
             }
             if(mIsUsingCards) {

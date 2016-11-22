@@ -182,9 +182,6 @@ public class Item implements Parcelable, Comparable<Item> {
         return lastUpdated;
     }
 
-    //</editor-fold>
-
-
     public boolean isNew() {
         return isNew;
     }
@@ -200,6 +197,8 @@ public class Item implements Parcelable, Comparable<Item> {
     public void setOffline(boolean offline) {
         isOffline = offline;
     }
+
+    //</editor-fold>
 
     @Override
     public boolean equals(Object obj) {

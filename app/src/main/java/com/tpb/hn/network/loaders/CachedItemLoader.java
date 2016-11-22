@@ -3,6 +3,8 @@ package com.tpb.hn.network.loaders;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
@@ -103,6 +105,13 @@ public class CachedItemLoader implements ItemManager {
         loadItemsIndividually(ids, false, false);
     }
 
+    public static void writeItemIds(Context context, int[] ids, String key) {
+        if(prefs == null) prefs = context.getSharedPreferences(KEY_SHARED_PREFS, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
+        Util.putIntArrayInPrefs(editor, key, ids);
+        editor.apply();
+    }
+
     @Override
     public void loadItemsIndividually(final int[] ids, boolean getFromCache, boolean inBackground) {
         //TODO- Load task which runs callback after each load from DB
@@ -112,9 +121,15 @@ public class CachedItemLoader implements ItemManager {
                 for(int id : ids) {
                     db.loadItem(new DB.DBLoadCallback() {
                         @Override
-                        public void loadComplete(boolean success, Item item) {
+                        public void loadComplete(final boolean success, final Item item) {
                             item.setOffline(true);
-                            mListener.itemLoaded(item, success, 0);
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mListener.itemLoaded(item, success, 0);
+                                }
+                            });
+
                         }
                     }, id);
                 }
