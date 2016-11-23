@@ -1,5 +1,7 @@
 package com.tpb.hn.network;
 
+import android.util.Log;
+
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.data.User;
@@ -61,6 +63,10 @@ public class HNParser {
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
         if(obj.has(KEY_DELETED)) item.setDeleted(obj.getBoolean(KEY_DELETED));
+        if(obj.has(KEY_CHILDREN)) {
+            Log.i(TAG, "JSONToItem: JSON has children " + obj.getString(KEY_CHILDREN));
+            item.setCommentJSON(obj.getString(KEY_CHILDREN));
+        }
         return item;
     }
 

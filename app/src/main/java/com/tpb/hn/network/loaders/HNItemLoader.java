@@ -192,7 +192,6 @@ public class HNItemLoader implements ItemManager {
                         try {
                             final Item item = HNParser.commentJSONToItem(response);
                             itemListener.itemLoaded(item, true, 200);
-
                             cache.update(item);
                         } catch(Exception e) {
                             loadItem(id);

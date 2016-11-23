@@ -16,12 +16,14 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.CommentAdapter;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemLoader;
-import com.tpb.hn.network.loaders.HNItemLoader;
+import com.tpb.hn.network.loaders.CachedItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
+import com.tpb.hn.storage.permanent.ItemCache;
 
 import java.util.ArrayList;
 
@@ -72,7 +74,7 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
-
+        if(mRootItem != null && !itemReady) Util.getItemManager(getContext(), this).loadItemForComments(mRootItem.getId());
         if(itemReady) bindItem();
         viewsReady = true;
         return view;
@@ -92,7 +94,6 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
                 viewsReady = false;
                 return;
             }
-
             mSwiper.setVisibility(View.VISIBLE);
             mMessageView.setVisibility(View.GONE);
             mAdapter.loadItem(mCommentItem);
@@ -119,8 +120,8 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
         mRootItem = item;
         if(item.getDescendants() == 0) {
             itemReady = true;
-        } else {
-            new HNItemLoader(getContext(), this).loadItemForComments(item.getId());
+        } else if(getContext() != null){
+            Util.getItemManager(getContext(), this).loadItemForComments(item.getId());
         }
 
     }
@@ -128,12 +129,17 @@ public class Comments extends Fragment implements ItemLoader, FragmentPagerAdapt
     @Override
     public void itemLoaded(Item item, boolean success, int code) {
         itemReady = true;
-        if(item.getCommentJSON().equals("[]")) {
+        if(success && item.getCommentJSON().equals("[]")) {
             if(viewsReady) showMessage(false);
         } else if(!success) {
-            if(viewsReady) showMessage(true);
+            if(code == CachedItemLoader.MESSAGE_COMMENTS_OFFLINE) {
+                mCommentItem = mRootItem;
+            } else if(viewsReady) {
+                showMessage(true);
+            }
         } else {
             mCommentItem = item;
+            ItemCache.getInstance(getContext()).insert(mRootItem, false);
             if(viewsReady) bindItem();
         }
     }

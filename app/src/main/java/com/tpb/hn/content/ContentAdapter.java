@@ -28,10 +28,10 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.views.HolderSwipeCallback;
+import com.tpb.hn.network.loaders.CachedItemLoader;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.storage.permanent.ItemCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +106,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(mIsContent) {
                     loadItems(mCurrentPage);
                 } else {
+                    Log.i(TAG, "onRefresh: Reopening user");
                     mIds = new int[0];
                     notifyDataSetChanged();
                     mManager.openUser(null);
@@ -243,7 +244,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             default:
                 mCountGuess = 100;
         }
-        mIds = new int[mCountGuess];
+        Log.i(TAG, "loadItems: page selected");
+        if(mIds.length == 0) mIds = new int[mCountGuess];
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mLastUpdateTime = new Date().getTime() / 1000;
         mManager.displayLastUpdate(mLastUpdateTime);
@@ -251,13 +253,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void IdLoadDone(int[] ids) {
-        Log.i(TAG, "IdLoadDone: ");
+        Log.i(TAG, "IdLoadDone: " + ids.length);
+        Util.largeDebugDump("Ids", Arrays.toString(ids));
         this.mIds = ids;
         int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
             mLayoutManager.scrollToPosition(ids.length);
         }
-        ItemCache.writeIds(mContext, ids, mCurrentPage.toUpperCase());
+        if(mCurrentPage != null) CachedItemLoader.writeItemIds(mContext, ids, mCurrentPage.toUpperCase());
         mData = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
@@ -276,11 +279,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void itemLoaded(Item item, boolean success, int code) {
         if(success) {
             for(int i = 0; i < mIds.length; i++) {
-                if(item.getId() == mIds[i]) {
+                if(mIds[i] == item.getId()) {
                     mData[i] = item;
                     if(mOldIds.length > 0) {
                         final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
-                        Log.i(TAG, "itemLoaded: Settings new " + (possiblePos < 0 || possiblePos > mOldIds.length));
                         item.setNew(possiblePos < 0 || possiblePos > mOldIds.length);
                     }
                     notifyItemChanged(i);

@@ -43,6 +43,7 @@ import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.storage.permanent.ItemCache;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,6 +98,8 @@ public class Content extends Fragment implements ItemLoader,
 
     private String url;
     private String readablePage;
+
+    private Item mItem;
 
     public static Content newInstance(FragmentPagerAdapter.PageType type) {
         if(type == FragmentPagerAdapter.PageType.COMMENTS || type == FragmentPagerAdapter.PageType.SKIMMER) {
@@ -206,6 +209,7 @@ public class Content extends Fragment implements ItemLoader,
     @Override
     public void loadItem(Item item) {
         Log.d(TAG, "loadItem: Loading item " + mType);
+        mItem = item;
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
@@ -215,6 +219,8 @@ public class Content extends Fragment implements ItemLoader,
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
                 readablePage = Formatter.wrapInDiv(item.getText());
+                item.setWebText(readablePage);
+                ItemCache.getInstance(getContext()).insert(item, false);
                 mIsContentReady = true;
                 bindData();
             } else {
@@ -229,7 +235,9 @@ public class Content extends Fragment implements ItemLoader,
         if(success) {
             try {
                 readablePage = result.get("content").toString();
+                mItem.setWebText(readablePage);
                 mIsContentReady = true;
+                ItemCache.getInstance(getContext()).insert(mItem, false);
                 bindData();
             } catch(JSONException jse) {
                 success = false;
