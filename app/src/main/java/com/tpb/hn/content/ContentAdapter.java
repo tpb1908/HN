@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -136,6 +137,18 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
+        final ItemTouchHelper.SimpleCallback callback  = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+        };
+        new ItemTouchHelper(callback).attachToRecyclerView(recycler);
 
     }
 
