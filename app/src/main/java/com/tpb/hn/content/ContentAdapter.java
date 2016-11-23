@@ -142,7 +142,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
+                notifyItemChanged(viewHolder.getAdapterPosition());
             }
 
         };
