@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.tpb.hn.network.loaders.CachedItemLoader;
 import com.tpb.hn.network.loaders.HNItemLoader;
@@ -32,6 +33,10 @@ public class Util {
 
     public static int pxFromDp(final int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int pxFromSp(final float sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,  Resources.getSystem().getDisplayMetrics());
     }
 
     public static boolean isNetworkAvailable(Context context) {

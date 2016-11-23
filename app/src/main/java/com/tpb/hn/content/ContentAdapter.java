@@ -27,6 +27,7 @@ import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
+import com.tpb.hn.item.views.HolderSwipeCallback;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -137,17 +138,15 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
-        final ItemTouchHelper.SimpleCallback callback  = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        final HolderSwipeCallback callback  = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
+
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
             }
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
         };
+
         new ItemTouchHelper(callback).attachToRecyclerView(recycler);
 
     }
