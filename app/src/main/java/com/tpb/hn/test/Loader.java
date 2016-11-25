@@ -242,7 +242,7 @@ public class Loader extends BroadcastReceiver {
 
     public interface CommentLoader {
 
-        void commentsLoaded(Comment comment);
+        void commentsLoaded(Comment rootComment);
 
         void commentError(int id, int code);
 

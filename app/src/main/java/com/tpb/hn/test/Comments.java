@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
-import com.tpb.hn.item.CommentAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +23,7 @@ import static android.view.View.GONE;
  * Created by theo on 25/11/16.
  */
 
-public class Comments extends ContentFragment implements Loader.CommentLoader, CommentAdapter.UserOpener {
+public class Comments extends ContentFragment implements Loader.CommentLoader, CommentAdapter.UserOpener, ItemLoader {
     private static final String TAG = Comments.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -68,8 +67,12 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
         } else {
             mSwiper.setVisibility(View.VISIBLE);
             mMessageView.setVisibility(GONE);
-
+            mAdapter.loadComment(mRootComment);
         }
+    }
+
+    private void loadComments() {
+        Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
     }
 
     private void showMessage(boolean error) {
@@ -79,8 +82,16 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
     }
 
     @Override
-    public void commentsLoaded(Comment comment) {
+    public void loadItem(Item item) {
+        mRootItem = item;
+        if(mContentReady) loadComments();
+    }
 
+    @Override
+    public void commentsLoaded(Comment rootComment) {
+        mRootComment = rootComment;
+        mContentReady = true;
+        if(mViewsReady) bindData();
     }
 
     @Override
@@ -89,7 +100,13 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
     }
 
     @Override
-    public void openUser(com.tpb.hn.data.Item item) {
+    public void openUser(Comment item) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

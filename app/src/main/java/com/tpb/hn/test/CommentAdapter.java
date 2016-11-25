@@ -40,9 +40,9 @@ import butterknife.ButterKnife;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
     private static final String TAG = CommentAdapter.class.getSimpleName();
 
-    @BindArray(R.array.comment_colors) int[] mCommentColors;
+    private @BindArray(R.array.comment_colors) int[] mCommentColors;
 
-    private Comment mRootItem;
+    private Comment mRootComment;
     private RecyclerView mRecycler;
     private SwipeRefreshLayout mSwiper;
     private UserOpener mOpener;
@@ -154,20 +154,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     public void loadComment(Comment comment) {
 
-        mRootItem = comment;
+        mRootComment = comment;
 
-        Log.i(TAG, "loadItem: Root comment " + mRootItem.toString());
+        Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
-        if(mRootItem.getChildren().equals("")) {
+        if(mRootComment.getChildren().equals("")) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        mComments = flatten(parseCommentString(mRootItem.getChildren()), 0);
+                        mComments = flatten(parseCommentString(mRootComment.getChildren()), 0);
                     } catch(JSONException jse) {
                         Log.e(TAG, "run: ", jse);
                     }
-                    mRootItem.setDescendants(mComments.size());
+                    mRootComment.setDescendants(mComments.size());
 
                     uiHandler.postDelayed(new Runnable() {
                         @Override
@@ -245,8 +245,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         boolean childrenVisible = true;
         String parsedText;
 
-        CommentWrapper(com.tpb.hn.test.Comment item) {
-            this.comment = item;
+        CommentWrapper(com.tpb.hn.test.Comment comment) {
+            this.comment = comment;
         }
 
         CommentWrapper(com.tpb.hn.test.Comment comment, int depth) {
