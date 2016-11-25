@@ -37,6 +37,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
 
     private CommentAdapter mAdapter;
 
+    private boolean mIsWaitingForContext = false;
 
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
 
     @Override
     void attach(Context context) {
-
+        if(mIsWaitingForContext) Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
     }
 
     @Override
@@ -72,7 +73,11 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
     }
 
     private void loadComments() {
-        Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
+        if(mContextReady) {
+            Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
+        } else {
+            mIsWaitingForContext = true;
+        }
     }
 
     private void showMessage(boolean error) {
