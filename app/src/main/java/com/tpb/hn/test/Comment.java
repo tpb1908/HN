@@ -13,6 +13,8 @@ public class Comment {
     private String author;
     private String text;
     private String children;
+    private int descendants;
+    private long time;
 
     public int getId() {
         return id;
@@ -62,9 +64,25 @@ public class Comment {
         this.children = children;
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public int getDescendants() {
+        return descendants;
+    }
+
+    public void setDescendants(int descendants) {
+        this.descendants = descendants;
+    }
+
     @Override
     public String toString() {
-        return "Comment{" +
+        return "CommentWrapper{" +
                 "id=" + id +
                 ", parent=" + parent +
                 ", points=" + points +

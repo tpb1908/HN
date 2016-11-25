@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 
 public abstract class ContentFragment extends Fragment {
 
-    private boolean mViewsReady = false;
-    private boolean mContentReady = false;
-    private boolean mContextReady = false;
+    protected boolean mViewsReady = false;
+    protected boolean mContentReady = false;
+    protected boolean mContextReady = false;
 
     @Nullable
     @Override
@@ -39,4 +39,5 @@ public abstract class ContentFragment extends Fragment {
     abstract void attach(Context context);
 
     abstract void bindData();
+
 }
