@@ -33,7 +33,6 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONObject;
@@ -49,7 +48,7 @@ import butterknife.Unbinder;
  */
 
 public class Content extends ContentFragment implements ItemLoader,
-        TextLoader.TextLoadDone,
+        Loader.TextLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
@@ -164,7 +163,7 @@ public class Content extends ContentFragment implements ItemLoader,
                 bindData();
             } else {
                 url = item.getUrl();
-                new TextLoader(this).loadArticle(url, true);
+                Loader.getInstance(getContext()).loadArticle(url, true, this);
             }
         }
     }
@@ -404,7 +403,7 @@ public class Content extends ContentFragment implements ItemLoader,
             case AMP_READER:
                 return Pair.create(true, APIPaths.getMercuryAmpPath(url));
             case TEXT_READER:
-                new TextLoader(this).loadArticle(url, true);
+                Loader.getInstance(getContext()).loadArticle(url, true, this);
                 Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
                 return Pair.create(false, null);
             default:
@@ -413,7 +412,12 @@ public class Content extends ContentFragment implements ItemLoader,
     }
 
     @Override
-    public void loadDone(JSONObject result, boolean success, int code) {
+    public void textLoaded(JSONObject result) {
+
+    }
+
+    @Override
+    public void textError(String url, int code) {
 
     }
 

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by theo on 25/11/16.
@@ -33,11 +34,14 @@ public class Loader extends BroadcastReceiver {
     private SharedPreferences prefs;
     private boolean online = false;
 
+    private static HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
+
     public static int ERROR_NOT_IN_CACHE = 100;
     public static int ERROR_TIMEOUT = 200;
     public static int ERROR_PARSING = 300;
     public static int ERROR_NETWORK_CHANGE = 400;
     public static int ERROR_UNKNOWN = 0;
+    public static int ERROR_PDF = 500;
 
 
     private ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
@@ -222,6 +226,57 @@ public class Loader extends BroadcastReceiver {
                 });
     }
 
+    public void loadArticle(final String url, boolean forImmediateUse, TextLoader loader) {
+        if(online) {
+            networkLoadArticle(url, forImmediateUse, loader);
+        } else {
+            cacheLoadArticle(url, loader);
+        }
+    }
+
+    private void networkLoadArticle(final String url, boolean forImmediateUse, TextLoader loader) {
+        if(url.endsWith(".pdf")) {
+            loader.textError(url, ERROR_PDF);
+        } else {
+            if(listeners.get(url) == null) listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
+            listeners.get(url).add(new WeakReference<>(loader));
+            AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
+                    .setTag(url)
+                    .setOkHttpClient(APIPaths.MERCURY_CLIENT)
+                    .setPriority(forImmediateUse ? Priority.IMMEDIATE : Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                if(response.has("content") && !response.get("content").equals("<div></div>")) {
+                                    for(WeakReference<TextLoader> loader : listeners.get(url)) {
+                                        loader.get().textLoaded(response);
+                                    }
+                                }
+                                listeners.remove(url);
+                            } catch(JSONException jse) {
+                                for(WeakReference<TextLoader> loader : listeners.get(url)) {
+                                    loader.get().textError(url, ERROR_PARSING);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            for(WeakReference<TextLoader> loader : listeners.get(url)) {
+                                loader.get().textError(url, ERROR_NETWORK_CHANGE);
+                            }
+                        }
+                    });
+        }
+
+    }
+
+    private void cacheLoadArticle(final String url, TextLoader loader) {
+
+    }
+
     private void cacheLoadChildJSON(final int id) {}
 
     public interface idLoader {
@@ -246,6 +301,13 @@ public class Loader extends BroadcastReceiver {
 
         void commentError(int id, int code);
 
+    }
+
+    public interface TextLoader {
+
+        void textLoaded(JSONObject result);
+
+        void textError(String url, int code);
     }
 
     public interface NetworkChangeListener {
