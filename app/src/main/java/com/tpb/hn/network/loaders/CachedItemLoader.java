@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Item;
@@ -13,6 +14,7 @@ import com.tpb.hn.storage.permanent.DB;
 
 /**
  * Created by theo on 21/11/16.
+ * TODO Implement ItemManager in DB
  */
 
 public class CachedItemLoader implements ItemManager {
@@ -31,6 +33,7 @@ public class CachedItemLoader implements ItemManager {
     private static final String KEY_JOBS_IDS = "JOBS";
 
     public static int ERROR_IDS_NOT_CACHED = 100;
+    public static int MESSAGE_COMMENTS_OFFLINE = -100;
 
 
     private ItemLoadListener mListener;
@@ -106,10 +109,11 @@ public class CachedItemLoader implements ItemManager {
     }
 
     public static void writeItemIds(Context context, int[] ids, String key) {
+        Log.i(TAG, "writeItemIds: " + ids.length);
         if(prefs == null) prefs = context.getSharedPreferences(KEY_SHARED_PREFS, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = prefs.edit();
         Util.putIntArrayInPrefs(editor, key, ids);
-        editor.apply();
+        editor.commit();
     }
 
     @Override
@@ -149,6 +153,6 @@ public class CachedItemLoader implements ItemManager {
 
     @Override
     public void loadItemForComments(int id) {
-
+        mListener.itemLoaded(null, false, MESSAGE_COMMENTS_OFFLINE);
     }
 }

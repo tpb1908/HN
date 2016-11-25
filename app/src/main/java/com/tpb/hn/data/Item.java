@@ -38,6 +38,7 @@ public class Item implements Parcelable, Comparable<Item> {
     private long lastUpdated;
     private boolean isNew;
     private boolean isOffline;
+    private String webText;
 
     private String commentJSON = "";
     private Item[] comments = new Item[0];
@@ -159,6 +160,14 @@ public class Item implements Parcelable, Comparable<Item> {
     public void setParts(int[] parts) {
         lastUpdated = System.currentTimeMillis();
         this.parts = parts;
+    }
+
+    public String getWebText() {
+        return webText;
+    }
+
+    public void setWebText(String webText) {
+        this.webText = webText;
     }
 
     public int getDescendants() {

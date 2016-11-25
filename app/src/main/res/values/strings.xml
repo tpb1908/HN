@@ -5,7 +5,7 @@
     <string name="error_loading_page">Error loading page</string>
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
     <string name="error_parsing_readable_text">Error parsing text</string>
-    <string name="error_comment_loading">Couldn"'"t load comments. Swipe to retry</string>
+    <string name="error_comment_loading">Couldn"'"t load children. Swipe to retry</string>
     <string name="error_opening_deleted">Can"'"t open deleted %1$s</string>
 
     <string name="error_http_400">400 Bad Request</string>
@@ -35,9 +35,9 @@
     <string name="text_title_empty"><b>\u2026</b></string>
     <string name="text_info_empty">\u2026</string>
     <string name="text_attempting_item_load">Loading item</string>
-    <string name="text_no_comments">No comments yet</string>
+    <string name="text_no_comments">No children yet</string>
     <string name="text_user_without_about">User has no about</string>
-    <string name="text_traversing_comments">Traversing comments to find parent Item</string>
+    <string name="text_traversing_comments">Traversing children to find parent Item</string>
     <string name="text_deleted_comment">[Deleted comment]</string>
     <string name="text_redirecting_reader">Redirecting through parser service</string>
     <string name="text_item_deleted">[Deleted item]</string>
@@ -51,8 +51,8 @@
     <string name="text_scroll_to_top">Scroll to top on change</string>
     <string name="text_volume_navigation">Navigate with volume keys</string>
     <string name="text_settings_comments">Comments</string>
-    <string name="text_comments_cards">Show comments as cards</string>
-    <string name="text_expand_comments">Expand comments by default</string>
+    <string name="text_comments_cards">Show children as cards</string>
+    <string name="text_expand_comments">Expand children by default</string>
     <string name="text_animate_comments">Animate comment insertion</string>
     <string name="text_settings_browser">Browser</string>
     <string name="text_block_ads">Block ads in browser</string>

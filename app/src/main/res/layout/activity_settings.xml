@@ -286,7 +286,7 @@
                         />
                     <!-- Sort order-->
                     <!-- Animate -->
-                    <!-- Mark new comments-->
+                    <!-- Mark new children-->
 
                     <View
                         android:layout_width="match_parent"

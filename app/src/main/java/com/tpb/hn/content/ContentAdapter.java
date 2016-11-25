@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -26,10 +27,11 @@ import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
+import com.tpb.hn.item.views.HolderSwipeCallback;
+import com.tpb.hn.network.loaders.CachedItemLoader;
 import com.tpb.hn.network.loaders.HNItemLoader;
 import com.tpb.hn.network.loaders.ItemManager;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.storage.permanent.ItemCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,8 +60,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean mIsContent;
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
-    private int[] mIds;
-    private int[] mOldIds;
+    private int[] mIds = new int[0];
+    private int[] mOldIds = new int[0];
     private long mLastUpdateTime;
     private Item[] mData = new Item[] {};
     private ContentManager mManager;
@@ -104,6 +106,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(mIsContent) {
                     loadItems(mCurrentPage);
                 } else {
+                    Log.i(TAG, "onRefresh: Reopening user");
                     mIds = new int[0];
                     notifyDataSetChanged();
                     mManager.openUser(null);
@@ -136,6 +139,16 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
+        final HolderSwipeCallback callback  = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                notifyItemChanged(viewHolder.getAdapterPosition());
+            }
+
+        };
+
+        new ItemTouchHelper(callback).attachToRecyclerView(recycler);
 
     }
 
@@ -191,15 +204,19 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return Integer.toString(position);
     }
 
-    void loadItems(String defaultPage) {
+    void loadItems(String page) {
         //TODO- Refactor the swich below on the grounds that the page is always valid
-        this.mOldIds = new int[0];
-        this.mIds = new int[0];
         this.mData = new Item[0];
-        mCurrentPage = defaultPage;
+        if(mCurrentPage != null && mCurrentPage.equals(page)) {
+            this.mOldIds = mIds.clone();
+            Arrays.sort(mOldIds);
+        } else {
+            mOldIds = new int[0];
+        }
+        mCurrentPage = page;
         AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
-        switch(defaultPage.toLowerCase()) {
+        switch(page.toLowerCase()) {
             case "top":
                 mCountGuess = 500;
                 mLoader.getTopIds(this);
@@ -227,6 +244,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             default:
                 mCountGuess = 100;
         }
+        Log.i(TAG, "loadItems: page selected");
+        if(mIds.length == 0) mIds = new int[mCountGuess];
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mLastUpdateTime = new Date().getTime() / 1000;
         mManager.displayLastUpdate(mLastUpdateTime);
@@ -234,14 +253,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void IdLoadDone(int[] ids) {
-        Log.i(TAG, "IdLoadDone: ");
-        this.mOldIds = mIds;
+        Log.i(TAG, "IdLoadDone: " + ids.length);
+        Util.largeDebugDump("Ids", Arrays.toString(ids));
         this.mIds = ids;
         int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
             mLayoutManager.scrollToPosition(ids.length);
         }
-        ItemCache.writeIds(mContext, ids, mCurrentPage.toUpperCase());
+        if(mCurrentPage != null) CachedItemLoader.writeItemIds(mContext, ids, mCurrentPage.toUpperCase());
         mData = new Item[ids.length + 1];
         mLoader.loadItemsIndividually(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false);
         notifyDataSetChanged();
@@ -260,11 +279,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void itemLoaded(Item item, boolean success, int code) {
         if(success) {
             for(int i = 0; i < mIds.length; i++) {
-                if(item.getId() == mIds[i]) {
+                if(mIds[i] == item.getId()) {
                     mData[i] = item;
-                    if(mOldIds != null) {
+                    if(mOldIds.length > 0) {
                         final int possiblePos = Arrays.binarySearch(mOldIds, item.getId());
-                        item.setNew(possiblePos > 0 && possiblePos < mIds.length);
+                        item.setNew(possiblePos < 0 || possiblePos > mOldIds.length);
                     }
                     notifyItemChanged(i);
                     break;
@@ -394,6 +413,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     if(item.isNew()) {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
+
                     } else {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
                         holder.mNumber.setTextColor(mIsDarkTheme ? darkText : lightText);

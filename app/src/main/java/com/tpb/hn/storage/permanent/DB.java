@@ -35,6 +35,7 @@ public class DB extends SQLiteOpenHelper {
     private static final String KEY_PERMANENT = "PERMANENT";
     private static final String KEY_WEB_TEXT = "TEXT";
 
+
     public static DB getDB(Context context) {
         if(instance == null) {
             instance = new DB(context);
@@ -131,6 +132,7 @@ public class DB extends SQLiteOpenHelper {
                 final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                 try {
                     final Item i = HNParser.JSONToItem(new JSONObject(s));
+                    i.setWebText(cursor.getString(cursor.getColumnIndex(KEY_WEB_TEXT)));
                     success = true;
                     callback.loadComplete(true, i);
                 } catch(JSONException e) {
@@ -212,12 +214,14 @@ public class DB extends SQLiteOpenHelper {
             db.beginTransaction();
             for(Item i : items) {
                 final JSONObject JSON = HNParser.itemToJSON(i);
+                Log.i(TAG, "doInBackground: Inserting item " + JSON.toString());
                 values.put(KEY_ID, i.getId());
                 values.put(KEY_LAST_UPDATE, i.getLastUpdated());
                 values.put(KEY_JSON, JSON.toString());
                 values.put(KEY_PERMANENT, false);
-                final boolean success = db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
-                allSuccessful &= success;
+                values.put(KEY_WEB_TEXT, i.getWebText());
+                allSuccessful &= db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+
                 //if(callback != null) callback.writeComplete(success, i);
                 values.clear();
             }

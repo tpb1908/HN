@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.ItemType;
-import com.tpb.hn.network.loaders.CachedItemLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,9 +49,6 @@ public class ItemCache {
         return kids.get(parent);
     }
 
-    public static void writeIds(Context context, int[] ids, String key) {
-        CachedItemLoader.writeItemIds(context, ids, key);
-    }
 
     public void insert(Item item, boolean background) {
         if(item.getType() == ItemType.COMMENT) {
