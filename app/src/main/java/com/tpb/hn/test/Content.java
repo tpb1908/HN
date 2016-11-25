@@ -35,6 +35,7 @@ import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.storage.SharedPrefsController;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindColor;
@@ -82,7 +83,7 @@ public class Content extends ContentFragment implements ItemLoader,
     private boolean mIsFullscreen = false;
 
     private String url;
-    private String readablePage;
+    private String mReadablePage;
 
     private Item mItem;
 
@@ -112,7 +113,7 @@ public class Content extends ContentFragment implements ItemLoader,
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("url") != null) {
                 url = savedInstanceState.getString("url");
-                readablePage = savedInstanceState.getString("readablePage");
+                mReadablePage = savedInstanceState.getString("mReadablePage");
                 bindData();
             }
         }
@@ -154,13 +155,13 @@ public class Content extends ContentFragment implements ItemLoader,
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
             mContentReady = true;
-            bindData();
+            if(mViewsReady) bindData();
         } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
-                readablePage = Formatter.wrapInDiv(item.getText());
+                mReadablePage = Formatter.wrapInDiv(item.getText());
                 mContentReady = true;
-                bindData();
+                if(mViewsReady) bindData();
             } else {
                 url = item.getUrl();
                 Loader.getInstance(getContext()).loadArticle(url, true, this);
@@ -185,10 +186,10 @@ public class Content extends ContentFragment implements ItemLoader,
                     will return null
                      */
                 final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
-                readablePage = Formatter.setTextColor(getContext(), readablePage,
+                mReadablePage = Formatter.setTextColor(getContext(), mReadablePage,
                         darkTheme ? darkBG : lightBG,
                         darkTheme ? darkText : lightText);
-                mWebView.loadData(readablePage, "text/html", "utf-8");
+                mWebView.loadData(mReadablePage, "text/html", "utf-8");
             }
         }
     }
@@ -413,7 +414,13 @@ public class Content extends ContentFragment implements ItemLoader,
 
     @Override
     public void textLoaded(JSONObject result) {
+        try {
+            mReadablePage = result.getString("content");
 
+            mContentReady = true;
+            if(mViewsReady) bindData();
+        } catch(JSONException jse) {
+        }
     }
 
     @Override
