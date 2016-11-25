@@ -1,7 +1,5 @@
 # HN
 
-<<<<<<< HEAD
-
 ## Features
 Theming, light or dark and at time
 Options for card style
@@ -22,10 +20,9 @@ Better offline storage system
 ## Refactoring plan
 
 Fragment structure
-Two booleans, one for view and one for data
+Three booleans, for views, data, and context
 One application level 'loader' which switches based on network
 Loader has set of Ids
 
 Enums for page
 Rewrite database and listeners
->>>>>>> cache
