@@ -17,6 +17,7 @@ public class Item {
     private boolean deleted;
     private String by;
     private long time;
+    private String title;
     private String text;
     private boolean dead;
     private int parent;
@@ -159,6 +160,14 @@ public class Item {
         this.commentJSON = commentJSON;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getFormattedURL() {
         try {
             return "(" + new URL(url).getHost() + ")";
@@ -201,6 +210,7 @@ public class Item {
                 ", deleted=" + deleted +
                 ", by='" + by + '\'' +
                 ", time=" + time +
+                ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", dead=" + dead +
                 ", parent=" + parent +

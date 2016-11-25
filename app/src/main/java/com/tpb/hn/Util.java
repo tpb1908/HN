@@ -99,6 +99,7 @@ public class Util {
         final StringBuilder builder = new StringBuilder();
         for(int i : data) builder.append(i).append(",");
         editor.putString(key, builder.toString());
+        editor.commit();
     }
 
     public static int[] getIntArrayFromPrefs(SharedPreferences prefs, String key) {
