@@ -23,7 +23,6 @@ import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateCh
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
-import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -267,7 +266,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void itemError(int id, int code) {
-
+        Log.i(TAG, "itemError: " + id + " | " + code);
     }
 
     @Override
@@ -358,6 +357,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final int pos = viewHolder.getAdapterPosition();
+        if(mData.length > pos && mData[pos] != null) Log.i(TAG, "onBindViewHolder: " + mData[pos].toString());
         if(viewHolder instanceof ItemHolder) {
             final ItemHolder holder = (ItemHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
@@ -448,7 +448,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         if(position < mData.length && mData[position] != null) {
-            return mData[position] instanceof Comment ? mIsContent ? 0 : 1 : 0;
+            return mData[position].isComment() ? mIsContent ? 0 : 1 : 0;
         }
         return mIsContent ? 0 : -1;
     }

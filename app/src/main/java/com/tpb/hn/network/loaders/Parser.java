@@ -46,9 +46,10 @@ public class Parser {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
         item.setTime(obj.getLong(KEY_TIME));
-        if(obj.has(KEY_TIME)) {
+        if(obj.has(KEY_TITLE)) {
             item.setTitle(obj.getString(KEY_TITLE));
         }
+        if(obj.getString(KEY_TYPE).equals("comment")) item.setComment(true);
         if(obj.has(KEY_BY)) item.setBy(obj.getString(KEY_BY));
         if(obj.has(KEY_SCORE)) item.setScore(obj.getInt(KEY_SCORE));
         if(obj.has(KEY_DESCENDANTS)) item.setDescendants(obj.getInt(KEY_DESCENDANTS));

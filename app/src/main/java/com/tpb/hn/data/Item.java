@@ -26,6 +26,7 @@ public class Item implements Comparable<Item> {
     protected int score;
     private int[] parts;
     private int descendants;
+    private boolean isComment;
 
     private boolean viewed;
     private boolean isNew;
@@ -166,6 +167,14 @@ public class Item implements Comparable<Item> {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isComment() {
+        return isComment;
+    }
+
+    public void setComment(boolean comment) {
+        isComment = comment;
     }
 
     public String getFormattedURL() {

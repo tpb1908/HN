@@ -203,9 +203,11 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
+                                //TODO Parser returns comments
                                 final Item item = Parser.parseItem(response);
                                 loader.itemLoaded(item);
-                            } catch(JSONException e) {
+                            } catch(JSONException jse) {
+                                Log.e(TAG, "onResponse: ", jse);
                                 loader.itemError(id, ERROR_PARSING);
                             } catch(Exception e) {
                                 loader.itemError(id, ERROR_UNKNOWN);
