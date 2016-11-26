@@ -126,7 +126,7 @@ public class CachedItemLoader implements ItemManager {
                     db.loadItem(new DB.DBLoadCallback() {
                         @Override
                         public void loadComplete(final boolean success, final Item item) {
-                            item.setOffline(true);
+                           // item.setOffline(true);
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {

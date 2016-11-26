@@ -8,7 +8,6 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.tpb.hn.data.User;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.network.HNParser;
 
 import org.json.JSONObject;
 
@@ -36,7 +35,7 @@ public class HNUserLoader {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            final User user = HNParser.JSONToUser(response);
+                            final User user = Parser.parseUser(response);
                             if(userListener != null) userListener.userLoaded(user);
                             Log.i(TAG, "onResponse: " + user.toString());
                         } catch(Exception e) {

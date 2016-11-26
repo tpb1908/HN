@@ -1,17 +1,14 @@
 package com.tpb.hn.item.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -29,21 +26,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
-import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
-import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.storage.permanent.ItemCache;
+import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemLoader;
+import com.tpb.hn.network.loaders.Loader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,15 +49,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * Created by theo on 06/11/16.
+ * Created by theo on 25/11/16.
  */
 
-public class Content extends Fragment implements ItemLoader,
-        TextLoader.TextLoadDone,
+public class Content extends ContentFragment implements ItemLoader,
+        Loader.TextLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
-    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -92,32 +85,21 @@ public class Content extends Fragment implements ItemLoader,
     private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;
-    private boolean mIsContentReady;
-    private boolean mIsViewReady = false;
-    private boolean mShown = false;
 
     private String url;
-    private String readablePage;
+    private String mReadablePage;
 
     private Item mItem;
 
-    public static Content newInstance(FragmentPagerAdapter.PageType type) {
-        if(type == FragmentPagerAdapter.PageType.COMMENTS || type == FragmentPagerAdapter.PageType.SKIMMER) {
-            throw new IllegalArgumentException("Page type must be browser, amp page, or readability");
-        }
-        final Content content = new Content();
-        content.mType = type;
-        return content;
+    public Content(FragmentPagerAdapter.PageType type) {
+        mType = type;
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_content, container, false);
         unbinder = ButterKnife.bind(this, inflated);
 
-        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
         mDisableHorizontalScrolling = prefs.getDisableHorizontalScrolling();
         mLazyLoadCanStart = !prefs.getLazyLoad();
@@ -134,12 +116,12 @@ public class Content extends Fragment implements ItemLoader,
         }
         mParent.showFab();
 
-        if(mIsContentReady) {
+        if(mContentReady) {
             bindData();
         } else if(savedInstanceState != null) {
             if(savedInstanceState.getString("url") != null) {
                 url = savedInstanceState.getString("url");
-                readablePage = savedInstanceState.getString("readablePage");
+                mReadablePage = savedInstanceState.getString("mReadablePage");
                 bindData();
             }
         }
@@ -165,96 +147,91 @@ public class Content extends Fragment implements ItemLoader,
                 }
             }
         });
-        mIsViewReady = true;
+
         return inflated;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context instanceof ItemViewActivity) {
-            mParent = (ItemViewActivity) context;
-        } else {
-            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+    void attach(Context context) {
+
+    }
+
+    @Override
+    public void loadItem(Item item) {
+        mItem = item;
+        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
+            url = item.getUrl();
+            mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
+            mContentReady = true;
+            if(mViewsReady) bindData();
+        } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+            //Text reader deals with Item text, or readability
+            if(item.getUrl() == null) {
+                mReadablePage = Formatter.wrapInDiv(item.getText());
+                mContentReady = true;
+                if(mViewsReady) bindData();
+            } else {
+                url = item.getUrl();
+                Loader.getInstance(getContext()).loadArticle(url, true, this);
+            }
         }
     }
 
-    //<editor-fold desc="Data loading and binding">
-    private void bindData() {
-        if(mIsContentReady && mIsViewReady && mLazyLoadCanStart) {
-            if(mIsShowingPDF) {
-                setupPDFButtons();
-            } else {
-                if(mType == FragmentPagerAdapter.PageType.BROWSER) {
-                    mWebView.loadUrl(url);
-                } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
-                    mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
-                } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+    @Override
+    void bindData() {
+        if(mIsShowingPDF) {
+            setupPDFButtons();
+        } else {
+            if(mType == FragmentPagerAdapter.PageType.BROWSER) {
+                mWebView.loadUrl(url);
+            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
+                mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
                     /*
                     We have to do the theming on bind
                     If we do when the JSON is returned, and the JSON is returned from ItemCache
                     it will be returned before the Fragment has been attached and getContext()
                     will return null
                      */
-                    final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
-                    readablePage = Formatter.setTextColor(getContext(), readablePage,
-                            darkTheme ? darkBG : lightBG,
-                            darkTheme ? darkText : lightText);
-                    mWebView.loadData(readablePage, "text/html", "utf-8");
-                }
+                final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
+                mReadablePage = Formatter.setTextColor(getContext(), mReadablePage,
+                        darkTheme ? darkBG : lightBG,
+                        darkTheme ? darkText : lightText);
+                mWebView.loadData(mReadablePage, "text/html", "utf-8");
             }
         }
     }
 
-    @Override
-    public void loadItem(Item item) {
-        Log.d(TAG, "loadItem: Loading item " + mType);
-        mItem = item;
-        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
-            url = item.getUrl();
-            mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
-            mIsContentReady = true;
-            bindData();
-        } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-            //Text reader deals with Item text, or readability
-            if(item.getUrl() == null) {
-                readablePage = Formatter.wrapInDiv(item.getText());
-                item.setWebText(readablePage);
-                ItemCache.getInstance(getContext()).insert(item, false);
-                mIsContentReady = true;
-                bindData();
-            } else {
-                url = item.getUrl();
-                new TextLoader(this).loadArticle(url, true);
-            }
+
+    @OnClick(R.id.button_content_toolbar_close)
+    void onClosePressed() {
+        if(mIsFindShown) {
+            final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            mFindEditText.setText("");
+            mSwitcher.showPrevious();
+            mIsFindShown = false;
+            mIsSearchComplete = false;
+            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
+        } else {
+            toggleFullscreen(false);
         }
     }
 
-    @Override
-    public void loadDone(JSONObject result, boolean success, int code) {
-        if(success) {
-            try {
-                readablePage = result.get("content").toString();
-                mItem.setWebText(readablePage);
-                mIsContentReady = true;
-                ItemCache.getInstance(getContext()).insert(mItem, false);
-                bindData();
-            } catch(JSONException jse) {
-                success = false;
-            }
-        }
-        if(!success) {
-            Log.d(TAG, "loadDone: Error");
-            readablePage = Formatter.wrapInDiv(
-                    Formatter.formatHTTPError(getContext(),
-                            Formatter.capitaliseFirst(FragmentPagerAdapter.PageType.toReadableString(mType) + ":"),
-                            code));
-            mIsContentReady = true;
-            bindData();
-        }
+    @OnClick(R.id.button_content_back)
+    void webViewBack() {
+        if(mWebView.canGoBack()) mWebView.goBack();
     }
 
-    //</editor-fold>
+    @OnClick(R.id.button_content_forward)
+    void webViewForward() {
+        if(mWebView.canGoForward()) mWebView.goForward();
+    }
+
+    @OnClick(R.id.button_content_refresh)
+    void refresh() {
+        mWebView.reload();
+    }
 
     @OnClick(R.id.button_find_in_page)
     void onFindInPagePressed() {
@@ -301,36 +278,6 @@ public class Content extends Fragment implements ItemLoader,
                 }
             });
         }
-    }
-
-    @OnClick(R.id.button_content_toolbar_close)
-    void onClosePressed() {
-        if(mIsFindShown) {
-            final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-            mFindEditText.setText("");
-            mSwitcher.showPrevious();
-            mIsFindShown = false;
-            mIsSearchComplete = false;
-            mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
-        } else {
-            toggleFullscreen(false);
-        }
-    }
-
-    @OnClick(R.id.button_content_back)
-    void webViewBack() {
-        if(mWebView.canGoBack()) mWebView.goBack();
-    }
-
-    @OnClick(R.id.button_content_forward)
-    void webViewForward() {
-        if(mWebView.canGoForward()) mWebView.goForward();
-    }
-
-    @OnClick(R.id.button_content_refresh)
-    void refresh() {
-        mWebView.reload();
     }
 
     private void toggleFullscreen(boolean fullscreen) {
@@ -388,20 +335,6 @@ public class Content extends Fragment implements ItemLoader,
         }
     }
 
-    @Override
-    public Pair<Boolean, String> handleLink(String url) {
-        switch(mType) {
-            case AMP_READER:
-                return Pair.create(true, APIPaths.getMercuryAmpPath(url));
-            case TEXT_READER:
-                new TextLoader(this).loadArticle(url, true);
-                Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
-                return Pair.create(false, null);
-            default:
-                return Pair.create(true, url);
-        }
-    }
-
     private void findInPage(final boolean closeWhenDone) {
         final String query = mFindEditText.getText().toString();
         mWebView.setFindListener(new WebView.FindListener() {
@@ -451,48 +384,13 @@ public class Content extends Fragment implements ItemLoader,
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("url", url);
-        outState.putString("readablePage", readablePage);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
     public void onPauseFragment() {
 
     }
 
     @Override
     public void onResumeFragment() {
-        mTracker.setScreenName(TAG + "_" + mType);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mLazyLoadCanStart = true;
-        if(mIsViewReady && mIsContentReady && !mShown) bindData();
-        mShown = true;
-        mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(mIsSearchComplete) {
-                            mWebView.findNext(true);
-                        } else {
-                            toggleFullscreen(!mIsFullscreen);
-                        }
-                    }
-                });
 
-        if(mIsShowingPDF) {
-            ButterKnife.findById(mToolbar, R.id.button_find_in_page).setVisibility(View.INVISIBLE);
-            mParent.hideFab();
-        } else {
-            mParent.showFab();
-        }
     }
 
     @Override
@@ -506,5 +404,41 @@ public class Content extends Fragment implements ItemLoader,
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Pair<Boolean, String> handleLink(String url) {
+        switch(mType) {
+            case AMP_READER:
+                return Pair.create(true, APIPaths.getMercuryAmpPath(url));
+            case TEXT_READER:
+                Loader.getInstance(getContext()).loadArticle(url, true, this);
+                Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
+                return Pair.create(false, null);
+            default:
+                return Pair.create(true, url);
+        }
+    }
+
+    @Override
+    public void textLoaded(JSONObject result) {
+        try {
+            mReadablePage = result.getString("content");
+
+            mContentReady = true;
+            if(mViewsReady) bindData();
+        } catch(JSONException jse) {
+        }
+    }
+
+    @Override
+    public void textError(String url, int code) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

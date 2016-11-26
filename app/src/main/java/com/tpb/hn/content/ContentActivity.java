@@ -234,7 +234,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     public void openItem(Item item) {
         final Intent i = new Intent(ContentActivity.this, ItemViewActivity.class);
-        i.putExtra("item", item);
+       // i.putExtra("item", item);
         startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
         mAdapter.beginBackgroundLoading();

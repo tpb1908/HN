@@ -9,7 +9,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.tpb.hn.data.Item;
-import com.tpb.hn.network.HNParser;
+import com.tpb.hn.network.loaders.Parser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,8 +131,8 @@ public class DB extends SQLiteOpenHelper {
             if(cursor.moveToFirst()) {
                 final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                 try {
-                    final Item i = HNParser.JSONToItem(new JSONObject(s));
-                    i.setWebText(cursor.getString(cursor.getColumnIndex(KEY_WEB_TEXT)));
+                    final Item i = Parser.parseItem(new JSONObject(s));
+                    //i.setWebText(cursor.getString(cursor.getColumnIndex(KEY_WEB_TEXT)));
                     success = true;
                     callback.loadComplete(true, i);
                 } catch(JSONException e) {
@@ -175,7 +175,7 @@ public class DB extends SQLiteOpenHelper {
                     do {
                         final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                         try {
-                            final Item i = HNParser.JSONToItem(new JSONObject(s));
+                            final Item i = Parser.parseItem(new JSONObject(s));
                             if(notifyIndividually && callback != null) {
                                 callback.loadComplete(true, i);
                             } else if(callback != null) {
@@ -212,19 +212,20 @@ public class DB extends SQLiteOpenHelper {
             final ContentValues values = new ContentValues();
             boolean allSuccessful = true;
             db.beginTransaction();
-            for(Item i : items) {
-                final JSONObject JSON = HNParser.itemToJSON(i);
-                Log.i(TAG, "doInBackground: Inserting item " + JSON.toString());
-                values.put(KEY_ID, i.getId());
-                values.put(KEY_LAST_UPDATE, i.getLastUpdated());
-                values.put(KEY_JSON, JSON.toString());
-                values.put(KEY_PERMANENT, false);
-                values.put(KEY_WEB_TEXT, i.getWebText());
-                allSuccessful &= db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
-
-                //if(callback != null) callback.writeComplete(success, i);
-                values.clear();
-            }
+            //TODO- Add this again
+//            for(Item i : items) {
+//                final JSONObject JSON =
+//                Log.i(TAG, "doInBackground: Inserting item " + JSON.toString());
+//                values.put(KEY_ID, i.getId());
+//                values.put(KEY_LAST_UPDATE, i.getLastUpdated());
+//                values.put(KEY_JSON, JSON.toString());
+//                values.put(KEY_PERMANENT, false);
+//                values.put(KEY_WEB_TEXT, i.getWebText());
+//                allSuccessful &= db.insertWithOnConflict(TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+//
+//                //if(callback != null) callback.writeComplete(success, i);
+//                values.clear();
+//            }
             db.setTransactionSuccessful();
             db.endTransaction();
             return allSuccessful;

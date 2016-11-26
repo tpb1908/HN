@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class ItemCache {
 
 
     public void insert(Item item, boolean background) {
-        if(item.getType() == ItemType.COMMENT) {
+        if(item instanceof Comment) {
             final Item parent = new Item();
             parent.setId(item.getParent());
             ArrayList<Item> siblings = kids.get(parent);
@@ -79,7 +79,7 @@ public class ItemCache {
     }
 
     public void update(Item item) {
-        if(item.getType() == ItemType.COMMENT) {
+        if(item instanceof Comment) {
             final Item parent = new Item();
             parent.setId(item.getParent());
             ArrayList<Item> siblings = kids.get(parent);

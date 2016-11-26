@@ -9,6 +9,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.item.fragments.Comments;
 import com.tpb.hn.item.fragments.Content;
 import com.tpb.hn.item.fragments.Skimmer;
+import com.tpb.hn.network.loaders.Loader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,28 +112,28 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         Fragment page = new Fragment();
         switch(pages.get(position)) {
             case COMMENTS:
-                page = Comments.newInstance();
+                page = new Comments();
                 fragments[position] = page;
                 break;
             case BROWSER:
-                page = Content.newInstance(PageType.BROWSER);
+                page = new Content(PageType.BROWSER);
                 fragments[position] = page;
                 break;
             case TEXT_READER:
-                page = Content.newInstance(PageType.TEXT_READER);
+                page = new Content(PageType.TEXT_READER);
                 fragments[position] = page;
                 break;
             case AMP_READER:
-                page = Content.newInstance(PageType.AMP_READER);
+                page = new Content(PageType.AMP_READER);
                 fragments[position] = page;
                 break;
             case SKIMMER:
-                page = Skimmer.newInstance();
+                page = new Skimmer();
                 fragments[position] = page;
                 break;
         }
         if(fragments[position] != null && item != null) {
-            ((ItemLoader) fragments[position]).loadItem(item);
+            ((Loader.ItemLoader) fragments[position]).itemLoaded(item);
         }
         Log.i(TAG, "getItem: Getting item " + position);
         return page;

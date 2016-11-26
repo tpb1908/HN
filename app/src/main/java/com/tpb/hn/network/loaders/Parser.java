@@ -1,6 +1,8 @@
-package com.tpb.hn.test;
+package com.tpb.hn.network.loaders;
 
+import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
+import com.tpb.hn.data.Comment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,14 +65,14 @@ public class Parser {
         final Comment comment = new Comment();
         comment.setId(obj.getInt(KEY_ID));
         comment.setParent(obj.getInt(KEY_PARENT_ID));
-        comment.setPoints(obj.getInt(KEY_POINTS));
+        comment.setScore(obj.getInt(KEY_POINTS));
         comment.setText(obj.getString(KEY_TEXT));
-        comment.setAuthor(obj.getString(KEY_AUTHOR));
+        comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));
         return comment;
     }
 
-    public static User JSONToUser(JSONObject obj) throws JSONException {
+    public static User parseUser(JSONObject obj) throws JSONException {
         final User user = new User();
         user.setId(obj.getString(KEY_ID));
         if(obj.has(KEY_ABOUT)) user.setAbout(obj.getString(KEY_ABOUT));
@@ -93,6 +95,26 @@ public class Parser {
         }
         return kids;
     }
+
+    public static int[] extractIntArray(String array) {
+        final String[] items = array.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
+        //Log.i(TAG, "extractIntArray: Extracting int array " + Arrays.toString(items));
+        final int[] results = new int[items.length];
+
+        for(int i = 0; i < items.length; i++) {
+            try {
+                results[i] = Integer.parseInt(items[i]);
+            } catch(NumberFormatException nfe) {
+                results[i] = -1;
+                //TODO: write something here if you need to recover from formatting errors
+            }
+        }
+        //Log.i(TAG, "extractIntArray: " + Arrays.toString(results));
+        return results;
+    }
+
+
+
 
 
 }

@@ -1,59 +1,43 @@
 package com.tpb.hn.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
-import com.tpb.hn.network.HNParser;
-
-import org.json.JSONException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
- * Created by theo on 18/10/16.
+ * Created by theo on 25/11/16.
  */
 
-public class Item implements Parcelable, Comparable<Item> {
+public class Item implements Comparable<Item> {
     private static final String TAG = Item.class.getSimpleName();
 
-    private int id;
+    protected int id;
     private boolean deleted;
-    private ItemType type;
-    private String by;
+    protected String by;
     private long time;
+    private String title;
     private String text;
     private boolean dead;
-    private int parent;
+    protected int parent;
     private int[] kids;
     private String url;
-    private int score;
-    private String title;
+    protected int score;
     private int[] parts;
     private int descendants;
+
     private boolean viewed;
-    private long lastUpdated;
     private boolean isNew;
-    private boolean isOffline;
-    private String webText;
-
-    private String commentJSON = "";
-    private Item[] comments = new Item[0];
-
-    public Item() {
-        lastUpdated = System.currentTimeMillis();
-    }
-
-    //<editor-fold desc="Getters and setters">
-    public void setId(int id) {
-        this.id = id;
-    }
+    private boolean parsedText;
+    private String commentJSON;
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isDeleted() {
@@ -62,15 +46,6 @@ public class Item implements Parcelable, Comparable<Item> {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public ItemType getType() {
-        return type;
-    }
-
-    public void setType(ItemType type) {
-        lastUpdated = System.currentTimeMillis();
-        this.type = type;
     }
 
     public String getBy() {
@@ -86,7 +61,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setTime(long time) {
-        lastUpdated = System.currentTimeMillis();
         this.time = time;
     }
 
@@ -95,7 +69,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setText(String text) {
-        lastUpdated = System.currentTimeMillis();
         this.text = text;
     }
 
@@ -104,7 +77,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setDead(boolean dead) {
-        lastUpdated = System.currentTimeMillis();
         this.dead = dead;
     }
 
@@ -113,7 +85,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setParent(int parent) {
-        lastUpdated = System.currentTimeMillis();
         this.parent = parent;
     }
 
@@ -122,7 +93,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setKids(int[] kids) {
-        lastUpdated = System.currentTimeMillis();
         this.kids = kids;
     }
 
@@ -131,7 +101,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setUrl(String url) {
-        lastUpdated = System.currentTimeMillis();
         this.url = url;
     }
 
@@ -140,17 +109,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setScore(int score) {
-        lastUpdated = System.currentTimeMillis();
         this.score = score;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        lastUpdated = System.currentTimeMillis();
-        this.title = title;
     }
 
     public int[] getParts() {
@@ -158,16 +117,7 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setParts(int[] parts) {
-        lastUpdated = System.currentTimeMillis();
         this.parts = parts;
-    }
-
-    public String getWebText() {
-        return webText;
-    }
-
-    public void setWebText(String webText) {
-        this.webText = webText;
     }
 
     public int getDescendants() {
@@ -175,7 +125,6 @@ public class Item implements Parcelable, Comparable<Item> {
     }
 
     public void setDescendants(int descendants) {
-        lastUpdated = System.currentTimeMillis();
         this.descendants = descendants;
     }
 
@@ -187,10 +136,6 @@ public class Item implements Parcelable, Comparable<Item> {
         this.viewed = viewed;
     }
 
-    public long getLastUpdated() {
-        return lastUpdated;
-    }
-
     public boolean isNew() {
         return isNew;
     }
@@ -199,15 +144,49 @@ public class Item implements Parcelable, Comparable<Item> {
         isNew = aNew;
     }
 
-    public boolean isOffline() {
-        return isOffline;
+    public boolean isParsedText() {
+        return parsedText;
     }
 
-    public void setOffline(boolean offline) {
-        isOffline = offline;
+    public void setParsedText(boolean parsedText) {
+        this.parsedText = parsedText;
     }
 
-    //</editor-fold>
+    public String getCommentJSON() {
+        return commentJSON;
+    }
+
+    public void setCommentJSON(String commentJSON) {
+        this.commentJSON = commentJSON;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFormattedURL() {
+        try {
+            return "(" + new URL(url).getHost() + ")";
+        } catch(MalformedURLException mue) {
+            return "(Unknown)";
+        }
+    }
+
+    public String getInfo() {
+        String info = score + " points | ";
+        if(descendants > 0) {
+            info += descendants + " comments | ";
+        }
+        return info + Formatter.timeAgo(time);
+    }
+
+    public String getFormattedBy() {
+        return "By " + by;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -224,144 +203,31 @@ public class Item implements Parcelable, Comparable<Item> {
         return false;
     }
 
-    public String getFormattedTitle() {
-        if(url != null && url.endsWith(".pdf") && !title.contains("pdf")) {
-            return title + "[pdf]";
-        } else {
-            return title;
-        }
-    }
-
-    public String getFormattedInfo() {
-        String info = score + " points | ";
-        if(descendants > 0) {
-            info += descendants + " comments | ";
-        }
-        return info + Formatter.timeAgo(time);
-    }
-
-    public String getFormattedURL() {
-        try {
-            return "(" + new URL(url).getHost() + ")";
-        } catch(MalformedURLException mue) {
-            return "";
-        }
-    }
-
-    public String getFormattedBy() {
-        return "By " + by;
-    }
-
-    public String getCommentJSON() {
-        return commentJSON;
-    }
-
-    public void setCommentJSON(final String commentJSON) throws JSONException {
-        this.commentJSON = commentJSON;
-    }
-
-    public void parseComments() {
-        try {
-            comments = HNParser.parseComments(commentJSON);
-        } catch(Exception e) {
-        }
-        descendants = comments.length;
-    }
-
-    public Item[] getComments() {
-        return comments;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeByte(this.deleted ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
-        dest.writeString(this.by);
-        dest.writeLong(this.time);
-        dest.writeString(this.text);
-        dest.writeByte(this.dead ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.parent);
-        dest.writeIntArray(this.kids);
-        dest.writeString(this.url);
-        dest.writeInt(this.score);
-        dest.writeString(this.title);
-        dest.writeIntArray(this.parts);
-        dest.writeInt(this.descendants);
-        dest.writeByte(this.viewed ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.lastUpdated);
-        //dest.writeString(this.commentJSON);
-    }
-
-
-    protected Item(Parcel in) {
-        this.id = in.readInt();
-        this.deleted = in.readByte() != 0;
-        int tmpType = in.readInt();
-        this.type = tmpType == -1 ? null : ItemType.values()[tmpType];
-        this.by = in.readString();
-        this.time = in.readLong();
-        this.text = in.readString();
-        this.dead = in.readByte() != 0;
-        this.parent = in.readInt();
-        this.kids = in.createIntArray();
-        this.url = in.readString();
-        this.score = in.readInt();
-        this.title = in.readString();
-        this.parts = in.createIntArray();
-        this.descendants = in.readInt();
-        this.viewed = in.readByte() != 0;
-        this.lastUpdated = in.readLong();
-    }
-
-    public static final Creator<Item> CREATOR = new Creator<Item>() {
-        @Override
-        public Item createFromParcel(Parcel source) {
-            return new Item(source);
-        }
-
-        @Override
-        public Item[] newArray(int size) {
-            return new Item[size];
-        }
-    };
-
     @Override
     public int compareTo(@NonNull Item item) {
-        return id == item.id ? 0 : id > item.id ? 1 : -1;
+        return time > item.time ? 1 : 0;
     }
-
-    public static Comparator<Item> comparator = new Comparator<Item>() {
-        @Override
-        public int compare(Item item, Item t1) {
-            return item.id == t1.id ? 0 : item.id > t1.id ? 1 : -1;
-        }
-    };
 
     @Override
     public String toString() {
         return "Item{" +
                 "id=" + id +
                 ", deleted=" + deleted +
-                ", type=" + type +
                 ", by='" + by + '\'' +
                 ", time=" + time +
+                ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", dead=" + dead +
                 ", parent=" + parent +
                 ", kids=" + Arrays.toString(kids) +
                 ", url='" + url + '\'' +
                 ", score=" + score +
-                ", title='" + title + '\'' +
                 ", parts=" + Arrays.toString(parts) +
                 ", descendants=" + descendants +
                 ", viewed=" + viewed +
-                ", lastUpdated=" + lastUpdated +
+                ", isNew=" + isNew +
+                ", parsedText=" + parsedText +
+                ", commentJSON='" + commentJSON + '\'' +
                 '}';
     }
 }

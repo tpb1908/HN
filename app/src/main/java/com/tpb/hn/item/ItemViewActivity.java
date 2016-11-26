@@ -6,35 +6,25 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.Util;
 import com.tpb.hn.content.ContentActivity;
+import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
+import com.tpb.hn.item.fragments.CommentAdapter;
 import com.tpb.hn.item.views.LockableViewPager;
-import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
-import com.tpb.hn.network.loaders.HNItemLoader;
-import com.tpb.hn.network.loaders.ItemManager;
+import com.tpb.hn.network.loaders.Loader;
 import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.user.UserViewActivity;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +35,7 @@ import butterknife.OnLongClick;
  * Created by theo on 25/10/16.
  */
 
-public class ItemViewActivity extends AppCompatActivity implements ItemManager.ItemLoadListener, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
+public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLoader, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     private Tracker mTracker;
 
@@ -75,7 +65,7 @@ public class ItemViewActivity extends AppCompatActivity implements ItemManager.I
     void onAuthorClick() {
         if(mRootItem != null) {
             mLaunchItem = mRootItem;
-            openUser(mLaunchItem);
+           // openUser(mLaunchItem);
         }
     }
 
@@ -106,48 +96,53 @@ public class ItemViewActivity extends AppCompatActivity implements ItemManager.I
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            Util.getItemManager(this, this).loadItem(APIPaths.parseItemUrl(data));
+            //Util.getItemManager(this, this).loadItem(APIPaths.parseItemUrl(data));
         } else {
-            if(UserViewActivity.mLaunchItem != null && UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT && ContentActivity.mLaunchItem == null) {
-                loadCommentParent(UserViewActivity.mLaunchItem);
-                Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
-            } else {
-                if(ContentActivity.mLaunchItem != null) {
-                    mLaunchItem = ContentActivity.mLaunchItem;
-                    ContentActivity.mLaunchItem = null;
-                } else {
-                    mLaunchItem = UserViewActivity.mLaunchItem;
-                }
-                mRootItem = mLaunchItem;
-                setupFragments(prefs.getPageTypes(), mLaunchItem);
-                setTitle(mLaunchItem);
-                if(launchIntent.getSerializableExtra("type") != null) {
-                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
-                    final int index = mAdapter.indexOf(type);
-                    mStoryPager.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(index != -1) mStoryPager.setCurrentItem(index);
-                        }
-                    });
-
-                }
-            }
+//            if(UserViewActivity.mLaunchItem != null && UserViewActivity.mLaunchItem.getType() == ItemType.COMMENT && ContentActivity.mLaunchItem == null) {
+//                loadCommentParent(UserViewActivity.mLaunchItem);
+//                Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
+//            } else {
+//                if(ContentActivity.mLaunchItem != null) {
+//                    mLaunchItem = ContentActivity.mLaunchItem;
+//                    ContentActivity.mLaunchItem = null;
+//                } else {
+//                    mLaunchItem = UserViewActivity.mLaunchItem;
+//                }
+//                mRootItem = mLaunchItem;
+//                setupFragments(prefs.getPageTypes(), mLaunchItem);
+//                setTitle(mLaunchItem);
+//                if(launchIntent.getSerializableExtra("type") != null) {
+//                    final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
+//                    final int index = mAdapter.indexOf(type);
+//                    mStoryPager.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if(index != -1) mStoryPager.setCurrentItem(index);
+//                        }
+//                    });
+//
+//                }
+//            }
         }
 
         originalFlags = getWindow().getDecorView().getSystemUiVisibility();
     }
 
     @Override
-    public void openUser(Item item) {
-        Log.i(TAG, "openUser: " + item.toString());
-        mLaunchItem = item;
-        startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class),
-                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                        Pair.create((View) mBackButton, "button"),
-                        Pair.create((View) mStoryAppbar, "appbar")).toBundle());
-        overridePendingTransition(R.anim.slide_up, R.anim.none);
+    public void openUser(Comment item) {
+
     }
+
+//    @Override
+//    public void openUser(Item item) {
+//        Log.i(TAG, "openUser: " + item.toString());
+//        mLaunchItem = item;
+//        startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class),
+//                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+//                        Pair.create((View) mBackButton, "button"),
+//                        Pair.create((View) mStoryAppbar, "appbar")).toBundle());
+//        overridePendingTransition(R.anim.slide_up, R.anim.none);
+//    }
 
     public void showFab() {
         if(mShouldShowFab) mFab.show();
@@ -208,28 +203,32 @@ public class ItemViewActivity extends AppCompatActivity implements ItemManager.I
     }
 
     private void loadCommentParent(Item item) {
-        new HNItemLoader(this, this).loadItem(item.getParent());
+        Loader.getInstance(this).loadItem(item.getParent(), this);
     }
 
     @Override
-    public void itemLoaded(Item item, boolean success, int code) {
-        //This is only called when the Activity is launched from a link outside the app
-        if(item.getType() == ItemType.COMMENT) {
-            loadCommentParent(item);
-        } else {
-            mRootItem = item;
-            mLaunchItem = item;
-            setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
-            setTitle(mLaunchItem);
-        }
+    public void itemLoaded(Item item) {
+//        //This is only called when the Activity is launched from a link outside the app
+//        if(item.getType() == ItemType.COMMENT) {
+//            loadCommentParent(item);
+//        } else {
+//            mRootItem = item;
+//            mLaunchItem = item;
+//            setupFragments(SharedPrefsController.getInstance(this).getPageTypes(), mLaunchItem);
+//            setTitle(mLaunchItem);
+//        }
+    }
+
+    @Override
+    public void itemError(int id, int code) {
+
     }
 
     private void setTitle(Item item) {
-        Log.i(TAG, "setTitle: " + item.toString() + ", " + Arrays.toString(item.getComments()));
         mTitle.setPaddingRelative(mTitle.getPaddingStart(), 16, mTitle.getPaddingEnd(), 16);
         mTitle.setText(item.getTitle());
         mUrl.setText(item.getFormattedURL());
-        mStats.setText(item.getFormattedInfo());
+        mStats.setText(item.getInfo());
         mAuthor.setText(String.format(getResources().getString(R.string.text_item_by), item.getBy()));
 
         mTracker.send(new HitBuilders.EventBuilder()
@@ -257,8 +256,4 @@ public class ItemViewActivity extends AppCompatActivity implements ItemManager.I
 
     }
 
-    @Override
-    public void itemsLoaded(ArrayList<Item> items, boolean success, int code) {
-        //This should never be called, so we just ignore it
-    }
 }

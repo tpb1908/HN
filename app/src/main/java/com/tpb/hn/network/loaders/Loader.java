@@ -1,4 +1,4 @@
-package com.tpb.hn.test;
+package com.tpb.hn.network.loaders;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -13,14 +14,16 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.Util;
+import com.tpb.hn.data.Comment;
+import com.tpb.hn.data.Item;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.network.HNParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -49,6 +52,7 @@ public class Loader extends BroadcastReceiver {
     public static Loader getInstance(Context context) {
         if(instance == null) {
             instance = new Loader(context);
+            instance.online = Util.isNetworkAvailable(context);
         }
         return instance;
     }
@@ -84,7 +88,31 @@ public class Loader extends BroadcastReceiver {
         AndroidNetworking.forceCancel("BG");
     }
 
-    public void getIds(final String url, final idLoader loader) {
+    public void getIds(String key, final idLoader loader) {
+        final String url;
+        switch(key.toLowerCase()) {
+            case "top":
+                url = APIPaths.getTopPath();
+                break;
+            case "best":
+                url = APIPaths.getBestPath();
+                break;
+            case "ask":
+                url = APIPaths.getAskPath();
+                break;
+            case "new":
+                url = APIPaths.getNewPath();
+                break;
+            case "show":
+                url = APIPaths.getShowPath();
+                break;
+            case "job":
+                url = APIPaths.getJobPath();
+                break;
+            default:
+                url = "";
+        }
+        Log.d(TAG, "getIds: " + url);
         if(online) {
             AndroidNetworking.get(url)
                     .setTag(url)
@@ -93,7 +121,8 @@ public class Loader extends BroadcastReceiver {
                     .getAsString(new StringRequestListener() {
                         @Override
                         public void onResponse(String response) {
-                            final int[] ids = HNParser.extractIntArray(response);
+                            final int[] ids = Parser.extractIntArray(response);
+                            Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
                             loader.idsLoaded(ids);
                             Util.putIntArrayInPrefs(prefs.edit(), url, ids);
                         }

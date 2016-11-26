@@ -9,10 +9,6 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.util.TypedValue;
 
-import com.tpb.hn.network.loaders.CachedItemLoader;
-import com.tpb.hn.network.loaders.HNItemLoader;
-import com.tpb.hn.network.loaders.ItemManager;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -85,14 +81,6 @@ public class Util {
 
     public static String toHtmlColor(int color) {
         return String.format("#%06X", 0xFFFFFF & color);
-    }
-
-    public static ItemManager getItemManager(Context context, ItemManager.ItemLoadListener listener) {
-        if(isNetworkAvailable(context)) {
-            return new HNItemLoader(context, listener);
-        } else {
-            return new CachedItemLoader(context, listener);
-        }
     }
 
     public static void putIntArrayInPrefs(SharedPreferences.Editor editor, String key, int[] data) {

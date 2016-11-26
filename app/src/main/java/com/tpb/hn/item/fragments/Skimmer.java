@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,19 +14,16 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
 import com.tpb.hn.item.FragmentPagerAdapter;
-import com.tpb.hn.item.ItemLoader;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.spritzer.SpritzerTextView;
-import com.tpb.hn.network.loaders.TextLoader;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemLoader;
+import com.tpb.hn.network.loaders.Loader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -37,13 +34,11 @@ import butterknife.OnTouch;
 import butterknife.Unbinder;
 
 /**
- * Created by theo on 18/10/16.
- * Takes the data from Readability and displays it Spritz style
+ * Created by theo on 25/11/16.
  */
 
-public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoadDone, FragmentPagerAdapter.FragmentCycleListener {
+public class Skimmer extends ContentFragment implements ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
-    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -54,9 +49,28 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
     @BindView(R.id.skimmer_restart_button) Button mRestartButton;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
 
-    private String article;
-    private boolean isArticleReady = false;
-    private boolean mLoadSuccessful = false;
+    private Item mItem;
+    private boolean mIsWaitingForAttach = false;
+    private String mArticle;
+
+    @Override
+    View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
+
+        unbinder = ButterKnife.bind(this, inflated);
+
+        mTextView.attachSeekBar(mSkimmerProgress);
+
+        if(mContentReady) {
+            setupSkimmer();
+        } else if(savedInstanceState != null) {
+            if(savedInstanceState.getString("mArticle") != null) {
+                mArticle = savedInstanceState.getString("mArticle");
+                setupSkimmer();
+            }
+        }
+        return inflated;
+    }
 
     @OnLongClick(R.id.skimmer_touch_area)
     boolean onLongClick() {
@@ -74,7 +88,7 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @OnClick(R.id.skimmer_restart_button)
     void onRestartClick() {
-        mTextView.setSpritzText(article);
+        mTextView.setSpritzText(mArticle);
         mTextView.getSpritzer().start();
         if(Build.VERSION.SDK_INT >= 24) {
             mSkimmerProgress.setProgress(0, true);
@@ -104,72 +118,6 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         return true;
     }
 
-    public static Skimmer newInstance() {
-        return new Skimmer();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
-
-        unbinder = ButterKnife.bind(this, inflated);
-
-        mTextView.attachSeekBar(mSkimmerProgress);
-
-        if(isArticleReady) {
-            setupSkimmer();
-        } else if(savedInstanceState != null) {
-            if(savedInstanceState.getString("article") != null) {
-                article = savedInstanceState.getString("article");
-                setupSkimmer();
-            }
-        }
-        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
-        return inflated;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context instanceof ItemViewActivity) {
-            mParent = (ItemViewActivity) context;
-        } else {
-            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("article", article);
-    }
-
-    @Override
-    public void loadItem(Item item) {
-        if(item.getType() == ItemType.STORY && item.getUrl() != null) {
-            new TextLoader(this).loadArticle(item.getUrl(), true);
-        } else {
-            article = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
-            isArticleReady = true;
-            mLoadSuccessful = true;
-        }
-    }
-
-    @Override
-    public void loadDone(JSONObject result, boolean success, int code) {
-        if(success) {
-            try {
-                bindData((String) result.get("content"));
-            } catch(Exception e) {
-                success = false;
-                mLoadSuccessful = true;
-            }
-        }
-        if(!success) displayErrorMessage();
-
-    }
-
 
     private void displayErrorMessage() {
         mTextView.setVisibility(View.INVISIBLE);
@@ -179,21 +127,29 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
         mErrorView.setText(R.string.error_parsing_readable_text);
     }
 
-    private void bindData(String content) {
-        if(content == null) content = " ";
-        article = Html.fromHtml(content).
-                toString().
-                replace("\n", " ");
-        isArticleReady = true;
-        if(mTextView != null) setupSkimmer();
-    }
-
     private void setupSkimmer() {
         mTextView.setVisibility(View.VISIBLE);
         mSkimmerProgress.setVisibility(View.VISIBLE);
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
-        mTextView.setSpritzText(article);
+        mTextView.setSpritzText(mArticle);
         mTextView.pause();
+    }
+
+    @Override
+    void attach(Context context) {
+
+
+        if(mIsWaitingForAttach) {
+            Loader.getInstance(getContext()).loadArticle(mItem.getUrl(), true, this);
+        }
+    }
+
+    @Override
+    void bindData() {
+        mArticle = Html.fromHtml(mArticle).
+                toString().
+                replace("\n", " ");
+
     }
 
     @Override
@@ -209,14 +165,42 @@ public class Skimmer extends Fragment implements ItemLoader, TextLoader.TextLoad
 
     @Override
     public void onResumeFragment() {
-        mTracker.setScreenName(TAG);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mParent.hideFab();
+
     }
 
     @Override
     public boolean onBackPressed() {
-        //The Skimmer never needs to stop the back button
         return true;
+    }
+
+    @Override
+    public void loadItem(Item item) {
+        mItem = item;
+        if(item.getUrl() != null) {
+            if(mContextReady) {
+                Loader.getInstance(getContext()).loadArticle(item.getUrl(), true, this);
+            } else {
+                mIsWaitingForAttach = true;
+            }
+        } else {
+            mArticle = item.getText() == null ? "" : Html.fromHtml(item.getText()).toString();
+            mContentReady = true;
+            if(mViewsReady) bindData();
+        }
+    }
+
+    @Override
+    public void textLoaded(JSONObject result) {
+        try {
+            mArticle = result.getString("content");
+        } catch(JSONException jse) {
+            Log.e(TAG, "textLoaded: ", jse);
+            displayErrorMessage();
+        }
+    }
+
+    @Override
+    public void textError(String url, int code) {
+
     }
 }

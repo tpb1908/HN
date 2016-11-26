@@ -1,4 +1,4 @@
-package com.tpb.hn.test;
+package com.tpb.hn.item.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

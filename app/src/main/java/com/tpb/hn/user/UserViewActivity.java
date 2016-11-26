@@ -24,8 +24,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.content.ContentAdapter;
+import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
 import com.tpb.hn.data.User;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
@@ -130,7 +130,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
                 });
             }
         }
-        mAdapter.IdLoadDone(mUser.getSubmitted());
+        mAdapter.idsLoaded(mUser.getSubmitted());
     }
 
     @Override
@@ -191,7 +191,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         if(item.isDeleted()) {
             Toast.makeText(getApplicationContext(),
                     String.format(getString(R.string.error_opening_deleted),
-                            item.getType() == ItemType.COMMENT ? "comment" : "item"),
+                            item instanceof Comment ? "comment" : "item"),
                     Toast.LENGTH_LONG).show();
         } else {
             mLaunchItem = item;

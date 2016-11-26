@@ -1,4 +1,4 @@
-package com.tpb.hn.item;
+package com.tpb.hn.item.fragments;
 
 import android.content.Context;
 import android.os.Build;
@@ -21,33 +21,36 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.content.DividerItemDecoration;
-import com.tpb.hn.data.Formatter;
-import com.tpb.hn.data.Item;
+import com.tpb.hn.data.*;
 import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.data.Comment;
+import com.tpb.hn.network.loaders.Parser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by theo on 29/10/16.
+ * Created by theo on 25/11/16.
  */
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> implements ItemLoader {
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
     private static final String TAG = CommentAdapter.class.getSimpleName();
 
     @BindArray(R.array.comment_colors) int[] mCommentColors;
 
-    private Item mRootItem;
+    private Comment mRootComment;
     private RecyclerView mRecycler;
     private SwipeRefreshLayout mSwiper;
     private UserOpener mOpener;
     private int mScreenWidth;
 
-    private ArrayList<Comment> mComments = new ArrayList<>();
+    private ArrayList<CommentWrapper> mComments = new ArrayList<>();
     private ArrayList<Integer> mVisibleItems = new ArrayList<>();
     private boolean usingCards;
     private boolean expandComments;
@@ -80,14 +83,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     public void onBindViewHolder(CommentHolder holder, int position) {
         final int pos = holder.getAdapterPosition();
 
-        final Comment comment = mComments.get(mVisibleItems.get(pos));
+        final CommentWrapper comment = mComments.get(mVisibleItems.get(pos));
         if(comment.parsedText == null) {
-            if(comment.item.getText() != null) {
+            if(comment.comment.getText() != null) {
                 final Spanned text;
                 if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    text = Html.fromHtml(comment.item.getText(), Html.FROM_HTML_MODE_COMPACT);
+                    text = Html.fromHtml(comment.comment.getText(), Html.FROM_HTML_MODE_COMPACT);
                 } else {
-                    text = Html.fromHtml(comment.item.getText());
+                    text = Html.fromHtml(comment.comment.getText());
                 }
                 comment.parsedText = text.toString().substring(0, text.toString().length() - 2);
             }
@@ -95,7 +98,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         holder.mBody.setText(comment.parsedText);
         holder.mTitle.setText(
                 String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date),
-                        comment.item.getBy(), Formatter.timeAgo(comment.item.getTime())));
+                        comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime())));
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 
@@ -123,7 +126,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         mComments.get(cPos).childrenVisible = visibility;
         int end = cPos + 1;
         for(; end < mComments.size(); end++) {
-            Log.i(TAG, "switchItemVisibility: Comment " + mComments.get(end));
+            Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
             if(mComments.get(end).depth > depth) {
                 mComments.get(end).visible = visibility;
             } else break;
@@ -150,19 +153,23 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         return mVisibleItems.size();
     }
 
-    @Override
-    public void loadItem(Item item) {
 
-        mRootItem = item;
-        Log.i(TAG, "loadItem: Root item " + mRootItem.toString());
+    public void loadComment(Comment comment) {
+
+        mRootComment = comment;
+
+        Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
-        if(mRootItem.getComments().length == 0) {
+        if(mRootComment.getChildren().equals("")) {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    mRootItem.parseComments();
-                    mComments = flatten(mRootItem.getComments(), 0);
-                    mRootItem.setDescendants(mComments.size());
+                    try {
+                        mComments = flatten(parseCommentString(mRootComment.getChildren()), 0);
+                    } catch(JSONException jse) {
+                        Log.e(TAG, "run: ", jse);
+                    }
+                    mRootComment.setDescendants(mComments.size());
 
                     uiHandler.postDelayed(new Runnable() {
                         @Override
@@ -191,22 +198,33 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     }
 
-    private ArrayList<Comment> flatten(Item[] items, int depth) {
-        final ArrayList<Comment> list = new ArrayList<>();
-        for(Item i : items) {
-            if(i.getBy() != null) {
-                final Comment c = new Comment(i, depth);
+    private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
+        final ArrayList<CommentWrapper> list = new ArrayList<>();
+        for(Comment com : comments) {
+            if(com.getBy() != null) {
+                final CommentWrapper c = new CommentWrapper(com, depth);
                 if(!expandComments) {
                     c.visible = depth == 0;
                 }
                 list.add(c);
-                i.parseComments();
-                if(i.getComments().length > 0) {
-                    list.addAll(flatten(i.getComments(), depth + 1));
-                }
+                try {
+                    final Comment[] children = parseCommentString(com.getChildren());
+                    if(children.length > 0) {
+                        list.addAll(flatten(children, depth + 1));
+                    }
+                } catch(JSONException jse) {} //Ignored
             }
         }
         return list;
+    }
+
+    private Comment[] parseCommentString(String json) throws JSONException {
+        final JSONArray childJSON = new JSONArray(json);
+        final Comment[] children = new Comment[childJSON.length()];
+        for(int i = 0; i < childJSON.length(); i++) {
+            children[i] = Parser.parseComment(childJSON.getJSONObject(i));
+        }
+        return children;
     }
 
     private void buildPositions() {
@@ -217,33 +235,32 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     private void openUser(int pos) {
-        mOpener.openUser(mComments.get(mVisibleItems.get(pos)).item);
+        mOpener.openUser(mComments.get(mVisibleItems.get(pos)).comment);
     }
 
 
-    private class Comment {
-        Item item;
+    private class CommentWrapper {
+        Comment comment;
         int depth = 0;
         boolean bound = false;
         boolean visible = true;
         boolean childrenVisible = true;
         String parsedText;
 
-        Comment(Item item) {
-            this.item = item;
+        CommentWrapper(Comment comment) {
+            this.comment = comment;
         }
 
-        Comment(Item item, int depth) {
-            this.item = item;
+        CommentWrapper(Comment comment, int depth) {
+            this.comment = comment;
             this.depth = depth;
         }
 
         @Override
         public String toString() {
-            return "{" + item.getId() + ", "
-                    + item.getBy() + ", "
-                    + (item.getKids() == null ? "" : Arrays.toString(item.getKids()) + ", ") +
-                    +depth + "}";
+            return "{" + comment.getId() + ", "  +
+                    comment.getBy() +
+                    depth + "}";
         }
     }
 
@@ -276,8 +293,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     public interface UserOpener {
 
-        void openUser(Item item);
+        void openUser(Comment item);
 
     }
-
 }
