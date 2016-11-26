@@ -1,11 +1,15 @@
 package com.tpb.hn.network.loaders;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -287,7 +291,6 @@ public class Loader extends BroadcastReceiver {
                                             if(loader.get() == null) {
                                                 listeners.get(url).remove(loader);
                                             } else {
-
                                                 loader.get().textLoaded(response);
                                             }
                                         }
@@ -357,6 +360,79 @@ public class Loader extends BroadcastReceiver {
     public interface NetworkChangeListener {
 
         void networkStateChange(boolean netAvailable);
+
+    }
+
+    private static class DB extends SQLiteOpenHelper {
+        private static final String TAG = DB.class.getSimpleName();
+        private static final String NAME = "CACHE";
+        private static final int VERSION = 1;
+        private static DB instance;
+
+        private static final String TABLE = "CACHE";
+        private static final String KEY_ID = "ID";
+        private static final String KEY_SAVED = "SAVED";
+        private static final String KEY_JSON = "JSON";
+        private static final String KEY_MERCURY = "MERCURY";
+
+        private DB(Context context) {
+            super(context, NAME, null, VERSION);
+        }
+
+        public static DB getDB(Context context) {
+            if(instance == null) {
+                instance = new DB(context);
+            }
+            return instance;
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            final String CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE +
+                    "( " +
+                    KEY_ID + " INTEGER PRIMARY KEY, " +
+                    KEY_SAVED + " BOOLEAN, " +
+                    KEY_JSON + " VARCHAR, " +
+                    KEY_MERCURY + " VARCHAR " +
+                    ");";
+            db.execSQL(CREATE);
+
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+        }
+
+        void writeItem(Item item) {
+            writeItem(item, false, "");
+        }
+
+        void writeItem(final Item item, final boolean saved, final String mercury) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
+                            null,
+                            itemToCV(item, saved, mercury),
+                            SQLiteDatabase.CONFLICT_REPLACE);
+                }
+            });
+        }
+
+        private ContentValues itemToCV(Item item, boolean saved, String mercury) {
+            final ContentValues cv = new ContentValues();
+            cv.put(KEY_ID, item.getId());
+            cv.put(KEY_SAVED, saved);
+            try {
+                final String JSON = Parser.itemJSON(item);
+                cv.put(KEY_JSON, JSON);
+            } catch(JSONException jse) {
+                cv.put(KEY_JSON, "{}");
+            }
+            cv.put(KEY_MERCURY, mercury);
+            return cv;
+        }
 
     }
 
