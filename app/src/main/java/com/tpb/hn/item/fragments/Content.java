@@ -9,6 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,18 +27,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
-import com.tpb.hn.data.ItemType;
+import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
-import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemLoader;
 import com.tpb.hn.network.loaders.Loader;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +59,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -101,6 +104,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_content, container, false);
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, inflated);
 
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
@@ -171,12 +175,16 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
             mContentReady = true;
             if(mViewsReady) bindData();
+
+
         } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
                 mReadablePage = Formatter.wrapInDiv(item.getText());
                 mContentReady = true;
                 if(mViewsReady) bindData();
+
+
             } else {
                 url = item.getUrl();
                 Loader.getInstance(getContext()).loadArticle(url, true, this);
@@ -192,7 +200,11 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     @Override
     void bindData() {
+        if(mShown) return;
+        Log.i(TAG, "bindData: Binding data " +  mShown);
+        mShown = true;
         if(mIsShowingPDF) {
+            Log.i(TAG, "bindData: Setting up PDF buttons");
             setupPDFButtons();
         } else {
             if(mType == FragmentPagerAdapter.PageType.BROWSER) {
@@ -225,6 +237,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             mSwitcher.showPrevious();
             mIsFindShown = false;
             mIsSearchComplete = false;
+            mParent.hideFab();
             mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
         } else {
             toggleFullscreen(false);
@@ -249,7 +262,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     @OnClick(R.id.button_find_in_page)
     void onFindInPagePressed() {
         if(mIsFindShown) {
-            findInPage(true);
+            findInPage();
         } else {
             mSwitcher.showNext();
             mFindEditText.requestFocus();
@@ -270,7 +283,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                         @Override
                         public void run() {
                             if(System.currentTimeMillis() - lastUpdate >= 300) {
-                                findInPage(false);
+                                findInPage();
                                 lastUpdate = System.currentTimeMillis();
                             }
                         }
@@ -284,7 +297,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 @Override
                 public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if(i == EditorInfo.IME_ACTION_SEARCH) {
-                        findInPage(true);
+                        findInPage();
                         return true;
                     }
                     return false;
@@ -348,7 +361,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         }
     }
 
-    private void findInPage(final boolean closeWhenDone) {
+    private void findInPage() {
         final String query = mFindEditText.getText().toString();
         mWebView.setFindListener(new WebView.FindListener() {
             @Override
@@ -356,7 +369,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 if(isDoneCounting) {
                     mParent.setFabDrawable(R.drawable.ic_chevron_down);
                     mParent.showFab();
-                    if(closeWhenDone) mIsSearchComplete = true;
+                    mIsSearchComplete = true;
                 }
             }
         });
@@ -404,7 +417,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     @Override
     public void onResumeFragment() {
         mLazyLoadCanStart = true;
-        if(mViewsReady && mContentReady && !mShown) bindData();
+        if(mViewsReady && mContentReady) bindData();
+
+
         mShown = true;
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
                 new View.OnClickListener() {
@@ -424,6 +439,8 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         } else {
             mParent.showFab();
         }
+        mTracker.setPage(TAG + "_" + mType);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -460,6 +477,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
             mContentReady = true;
             if(mViewsReady) bindData();
+
         } catch(JSONException jse) {
         }
     }

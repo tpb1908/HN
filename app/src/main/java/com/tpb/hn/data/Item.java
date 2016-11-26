@@ -172,7 +172,7 @@ public class Item implements Comparable<Item> {
         try {
             return "(" + new URL(url).getHost() + ")";
         } catch(MalformedURLException mue) {
-            return "(Unknown)";
+            return "";
         }
     }
 

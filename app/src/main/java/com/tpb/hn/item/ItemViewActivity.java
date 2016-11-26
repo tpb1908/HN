@@ -181,6 +181,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
             mTitle.setVisibility(View.INVISIBLE);
             mBackButton.setVisibility(View.INVISIBLE);
             hideFab();
+            Loader.getInstance(this).removeListeners();
             super.onBackPressed();
         }
     }

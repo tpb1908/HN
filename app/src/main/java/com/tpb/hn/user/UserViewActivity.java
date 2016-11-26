@@ -1,6 +1,5 @@
 package com.tpb.hn.user;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +15,12 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.content.ContentAdapter;
@@ -162,20 +162,13 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     }
 
     private void showLongAboutPopup() {
-        //TODO- Linkify
-        final MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title(mUser.getId())
-                .linkColor(getResources().getColor(R.color.colorAccent))
-                .content(Html.fromHtml(mUser.getAbout()))
-                .show();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-//                ((TextView) dialog.getContentView().findViewById(R.id.md_content)).setMovementMethod(LinkMovementMethod.getInstance());
-//                ((TextView) dialog.getContentView().findViewById(R.id.md_content)).setAutoLinkMask(Linkify.ALL);
-            }
-        });
-        Log.i(TAG, "showLongAboutPopup: " + dialog.getCustomView());
+        final AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle(mUser.getId());
+        final View text = LayoutInflater.from(this).inflate(R.layout.dialog_long_about, null);
+        ((TextView)text.findViewById(R.id.dialog_text)).setText(Html.fromHtml(mUser.getAbout()));
+        adb.setView(text);
+
+        adb.show();
     }
 
     @Override

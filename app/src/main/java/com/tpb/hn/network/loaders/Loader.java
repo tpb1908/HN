@@ -272,6 +272,7 @@ public class Loader extends BroadcastReceiver {
         } else {
             if(listeners.get(url) == null) listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
             listeners.get(url).add(new WeakReference<>(loader));
+
             Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
             AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
                     .setTag(url)
@@ -284,15 +285,18 @@ public class Loader extends BroadcastReceiver {
                             try {
                                 if(response.has("content") && !response.get("content").equals("<div></div>")) {
                                     Log.i(TAG, "onResponse: " + listeners.get(url));
-                                    for(WeakReference<TextLoader> loader : listeners.get(url)) {
-                                        if(loader.get() == null) {
-                                            listeners.get(url).remove(loader);
-                                        } else {
-                                            loader.get().textLoaded(response);
+                                    if(listeners.get(url) != null) {
+                                        for(WeakReference<TextLoader> loader : listeners.get(url)) {
+                                            if(loader.get() == null) {
+                                                listeners.get(url).remove(loader);
+                                            } else {
+
+                                                loader.get().textLoaded(response);
+                                            }
                                         }
+                                        listeners.get(url).remove(new WeakReference<>(loader));
                                     }
                                 }
-                                listeners.get(url).remove(new WeakReference<>(loader));
                             } catch(JSONException jse) {
                                 for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                     loader.get().textError(url, ERROR_PARSING);
@@ -309,6 +313,10 @@ public class Loader extends BroadcastReceiver {
                     });
         }
 
+    }
+
+    public void removeListeners() {
+        listeners.clear();
     }
 
     private void cacheLoadArticle(final String url, TextLoader loader) {

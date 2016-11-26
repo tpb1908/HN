@@ -202,7 +202,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     void loadItems(String page) {
-        //TODO- Refactor the swich below on the grounds that the page is always valid
         this.mData = new Item[0];
         if(mCurrentPage != null && mCurrentPage.equals(page)) {
             this.mOldIds = mIds.clone();
@@ -245,7 +244,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void idsLoaded(int[] ids) {
         Log.i(TAG, "IdLoadDone: " + ids.length);
-        Util.largeDebugDump("Ids", Arrays.toString(ids));
         this.mIds = ids;
         int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
@@ -298,7 +296,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void openItem(int pos, FragmentPagerAdapter.PageType type) {
         if(mData != null && pos < mData.length && mData[pos] != null) {
-        //    Log.i(TAG, "openItem: " + mData[pos].getComments().length);
             mData[pos].setViewed(true);
             notifyItemChanged(pos);
             mManager.openItem(mData[pos], type);
@@ -330,7 +327,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final int pos = viewHolder.getAdapterPosition();
-        if(mData.length > pos && mData[pos] != null) Log.i(TAG, "onBindViewHolder: " + mData[pos].toString());
         if(viewHolder instanceof ItemHolder) {
             final ItemHolder holder = (ItemHolder) viewHolder;
             if(mData.length > pos && mData[pos] != null) {
@@ -497,7 +493,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            mBody.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ContentAdapter.this.openItem(getAdapterPosition(), null);

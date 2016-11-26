@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -37,6 +40,7 @@ import butterknife.Unbinder;
 
 public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -55,7 +59,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
-
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, inflated);
 
         mTextView.attachSeekBar(mSkimmerProgress);
@@ -105,6 +109,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     }
 
     private void setupSkimmer() {
+        Log.i(TAG, "setupSkimmer: " + mViewsReady + " | " + mTextView);
         mTextView.setVisibility(View.VISIBLE);
         mSkimmerProgress.setVisibility(View.VISIBLE);
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
@@ -169,6 +174,8 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
                         }, 60000 / mTextView.getSpritzer().getWpm());
                     }
                 });
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

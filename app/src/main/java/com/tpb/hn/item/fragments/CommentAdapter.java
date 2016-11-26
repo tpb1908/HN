@@ -195,8 +195,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         }
 
-        //TODO- Sort the top comments by points or time
-
     }
 
     private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
@@ -206,6 +204,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 final CommentWrapper c = new CommentWrapper(com, depth);
                 if(!expandComments) {
                     c.visible = depth == 0;
+                    c.childrenVisible = depth != 0;
                 }
                 list.add(c);
                 try {

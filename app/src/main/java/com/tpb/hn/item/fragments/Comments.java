@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
@@ -33,6 +36,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
         Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Comments.class.getSimpleName();
+    private Tracker mTracker;
 
     private Unbinder unbinder;
 
@@ -51,6 +55,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
+        mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, view);
         mAdapter = new CommentAdapter(mRecycler, mSwiper, this);
         mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -140,7 +145,8 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     @Override
     public void onResumeFragment() {
-
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
