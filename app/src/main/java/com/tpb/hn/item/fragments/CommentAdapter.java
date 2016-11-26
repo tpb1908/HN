@@ -97,8 +97,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
         holder.mBody.setText(comment.parsedText);
         holder.mTitle.setText(
-                String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date),
-                        comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime())));
+                String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date_points),
+                        comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime()),
+                        comment.comment.getScore() + " points"));
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 
@@ -200,7 +201,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
-        Log.i(TAG, "flatten: Flattening comments");
         final ArrayList<CommentWrapper> list = new ArrayList<>();
         for(Comment com : comments) {
             if(com.getBy() != null) {

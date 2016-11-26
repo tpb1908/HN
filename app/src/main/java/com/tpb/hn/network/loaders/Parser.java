@@ -68,7 +68,8 @@ public class Parser {
         final Comment comment = new Comment();
         comment.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
-        if(!obj.getString(KEY_POINTS).equals(KEY_NULL)) comment.setScore(obj.getInt(KEY_POINTS));
+        if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals(KEY_NULL)) comment.setScore(obj.getInt(KEY_POINTS));
+        comment.setTime(obj.getInt(KEY_CREATED_AT));
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));

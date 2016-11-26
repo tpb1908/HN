@@ -56,6 +56,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
             @Override
             public void onRefresh() {
                 mAdapter.clear();
+                loadComments();
             }
         });
         mSwiper.setRefreshing(true);
