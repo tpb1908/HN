@@ -34,7 +34,7 @@ public class HintingSeekBar extends SeekBar {
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(mProvider != null) mHint = mProvider.getHint(getProgress());
-        final int thumb_x = (int) ( (getWidth() - getPaddingRight()) * getProgress() / (double) getMax());
+        final int thumb_x =  getThumb().getBounds().left + getThumb().getBounds().width() / 2;
         final int middle = (int) (this.getHeight() + mPaint.getTextSize()) / 2;
         canvas.drawText(mHint, thumb_x, middle, mPaint);
     }
