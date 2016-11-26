@@ -32,7 +32,7 @@ public class Util {
     }
 
     public static int pxFromSp(final float sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,  Resources.getSystem().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, Resources.getSystem().getDisplayMetrics());
     }
 
     public static boolean isNetworkAvailable(Context context) {
@@ -92,14 +92,14 @@ public class Util {
 
     public static int[] getIntArrayFromPrefs(SharedPreferences prefs, String key) {
         final String tokens = prefs.getString(key, "");
-        final StringTokenizer tokenizer = new StringTokenizer(tokens,  ",");
+        final StringTokenizer tokenizer = new StringTokenizer(tokens, ",");
         final int[] ints = new int[tokenizer.countTokens()];
         for(int i = 0; i < ints.length; i++) ints[i] = Integer.parseInt(tokenizer.nextToken());
         return ints;
     }
 
     public static int getApproximateNumberOfItems(String page) {
-                switch(page.toLowerCase()) {
+        switch(page.toLowerCase()) {
             case "top":
                 return 500;
             case "best":

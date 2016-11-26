@@ -28,17 +28,17 @@ public class ItemCache {
 
     private ArrayList<Item> backgroundChunk = new ArrayList<>();
 
+    private ItemCache(Context context) {
+        db = DB.getDB(context);
+        sp = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        //db.loadRecentItems(null, 1000L * 3600 * 24 * 100);
+    }
+
     public static ItemCache getInstance(Context context) {
         if(instance == null) {
             instance = new ItemCache(context);
         }
         return instance;
-    }
-
-    private ItemCache(Context context) {
-        db = DB.getDB(context);
-        sp = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
-        //db.loadRecentItems(null, 1000L * 3600 * 24 * 100);
     }
 
     public ArrayList<Item> getItems() {

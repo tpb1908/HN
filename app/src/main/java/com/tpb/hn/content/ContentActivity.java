@@ -55,21 +55,17 @@ import butterknife.ButterKnife;
 
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
-    private Tracker mTracker;
-
+    public static Item mLaunchItem;
     @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
     @BindView(R.id.content_appbar) AppBarLayout mAppBar;
     @BindView(R.id.nav_spinner) Spinner mNavSpinner;
     @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
-
+    private Tracker mTracker;
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
-
-    public static Item mLaunchItem;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,6 +136,25 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         checkThemeChange(false);
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     private void checkThemeChange(boolean showDialog) {
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
         if(prefs.getAutoDark()) {
@@ -185,25 +200,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(mVolumeNavigation) {
-            switch(event.getKeyCode()) {
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollUp();
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollDown();
-                    }
-                    return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_content, menu);
         return true;
@@ -224,6 +220,16 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         if(shouldRestart) {
             recreate();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mTracker.setScreenName(TAG);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mAdapter.cancelBackgroundLoading();
+        mAdapter.getLastUpdate();
+        checkThemeChange(true);
     }
 
     @Override
@@ -259,8 +265,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
-
-
     @Override
     public void displayLastUpdate(long lastUpdate) {
         mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.shortTimeAgo(lastUpdate)));
@@ -271,16 +275,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 Pair.create((View) mNavSpinner, "button"),
                 Pair.create((View) mAppBar, "appbar")
         );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mTracker.setScreenName(TAG);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mAdapter.cancelBackgroundLoading();
-        mAdapter.getLastUpdate();
-        checkThemeChange(true);
     }
 
 }

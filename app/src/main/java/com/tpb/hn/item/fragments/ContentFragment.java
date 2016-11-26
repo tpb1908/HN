@@ -18,6 +18,13 @@ public abstract class ContentFragment extends Fragment {
     protected boolean mContentReady = false;
     protected boolean mContextReady = false;
 
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        attach(context);
+        mContextReady = true;
+    }
+
     @Nullable
     @Override
     public final View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,13 +32,6 @@ public abstract class ContentFragment extends Fragment {
         mViewsReady = true;
         if(mContentReady) bindData();
         return view;
-    }
-
-    @Override
-    public final void onAttach(Context context) {
-        super.onAttach(context);
-        attach(context);
-        mContextReady = true;
     }
 
     abstract View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);

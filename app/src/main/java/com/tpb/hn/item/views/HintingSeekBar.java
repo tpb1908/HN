@@ -35,7 +35,7 @@ public class HintingSeekBar extends SeekBar {
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(mProvider != null) mHint = mProvider.getHint(getProgress());
-        final float thumb_x =  getThumb().getBounds().left + getThumb().getBounds().width() / 2f;
+        final float thumb_x = getThumb().getBounds().left + getThumb().getBounds().width() / 2f;
         final float middle = (this.getHeight() + mPaint.getTextSize()) / 2;
         canvas.drawText(mHint, thumb_x, middle, mPaint);
     }
@@ -44,7 +44,7 @@ public class HintingSeekBar extends SeekBar {
         mProvider = new SeekHintProvider() {
             @Override
             public String getHint(int progress) {
-                return Integer.toString( (int) (100 * progress/ (float) getMax()));
+                return Integer.toString((int) (100 * progress / (float) getMax()));
             }
         };
     }
@@ -78,7 +78,7 @@ public class HintingSeekBar extends SeekBar {
         final int px = Util.pxFromSp(sp);
         mPaint.setTextSize(px);
         //https://developer.android.com/reference/android/graphics/drawable/ScaleDrawable.html
-        setThumb(new ScaleDrawable(getThumb(), 0x11,  px/14f, px/14f));
+        setThumb(new ScaleDrawable(getThumb(), 0x11, px / 14f, px / 14f));
     }
 
     public interface SeekHintProvider {

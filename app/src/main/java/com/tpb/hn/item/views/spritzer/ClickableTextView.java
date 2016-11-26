@@ -19,8 +19,8 @@ import java.util.List;
  */
 
 public class ClickableTextView extends TextView {
-    private OnSpanClickListener mListener;
     private final int currentPos;
+    private OnSpanClickListener mListener;
 
     public ClickableTextView(Context context, int currentPos) {
         super(context);
@@ -30,6 +30,16 @@ public class ClickableTextView extends TextView {
     public ClickableTextView(Context context, @NonNull AttributeSet attributeSet, int currentPos) {
         super(context, attributeSet);
         this.currentPos = currentPos;
+    }
+
+    public static Integer[] getIndices(String s, char c) {
+        int pos = s.indexOf(c, 0);
+        List<Integer> indices = new ArrayList<>();
+        while(pos != -1) {
+            indices.add(pos);
+            pos = s.indexOf(c, pos + 1);
+        }
+        return indices.toArray(new Integer[0]);
     }
 
     public void setListener(OnSpanClickListener listener) {
@@ -55,7 +65,6 @@ public class ClickableTextView extends TextView {
         }
     }
 
-
     public void setText(String[] text) {
         final StringBuilder builder = new StringBuilder();
         for(String s : text) {
@@ -74,14 +83,10 @@ public class ClickableTextView extends TextView {
         };
     }
 
-    public static Integer[] getIndices(String s, char c) {
-        int pos = s.indexOf(c, 0);
-        List<Integer> indices = new ArrayList<>();
-        while(pos != -1) {
-            indices.add(pos);
-            pos = s.indexOf(c, pos + 1);
-        }
-        return indices.toArray(new Integer[0]);
+    public interface OnSpanClickListener {
+
+        void spanClicked(int pos);
+
     }
 
     private abstract class CleanClickableSpan extends ClickableSpan {
@@ -97,12 +102,6 @@ public class ClickableTextView extends TextView {
         public void updateDrawState(TextPaint ds) {
             ds.setUnderlineText(underline);
         }
-    }
-
-    public interface OnSpanClickListener {
-
-        void spanClicked(int pos);
-
     }
 
 }

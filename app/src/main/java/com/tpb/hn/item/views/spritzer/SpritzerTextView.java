@@ -23,46 +23,16 @@ import com.tpb.hn.storage.SharedPrefsController;
  */
 public class SpritzerTextView extends TextView implements View.OnClickListener {
 
-    /**
-     * Interface definition for a callback to be invoked when the
-     * clickControls are enabled and the view is clicked
-     */
-    public interface OnClickControlListener {
-        /**
-         * Called when the spritzer pauses upon click
-         */
-        void onPause();
-
-        /**
-         * Called when the spritzer plays upon clicked
-         */
-        void onPlay();
-    }
-
     public static final String TAG = SpritzerTextView.class.getName();
     public static final int PAINT_WIDTH_DP = 4;          // thickness of spritz guide bars in dp
-    // For optimal drawing should be an even number
-
     private Spritzer mSpritzer;
+    // For optimal drawing should be an even number
     private Paint mPaintGuides;
     private float mPaintWidthPx;
     private String mTestString;
     private boolean mDefaultClickListener = false;
     private int mAdditonalPadding;
-
-    /**
-     * Register a callback for when the view has been clicked
-     * <p/>
-     * Note: it is mandatory to use the clickControls
-     *
-     * @param listener
-     */
-    public void setOnClickControlListener(OnClickControlListener listener) {
-        mClickControlListener = listener;
-    }
-
     private OnClickControlListener mClickControlListener;
-
 
     public SpritzerTextView(Context context) {
         super(context);
@@ -74,9 +44,21 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         init(attrs);
     }
 
+
     public SpritzerTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
+    }
+
+    /**
+     * Register a callback for when the view has been clicked
+     * <p/>
+     * Note: it is mandatory to use the clickControls
+     *
+     * @param listener
+     */
+    public void setOnClickControlListener(OnClickControlListener listener) {
+        mClickControlListener = listener;
     }
 
     private void init(AttributeSet attrs) {
@@ -186,6 +168,18 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         });
     }
 
+    private int getPivotPadding() {
+        return getPivotIndicatorLength() * 2 + mAdditonalPadding;
+    }
+
+    @Override
+    public void setTextSize(float size) {
+        super.setTextSize(size);
+        int pivotPadding = getPivotPadding();
+        setPadding(getPaddingLeft(), pivotPadding, getPaddingRight(), pivotPadding);
+
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -211,18 +205,6 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         canvas.drawLine(centerX, bottomY - (mPaintWidthPx / 2), centerX, bottomY - (mPaintWidthPx / 2) - pivotIndicatorLength, mPaintGuides);
     }
 
-    private int getPivotPadding() {
-        return getPivotIndicatorLength() * 2 + mAdditonalPadding;
-    }
-
-    @Override
-    public void setTextSize(float size) {
-        super.setTextSize(size);
-        int pivotPadding = getPivotPadding();
-        setPadding(getPaddingLeft(), pivotPadding, getPaddingRight(), pivotPadding);
-
-    }
-
     private int getPivotIndicatorLength() {
 
         return getPaint().getFontMetricsInt().bottom;
@@ -238,26 +220,6 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         // Measure the rendered distance of CHARS_LEFT_OF_PIVOT chars
         // plus half the pivot character
         return (getPaint().measureText(mTestString, 0, 1) * (Spritzer.CHARS_LEFT_OF_PIVOT + .50f));
-    }
-
-    /**
-     * This determines the words per minute the sprizter will read at
-     *
-     * @param wpm the number of words per minute
-     */
-    public void setWpm(int wpm) {
-        mSpritzer.setWpm(wpm);
-    }
-
-
-    /**
-     * Set a custom spritzer
-     *
-     * @param spritzer
-     */
-    public void setSpritzer(Spritzer spritzer) {
-        mSpritzer = spritzer;
-        mSpritzer.swapTextView(this);
     }
 
     /**
@@ -295,6 +257,15 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         return mSpritzer.getWpm();
     }
 
+    /**
+     * This determines the words per minute the sprizter will read at
+     *
+     * @param wpm the number of words per minute
+     */
+    public void setWpm(int wpm) {
+        mSpritzer.setWpm(wpm);
+    }
+
     public void attachSeekBar(HintingSeekBar bar) {
         mSpritzer.attachSeekBar(bar);
     }
@@ -312,6 +283,16 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
 
     public Spritzer getSpritzer() {
         return mSpritzer;
+    }
+
+    /**
+     * Set a custom spritzer
+     *
+     * @param spritzer
+     */
+    public void setSpritzer(Spritzer spritzer) {
+        mSpritzer = spritzer;
+        mSpritzer.swapTextView(this);
     }
 
     @Override
@@ -336,5 +317,21 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
 
     public int getMinutesRemainingInQueue() {
         return mSpritzer.getMinutesRemainingInQueue();
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when the
+     * clickControls are enabled and the view is clicked
+     */
+    public interface OnClickControlListener {
+        /**
+         * Called when the spritzer pauses upon click
+         */
+        void onPause();
+
+        /**
+         * Called when the spritzer plays upon clicked
+         */
+        void onPlay();
     }
 }

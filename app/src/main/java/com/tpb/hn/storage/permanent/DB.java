@@ -22,29 +22,26 @@ import java.util.ArrayList;
 
 public class DB extends SQLiteOpenHelper {
     private static final String TAG = DB.class.getSimpleName();
-
-    private static DB instance;
-
     private static final String NAME = "CACHE";
     private static final int VERSION = 1;
-
     private static final String TABLE = "ITEMS";
     private static final String KEY_ID = "ID";
     private static final String KEY_LAST_UPDATE = "LAST_UPDATE";
     private static final String KEY_JSON = "JSON";
     private static final String KEY_PERMANENT = "PERMANENT";
     private static final String KEY_WEB_TEXT = "TEXT";
+    private static DB instance;
 
+
+    private DB(Context context) {
+        super(context, NAME, null, VERSION);
+    }
 
     public static DB getDB(Context context) {
         if(instance == null) {
             instance = new DB(context);
         }
         return instance;
-    }
-
-    private DB(Context context) {
-        super(context, NAME, null, VERSION);
     }
 
     @Override
@@ -87,7 +84,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public void loadItems(DBCallback callback, int[] items, boolean notifyIndividually) {
-      //  new LoadItemsTask(callback, notifyIndividually).execute(items);
+        //  new LoadItemsTask(callback, notifyIndividually).execute(items);
     }
 
     void loadRecentItems(int count) {
@@ -126,7 +123,7 @@ public class DB extends SQLiteOpenHelper {
         protected Boolean doInBackground(Integer... integers) {
             final SQLiteDatabase db = DB.this.getReadableDatabase();
             final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
-            final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(integers[0])} );
+            final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(integers[0])});
             boolean success = false;
             if(cursor.moveToFirst()) {
                 final String s = cursor.getString(cursor.getColumnIndex(KEY_JSON));
@@ -189,7 +186,8 @@ public class DB extends SQLiteOpenHelper {
                 }
                 cursor.close();
                 Log.i(TAG, "doInBackground: Items loaded " + items.size() + " " + items.toString());
-                if(!notifyIndividually && callback != null) callback.loadMultipleComplete(true, items);
+                if(!notifyIndividually && callback != null)
+                    callback.loadMultipleComplete(true, items);
             }
 
             return null;

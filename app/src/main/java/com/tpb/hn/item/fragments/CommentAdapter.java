@@ -21,10 +21,11 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.content.DividerItemDecoration;
-import com.tpb.hn.data.*;
-import com.tpb.hn.storage.SharedPrefsController;
 import com.tpb.hn.data.Comment;
+import com.tpb.hn.data.Formatter;
+import com.tpb.hn.data.Item;
 import com.tpb.hn.network.loaders.Parser;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,6 +114,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
     }
 
+    @Override
+    public int getItemCount() {
+        return mVisibleItems.size();
+    }
+
     private void setTranslateAnimation(View view, int multiplier) {
         final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
         animation.setDuration(Math.max(300, Math.min(800, multiplier * 150)));
@@ -147,12 +153,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         mVisibleItems.clear();
         notifyDataSetChanged();
     }
-
-    @Override
-    public int getItemCount() {
-        return mVisibleItems.size();
-    }
-
 
     public void loadComment(Comment comment) {
 
@@ -212,7 +212,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     if(children.length > 0) {
                         list.addAll(flatten(children, depth + 1));
                     }
-                } catch(JSONException jse) {} //Ignored
+                } catch(JSONException jse) {
+                } //Ignored
             }
         }
         return list;
@@ -243,6 +244,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
 
+    public interface UserOpener {
+
+        void openUser(Item item);
+
+    }
+
     private class CommentWrapper {
         Comment comment;
         int depth = 0;
@@ -262,7 +269,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         @Override
         public String toString() {
-            return "{" + comment.getId() + ", "  +
+            return "{" + comment.getId() + ", " +
                     comment.getBy() +
                     depth + "}";
         }
@@ -292,12 +299,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 }
             });
         }
-
-    }
-
-    public interface UserOpener {
-
-        void openUser(Item item);
 
     }
 }

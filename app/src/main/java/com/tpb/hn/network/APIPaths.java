@@ -16,8 +16,9 @@ import okhttp3.Response;
  */
 
 public class APIPaths {
+    public static final String JSON = ".json";
+    public static final String PRETTY = "?print=pretty";
     private static final String TAG = APIPaths.class.getSimpleName();
-
     private static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
     private static final String ITEM = "item/";
     private static final String USER = "user/";
@@ -29,12 +30,18 @@ public class APIPaths {
     private static final String SHOW_STORIES = "showstories";
     private static final String JOB_STORIES = "jobstories";
     private static final String UPDATED = "updates/";
-
     private static final String BOILERPIPE_PATH = "http://boilerpipe-web.appspot.com/extract?url=";
-
     private static final String MERCURY_PARSER_PATH = "https://mercury.postlight.com/parser?url=";
     private static final String MERCURY_HEADER_KEY = "x-api-key";
     private static final String MERCURY_KEY = BuildConfig.MERCURY_API_TOKEN;
+    private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
+    private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
+    private static final String READABILITY_PARSER_KEY = BuildConfig.MERCURY_API_TOKEN;
+    private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
+    //https://hn.algolia.com/api
+    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
+    private static final String ALGOLIA_ITEM_PATH = "items/";
+    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
     public static OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
             .addInterceptor(new Interceptor() {
                 @Override
@@ -47,31 +54,6 @@ public class APIPaths {
                 }
             })
             .build();
-
-    private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
-
-    private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
-    private static final String READABILITY_PARSER_KEY = BuildConfig.MERCURY_API_TOKEN;
-
-    private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
-
-    //https://hn.algolia.com/api
-    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
-    private static final String ALGOLIA_ITEM_PATH = "items/";
-    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
-
-    public static final String JSON = ".json";
-    public static final String PRETTY = "?print=pretty";
-
-    private String addTagsToAlgolia(String path, String[] tags) {
-        for(String tag : tags) path += tag;
-        return path;
-    }
-
-    private String searchStoryComments(int storyId) {
-        return ALGOLIA_BASE + "?tags=comment," + storyId;
-    }
-
 
     public static String getItemPath(int itemId) {
         return BASE_PATH + ITEM + itemId + JSON;
@@ -162,6 +144,15 @@ public class APIPaths {
             return url.substring(url.indexOf("=") + 1);
         }
         return "";
+    }
+
+    private String addTagsToAlgolia(String path, String[] tags) {
+        for(String tag : tags) path += tag;
+        return path;
+    }
+
+    private String searchStoryComments(int storyId) {
+        return ALGOLIA_BASE + "?tags=comment," + storyId;
     }
 
 

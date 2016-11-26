@@ -34,6 +34,30 @@ public class Login {
 
     }
 
+    private static boolean checkForBadLogin(String body) {
+        return body.contains("Bad login");
+    }
+
+    private static boolean checkIfLoggedIn(String body) {
+        return body.contains("user?id=");
+    }
+
+    private static OkHttpClient buildWithUserCookie(final String cookie) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        final Request orig = chain.request();
+
+                        final Request authorised = orig.newBuilder()
+                                .addHeader("Cookie", "user=" + cookie)
+                                .build();
+                        return chain.proceed(authorised);
+                    }
+                })
+                .build();
+    }
+
     public void getCookie() {
         AndroidNetworking.post("https://news.ycombinator.com/login?goto=news")
                 .addBodyParameter("acct", user)
@@ -105,30 +129,6 @@ public class Login {
 
                     }
                 });
-    }
-
-    private static boolean checkForBadLogin(String body) {
-        return body.contains("Bad login");
-    }
-
-    private static boolean checkIfLoggedIn(String body) {
-        return body.contains("user?id=");
-    }
-
-    private static OkHttpClient buildWithUserCookie(final String cookie) {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        final Request orig = chain.request();
-
-                        final Request authorised = orig.newBuilder()
-                                .addHeader("Cookie", "user=" + cookie)
-                                .build();
-                        return chain.proceed(authorised);
-                    }
-                })
-                .build();
     }
 
     public interface LoginListener {

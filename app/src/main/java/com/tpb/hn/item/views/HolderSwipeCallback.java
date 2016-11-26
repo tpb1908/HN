@@ -62,8 +62,8 @@ public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback
     }
 
     @Override
-    public float getSwipeEscapeVelocity(float defaultValue) {
-        return Float.MAX_VALUE;
+    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        return false;
     }
 
     @Override
@@ -72,8 +72,8 @@ public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback
     }
 
     @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        return false;
+    public float getSwipeEscapeVelocity(float defaultValue) {
+        return Float.MAX_VALUE;
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback
         final float th = r.top - r.bottom;
         final float width = vh.itemView.getWidth();
         final float py = (vh.itemView.getHeight() - th) / 2;
-        mPaint.setAlpha(Math.min(255, (int) (255 / 0.25f * Math.abs(dX) / width) ));
+        mPaint.setAlpha(Math.min(255, (int) (255 / 0.25f * Math.abs(dX) / width)));
         canvas.drawText(text.toUpperCase(Locale.getDefault()),
                 right ? vh.itemView.getLeft() + margin : vh.itemView.getRight() - margin - tw,
                 vh.itemView.getBottom() - py,

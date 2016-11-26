@@ -10,6 +10,17 @@ import java.util.Arrays;
  */
 
 public class User implements Parcelable {
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
     private String id;
     private byte delay;
     private long created;
@@ -17,8 +28,16 @@ public class User implements Parcelable {
     private String about;
     private int[] submitted;
 
-
     public User() {
+    }
+
+    protected User(Parcel in) {
+        this.id = in.readString();
+        this.delay = in.readByte();
+        this.created = in.readLong();
+        this.karma = in.readInt();
+        this.about = in.readString();
+        this.submitted = in.createIntArray();
     }
 
     //<editor-fold desc="Getters and setters">
@@ -65,6 +84,7 @@ public class User implements Parcelable {
     public String getId() {
         return id;
     }
+    //</editor-fold>s console (text)
 
     public void setId(String id) {
         this.id = id;
@@ -73,7 +93,6 @@ public class User implements Parcelable {
     public String getInfo() {
         return submitted.length + " posts | " + karma + " karma | " + (created > 5 * 60 ? "in " + Formatter.timeAgo(created) : "since just now");
     }
-    //</editor-fold>s console (text)
 
     @Override
     public int describeContents() {
@@ -89,28 +108,6 @@ public class User implements Parcelable {
         dest.writeString(this.about);
         dest.writeIntArray(this.submitted);
     }
-
-
-    protected User(Parcel in) {
-        this.id = in.readString();
-        this.delay = in.readByte();
-        this.created = in.readLong();
-        this.karma = in.readInt();
-        this.about = in.readString();
-        this.submitted = in.createIntArray();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 
     @Override
     public String toString() {

@@ -32,22 +32,21 @@ import java.util.HashMap;
 
 public class Loader extends BroadcastReceiver {
     private static final String TAG = Loader.class.getSimpleName();
-
-    private static Loader instance;
-    private SharedPreferences prefs;
-    private boolean online = false;
-
-    private static HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
-
     public static int ERROR_NOT_IN_CACHE = 100;
     public static int ERROR_TIMEOUT = 200;
     public static int ERROR_PARSING = 300;
     public static int ERROR_NETWORK_CHANGE = 400;
     public static int ERROR_UNKNOWN = 0;
     public static int ERROR_PDF = 500;
-
-
+    private static Loader instance;
+    private static HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
+    private SharedPreferences prefs;
+    private boolean online = false;
     private ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
+
+    private Loader(Context context) {
+        prefs = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+    }
 
     public static Loader getInstance(Context context) {
         if(instance == null) {
@@ -55,10 +54,6 @@ public class Loader extends BroadcastReceiver {
             instance.online = Util.isNetworkAvailable(context);
         }
         return instance;
-    }
-
-    private Loader(Context context) {
-        prefs = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -222,7 +217,8 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
-    private void cacheLoadItems(final int[] ids, ItemLoader loader) {}
+    private void cacheLoadItems(final int[] ids, ItemLoader loader) {
+    }
 
     public void loadChildren(final int id, CommentLoader loader) {
         if(online) {
@@ -270,7 +266,8 @@ public class Loader extends BroadcastReceiver {
         if(url.endsWith(".pdf")) {
             loader.textError(url, ERROR_PDF);
         } else {
-            if(listeners.get(url) == null) listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
+            if(listeners.get(url) == null)
+                listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
             listeners.get(url).add(new WeakReference<>(loader));
 
             Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
@@ -323,7 +320,8 @@ public class Loader extends BroadcastReceiver {
 
     }
 
-    private void cacheLoadChildren(final int id) {}
+    private void cacheLoadChildren(final int id) {
+    }
 
     public interface idLoader {
 

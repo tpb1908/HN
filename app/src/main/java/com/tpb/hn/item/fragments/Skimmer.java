@@ -41,17 +41,13 @@ import butterknife.Unbinder;
 
 public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
-    private Tracker mTracker;
-
-    private Unbinder unbinder;
-
-    private ItemViewActivity mParent;
-
     @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
     @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
     @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
-
+    private Tracker mTracker;
+    private Unbinder unbinder;
+    private ItemViewActivity mParent;
     private Item mItem;
     private boolean mIsWaitingForAttach = false;
     private String mArticle;
@@ -87,6 +83,28 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         return inflated;
     }
 
+    @Override
+    void attach(Context context) {
+        if(context instanceof ItemViewActivity) {
+            mParent = (ItemViewActivity) context;
+        } else {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+        }
+        if(mIsWaitingForAttach) {
+            Loader.getInstance(getContext()).loadArticle(mItem.getUrl(), true, this);
+        }
+
+    }
+
+    @Override
+    void bindData() {
+        mSwiper.setRefreshing(false);
+        mArticle = Html.fromHtml(mArticle).
+                toString().
+                replace("\n", " ");
+        setupSkimmer();
+    }
+
     @OnLongClick(R.id.skimmer_touch_area)
     boolean onLongClick() {
         mTextView.play();
@@ -112,7 +130,6 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         return true;
     }
 
-
     private void displayErrorMessage() {
         mTextView.setVisibility(View.INVISIBLE);
         mSkimmerProgress.setVisibility(View.INVISIBLE);
@@ -127,28 +144,6 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
         mTextView.setSpritzText(mArticle);
         mTextView.pause();
-    }
-
-    @Override
-    void attach(Context context) {
-        if(context instanceof ItemViewActivity) {
-            mParent = (ItemViewActivity) context;
-        } else {
-            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
-        }
-        if(mIsWaitingForAttach) {
-            Loader.getInstance(getContext()).loadArticle(mItem.getUrl(), true, this);
-        }
-
-    }
-
-    @Override
-    void bindData() {
-        mSwiper.setRefreshing(false);
-        mArticle = Html.fromHtml(mArticle).
-                toString().
-                replace("\n", " ");
-        setupSkimmer();
     }
 
     @Override

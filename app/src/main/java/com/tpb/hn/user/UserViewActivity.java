@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
-import com.tpb.hn.network.loaders.HNUserLoader;
+import com.tpb.hn.network.loaders.UserLoader;
 import com.tpb.hn.storage.SharedPrefsController;
 
 import butterknife.BindView;
@@ -43,9 +44,9 @@ import butterknife.OnLongClick;
  * Created by theo on 19/11/16.
  */
 
-public class UserViewActivity extends AppCompatActivity implements HNUserLoader.HNUserLoadDone, ContentAdapter.ContentManager {
+public class UserViewActivity extends AppCompatActivity implements UserLoader.HNUserLoadDone, ContentAdapter.ContentManager {
     private static final String TAG = UserViewActivity.class.getSimpleName();
-
+    public static Item mLaunchItem;
     @BindView(R.id.user_content_recycler) RecyclerView mRecycler;
     @BindView(R.id.user_content_swiper) SwipeRefreshLayout mSwiper;
     @BindView(R.id.user_name) TextView mName;
@@ -53,6 +54,11 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @BindView(R.id.user_account_about) TextView mAbout;
     @BindView(R.id.user_back_button) ImageButton mBackButton;
     @BindView(R.id.user_appbar) AppBarLayout mAppBar;
+    private User mUser;
+    private boolean viewsReady = false;
+    private boolean userReady = false;
+    private boolean mVolumeNavigation;
+    private ContentAdapter mAdapter;
 
     @OnClick(R.id.user_back_button)
     void onClick() {
@@ -64,15 +70,6 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         startActivity(new Intent(getApplicationContext(), ContentActivity.class));
         return true;
     }
-
-    private User mUser;
-    private boolean viewsReady = false;
-    private boolean userReady = false;
-    private boolean mVolumeNavigation;
-
-    public static Item mLaunchItem;
-
-    private ContentAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +92,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
         if(Intent.ACTION_VIEW.equals(launchIntent.getAction())) {
             AdBlocker.init(this);
             final String data = launchIntent.getDataString();
-            new HNUserLoader(this).loadUser(APIPaths.parseUserUrl(data));
+            new UserLoader(this).loadUser(APIPaths.parseUserUrl(data));
 
         } else {
             final Item item;
@@ -105,11 +102,30 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
             } else {
                 item = ItemViewActivity.mLaunchItem;
             }
-            new HNUserLoader(this).loadUser(item.getBy());
+            new UserLoader(this).loadUser(item.getBy());
         }
 
         viewsReady = true;
         if(userReady) bindData();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private void bindData() {
@@ -134,25 +150,6 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(mVolumeNavigation) {
-            switch(event.getKeyCode()) {
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollUp();
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollDown();
-                    }
-                    return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             startActivity(new Intent(getApplicationContext(), ContentActivity.class));
@@ -164,8 +161,8 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     private void showLongAboutPopup() {
         final AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setTitle(mUser.getId());
-        final View text = LayoutInflater.from(this).inflate(R.layout.dialog_long_about, null);
-        ((TextView)text.findViewById(R.id.dialog_text)).setText(Html.fromHtml(mUser.getAbout()));
+        final View text = LayoutInflater.from(this).inflate(R.layout.dialog_long_about, (ViewGroup) findViewById(android.R.id.content));
+        ((TextView) text.findViewById(R.id.dialog_text)).setText(Html.fromHtml(mUser.getAbout()));
         adb.setView(text);
 
         adb.show();
@@ -206,7 +203,7 @@ public class UserViewActivity extends AppCompatActivity implements HNUserLoader.
     @Override
     public void openUser(Item item) {
         //Used on refresh
-        new HNUserLoader(this).loadUser(mUser.getId());
+        new UserLoader(this).loadUser(mUser.getId());
     }
 
     @Override

@@ -14,16 +14,16 @@ public class Item implements Comparable<Item> {
     private static final String TAG = Item.class.getSimpleName();
 
     protected int id;
-    private boolean deleted;
     protected String by;
+    protected int parent;
+    protected int score;
+    private boolean deleted;
     private long time;
     private String title;
     private String text;
     private boolean dead;
-    protected int parent;
     private int[] kids;
     private String url;
-    protected int score;
     private int[] parts;
     private int descendants;
     private boolean isComment;
@@ -204,11 +204,6 @@ public class Item implements Comparable<Item> {
     }
 
     @Override
-    public int compareTo(@NonNull Item item) {
-        return time > item.time ? 1 : 0;
-    }
-
-    @Override
     public String toString() {
         return "Item{" +
                 "id=" + id +
@@ -228,5 +223,10 @@ public class Item implements Comparable<Item> {
                 ", isNew=" + isNew +
                 ", parsedText=" + parsedText +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull Item item) {
+        return time > item.time ? 1 : 0;
     }
 }

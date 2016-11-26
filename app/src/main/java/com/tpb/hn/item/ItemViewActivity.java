@@ -42,8 +42,7 @@ import butterknife.OnLongClick;
 
 public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLoader, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
-    private Tracker mTracker;
-
+    public static Item mLaunchItem;
     @BindView(R.id.item_toolbar) Toolbar mStoryToolbar;
     @BindView(R.id.item_viewpager) LockableViewPager mStoryPager;
     @BindView(R.id.item_appbar) AppBarLayout mStoryAppbar;
@@ -54,6 +53,11 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     @BindView(R.id.item_author) TextView mAuthor;
     @BindView(R.id.item_fab) FloatingActionButton mFab;
     @BindView(R.id.item_back_button) ImageButton mBackButton;
+    private Tracker mTracker;
+    private Item mRootItem;
+    private FragmentPagerAdapter mAdapter;
+    private int originalFlags;
+    private boolean mShouldShowFab = false;
 
     @OnClick(R.id.item_back_button)
     public void onClick() {
@@ -70,17 +74,9 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     void onAuthorClick() {
         if(mRootItem != null) {
             mLaunchItem = mRootItem;
-           openUser(mLaunchItem);
+            openUser(mLaunchItem);
         }
     }
-
-    public static Item mLaunchItem;
-    private Item mRootItem;
-
-    private FragmentPagerAdapter mAdapter;
-
-    private int originalFlags;
-    private boolean mShouldShowFab = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,6 +157,18 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     }
 
     @Override
+    public void onBackPressed() {
+        if(mAdapter.onBackPressed()) {
+            mStoryPager.setVisibility(View.INVISIBLE);
+            mTitle.setVisibility(View.INVISIBLE);
+            mBackButton.setVisibility(View.INVISIBLE);
+            hideFab();
+            Loader.getInstance(this).removeListeners();
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mFab.postDelayed(new Runnable() {
@@ -172,18 +180,6 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
         }, 300);
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(mAdapter.onBackPressed()) {
-            mStoryPager.setVisibility(View.INVISIBLE);
-            mTitle.setVisibility(View.INVISIBLE);
-            mBackButton.setVisibility(View.INVISIBLE);
-            hideFab();
-            Loader.getInstance(this).removeListeners();
-            super.onBackPressed();
-        }
     }
 
     @Override

@@ -17,10 +17,6 @@ import java.util.Arrays;
 
 public class SharedPrefsController {
     private static final String TAG = SharedPrefsController.class.getSimpleName();
-
-    private static SharedPrefsController instance;
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
     private static final String PREF_ID = "PREF_SETTINGS";
     private static final String KEY_FIRST_RUN = "FIRST_RUN";
     private static final String KEY_STORY_TABS = "STORY_TABS";
@@ -41,7 +37,7 @@ public class SharedPrefsController {
     private static final String KEY_DARK_END = "DARK_END";
     private static final String KEY_AUTO_DARK = "AUTO_DARK";
     private static final String KEY_SHOW_SEEKBAR_HINT = "SEEKBAR_HINT";
-
+    private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
     private static String defaultPage;
@@ -60,13 +56,8 @@ public class SharedPrefsController {
     private static int darkThemeStart;
     private static int darkThemeEnd;
     private static boolean showSeekBarHint;
-
-    public static SharedPrefsController getInstance(Context context) {
-        if(instance == null) {
-            instance = new SharedPrefsController(context);
-        }
-        return instance;
-    }
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
     private SharedPrefsController(Context context) {
         prefs = context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE);
@@ -78,6 +69,13 @@ public class SharedPrefsController {
         getValues();
         editor.apply();
 
+    }
+
+    public static SharedPrefsController getInstance(Context context) {
+        if(instance == null) {
+            instance = new SharedPrefsController(context);
+        }
+        return instance;
     }
 
     private void getValues() {
@@ -128,17 +126,21 @@ public class SharedPrefsController {
         skimmerWPM = newSkimmerWPM;
     }
 
+    public String getDefaultPage() {
+        if(defaultPage == null) {
+            defaultPage = prefs.getString(KEY_DEFAULT_PAGE, "BEST");
+        }
+        return defaultPage;
+    }
+
     public void setDefaultPage(String newDefault) {
         defaultPage = newDefault;
         editor.putString(KEY_DEFAULT_PAGE, newDefault);
         editor.apply();
     }
 
-    public String getDefaultPage() {
-        if(defaultPage == null) {
-            defaultPage = prefs.getString(KEY_DEFAULT_PAGE, "BEST");
-        }
-        return defaultPage;
+    public boolean getUseCards() {
+        return useCards;
     }
 
     public void setUseCards(boolean shouldUseCards) {
@@ -147,18 +149,14 @@ public class SharedPrefsController {
         editor.apply();
     }
 
-    public boolean getUseCards() {
-        return useCards;
+    public boolean getMarkReadWhenPassed() {
+        return markReadWhenPassed;
     }
 
     public void setMarkReadWhenPassed(boolean markRead) {
         markReadWhenPassed = markRead;
         editor.putBoolean(KEY_MARK_READ_WHEN_PASSED, markReadWhenPassed);
         editor.apply();
-    }
-
-    public boolean getMarkReadWhenPassed() {
-        return markReadWhenPassed;
     }
 
     public boolean getUseDarkTheme() {

@@ -16,12 +16,12 @@ import org.json.JSONObject;
  * Created by theo on 28/10/16.
  */
 
-public class HNUserLoader {
-    private static final String TAG = HNUserLoader.class.getSimpleName();
+public class UserLoader {
+    private static final String TAG = UserLoader.class.getSimpleName();
 
     private HNUserLoadDone userListener;
 
-    public HNUserLoader(HNUserLoadDone listener) {
+    public UserLoader(HNUserLoadDone listener) {
         userListener = listener;
     }
 

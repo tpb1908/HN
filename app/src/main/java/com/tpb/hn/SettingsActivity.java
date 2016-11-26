@@ -35,18 +35,28 @@ public class SettingsActivity extends AppCompatActivity {
 
     @BindViews({R.id.title_settings_theme, R.id.title_settings_content, R.id.title_settings_comments, R.id.title_settings_browser, R.id.title_settings_data, R.id.title_settings_info}) List<TextView> mSettingsTitles;
     @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info}) List<ExpandableRelativeLayout> mSettings;
+    private final ButterKnife.Action<View> TOGGLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(@NonNull View view, final int index) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mSettings.get(index).toggle();
+                }
+            });
+        }
+    };
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.settings_text_auto_start) TextView mThemeStart;
     @BindView(R.id.settings_text_auto_end) TextView mThemeEnd;
+    SharedPrefsController prefs;
+
+    private boolean restartRequired = false;
 
     @OnClick(R.id.settings_back_button)
     void onClick() {
         onBackPressed();
     }
-
-    SharedPrefsController prefs;
-
-    private boolean restartRequired = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +64,6 @@ public class SettingsActivity extends AppCompatActivity {
         setViews();
 
     }
-
 
     private void initViewValues() {
         ((Switch) ButterKnife.findById(this, R.id.switch_dark_theme)).setChecked(prefs.getUseDarkTheme());
@@ -101,18 +110,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
         initViewValues();
     }
-
-    private final ButterKnife.Action<View> TOGGLE = new ButterKnife.Action<View>() {
-        @Override
-        public void apply(@NonNull View view, final int index) {
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mSettings.get(index).toggle();
-                }
-            });
-        }
-    };
 
     public void onSwitchClick(@NonNull View view) {
         final Switch sView = (Switch) view;
@@ -185,17 +182,17 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         prefs.reset();
         restartRequired = true;
         setViews();
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        return true;
     }
 
     @Override

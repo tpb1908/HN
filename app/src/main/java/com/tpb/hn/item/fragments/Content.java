@@ -59,17 +59,10 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
-    private Tracker mTracker;
-
-    private Unbinder unbinder;
-
-    private ItemViewActivity mParent;
-
     @BindColor(R.color.md_grey_50) int lightBG;
     @BindColor(R.color.md_grey_bg) int darkBG;
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
-
     @BindView(R.id.fullscreen) LinearLayout mFullscreen;
     @BindView(R.id.webview_swiper) SwipeRefreshLayout mSwiper;
     @BindView(R.id.webview_scroller) NestedScrollView mScrollView;
@@ -78,7 +71,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     @BindView(R.id.content_progressbar) ProgressBar mProgressBar;
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
     @BindView(R.id.content_find_edittext) EditText mFindEditText;
-
+    private Tracker mTracker;
+    private Unbinder unbinder;
+    private ItemViewActivity mParent;
     private boolean mIsFindShown = false;
     private boolean mIsSearchComplete = false;
     private boolean mIsShowingPDF = false;
@@ -95,11 +90,15 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     private Item mItem;
 
-    public Content() {}
-
-    public Content(FragmentPagerAdapter.PageType type) {
-        mType = type;
+    public Content() {
     }
+
+    public static Content newInstance(FragmentPagerAdapter.PageType type) {
+        final Content content = new Content();
+        content.mType = type;
+        return content;
+    }
+
 
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -168,6 +167,35 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     }
 
     @Override
+    void bindData() {
+        if(mShown) return;
+        Log.i(TAG, "bindData: Binding data " + mShown);
+        mShown = true;
+        if(mIsShowingPDF) {
+            Log.i(TAG, "bindData: Setting up PDF buttons");
+            setupPDFButtons();
+        } else {
+            if(mType == FragmentPagerAdapter.PageType.BROWSER) {
+                mWebView.loadUrl(url);
+            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
+                mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
+            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+                    /*
+                    We have to do the theming on bind
+                    If we do when the JSON is returned, and the JSON is returned from ItemCache
+                    it will be returned before the Fragment has been attached and getContext()
+                    will return null
+                     */
+                final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
+                mReadablePage = Formatter.setTextColor(getContext(), mReadablePage,
+                        darkTheme ? darkBG : lightBG,
+                        darkTheme ? darkText : lightText);
+                mWebView.loadData(mReadablePage, "text/html", "utf-8");
+            }
+        }
+    }
+
+    @Override
     public void itemLoaded(Item item) {
         mItem = item;
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
@@ -196,37 +224,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     public void itemError(int id, int code) {
 
     }
-
-
-    @Override
-    void bindData() {
-        if(mShown) return;
-        Log.i(TAG, "bindData: Binding data " +  mShown);
-        mShown = true;
-        if(mIsShowingPDF) {
-            Log.i(TAG, "bindData: Setting up PDF buttons");
-            setupPDFButtons();
-        } else {
-            if(mType == FragmentPagerAdapter.PageType.BROWSER) {
-                mWebView.loadUrl(url);
-            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
-                mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
-            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
-                    /*
-                    We have to do the theming on bind
-                    If we do when the JSON is returned, and the JSON is returned from ItemCache
-                    it will be returned before the Fragment has been attached and getContext()
-                    will return null
-                     */
-                final boolean darkTheme = SharedPrefsController.getInstance(getContext()).getUseDarkTheme();
-                mReadablePage = Formatter.setTextColor(getContext(), mReadablePage,
-                        darkTheme ? darkBG : lightBG,
-                        darkTheme ? darkText : lightText);
-                mWebView.loadData(mReadablePage, "text/html", "utf-8");
-            }
-        }
-    }
-
 
     @OnClick(R.id.button_content_toolbar_close)
     void onClosePressed() {
@@ -274,10 +271,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 }
 
                 @Override
-                public void afterTextChanged(Editable editable) {
-                }
-
-                @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     mFindEditText.postDelayed(new Runnable() {
                         @Override
@@ -288,6 +281,10 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                             }
                         }
                     }, 300);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
                 }
             });
             final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

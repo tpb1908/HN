@@ -4,21 +4,13 @@ package com.tpb.hn.data;
  * Created by theo on 25/11/16.
  */
 
-public class Comment extends Item{
+public class Comment extends Item {
     private static final String TAG = Comment.class.getSimpleName();
 
     private String text;
     private String children;
     private int descendants;
     private long time;
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 
     public String getChildren() {
         return children;
@@ -34,6 +26,14 @@ public class Comment extends Item{
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public int getDescendants() {

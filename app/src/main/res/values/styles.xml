@@ -34,14 +34,14 @@
     </style>
 
     <declare-styleable name="FontStyle">
-        <attr name="font_small" format="dimension" />
-        <attr name="font_medium" format="dimension" />
-        <attr name="font_large" format="dimension" />
-        <attr name="font_xlarge" format="dimension" />
+        <attr name="font_small" format="dimension"/>
+        <attr name="font_medium" format="dimension"/>
+        <attr name="font_large" format="dimension"/>
+        <attr name="font_xlarge" format="dimension"/>
     </declare-styleable>
-    
+
     <style name="FontSize">
-        
+
     </style>
 
     <style name="FontSize.Small">

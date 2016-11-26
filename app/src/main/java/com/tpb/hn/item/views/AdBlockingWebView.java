@@ -50,33 +50,17 @@ public class AdBlockingWebView extends WebView {
             private Map<String, Boolean> loadedUrls = new HashMap<>();
 
             @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                if(shouldBlockAds) {
-                    boolean ad;
-                    if(!loadedUrls.containsKey(request.getUrl().toString())) {
-                        ad = AdBlocker.isAd(request.getUrl().toString());
-                        loadedUrls.put(request.getUrl().toString(), ad);
-                    } else {
-                        ad = loadedUrls.get(request.getUrl().toString());
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if(mHandler != null) {
+                    final Pair<Boolean, String> val = mHandler.handleLink(url);
+                    if(val.first) {
+                        loadUrl(val.second);
                     }
-                    return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
+                } else {
+                    loadUrl(url);
                 }
-                return super.shouldInterceptRequest(view, request);
+                return true;
             }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if(mLoadListener != null) mLoadListener.loadDone();
-            }
-
-
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -92,16 +76,30 @@ public class AdBlockingWebView extends WebView {
             }
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(mHandler != null) {
-                    final Pair<Boolean, String> val = mHandler.handleLink(url);
-                    if(val.first) {
-                        loadUrl(val.second);
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                if(mBoundProgressBar != null) mBoundProgressBar.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if(mLoadListener != null) mLoadListener.loadDone();
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if(shouldBlockAds) {
+                    boolean ad;
+                    if(!loadedUrls.containsKey(request.getUrl().toString())) {
+                        ad = AdBlocker.isAd(request.getUrl().toString());
+                        loadedUrls.put(request.getUrl().toString(), ad);
+                    } else {
+                        ad = loadedUrls.get(request.getUrl().toString());
                     }
-                } else {
-                    loadUrl(url);
+                    return ad ? AdBlocker.createEmptyResource() : super.shouldInterceptRequest(view, request);
                 }
-                return true;
+                return super.shouldInterceptRequest(view, request);
             }
         });
     }
@@ -181,14 +179,14 @@ public class AdBlockingWebView extends WebView {
     }
 
     @Override
-    public void loadUrl(String url) {
-        super.loadUrl(url);
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        super.loadUrl(url, additionalHttpHeaders);
         this.setVisibility(VISIBLE);
     }
 
     @Override
-    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
-        super.loadUrl(url, additionalHttpHeaders);
+    public void loadUrl(String url) {
+        super.loadUrl(url);
         this.setVisibility(VISIBLE);
     }
 

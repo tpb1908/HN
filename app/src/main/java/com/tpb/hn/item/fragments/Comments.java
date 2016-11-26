@@ -36,14 +36,11 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
         Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Comments.class.getSimpleName();
-    private Tracker mTracker;
-
-    private Unbinder unbinder;
-
     @BindView(R.id.comment_recycler) RecyclerView mRecycler;
     @BindView(R.id.comment_swiper) SwipeRefreshLayout mSwiper;
     @BindView(R.id.comment_no_comments) TextView mMessageView;
-
+    private Tracker mTracker;
+    private Unbinder unbinder;
     private Item mRootItem;
     private Comment mRootComment;
     private CommentAdapter.UserOpener mOpener;

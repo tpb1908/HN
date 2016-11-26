@@ -69,7 +69,7 @@ public class Parser {
         final Comment comment = new Comment();
         comment.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
-        if(obj.has(KEY_CREATED_AT_I))comment.setTime(obj.getInt(KEY_CREATED_AT_I));
+        if(obj.has(KEY_CREATED_AT_I)) comment.setTime(obj.getInt(KEY_CREATED_AT_I));
 
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
@@ -119,7 +119,7 @@ public class Parser {
     }
 
 
-    public static Comment getDeadComment(JSONObject obj) throws JSONException{
+    public static Comment getDeadComment(JSONObject obj) throws JSONException {
         final Comment dead = new Comment();
         if(obj.has(KEY_ID)) dead.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT)) dead.setParent(obj.getInt(KEY_PARENT));

@@ -25,49 +25,33 @@ import java.util.Arrays;
  */
 public class Spritzer {
     protected static final String TAG = "Spritzer";
-    private static final boolean VERBOSE = false;
-
-    private static final int MSG_PRINT_WORD = 1;
-
-    private static final int MAX_WORD_LENGTH = 13;
     protected static final int CHARS_LEFT_OF_PIVOT = 3;
-
+    private static final boolean VERBOSE = false;
+    private static final int MSG_PRINT_WORD = 1;
+    private static final int MAX_WORD_LENGTH = 13;
+    int mCurWordIdx;
     private String[] mWordArray;                  // A parsed list of words parsed from {@link #setText(String input)}
     private ArrayDeque<String> mWordQueue;        // The queue of words from mWordArray yet to be displayed
-
     private TextView mTarget;
     private int mWPM;
-
     private Handler mSpritzHandler;
     private Object mPlayingSync = new Object();
     private boolean mPlaying;
     private boolean mPlayingRequested;
     private boolean mSpritzThreadStarted;
-
     private boolean mJustJumped;
-
-    int mCurWordIdx;
     private HintingSeekBar mSeekBar;
-
-    public interface OnCompletionListener {
-
-        void onComplete();
-
-    }
-
     private DelayStrategy mDelayStrategy;
-
-    public void setOnCompletionListener(OnCompletionListener onCompletionListener) {
-        mOnCompletionListener = onCompletionListener;
-    }
-
     private OnCompletionListener mOnCompletionListener;
-
 
     public Spritzer(TextView target) {
         init();
         mTarget = target;
         mSpritzHandler = new SpritzHandler(this);
+    }
+
+    public void setOnCompletionListener(OnCompletionListener onCompletionListener) {
+        mOnCompletionListener = onCompletionListener;
     }
 
     /**
@@ -301,7 +285,6 @@ public class Spritzer {
         return (word.contains(".") || word.contains("-"));
     }
 
-
     private void printLastWord() {
         if(mWordArray != null) {
             printWord(mWordArray[mWordArray.length - 1]);
@@ -409,7 +392,6 @@ public class Spritzer {
         }
     }
 
-
     public String[] getWordArray() {
         return mWordArray;
     }
@@ -446,9 +428,15 @@ public class Spritzer {
         }
     }
 
-
     public void setDelayStrategy(DelayStrategy strategy) {
         mDelayStrategy = strategy;
+
+    }
+
+
+    public interface OnCompletionListener {
+
+        void onComplete();
 
     }
 

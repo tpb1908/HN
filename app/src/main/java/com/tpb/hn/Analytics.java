@@ -11,13 +11,11 @@ import com.squareup.leakcanary.LeakCanary;
  */
 
 public class Analytics extends Application {
-    private Tracker mTracker;
-
     public static final String CATEGORY_NAVIGATION = "Navigation";
     public static final String KEY_PAGE = "PAGE ";
-
     public static final String CATEGORY_ITEM = "ITEM";
     public static final String KEY_OPEN_ITEM = "OPENED";
+    private Tracker mTracker;
 
     @Override
     public void onCreate() {

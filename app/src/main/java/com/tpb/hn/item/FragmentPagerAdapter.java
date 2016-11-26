@@ -117,15 +117,15 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 fragments[position] = page;
                 break;
             case BROWSER:
-                page = new Content(PageType.BROWSER);
+                page = Content.newInstance(PageType.BROWSER);
                 fragments[position] = page;
                 break;
             case TEXT_READER:
-                page = new Content(PageType.TEXT_READER);
+                page = Content.newInstance(PageType.TEXT_READER);
                 fragments[position] = page;
                 break;
             case AMP_READER:
-                page = new Content(PageType.AMP_READER);
+                page = Content.newInstance(PageType.AMP_READER);
                 fragments[position] = page;
                 break;
             case SKIMMER:
@@ -175,24 +175,6 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         return PageType.toReadableString(pages.get(position));
     }
 
-    public interface FragmentCycleListener {
-
-        void onPauseFragment();
-
-        void onResumeFragment();
-
-        boolean onBackPressed();
-
-    }
-
-    interface Fullscreen {
-
-        void openFullScreen();
-
-        void closeFullScreen();
-
-    }
-
     public enum PageType {
         COMMENTS, //The comment adapter fragment
         BROWSER, //Loads the URL
@@ -215,6 +197,24 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             }
             return "ERROR";
         }
+
+    }
+
+    public interface FragmentCycleListener {
+
+        void onPauseFragment();
+
+        void onResumeFragment();
+
+        boolean onBackPressed();
+
+    }
+
+    interface Fullscreen {
+
+        void openFullScreen();
+
+        void closeFullScreen();
 
     }
 

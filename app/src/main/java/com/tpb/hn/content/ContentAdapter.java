@@ -27,7 +27,6 @@ import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.views.HolderSwipeCallback;
-import com.tpb.hn.network.loaders.CachedItemLoader;
 import com.tpb.hn.network.loaders.Loader;
 import com.tpb.hn.storage.SharedPrefsController;
 
@@ -50,7 +49,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Loader.idLoader,
         FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
-
+    @BindColor(R.color.colorPrimaryText) int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
     private Context mContext;
     private Loader mLoader;
     private String mCurrentPage;
@@ -69,9 +69,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean mIsDarkTheme;
     private boolean mShouldScrollOnChange;
     private int mCountGuess;
-
-    @BindColor(R.color.colorPrimaryText) int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
@@ -136,7 +133,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
-        final HolderSwipeCallback callback  = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
+        final HolderSwipeCallback callback = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
@@ -249,7 +246,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(currentPos > ids.length) {
             mLayoutManager.scrollToPosition(ids.length);
         }
-        if(mCurrentPage != null) CachedItemLoader.writeItemIds(mContext, ids, mCurrentPage.toUpperCase());
         mData = new Item[ids.length + 1];
         mLoader.loadItems(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false, this);
         notifyDataSetChanged();
@@ -402,24 +398,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void setCardParams(CardView card) {
-        card.setUseCompatPadding(true);
-        card.setCardElevation(Util.pxFromDp(4));
-        card.setRadius(Util.pxFromDp(3));
-        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
-    }
-
-    @Override
-    public int getItemCount() {
-        return mData.length > 0 ? mData.length - 1 : mCountGuess;
-    }
-
     @Override
     public int getItemViewType(int position) {
         if(position < mData.length && mData[position] != null) {
             return mData[position].isComment() ? mIsContent ? 0 : 1 : 0;
         }
         return mIsContent ? 0 : -1;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.length > 0 ? mData.length - 1 : mCountGuess;
     }
 
     @Override
@@ -441,9 +430,28 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    private void setCardParams(CardView card) {
+        card.setUseCompatPadding(true);
+        card.setCardElevation(Util.pxFromDp(4));
+        card.setRadius(Util.pxFromDp(3));
+        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+    }
+
     //</editor-fold>
 
     //<editor-fold-desc="Viewholder classes">
+
+    public interface ContentManager {
+
+        void openItem(Item item);
+
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
+
+        void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
+
+    }
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
@@ -453,16 +461,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @BindView(R.id.item_author) TextView mAuthor;
         @BindView(R.id.item_url) TextView mURL;
         @BindView(R.id.item_number) TextView mNumber;
-
-        @OnClick(R.id.item_url)
-        void urlClick() {
-            ContentAdapter.this.openItem(getAdapterPosition(), FragmentPagerAdapter.PageType.BROWSER);
-        }
-
-        @OnClick(R.id.item_author)
-        void authorClick() {
-            ContentAdapter.this.openUser(getAdapterPosition());
-        }
 
         ItemHolder(@NonNull View itemView) {
             super(itemView);
@@ -480,6 +478,16 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     return true;
                 }
             });
+        }
+
+        @OnClick(R.id.item_url)
+        void urlClick() {
+            ContentAdapter.this.openItem(getAdapterPosition(), FragmentPagerAdapter.PageType.BROWSER);
+        }
+
+        @OnClick(R.id.item_author)
+        void authorClick() {
+            ContentAdapter.this.openUser(getAdapterPosition());
         }
 
     }
@@ -503,6 +511,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    //</editor-fold>
+
     class EmptyHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.empty_card) CardView mCard;
 
@@ -510,20 +520,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-    }
-
-    //</editor-fold>
-
-    public interface ContentManager {
-
-        void openItem(Item item);
-
-        void openItem(Item item, FragmentPagerAdapter.PageType type);
-
-        void openUser(Item item);
-
-        void displayLastUpdate(long lastUpdate);
 
     }
 
