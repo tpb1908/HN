@@ -52,7 +52,7 @@ import butterknife.Unbinder;
  * Created by theo on 25/11/16.
  */
 
-public class Content extends ContentFragment implements ItemLoader,
+public class Content extends ContentFragment implements Loader.ItemLoader,
         Loader.TextLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
@@ -90,6 +90,8 @@ public class Content extends ContentFragment implements ItemLoader,
     private String mReadablePage;
 
     private Item mItem;
+
+    public Content() {}
 
     public Content(FragmentPagerAdapter.PageType type) {
         mType = type;
@@ -153,11 +155,15 @@ public class Content extends ContentFragment implements ItemLoader,
 
     @Override
     void attach(Context context) {
-
+        if(context instanceof ItemViewActivity) {
+            mParent = (ItemViewActivity) context;
+        } else {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+        }
     }
 
     @Override
-    public void loadItem(Item item) {
+    public void itemLoaded(Item item) {
         mItem = item;
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             url = item.getUrl();
@@ -176,6 +182,12 @@ public class Content extends ContentFragment implements ItemLoader,
             }
         }
     }
+
+    @Override
+    public void itemError(int id, int code) {
+
+    }
+
 
     @Override
     void bindData() {

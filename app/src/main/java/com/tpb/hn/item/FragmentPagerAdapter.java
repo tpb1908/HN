@@ -29,6 +29,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
+        Log.i(TAG, "FragmentPagerAdapter: " + item);
         possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER, PageType.SKIMMER};
         final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]") ||
                 (item.getUrl() != null && item.getUrl().endsWith(".pdf"));

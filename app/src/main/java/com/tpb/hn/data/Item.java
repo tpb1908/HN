@@ -31,7 +31,6 @@ public class Item implements Comparable<Item> {
     private boolean viewed;
     private boolean isNew;
     private boolean parsedText;
-    private String commentJSON;
 
     public int getId() {
         return id;
@@ -153,14 +152,6 @@ public class Item implements Comparable<Item> {
         this.parsedText = parsedText;
     }
 
-    public String getCommentJSON() {
-        return commentJSON;
-    }
-
-    public void setCommentJSON(String commentJSON) {
-        this.commentJSON = commentJSON;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -236,7 +227,6 @@ public class Item implements Comparable<Item> {
                 ", viewed=" + viewed +
                 ", isNew=" + isNew +
                 ", parsedText=" + parsedText +
-                ", commentJSON='" + commentJSON + '\'' +
                 '}';
     }
 }

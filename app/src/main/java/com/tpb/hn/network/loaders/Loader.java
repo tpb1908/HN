@@ -215,6 +215,7 @@ public class Loader extends BroadcastReceiver {
 
                         @Override
                         public void onError(ANError anError) {
+
                             loader.itemError(id, ERROR_NETWORK_CHANGE);
                         }
                     });
@@ -223,15 +224,15 @@ public class Loader extends BroadcastReceiver {
 
     private void cacheLoadItems(final int[] ids, ItemLoader loader) {}
 
-    public void loadChildJSON(final int id, CommentLoader loader) {
+    public void loadChildren(final int id, CommentLoader loader) {
         if(online) {
-            networkLoadChildJSON(id, loader);
+            networkLoadChildren(id, loader);
         } else {
-            cacheLoadChildJSON(id);
+            cacheLoadChildren(id);
         }
     }
 
-    private void networkLoadChildJSON(final int id, final CommentLoader loader) {
+    private void networkLoadChildren(final int id, final CommentLoader loader) {
         AndroidNetworking.get(APIPaths.getAlgoliaItemPath(id))
                 .setTag(id)
                 .setPriority(Priority.HIGH)
@@ -243,6 +244,7 @@ public class Loader extends BroadcastReceiver {
                             final Comment comment = Parser.parseComment(response);
                             loader.commentsLoaded(comment);
                         } catch(JSONException e) {
+                            Log.e(TAG, "onResponse: ", e);
                             loader.commentError(id, ERROR_PARSING);
                         } catch(Exception e) {
                             loader.commentError(id, ERROR_UNKNOWN);
@@ -264,12 +266,13 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
-    private void networkLoadArticle(final String url, boolean forImmediateUse, TextLoader loader) {
+    private void networkLoadArticle(final String url, boolean forImmediateUse, final TextLoader loader) {
         if(url.endsWith(".pdf")) {
             loader.textError(url, ERROR_PDF);
         } else {
             if(listeners.get(url) == null) listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
             listeners.get(url).add(new WeakReference<>(loader));
+            Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
             AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
                     .setTag(url)
                     .setOkHttpClient(APIPaths.MERCURY_CLIENT)
@@ -280,11 +283,12 @@ public class Loader extends BroadcastReceiver {
                         public void onResponse(JSONObject response) {
                             try {
                                 if(response.has("content") && !response.get("content").equals("<div></div>")) {
+                                    Log.i(TAG, "onResponse: " + listeners.get(url));
                                     for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                         loader.get().textLoaded(response);
                                     }
                                 }
-                                listeners.remove(url);
+                                listeners.get(url).remove(new WeakReference<TextLoader>(loader));
                             } catch(JSONException jse) {
                                 for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                     loader.get().textError(url, ERROR_PARSING);
@@ -307,7 +311,7 @@ public class Loader extends BroadcastReceiver {
 
     }
 
-    private void cacheLoadChildJSON(final int id) {}
+    private void cacheLoadChildren(final int id) {}
 
     public interface idLoader {
 

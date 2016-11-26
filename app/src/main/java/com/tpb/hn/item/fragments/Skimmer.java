@@ -15,13 +15,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tpb.hn.R;
+import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.spritzer.SpritzerTextView;
-import com.tpb.hn.storage.SharedPrefsController;
-import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemLoader;
 import com.tpb.hn.network.loaders.Loader;
+import com.tpb.hn.storage.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +36,7 @@ import butterknife.Unbinder;
  * Created by theo on 25/11/16.
  */
 
-public class Skimmer extends ContentFragment implements ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
+public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -174,7 +173,7 @@ public class Skimmer extends ContentFragment implements ItemLoader, Loader.TextL
     }
 
     @Override
-    public void loadItem(Item item) {
+    public void itemLoaded(Item item) {
         mItem = item;
         if(item.getUrl() != null) {
             if(mContextReady) {
@@ -187,6 +186,11 @@ public class Skimmer extends ContentFragment implements ItemLoader, Loader.TextL
             mContentReady = true;
             if(mViewsReady) bindData();
         }
+    }
+
+    @Override
+    public void itemError(int id, int code) {
+
     }
 
     @Override

@@ -31,7 +31,7 @@ public abstract class ContentFragment extends Fragment {
     public final void onAttach(Context context) {
         super.onAttach(context);
         attach(context);
-        mContentReady = true;
+        mContextReady = true;
     }
 
     abstract View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);

@@ -160,7 +160,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
-        if(mRootComment.getChildren().equals("")) {
+        if(!mRootComment.getChildren().equals("")) {
+            Log.i(TAG, "loadComment: Beginning flattening");
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -199,6 +200,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
+        Log.i(TAG, "flatten: Flattening comments");
         final ArrayList<CommentWrapper> list = new ArrayList<>();
         for(Comment com : comments) {
             if(com.getBy() != null) {

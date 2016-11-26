@@ -1,8 +1,8 @@
 package com.tpb.hn.network.loaders;
 
+import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
-import com.tpb.hn.data.Comment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +42,8 @@ public class Parser {
     private static final String KEY_ABOUT = "about";
     private static final String KEY_SUBMITTED = "submitted";
 
+    private static final String KEY_NULL = "null";
+
     public static Item parseItem(JSONObject obj) throws JSONException {
         final Item item = new Item();
         item.setId(obj.getInt(KEY_ID));
@@ -65,8 +67,8 @@ public class Parser {
     public static Comment parseComment(JSONObject obj) throws JSONException {
         final Comment comment = new Comment();
         comment.setId(obj.getInt(KEY_ID));
-        comment.setParent(obj.getInt(KEY_PARENT_ID));
-        comment.setScore(obj.getInt(KEY_POINTS));
+        if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
+        if(!obj.getString(KEY_POINTS).equals(KEY_NULL)) comment.setScore(obj.getInt(KEY_POINTS));
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));

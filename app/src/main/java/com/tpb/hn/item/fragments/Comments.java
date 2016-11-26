@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemLoader;
+import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.network.loaders.Loader;
 
 import butterknife.BindView;
@@ -27,7 +28,10 @@ import static android.view.View.GONE;
  * Created by theo on 25/11/16.
  */
 
-public class Comments extends ContentFragment implements Loader.CommentLoader, CommentAdapter.UserOpener, ItemLoader {
+public class Comments extends ContentFragment implements Loader.CommentLoader,
+        CommentAdapter.UserOpener,
+        Loader.ItemLoader,
+        FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Comments.class.getSimpleName();
 
     private Unbinder unbinder;
@@ -62,7 +66,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
 
     @Override
     void attach(Context context) {
-        if(mIsWaitingForContext) Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
+        if(mIsWaitingForContext) Loader.getInstance(getContext()).loadChildren(mRootItem.getId(), this);
     }
 
     @Override
@@ -77,11 +81,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
     }
 
     private void loadComments() {
-        if(mContextReady) {
-            Loader.getInstance(getContext()).loadChildJSON(mRootItem.getId(), this);
-        } else {
-            mIsWaitingForContext = true;
-        }
+        Loader.getInstance(getContext()).loadChildren(mRootItem.getId(), this);
     }
 
     private void showMessage(boolean error) {
@@ -91,13 +91,24 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
     }
 
     @Override
-    public void loadItem(Item item) {
+    public void itemLoaded(Item item) {
+        Log.i(TAG, "itemLoaded: " + item);
         mRootItem = item;
-        if(mContentReady) loadComments();
+        if(mContextReady) {
+            loadComments();
+        } else {
+            mIsWaitingForContext = true;
+        }
+    }
+
+    @Override
+    public void itemError(int id, int code) {
+
     }
 
     @Override
     public void commentsLoaded(Comment rootComment) {
+        Log.i(TAG, "commentsLoaded: Comments loaded");
         mRootComment = rootComment;
         mContentReady = true;
         if(mViewsReady) bindData();
@@ -105,12 +116,27 @@ public class Comments extends ContentFragment implements Loader.CommentLoader, C
 
     @Override
     public void commentError(int id, int code) {
-
+        Log.i(TAG, "commentError: " + id + " | " + code);
     }
 
     @Override
     public void openUser(Comment item) {
 
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     @Override

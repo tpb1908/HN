@@ -44,14 +44,14 @@ public class Comment extends Item{
         this.descendants = descendants;
     }
 
+
     @Override
     public String toString() {
-        return "CommentWrapper{" +
-                "id=" + id +
-                ", parent=" + parent +
-                ", score=" + score +
-                ", by='" + by + '\'' +
-                ", text='" + text + '\'' +
+        return "Comment{" +
+                "text='" + text + '\'' +
+                ", children='" + children + '\'' +
+                ", descendants=" + descendants +
+                ", time=" + time +
                 '}';
     }
 }
