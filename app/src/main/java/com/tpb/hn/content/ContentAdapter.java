@@ -214,34 +214,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         AndroidNetworking.forceCancelAll();
         notifyDataSetChanged();
         mLoader.getIds(page, this);
-//        switch(page.toLowerCase()) {
-//            case "top":
-//                mCountGuess = 500;
-//
-//                break;
-//            case "best":
-//                mCountGuess = 500;
-//                mLoader.getBestIds(this);
-//                break;
-//            case "ask":
-//                mCountGuess = 100;
-//                mLoader.getAskIds(this);
-//                break;
-//            case "new":
-//                mCountGuess = 500;
-//                mLoader.getNewIds(this);
-//                break;
-//            case "show":
-//                mCountGuess = 50;
-//                mLoader.getShowIds(this);
-//                break;
-//            case "job":
-//                mCountGuess = 25;
-//                mLoader.getJobsIds(this);
-//                break;
-//            default:
-//                mCountGuess = 100;
-//        }
+        mCountGuess = Util.getApproximateNumberOfItems(mCurrentPage);
         Log.i(TAG, "loadItems: page selected");
         if(mIds.length == 0) mIds = new int[mCountGuess];
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);

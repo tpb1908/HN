@@ -203,7 +203,6 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                //TODO Parser returns comments
                                 final Item item = Parser.parseItem(response);
                                 loader.itemLoaded(item);
                             } catch(JSONException jse) {

@@ -97,4 +97,23 @@ public class Util {
         for(int i = 0; i < ints.length; i++) ints[i] = Integer.parseInt(tokenizer.nextToken());
         return ints;
     }
+
+    public static int getApproximateNumberOfItems(String page) {
+                switch(page.toLowerCase()) {
+            case "top":
+                return 500;
+            case "best":
+                return 500;
+            case "ask":
+                return 100;
+            case "new":
+                return 500;
+            case "show":
+                return 50;
+            case "job":
+                return 25;
+            default:
+                return 100;
+        }
+    }
 }
