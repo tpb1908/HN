@@ -61,7 +61,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, inflated);
-
+        mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryText));
         mTextView.attachSeekBar(mSkimmerProgress);
 
         if(mContentReady) {
