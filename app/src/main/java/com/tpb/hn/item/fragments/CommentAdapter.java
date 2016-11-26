@@ -97,9 +97,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
         holder.mBody.setText(comment.parsedText);
         holder.mTitle.setText(
-                String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date_points),
-                        comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime()),
-                        comment.comment.getScore() + " points"));
+                String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date),
+                        comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime())));
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 

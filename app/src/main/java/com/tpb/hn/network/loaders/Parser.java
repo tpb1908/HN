@@ -1,7 +1,5 @@
 package com.tpb.hn.network.loaders;
 
-import android.util.Log;
-
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
@@ -71,22 +69,8 @@ public class Parser {
         final Comment comment = new Comment();
         comment.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
-        if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals(KEY_NULL)) comment.setScore(obj.getInt(KEY_POINTS));
-        if(obj.has(KEY_CREATED_AT_I)) {
-            comment.setTime(obj.getInt(KEY_CREATED_AT_I));
-        } else {
-            Log.i(TAG, "parseComment: Malformed ? " + obj.toString());
-            final String time = obj.getString(KEY_CREATED_AT);
-            //Date format YYYY-MM-DDTHH:MM:SS.000Z
-            final int year = Integer.parseInt(time.substring(0, 4));
-            Log.i(TAG, "parseComment: " + year);
-            final int month = Integer.parseInt(time.substring(6,8));
-            Log.i(TAG, "parseComment: " + month);
-            final int day = Integer.parseInt(time.substring(9, 10));
-            Log.i(TAG, "parseComment: " + day);
+        if(obj.has(KEY_CREATED_AT_I))comment.setTime(obj.getInt(KEY_CREATED_AT_I));
 
-
-        }
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));

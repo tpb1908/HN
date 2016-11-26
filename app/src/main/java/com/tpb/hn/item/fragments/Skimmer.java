@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -45,12 +44,13 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
     @BindView(R.id.skimmer_progress) SeekBar mSkimmerProgress;
-    @BindView(R.id.skimmer_restart_button) Button mRestartButton;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
 
     private Item mItem;
     private boolean mIsWaitingForAttach = false;
     private String mArticle;
+
+
 
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -85,27 +85,6 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         return false;
     }
 
-    @OnClick(R.id.skimmer_restart_button)
-    void onRestartClick() {
-        mTextView.setSpritzText(mArticle);
-        mTextView.getSpritzer().start();
-        if(Build.VERSION.SDK_INT >= 24) {
-            mSkimmerProgress.setProgress(0, true);
-        } else {
-            mSkimmerProgress.setProgress(0);
-        }
-                /*
-                In order to skip one word, we have to wait
-                for one minute / words per minute
-                 */
-        mTextView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mTextView.getSpritzer().pause();
-            }
-        }, 60000 / mTextView.getSpritzer().getWpm());
-    }
-
     @OnClick(R.id.skimmer_text_view)
     void onSpritzerClick() {
         mTextView.showTextDialog();
@@ -121,7 +100,6 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     private void displayErrorMessage() {
         mTextView.setVisibility(View.INVISIBLE);
         mSkimmerProgress.setVisibility(View.INVISIBLE);
-        mRestartButton.setVisibility(View.INVISIBLE);
         mErrorView.setVisibility(View.VISIBLE);
         mErrorView.setText(R.string.error_parsing_readable_text);
     }
@@ -136,11 +114,15 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @Override
     void attach(Context context) {
-
-
+        if(context instanceof ItemViewActivity) {
+            mParent = (ItemViewActivity) context;
+        } else {
+            throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
+        }
         if(mIsWaitingForAttach) {
             Loader.getInstance(getContext()).loadArticle(mItem.getUrl(), true, this);
         }
+
     }
 
     @Override
@@ -148,7 +130,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         mArticle = Html.fromHtml(mArticle).
                 toString().
                 replace("\n", " ");
-
+        setupSkimmer();
     }
 
     @Override
@@ -164,7 +146,29 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @Override
     public void onResumeFragment() {
-
+        mParent.setUpFab(R.drawable.ic_refresh,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mTextView.setSpritzText(mArticle);
+                        mTextView.getSpritzer().start();
+                        if(Build.VERSION.SDK_INT >= 24) {
+                            mSkimmerProgress.setProgress(0, true);
+                        } else {
+                            mSkimmerProgress.setProgress(0);
+                        }
+                /*
+                In order to skip one word, we have to wait
+                for one minute / words per minute
+                 */
+                        mTextView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTextView.getSpritzer().pause();
+                            }
+                        }, 60000 / mTextView.getSpritzer().getWpm());
+                    }
+                });
     }
 
     @Override
@@ -195,8 +199,11 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @Override
     public void textLoaded(JSONObject result) {
+        Log.i(TAG, "textLoaded: " + result.toString());
         try {
             mArticle = result.getString("content");
+            mContentReady = true;
+            if(mViewsReady) bindData();
         } catch(JSONException jse) {
             Log.e(TAG, "textLoaded: ", jse);
             displayErrorMessage();

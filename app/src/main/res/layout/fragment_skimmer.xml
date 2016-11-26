@@ -44,14 +44,6 @@
                 android:paddingTop="8dp"
                 android:visibility="invisible"/>
 
-            <Button
-                android:id="@+id/skimmer_restart_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:text="@string/button_skimmer_restart"
-                />
-
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
