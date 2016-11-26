@@ -54,14 +54,17 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     private boolean mIsWaitingForAttach = false;
     private String mArticle;
 
-
-
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View inflated = inflater.inflate(R.layout.fragment_skimmer, container, false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, inflated);
-        mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryText));
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        if(prefs.showSeekBarHint()) {
+            mSkimmerProgress.setPercentageProvider();
+            mSkimmerProgress.setTextSize(16);
+            mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryTextInverse));
+        }
         mTextView.attachSeekBar(mSkimmerProgress);
 
         if(mContentReady) {

@@ -60,6 +60,7 @@
     <string name="text_lazy_load">Lazy load content</string>
     <string name="text_settings_data">Data</string>
     <string name="text_settings_info">Info</string>
+    <string name="text_show_seekbar_hint">Show hint in Skimmer seekbar</string>
 
     <string name="text_comment_title_date">%1$s | %2$s</string>
 

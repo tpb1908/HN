@@ -3,6 +3,7 @@ package com.tpb.hn.item.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.ScaleDrawable;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
@@ -34,8 +35,8 @@ public class HintingSeekBar extends SeekBar {
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(mProvider != null) mHint = mProvider.getHint(getProgress());
-        final int thumb_x =  getThumb().getBounds().left + getThumb().getBounds().width() / 2;
-        final int middle = (int) (this.getHeight() + mPaint.getTextSize()) / 2;
+        final float thumb_x =  getThumb().getBounds().left + getThumb().getBounds().width() / 2f;
+        final float middle = (this.getHeight() + mPaint.getTextSize()) / 2;
         canvas.drawText(mHint, thumb_x, middle, mPaint);
     }
 
@@ -74,7 +75,10 @@ public class HintingSeekBar extends SeekBar {
     }
 
     public void setTextSize(int sp) {
-        mPaint.setTextSize(Util.pxFromSp(sp));
+        final int px = Util.pxFromSp(sp);
+        mPaint.setTextSize(px);
+        //https://developer.android.com/reference/android/graphics/drawable/ScaleDrawable.html
+        setThumb(new ScaleDrawable(getThumb(), 0x11,  px/14f, px/14f));
     }
 
     public interface SeekHintProvider {

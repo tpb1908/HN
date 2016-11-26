@@ -40,6 +40,7 @@ public class SharedPrefsController {
     private static final String KEY_DARK_START = "DARK_START";
     private static final String KEY_DARK_END = "DARK_END";
     private static final String KEY_AUTO_DARK = "AUTO_DARK";
+    private static final String KEY_SHOW_SEEKBAR_HINT = "SEEKBAR_HINT";
 
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -58,6 +59,7 @@ public class SharedPrefsController {
     private static boolean autoDarkTheme;
     private static int darkThemeStart;
     private static int darkThemeEnd;
+    private static boolean showSeekBarHint;
 
     public static SharedPrefsController getInstance(Context context) {
         if(instance == null) {
@@ -93,6 +95,7 @@ public class SharedPrefsController {
         darkThemeStart = prefs.getInt(KEY_DARK_START, -1);
         darkThemeEnd = prefs.getInt(KEY_DARK_END, -1);
         autoDarkTheme = prefs.getBoolean(KEY_AUTO_DARK, false);
+        showSeekBarHint = prefs.getBoolean(KEY_SHOW_SEEKBAR_HINT, false);
     }
 
     private void initInitialValues() {
@@ -264,6 +267,16 @@ public class SharedPrefsController {
         editor.putInt(KEY_DARK_START, darkThemeStart);
         editor.putInt(KEY_DARK_END, darkThemeEnd);
         editor.commit();
+    }
+
+    public void setShowSeekBarHint(boolean show) {
+        showSeekBarHint = show;
+        editor.putBoolean(KEY_SHOW_SEEKBAR_HINT, showSeekBarHint);
+        editor.commit();
+    }
+
+    public boolean showSeekBarHint() {
+        return showSeekBarHint;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {

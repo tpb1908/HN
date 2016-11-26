@@ -69,6 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_browser_lazy_load)).setChecked(prefs.getLazyLoad());
         ((Switch) ButterKnife.findById(this, R.id.switch_auto_dark_theme)).setChecked(prefs.getAutoDark());
         ((Switch) ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
+        ((Switch) ButterKnife.findById(this, R.id.switch_skimmer_show_seek_hint)).setChecked(prefs.showSeekBarHint());
         final Pair<Integer, Integer> timeRange = prefs.getDarkTimeRange();
         if(timeRange.first != -1) {
             final Pair<Integer, Integer> start = Formatter.intTohm(timeRange.first);
@@ -156,6 +157,9 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.setAutoDark(sView.isChecked());
                 mThemeStart.setEnabled(sView.isChecked());
                 mThemeEnd.setEnabled(sView.isChecked());
+                break;
+            case R.id.switch_skimmer_show_seek_hint:
+                prefs.setShowSeekBarHint(sView.isChecked());
                 break;
         }
     }

@@ -348,10 +348,20 @@
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_skimmer_show_seek_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_browser_lazy_load"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_show_seekbar_hint"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_browser_lazy_load"
+                        android:layout_below="@id/switch_skimmer_show_seek_hint"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                     <!--Default browser page -->

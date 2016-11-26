@@ -421,8 +421,6 @@ public class Spritzer {
     public void attachSeekBar(HintingSeekBar bar) {
         if(bar != null) {
             mSeekBar = bar;
-            mSeekBar.setPercentageProvider();
-            mSeekBar.setTextSize(16);
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
