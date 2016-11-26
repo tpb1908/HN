@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
     @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
+    @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
 
     private Item mItem;
     private boolean mIsWaitingForAttach = false;
@@ -66,7 +68,12 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
             mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryTextInverse));
         }
         mTextView.attachSeekBar(mSkimmerProgress);
-
+        mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                itemLoaded(mItem);
+            }
+        });
         if(mContentReady) {
             setupSkimmer();
         } else if(savedInstanceState != null) {
@@ -74,6 +81,8 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
                 mArticle = savedInstanceState.getString("mArticle");
                 setupSkimmer();
             }
+        } else {
+            mSwiper.setRefreshing(true);
         }
         return inflated;
     }
@@ -135,6 +144,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @Override
     void bindData() {
+        mSwiper.setRefreshing(false);
         mArticle = Html.fromHtml(mArticle).
                 toString().
                 replace("\n", " ");
@@ -190,6 +200,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     public void itemLoaded(Item item) {
         mItem = item;
         if(item.getUrl() != null) {
+            if(mViewsReady) mSwiper.setRefreshing(true);
             if(mContextReady) {
                 Loader.getInstance(getContext()).loadArticle(item.getUrl(), true, this);
             } else {
