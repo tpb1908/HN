@@ -224,7 +224,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final JSONArray childJSON = new JSONArray(json);
         final Comment[] children = new Comment[childJSON.length()];
         for(int i = 0; i < childJSON.length(); i++) {
-            children[i] = Parser.parseComment(childJSON.getJSONObject(i));
+            try {
+                children[i] = Parser.parseComment(childJSON.getJSONObject(i));
+            } catch(JSONException jse) {
+                children[i] = Parser.getDeadComment(childJSON.getJSONObject(i));
+            }
         }
         return children;
     }
@@ -295,7 +299,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     public interface UserOpener {
 
-        void openUser(Comment item);
+        void openUser(Item item);
 
     }
 }

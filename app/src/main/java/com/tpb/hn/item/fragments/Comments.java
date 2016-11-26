@@ -42,6 +42,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     private Item mRootItem;
     private Comment mRootComment;
+    private CommentAdapter.UserOpener mOpener;
 
     private CommentAdapter mAdapter;
 
@@ -67,7 +68,14 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     @Override
     void attach(Context context) {
-        if(mIsWaitingForContext) Loader.getInstance(getContext()).loadChildren(mRootItem.getId(), this);
+        if(mIsWaitingForContext)
+            Loader.getInstance(getContext()).loadChildren(mRootItem.getId(), this);
+        if(context instanceof CommentAdapter.UserOpener) {
+            mOpener = (CommentAdapter.UserOpener) context;
+        } else {
+            throw new IllegalArgumentException("Context must implement " + CommentAdapter.UserOpener.class.getSimpleName());
+
+        }
     }
 
     @Override
@@ -121,8 +129,8 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
     }
 
     @Override
-    public void openUser(Comment item) {
-
+    public void openUser(Item item) {
+        mOpener.openUser(item);
     }
 
     @Override

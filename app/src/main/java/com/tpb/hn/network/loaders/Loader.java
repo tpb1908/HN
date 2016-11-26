@@ -285,10 +285,14 @@ public class Loader extends BroadcastReceiver {
                                 if(response.has("content") && !response.get("content").equals("<div></div>")) {
                                     Log.i(TAG, "onResponse: " + listeners.get(url));
                                     for(WeakReference<TextLoader> loader : listeners.get(url)) {
-                                        loader.get().textLoaded(response);
+                                        if(loader.get() == null) {
+                                            listeners.get(url).remove(loader);
+                                        } else {
+                                            loader.get().textLoaded(response);
+                                        }
                                     }
                                 }
-                                listeners.get(url).remove(new WeakReference<TextLoader>(loader));
+                                listeners.get(url).remove(new WeakReference<>(loader));
                             } catch(JSONException jse) {
                                 for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                     loader.get().textError(url, ERROR_PARSING);

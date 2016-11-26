@@ -1,5 +1,7 @@
 package com.tpb.hn.network.loaders;
 
+import android.util.Log;
+
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
@@ -21,7 +23,8 @@ public class Parser {
     private static final String KEY_KIDS = "kids";
     private static final String KEY_SCORE = "score";
     private static final String KEY_TIME = "time";
-    private static final String KEY_CREATED_AT = "created_at_i";
+    private static final String KEY_CREATED_AT = "created_at";
+    private static final String KEY_CREATED_AT_I = "created_at_i";
     private static final String KEY_TITLE = "title";
     private static final String KEY_TYPE = "type";
     private static final String KEY_URL = "url";
@@ -69,7 +72,21 @@ public class Parser {
         comment.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
         if(obj.has(KEY_POINTS) && !obj.getString(KEY_POINTS).equals(KEY_NULL)) comment.setScore(obj.getInt(KEY_POINTS));
-        comment.setTime(obj.getInt(KEY_CREATED_AT));
+        if(obj.has(KEY_CREATED_AT_I)) {
+            comment.setTime(obj.getInt(KEY_CREATED_AT_I));
+        } else {
+            Log.i(TAG, "parseComment: Malformed ? " + obj.toString());
+            final String time = obj.getString(KEY_CREATED_AT);
+            //Date format YYYY-MM-DDTHH:MM:SS.000Z
+            final int year = Integer.parseInt(time.substring(0, 4));
+            Log.i(TAG, "parseComment: " + year);
+            final int month = Integer.parseInt(time.substring(6,8));
+            Log.i(TAG, "parseComment: " + month);
+            final int day = Integer.parseInt(time.substring(9, 10));
+            Log.i(TAG, "parseComment: " + day);
+
+
+        }
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));
@@ -118,7 +135,16 @@ public class Parser {
     }
 
 
-
+    public static Comment getDeadComment(JSONObject obj) throws JSONException{
+        final Comment dead = new Comment();
+        if(obj.has(KEY_ID)) dead.setId(obj.getInt(KEY_ID));
+        if(obj.has(KEY_PARENT)) dead.setParent(obj.getInt(KEY_PARENT));
+        if(obj.has(KEY_PARENT_ID)) dead.setParent(obj.getInt(KEY_PARENT_ID));
+        if(obj.has(KEY_BY)) dead.setBy(obj.getString(KEY_BY));
+        dead.setDead(true);
+        dead.setText("[Dead item]");
+        return dead;
+    }
 
 
 }

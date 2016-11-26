@@ -22,7 +22,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.content.ContentActivity;
-import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.fragments.CommentAdapter;
 import com.tpb.hn.item.views.LockableViewPager;
@@ -71,7 +70,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     void onAuthorClick() {
         if(mRootItem != null) {
             mLaunchItem = mRootItem;
-           // openUser(mLaunchItem);
+           openUser(mLaunchItem);
         }
     }
 
@@ -135,7 +134,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     }
 
     @Override
-    public void openUser(Comment item) {
+    public void openUser(Item item) {
         mLaunchItem = item;
         startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class),
                 ActivityOptionsCompat.makeSceneTransitionAnimation(this,

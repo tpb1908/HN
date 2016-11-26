@@ -85,6 +85,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     private FragmentPagerAdapter.PageType mType;
 
     private boolean mIsFullscreen = false;
+    private boolean mShown = false;
 
     private String url;
     private String mReadablePage;
@@ -402,7 +403,27 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     @Override
     public void onResumeFragment() {
+        mLazyLoadCanStart = true;
+        if(mViewsReady && mContentReady && !mShown) bindData();
+        mShown = true;
+        mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(mIsSearchComplete) {
+                            mWebView.findNext(true);
+                        } else {
+                            toggleFullscreen(!mIsFullscreen);
+                        }
+                    }
+                });
 
+        if(mIsShowingPDF) {
+            ButterKnife.findById(mToolbar, R.id.button_find_in_page).setVisibility(View.INVISIBLE);
+            mParent.hideFab();
+        } else {
+            mParent.showFab();
+        }
     }
 
     @Override
