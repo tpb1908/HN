@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
+import com.tpb.hn.item.views.HintingSeekBar;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -46,7 +47,7 @@ public class Spritzer {
     private boolean mJustJumped;
 
     int mCurWordIdx;
-    private SeekBar mSeekBar;
+    private HintingSeekBar mSeekBar;
 
     public interface OnCompletionListener {
 
@@ -417,9 +418,11 @@ public class Spritzer {
         return mWordQueue;
     }
 
-    public void attachSeekBar(SeekBar bar) {
+    public void attachSeekBar(HintingSeekBar bar) {
         if(bar != null) {
             mSeekBar = bar;
+            mSeekBar.setPercentageProvider();
+            mSeekBar.setTextSize(16);
             mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
@@ -446,9 +449,6 @@ public class Spritzer {
     }
 
 
-    /**
-     * @param strategy @see{@link com.andrewgiang.textspritzer.lib.DelayStrategy#delayMultiplier(String) }
-     */
     public void setDelayStrategy(DelayStrategy strategy) {
         mDelayStrategy = strategy;
 

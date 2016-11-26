@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -20,6 +19,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
+import com.tpb.hn.item.views.HintingSeekBar;
 import com.tpb.hn.item.views.spritzer.SpritzerTextView;
 import com.tpb.hn.network.loaders.Loader;
 import com.tpb.hn.storage.SharedPrefsController;
@@ -47,7 +47,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     private ItemViewActivity mParent;
 
     @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
-    @BindView(R.id.skimmer_progress) SeekBar mSkimmerProgress;
+    @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
 
     private Item mItem;

@@ -10,12 +10,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
+import com.tpb.hn.item.views.HintingSeekBar;
 import com.tpb.hn.storage.SharedPrefsController;
 
 /**
@@ -295,7 +295,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         return mSpritzer.getWpm();
     }
 
-    public void attachSeekBar(SeekBar bar) {
+    public void attachSeekBar(HintingSeekBar bar) {
         mSpritzer.attachSeekBar(bar);
     }
 
