@@ -42,6 +42,7 @@ public class Parser {
     private static final String KEY_KARMA = "karma";
     private static final String KEY_ABOUT = "about";
     private static final String KEY_SUBMITTED = "submitted";
+    private static final String KEY_SAVED = "saved";
 
     private static final String KEY_NULL = "null";
 
@@ -61,7 +62,7 @@ public class Parser {
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
         if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
         if(obj.has(KEY_DELETED)) item.setDeleted(obj.getBoolean(KEY_DELETED));
-
+        if(obj.has(KEY_SAVED)) item.setSaved(obj.getBoolean(KEY_SAVED));
         return item;
     }
 
@@ -103,7 +104,7 @@ public class Parser {
         obj.put(KEY_SCORE, item.getScore());
         obj.put(KEY_DEAD, item.getDescendants());
         obj.put(KEY_URL, item.getUrl());
-
+        obj.put(KEY_SAVED, item.isSaved());
         if(item.getKids() != null) obj.put(KEY_KIDS, new JSONArray(item.getKids()));
         obj.put(KEY_TEXT, item.getText());
         obj.put(KEY_PARENT_ID, item.getParent());
@@ -137,7 +138,6 @@ public class Parser {
         return results;
     }
 
-
     public static Comment getDeadComment(JSONObject obj) throws JSONException {
         final Comment dead = new Comment();
         if(obj.has(KEY_ID)) dead.setId(obj.getInt(KEY_ID));
@@ -148,6 +148,5 @@ public class Parser {
         dead.setText("[Dead item]");
         return dead;
     }
-
 
 }

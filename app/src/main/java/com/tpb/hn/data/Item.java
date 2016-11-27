@@ -27,6 +27,7 @@ public class Item implements Comparable<Item> {
     private int[] parts;
     private int descendants;
     private boolean isComment;
+    private boolean isSaved;
 
     private boolean viewed;
     private boolean isNew;
@@ -166,6 +167,14 @@ public class Item implements Comparable<Item> {
 
     public void setComment(boolean comment) {
         isComment = comment;
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
     }
 
     public String getFormattedURL() {

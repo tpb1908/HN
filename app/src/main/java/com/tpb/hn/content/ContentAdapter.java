@@ -70,6 +70,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean mShouldScrollOnChange;
     private boolean mLoadInBackground;
     private int mCountGuess;
+    private boolean mIsOffline;
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
@@ -135,29 +136,44 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 notifyItemChanged(viewHolder.getAdapterPosition());
                 final int pos = viewHolder.getAdapterPosition();
                 if(pos < mData.length && mData[pos] != null) {
-                    mLoader.saveItem(mData[pos], mContext, new Loader.ItemSaveListener() {
-                        @Override
-                        public void itemSaved(Item item) {
-                            Toast.makeText(mContext, "Item saved", Toast.LENGTH_SHORT).show();
-                        }
+                    if(mData[pos].isSaved()) {
+                        mLoader.unsaveItem(mData[pos]);
+                    } else {
+                        mLoader.saveItem(mData[pos], mContext, new Loader.ItemSaveListener() {
+                            @Override
+                            public void itemSaved(Item item) {
+                                item.setSaved(true);
+                                Toast.makeText(mContext, "Item saved", Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void saveError(Item item, int code) {
-                            Toast.makeText(mContext, "Item not saved", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void saveError(Item item, int code) {
+                                Toast.makeText(mContext, "Item not saved", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
 
+            @Override
+            public String getSwipeText(boolean right, int adapterPosition) {
+                if(mData[adapterPosition] == null) return "";
+                return mData[adapterPosition].isSaved() ? "Unsave" : "Save";
+            }
         };
-
         new ItemTouchHelper(callback).attachToRecyclerView(recycler);
-
+        mLoader.addNetworkListener(new Loader.NetworkChangeListener() {
+            @Override
+            public void networkStateChange(boolean netAvailable) {
+                mIsOffline = !netAvailable;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     void getPrefs(Context context) {
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
-
+        mIsOffline =  !Util.isNetworkAvailable(context);
         mShouldMarkRead = prefs.getMarkReadWhenPassed();
         mIsDarkTheme = prefs.getUseDarkTheme();
         mShouldScrollOnChange = prefs.getShouldScrollToTop();
@@ -375,11 +391,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.mAuthor.setVisibility(View.VISIBLE);
                         holder.mAuthor.setText(item.getFormattedBy());
                         holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
-//                        if(item.isOffline()) {
-//                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_offline);
-//                        } else {
-//                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-//                        }
+                        if(item.isSaved() && mIsOffline) {
+                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_offline);
+                        } else {
+                            holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
                     } else {
                         holder.mAuthor.setVisibility(View.GONE);
                         holder.mNumber.setVisibility(View.GONE);
@@ -399,11 +415,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     if(item.isNew()) {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
-
                     } else {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium);
                         holder.mNumber.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
+
                 }
             }
             if(mIsUsingCards) {

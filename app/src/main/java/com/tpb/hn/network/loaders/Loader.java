@@ -195,6 +195,11 @@ public class Loader extends BroadcastReceiver {
 
     }
 
+    public void unsaveItem(final Item item) {
+        db.writeItem(item, false, "");
+        item.setSaved(false);
+    }
+
     public void loadItem(final int id, final ItemLoader loader) {
         if(online) {
             networkLoadItem(id, loader);

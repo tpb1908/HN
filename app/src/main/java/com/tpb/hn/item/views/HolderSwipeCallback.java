@@ -15,7 +15,7 @@ import java.util.Locale;
  */
 
 public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback {
-    final Paint mPaint;
+    private final Paint mPaint;
     private String lt;
     private String rt;
     private int textSize;
@@ -82,10 +82,12 @@ public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 
+    public abstract String getSwipeText(boolean right, int adapterPosition);
+
     private void drawText(Canvas canvas, RecyclerView.ViewHolder vh, float dX) {
         final boolean right = dX > 0;
         final Rect r = new Rect();
-        final String text = right ? lt : rt;
+        final String text = getSwipeText(right, vh.getAdapterPosition());
         mPaint.getTextBounds(text, 0, text.length(), r);
         final float tw = r.right - r.left;
         final float th = r.top - r.bottom;
