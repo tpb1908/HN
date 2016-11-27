@@ -5,7 +5,7 @@
     <string name="error_loading_page">Error loading page</string>
     <string name="error_wpm_input">Enter a value between 250 and 1500</string>
     <string name="error_parsing_readable_text">Error parsing text</string>
-    <string name="error_comment_loading">Couldn"'"t load children. Swipe to retry</string>
+    <string name="error_comment_loading">Couldn"'"t load comments. Swipe to retry</string>
     <string name="error_opening_deleted">Can"'"t open deleted %1$s</string>
 
     <string name="error_http_400">400 Bad Request</string>
@@ -35,7 +35,7 @@
     <string name="text_title_empty"><b>\u2026</b></string>
     <string name="text_info_empty">\u2026</string>
     <string name="text_attempting_item_load">Loading item</string>
-    <string name="text_no_comments">No children yet</string>
+    <string name="text_no_comments">No comments yet</string>
     <string name="text_user_without_about">User has no about</string>
     <string name="text_traversing_comments">Traversing children to find parent Item</string>
     <string name="text_deleted_comment">[Deleted comment]</string>

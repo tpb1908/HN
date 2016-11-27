@@ -15,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -157,6 +159,39 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
+    public void removeListeners() {
+        listeners.clear();
+    }
+
+    public void saveItem(final Item item, final Context context) {
+        networkLoadArticle(item.getUrl(), true, new TextLoader() {
+            @Override
+            public void textLoaded(JSONObject result) {
+                try {
+                    final String MERCURY = result.getString("content");
+                    db.writeItem(item, true, MERCURY);
+                } catch(JSONException jse) {
+                    Log.e(TAG, "textLoaded: for save of " + item.getTitle(), jse);
+                }
+            }
+
+            @Override
+            public void textError(String url, int code) {
+
+            }
+        });
+        final WebView wv = new WebView(context);
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
+            }
+        });
+        wv.loadUrl(item.getUrl());
+
+    }
+
     public void loadItem(final int id, final ItemLoader loader) {
         if(online) {
             networkLoadItem(id, loader);
@@ -273,11 +308,11 @@ public class Loader extends BroadcastReceiver {
                 });
     }
 
-    public void loadArticle(final String url, boolean forImmediateUse, TextLoader loader) {
+    public void loadArticle(final Item item, boolean forImmediateUse, TextLoader loader) {
         if(online) {
-            networkLoadArticle(url, forImmediateUse, loader);
+            networkLoadArticle(item.getUrl(), forImmediateUse, loader);
         } else {
-            cacheLoadArticle(url, loader);
+            cacheLoadArticle(item.getId(), loader);
         }
     }
 
@@ -330,11 +365,15 @@ public class Loader extends BroadcastReceiver {
 
     }
 
-    public void removeListeners() {
-        listeners.clear();
+    public void redirectThroughMercury(String url, TextLoader loader) {
+        if(online) {
+            networkLoadArticle(url, true, loader);
+        } else {
+            loader.textError(url, ERROR_NOT_IN_CACHE);
+        }
     }
 
-    private void cacheLoadArticle(final String url, TextLoader loader) {
+    private void cacheLoadArticle(final int id, TextLoader loader) {
 
     }
 

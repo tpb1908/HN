@@ -98,7 +98,7 @@ public class Parser {
         obj.put(KEY_ID, item.getId());
         obj.put(KEY_TIME, item.getTime());
         obj.put(KEY_TITLE, item.getTitle());
-        obj.put(KEY_TYPE, item.isComment() ? "comment" : "other");
+        obj.put(KEY_TYPE, item.isComment() ? "comment" : "other"); //We don't actually care about types at the moment
         obj.put(KEY_BY, item.getBy());
         obj.put(KEY_SCORE, item.getScore());
         obj.put(KEY_DEAD, item.getDescendants());

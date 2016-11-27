@@ -215,7 +215,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
             } else {
                 url = item.getUrl();
-                Loader.getInstance(getContext()).loadArticle(url, true, this);
+                Loader.getInstance(getContext()).loadArticle(mItem, true, this);
             }
         }
     }
@@ -459,7 +459,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             case AMP_READER:
                 return Pair.create(true, APIPaths.getMercuryAmpPath(url));
             case TEXT_READER:
-                Loader.getInstance(getContext()).loadArticle(url, true, this);
+                Loader.getInstance(getContext()).redirectThroughMercury(url, this);
                 Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
                 return Pair.create(false, null);
             default:

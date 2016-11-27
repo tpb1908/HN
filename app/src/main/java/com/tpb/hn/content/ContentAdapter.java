@@ -133,6 +133,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 notifyItemChanged(viewHolder.getAdapterPosition());
+                final int pos = viewHolder.getAdapterPosition();
+                if(pos < mData.length && mData[pos] != null) {
+                    mLoader.saveItem(mData[pos], mContext);
+                }
             }
 
         };

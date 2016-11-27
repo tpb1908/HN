@@ -97,6 +97,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     private void showMessage(boolean error) {
         mMessageView.setVisibility(View.VISIBLE);
+        mSwiper.setRefreshing(false);
         mSwiper.setVisibility(GONE);
         mMessageView.setText(error ? R.string.error_comment_loading : R.string.text_no_comments);
     }
