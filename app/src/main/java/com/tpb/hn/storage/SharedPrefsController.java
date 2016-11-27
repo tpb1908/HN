@@ -37,6 +37,7 @@ public class SharedPrefsController {
     private static final String KEY_DARK_END = "DARK_END";
     private static final String KEY_AUTO_DARK = "AUTO_DARK";
     private static final String KEY_SHOW_SEEKBAR_HINT = "SEEKBAR_HINT";
+    private static final String KEY_LOAD_IN_BACKGROUND = "BACKGROUND_LOAD";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -56,6 +57,8 @@ public class SharedPrefsController {
     private static int darkThemeStart;
     private static int darkThemeEnd;
     private static boolean showSeekBarHint;
+    private static boolean loadInBackground;
+
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
@@ -94,6 +97,7 @@ public class SharedPrefsController {
         darkThemeEnd = prefs.getInt(KEY_DARK_END, -1);
         autoDarkTheme = prefs.getBoolean(KEY_AUTO_DARK, false);
         showSeekBarHint = prefs.getBoolean(KEY_SHOW_SEEKBAR_HINT, false);
+        loadInBackground = prefs.getBoolean(KEY_LOAD_IN_BACKGROUND, true);
     }
 
     private void initInitialValues() {
@@ -271,6 +275,16 @@ public class SharedPrefsController {
         showSeekBarHint = show;
         editor.putBoolean(KEY_SHOW_SEEKBAR_HINT, showSeekBarHint);
         editor.commit();
+    }
+
+    public void setLoadInBackground(boolean shouldLoad) {
+        loadInBackground = shouldLoad;
+        editor.putBoolean(KEY_LOAD_IN_BACKGROUND, loadInBackground);
+        editor.commit();
+    }
+
+    public boolean getLoadInBackground() {
+        return loadInBackground;
     }
 
     public boolean showSeekBarHint() {

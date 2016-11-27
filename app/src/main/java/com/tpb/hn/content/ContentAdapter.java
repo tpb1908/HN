@@ -68,6 +68,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private SwipeRefreshLayout mSwiper;
     private boolean mIsDarkTheme;
     private boolean mShouldScrollOnChange;
+    private boolean mLoadInBackground;
     private int mCountGuess;
 
     //TODO- Clean this up
@@ -84,16 +85,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mLayoutManager = layoutManager;
         mRecycler = recycler;
         mLoader = Loader.getInstance(context);
+        getPrefs(context);
         mLastUpdateTime = new Date().getTime() / 1000;
-        final SharedPrefsController prefs = SharedPrefsController.getInstance(recycler.getContext());
-        mIsUsingCards = prefs.getUseCards();
-        mShouldMarkRead = prefs.getMarkReadWhenPassed();
-        mIsDarkTheme = prefs.getUseDarkTheme();
-        mShouldScrollOnChange = prefs.getShouldScrollToTop();
         mLayoutManager = layoutManager;
-        if(!mIsUsingCards) {
-            recycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
-        }
+
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -146,7 +141,34 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    void getPrefs(Context context) {
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
+
+        mShouldMarkRead = prefs.getMarkReadWhenPassed();
+        mIsDarkTheme = prefs.getUseDarkTheme();
+        mShouldScrollOnChange = prefs.getShouldScrollToTop();
+        mLoadInBackground = prefs.getLoadInBackground();
+
+        final boolean oldCardStyle = mIsUsingCards;
+        mIsUsingCards = prefs.getUseCards();
+        /*We don't want to do this when the adapter is created
+        * so we check that the data has been updated at least once
+        * We then save the current position and reset the adapter on
+        * the recycler, forcing it to redraw
+        * notifyDataSetChanged won't show the new style until the
+        * user scrolls, because only then are the ViewHolders recyclerd
+         */
+        if(mIsUsingCards != oldCardStyle && mLastUpdateTime != 0) {
+            final int pos = mLayoutManager.findFirstVisibleItemPosition();
+            mRecycler.setAdapter(this);
+            mRecycler.scrollToPosition(pos);
+            mRecycler.invalidateItemDecorations();
+            if(!mIsUsingCards)  mRecycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+        }
+    }
+
     private void loadItemsOnScroll(boolean fastScroll) {
+        Log.i(TAG, "loadItemsOnScroll: ");
         int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(pos > mLastPosition && pos < mData.length && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
@@ -259,20 +281,20 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     void beginBackgroundLoading() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                final int[] notLoaded = new int[mIds.length];
-                int count = 0;
-                for(Item i : mData) {
-                    if(i != null) {
-                        final int pos = Arrays.binarySearch(mIds, i.getId());
-                        if(pos < 0 || pos > mData.length) notLoaded[count++] = i.getId();
+        if(mLoadInBackground) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final int[] notLoaded = new int[mIds.length];
+                    int count = 0;
+                    for(int i = 0; i < mIds.length; i++) {
+                        if(mData[i] == null) notLoaded[count++] = mIds[i];
                     }
+
+                    mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), false, ContentAdapter.this);
                 }
-                mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), false, ContentAdapter.this);
-            }
-        });
+            });
+        }
     }
 
     void cancelBackgroundLoading() {
@@ -335,7 +357,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.mURL.setVisibility(View.GONE);
                 } else {
                     holder.mTitle.setText(item.getTitle());
-
                     if(mIsContent) {
                         holder.mAuthor.setVisibility(View.VISIBLE);
                         holder.mAuthor.setText(item.getFormattedBy());
@@ -441,18 +462,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     //<editor-fold-desc="Viewholder classes">
 
-    public interface ContentManager {
-
-        void openItem(Item item);
-
-        void openItem(Item item, FragmentPagerAdapter.PageType type);
-
-        void openUser(Item item);
-
-        void displayLastUpdate(long lastUpdate);
-
-    }
-
     class ItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_card) CardView mCard;
@@ -511,8 +520,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    //</editor-fold>
-
     class EmptyHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.empty_card) CardView mCard;
 
@@ -520,6 +527,20 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+    }
+
+    //</editor-fold>
+
+    public interface ContentManager {
+
+        void openItem(Item item);
+
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
+
+        void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
 
     }
 

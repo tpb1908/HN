@@ -79,6 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_auto_dark_theme)).setChecked(prefs.getAutoDark());
         ((Switch) ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
         ((Switch) ButterKnife.findById(this, R.id.switch_skimmer_show_seek_hint)).setChecked(prefs.showSeekBarHint());
+        ((Switch) ButterKnife.findById(this, R.id.switch_data_load_in_background)).setChecked(prefs.getLoadInBackground());
         final Pair<Integer, Integer> timeRange = prefs.getDarkTimeRange();
         if(timeRange.first != -1) {
             final Pair<Integer, Integer> start = Formatter.intTohm(timeRange.first);
@@ -121,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_content_cards:
                 prefs.setUseCards(sView.isChecked());
-                restartRequired = true;
+               // restartRequired = true;
                 break;
             case R.id.switch_comment_cards:
                 prefs.setUseCardsComments(sView.isChecked());
@@ -157,6 +158,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_skimmer_show_seek_hint:
                 prefs.setShowSeekBarHint(sView.isChecked());
+                break;
+            case R.id.switch_data_load_in_background:
+                prefs.setLoadInBackground((sView.isChecked()));
                 break;
         }
     }
