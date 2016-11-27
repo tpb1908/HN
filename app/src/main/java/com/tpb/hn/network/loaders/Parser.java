@@ -97,6 +97,7 @@ public class Parser {
         final JSONObject obj = new JSONObject();
         obj.put(KEY_ID, item.getId());
         obj.put(KEY_TIME, item.getTime());
+        obj.put(KEY_TITLE, item.getTitle());
         obj.put(KEY_TYPE, item.isComment() ? "comment" : "other");
         obj.put(KEY_BY, item.getBy());
         obj.put(KEY_SCORE, item.getScore());
@@ -104,7 +105,7 @@ public class Parser {
         obj.put(KEY_URL, item.getUrl());
 
         if(item.getKids() != null) obj.put(KEY_KIDS, new JSONArray(item.getKids()));
-        obj.put(KEY_TEXTs, item.getText());
+        obj.put(KEY_TEXT, item.getText());
         obj.put(KEY_PARENT_ID, item.getParent());
         obj.put(KEY_DELETED, item.isDeleted());
 

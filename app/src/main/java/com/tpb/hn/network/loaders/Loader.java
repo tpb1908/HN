@@ -12,6 +12,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -368,6 +370,7 @@ public class Loader extends BroadcastReceiver {
         void textLoaded(JSONObject result);
 
         void textError(String url, int code);
+
     }
 
     public interface NetworkChangeListener {
@@ -381,6 +384,7 @@ public class Loader extends BroadcastReceiver {
         private static final String NAME = "CACHE";
         private static final int VERSION = 1;
         private static DB instance;
+
 
         private static final String TABLE = "CACHE";
         private static final String KEY_ID = "ID";
@@ -424,17 +428,35 @@ public class Loader extends BroadcastReceiver {
                     final SQLiteDatabase db = DB.this.getReadableDatabase();
                     final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID  + " = ? LIMIT 1";
                     final Cursor cursor = db.rawQuery(QUERY, new String[] { Integer.toString(id) });
+                    final Handler handler = new Handler(Looper.getMainLooper());
                     if(cursor.moveToFirst()) {
                         final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                         try {
                             final Item item = Parser.parseItem(new JSONObject(JSON));
                             item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
-                            loader.itemLoaded(item);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loader.itemLoaded(item);
+                                }
+                            });
+
                         } catch(JSONException jse) {
-                            loader.itemError(id, ERROR_PARSING);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loader.itemError(id, ERROR_PARSING);
+                                }
+                            });
+
                         }
                     } else {
-                        loader.itemError(id, ERROR_NOT_IN_CACHE);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                loader.itemError(id, ERROR_NOT_IN_CACHE);
+                            }
+                        });
                     }
                     cursor.close();
                 }
@@ -448,6 +470,7 @@ public class Loader extends BroadcastReceiver {
                     final SQLiteDatabase db = DB.this.getReadableDatabase();
                     final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + buildWhereIn(ids.length);
                     final Cursor cursor = db.rawQuery(QUERY, intArToStrAr(ids));
+                    final Handler handler = new Handler(Looper.getMainLooper());
                     if(cursor.moveToFirst()) {
                         do {
                             final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
@@ -456,10 +479,21 @@ public class Loader extends BroadcastReceiver {
 
                                 final Item item = Parser.parseItem(new JSONObject(JSON));
                                 item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
-                                loader.itemLoaded(item);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loader.itemLoaded(item);
+                                    }
+                                });
                             } catch(JSONException jse) {
                                 Log.e(TAG, "run: Loading from db " + JSON, jse);
-                                loader.itemError(id, ERROR_PARSING);
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loader.itemError(id, ERROR_PARSING);
+                                    }
+                                });
+
                             }
                         } while(cursor.moveToNext());
                     } else {
