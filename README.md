@@ -15,15 +15,13 @@ Spritz style skim reading
 
 Media service for TTS
 
-Better offline storage system
-
 
 ## Refactoring plan
 
 - [x] Fragment structure 
 - [x] Three booleans, for views, data, and context
 - [x] One application level 'loader' 
-- [ ] which switches based on network
-- [ ] Loader has sets of Ids
+- [x] which switches based on network
+- [x] Loader has sets of Ids
 - [ ] Enums for page
-- [ ] Rewrite database and listeners
+- [x] Rewrite database and listeners
