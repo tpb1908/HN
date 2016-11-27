@@ -163,10 +163,12 @@ public class Loader extends BroadcastReceiver {
         listeners.clear();
     }
 
+    //TODO- Save listener
     public void saveItem(final Item item, final Context context) {
         networkLoadArticle(item.getUrl(), true, new TextLoader() {
             @Override
             public void textLoaded(JSONObject result) {
+                Log.i(TAG, "textLoaded: save success");
                 try {
                     final String MERCURY = result.getString("content");
                     db.writeItem(item, true, MERCURY);
@@ -357,7 +359,7 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onError(ANError anError) {
                             for(WeakReference<TextLoader> loader : listeners.get(url)) {
-                                loader.get().textError(url, ERROR_NETWORK_CHANGE);
+                                if(loader.get() != null)  loader.get().textError(url, ERROR_NETWORK_CHANGE);
                             }
                         }
                     });
@@ -373,8 +375,30 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
-    private void cacheLoadArticle(final int id, TextLoader loader) {
+    private void cacheLoadArticle(final int id, final TextLoader loader) {
+        db.readItem(id, new ItemLoader() {
+            @Override
+            public void itemLoaded(Item item) {
+                if(item.getParsedText() != null && item.getParsedText().length() > 5) {
+                    try {
+                        final JSONObject jse = new JSONObject();
+                        jse.put("content", item.getParsedText());
+                        loader.textLoaded(jse);
+                    } catch(JSONException jse) {
+                        Log.e(TAG, "itemLoaded: ", jse);
+                    }
+                } else {
+                    Log.i(TAG, "itemLoaded: not in cache");
+                    loader.textError("", ERROR_NOT_IN_CACHE);
+                }
+            }
 
+            @Override
+            public void itemError(int id, int code) {
+                Log.i(TAG, "itemError: " + code);
+                loader.textError("", code);
+            }
+        });
     }
 
     private void cacheLoadChildren(final int id) {
@@ -460,7 +484,7 @@ public class Loader extends BroadcastReceiver {
 
         }
 
-        public void readItem(final int id, final ItemLoader loader) {
+        void readItem(final int id, final ItemLoader loader) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -502,7 +526,7 @@ public class Loader extends BroadcastReceiver {
             });
         }
 
-        public void readItems(final int[] ids, final ItemLoader loader) {
+        void readItems(final int[] ids, final ItemLoader loader) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -515,7 +539,6 @@ public class Loader extends BroadcastReceiver {
                             final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
                             final int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
                             try {
-
                                 final Item item = Parser.parseItem(new JSONObject(JSON));
                                 item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
                                 handler.post(new Runnable() {
@@ -545,36 +568,11 @@ public class Loader extends BroadcastReceiver {
             });
         }
 
-        private String buildWhereIn(int size) {
-            Log.i(TAG, "buildWhereIn: Building where for " + size);
-            final StringBuilder builder = new StringBuilder();
-            if(size > 0) {
-                String spacer = " ";
-                builder.append(" IN (");
-                while(size > 0) {
-                    builder.append(spacer);
-                    builder.append("?");
-                    spacer = ", ";
-                    size--;
-                }
-                builder.append(" )");
-            }
-            return builder.toString();
-        }
-
-        private String[] intArToStrAr(int[] a) {
-            final String[] s = new String[a.length];
-            for(int i = 0; i < a.length; i++) {
-                s[i] = Integer.toString(a[i]);
-            }
-            return s;
-        }
-
-        public void writeItem(Item item) {
+        void writeItem(Item item) {
             writeItem(item, false, "");
         }
 
-        public void writeItem(final Item item, final boolean saved, final String mercury) {
+        void writeItem(final Item item, final boolean saved, final String mercury) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -598,6 +596,31 @@ public class Loader extends BroadcastReceiver {
             }
             cv.put(KEY_MERCURY, mercury);
             return cv;
+        }
+
+        private String buildWhereIn(int size) {
+            Log.i(TAG, "buildWhereIn: Building where for " + size);
+            final StringBuilder builder = new StringBuilder();
+            if(size > 0) {
+                String spacer = " ";
+                builder.append(" IN (");
+                while(size > 0) {
+                    builder.append(spacer);
+                    builder.append("?");
+                    spacer = ", ";
+                    size--;
+                }
+                builder.append(" )");
+            }
+            return builder.toString();
+        }
+
+        private String[] intArToStrAr(int[] a) {
+            final String[] s = new String[a.length];
+            for(int i = 0; i < a.length; i++) {
+                s[i] = Integer.toString(a[i]);
+            }
+            return s;
         }
 
     }

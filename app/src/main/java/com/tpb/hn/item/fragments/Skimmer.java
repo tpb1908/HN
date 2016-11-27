@@ -91,7 +91,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
             throw new IllegalArgumentException("Activity must be instance of " + ItemViewActivity.class.getSimpleName());
         }
         if(mIsWaitingForAttach) {
-            Loader.getInstance(getContext()).loadArticle(mItem.getUrl(), true, this);
+            Loader.getInstance(getContext()).loadArticle(mItem, true, this);
         }
 
     }
@@ -197,7 +197,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
         if(item.getUrl() != null) {
             if(mViewsReady) mSwiper.setRefreshing(true);
             if(mContextReady) {
-                Loader.getInstance(getContext()).loadArticle(item.getUrl(), true, this);
+                Loader.getInstance(getContext()).loadArticle(item, true, this);
             } else {
                 mIsWaitingForAttach = true;
             }

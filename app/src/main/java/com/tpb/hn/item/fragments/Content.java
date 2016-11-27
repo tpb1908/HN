@@ -471,7 +471,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     public void textLoaded(JSONObject result) {
         try {
             mReadablePage = result.getString("content");
-
             mContentReady = true;
             if(mViewsReady) bindData();
 
