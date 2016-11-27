@@ -135,7 +135,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 notifyItemChanged(viewHolder.getAdapterPosition());
                 final int pos = viewHolder.getAdapterPosition();
                 if(pos < mData.length && mData[pos] != null) {
-                    mLoader.saveItem(mData[pos], mContext);
+                    mLoader.saveItem(mData[pos], mContext, new Loader.ItemSaveListener() {
+                        @Override
+                        public void itemSaved(Item item) {
+                            Toast.makeText(mContext, "Item saved", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void saveError(Item item, int code) {
+                            Toast.makeText(mContext, "Item not saved", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
 

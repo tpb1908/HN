@@ -163,8 +163,7 @@ public class Loader extends BroadcastReceiver {
         listeners.clear();
     }
 
-    //TODO- Save listener
-    public void saveItem(final Item item, final Context context) {
+    public void saveItem(final Item item, final Context context, final ItemSaveListener saveListener) {
         networkLoadArticle(item.getUrl(), true, new TextLoader() {
             @Override
             public void textLoaded(JSONObject result) {
@@ -172,14 +171,16 @@ public class Loader extends BroadcastReceiver {
                 try {
                     final String MERCURY = result.getString("content");
                     db.writeItem(item, true, MERCURY);
+                    saveListener.itemSaved(item);
                 } catch(JSONException jse) {
+                    saveListener.saveError(item, ERROR_PARSING);
                     Log.e(TAG, "textLoaded: for save of " + item.getTitle(), jse);
                 }
             }
 
             @Override
             public void textError(String url, int code) {
-
+                saveListener.saveError(item, code);
             }
         });
         final WebView wv = new WebView(context);
@@ -433,6 +434,14 @@ public class Loader extends BroadcastReceiver {
         void textLoaded(JSONObject result);
 
         void textError(String url, int code);
+
+    }
+
+    public interface ItemSaveListener {
+
+        void itemSaved(Item item);
+
+        void saveError(Item item, int code);
 
     }
 
