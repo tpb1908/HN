@@ -94,7 +94,7 @@ public class Parser {
         return user;
     }
 
-    public static String itemJSON(Item item) throws JSONException{
+    public static String itemJSON(Item item) throws JSONException {
         final JSONObject obj = new JSONObject();
         obj.put(KEY_ID, item.getId());
         obj.put(KEY_TIME, item.getTime());

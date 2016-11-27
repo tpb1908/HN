@@ -61,6 +61,10 @@ public abstract class HolderSwipeCallback extends ItemTouchHelper.SimpleCallback
         margin = Util.pxFromDp(dp);
     }
 
+    public void setColor(int color) {
+        mPaint.setColor(color);
+    }
+
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         return false;

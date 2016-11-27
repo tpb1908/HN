@@ -110,12 +110,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                //TODO Snappy scrolling
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     loadItemsOnScroll(false);
                 }
             }
 
         });
+
         if(recycler instanceof FastScrollRecyclerView) {
             ((FastScrollRecyclerView) recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
@@ -130,7 +132,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
         }
         final HolderSwipeCallback callback = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 notifyItemChanged(viewHolder.getAdapterPosition());
@@ -157,10 +158,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             @Override
             public String getSwipeText(boolean right, int adapterPosition) {
-                if(mData[adapterPosition] == null) return "";
+                if(adapterPosition >= mData.length || adapterPosition < 0 || mData[adapterPosition] == null) {
+                    return "";
+                }
                 return mData[adapterPosition].isSaved() ? "Unsave" : "Save";
             }
         };
+        callback.setColor(darkText);
         new ItemTouchHelper(callback).attachToRecyclerView(recycler);
         mLoader.addNetworkListener(new Loader.NetworkChangeListener() {
             @Override
@@ -173,7 +177,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     void getPrefs(Context context) {
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
-        mIsOffline =  !Util.isNetworkAvailable(context);
+        mIsOffline = !Util.isNetworkAvailable(context);
         mShouldMarkRead = prefs.getMarkReadWhenPassed();
         mIsDarkTheme = prefs.getUseDarkTheme();
         mShouldScrollOnChange = prefs.getShouldScrollToTop();
@@ -186,14 +190,15 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         * We then save the current position and reset the adapter on
         * the recycler, forcing it to redraw
         * notifyDataSetChanged won't show the new style until the
-        * user scrolls, because only then are the ViewHolders recyclerd
+        * user scrolls, because only then are the ViewHolders recycled
          */
         if(mIsUsingCards != oldCardStyle && mLastUpdateTime != 0) {
             final int pos = mLayoutManager.findFirstVisibleItemPosition();
             mRecycler.setAdapter(this);
             mRecycler.scrollToPosition(pos);
             mRecycler.invalidateItemDecorations();
-            if(!mIsUsingCards)  mRecycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+            if(!mIsUsingCards)
+                mRecycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
     }
 
@@ -492,6 +497,18 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     //<editor-fold-desc="Viewholder classes">
 
+    public interface ContentManager {
+
+        void openItem(Item item);
+
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
+
+        void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
+
+    }
+
     class ItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_card) CardView mCard;
@@ -550,6 +567,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    //</editor-fold>
+
     class EmptyHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.empty_card) CardView mCard;
 
@@ -557,20 +576,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-    }
-
-    //</editor-fold>
-
-    public interface ContentManager {
-
-        void openItem(Item item);
-
-        void openItem(Item item, FragmentPagerAdapter.PageType type);
-
-        void openUser(Item item);
-
-        void displayLastUpdate(long lastUpdate);
 
     }
 

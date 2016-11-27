@@ -29,6 +29,12 @@ public class Analytics extends Application {
         //LeakCanary.install(this);
     }
 
+    @Override
+    public void onTerminate() {
+        Loader.getInstance(this).removeReceiver(this);
+        super.onTerminate();
+    }
+
     synchronized public Tracker getDefaultTracker() {
         if(mTracker == null) {
             final GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
@@ -36,13 +42,5 @@ public class Analytics extends Application {
             mTracker = analytics.newTracker(R.xml.global_tracker);
         }
         return mTracker;
-    }
-
-
-
-    @Override
-    public void onTerminate() {
-        Loader.getInstance(this).removeReceiver(this);
-        super.onTerminate();
     }
 }

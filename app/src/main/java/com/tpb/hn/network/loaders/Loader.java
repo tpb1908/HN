@@ -368,7 +368,8 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onError(ANError anError) {
                             for(WeakReference<TextLoader> loader : listeners.get(url)) {
-                                if(loader.get() != null)  loader.get().textError(url, ERROR_NETWORK_CHANGE);
+                                if(loader.get() != null)
+                                    loader.get().textError(url, ERROR_NETWORK_CHANGE);
                             }
                         }
                     });
@@ -463,14 +464,12 @@ public class Loader extends BroadcastReceiver {
         private static final String TAG = DB.class.getSimpleName();
         private static final String NAME = "CACHE";
         private static final int VERSION = 1;
-        private static DB instance;
-
-
         private static final String TABLE = "CACHE";
         private static final String KEY_ID = "ID";
         private static final String KEY_SAVED = "SAVED";
         private static final String KEY_JSON = "JSON";
         private static final String KEY_MERCURY = "MERCURY";
+        private static DB instance;
 
         private DB(Context context) {
             super(context, NAME, null, VERSION);
@@ -508,7 +507,7 @@ public class Loader extends BroadcastReceiver {
                 public void run() {
                     final SQLiteDatabase db = DB.this.getReadableDatabase();
                     final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
-                    final Cursor cursor = db.rawQuery(QUERY, new String[] { Integer.toString(1) });
+                    final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(1)});
                     final int[] ids = new int[cursor.getCount()];
                     Log.i(TAG, "run: " + ids.length);
                     if(cursor.moveToFirst()) {
@@ -516,7 +515,7 @@ public class Loader extends BroadcastReceiver {
                         int i = 0;
                         while(i < ids.length) {
                             ids[i] = cursor.getInt(col);
-                            Log.i(TAG, "run: id: "+ ids[i]);
+                            Log.i(TAG, "run: id: " + ids[i]);
                             cursor.moveToNext();
                             i++;
                         }
@@ -537,8 +536,8 @@ public class Loader extends BroadcastReceiver {
                 @Override
                 public void run() {
                     final SQLiteDatabase db = DB.this.getReadableDatabase();
-                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID  + " = ? LIMIT 1";
-                    final Cursor cursor = db.rawQuery(QUERY, new String[] { Integer.toString(id) });
+                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
+                    final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(id)});
                     final Handler handler = new Handler(Looper.getMainLooper());
                     if(cursor.moveToFirst()) {
                         final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));

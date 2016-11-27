@@ -277,14 +277,14 @@ public class SharedPrefsController {
         editor.commit();
     }
 
+    public boolean getLoadInBackground() {
+        return loadInBackground;
+    }
+
     public void setLoadInBackground(boolean shouldLoad) {
         loadInBackground = shouldLoad;
         editor.putBoolean(KEY_LOAD_IN_BACKGROUND, loadInBackground);
         editor.commit();
-    }
-
-    public boolean getLoadInBackground() {
-        return loadInBackground;
     }
 
     public boolean showSeekBarHint() {

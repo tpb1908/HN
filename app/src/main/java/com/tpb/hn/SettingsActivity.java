@@ -122,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_content_cards:
                 prefs.setUseCards(sView.isChecked());
-               // restartRequired = true;
+                // restartRequired = true;
                 break;
             case R.id.switch_comment_cards:
                 prefs.setUseCardsComments(sView.isChecked());
