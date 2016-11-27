@@ -8,6 +8,7 @@
         <item>Ask</item>
         <item>Show</item>
         <item>Job</item>
+        <item>Saved</item>
     </string-array>
 
     <integer-array name="comment_colors">

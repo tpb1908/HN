@@ -122,6 +122,9 @@ public class Loader extends BroadcastReceiver {
             case "job":
                 url = APIPaths.getJobPath();
                 break;
+            case "saved":
+                db.loadOffline(loader);
+                return;
             default:
                 url = "";
         }
@@ -496,6 +499,37 @@ public class Loader extends BroadcastReceiver {
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+        }
+
+        void loadOffline(final idLoader idLoader) {
+            Log.i(TAG, "loadOffline: ");
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final SQLiteDatabase db = DB.this.getReadableDatabase();
+                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
+                    final Cursor cursor = db.rawQuery(QUERY, new String[] { Integer.toString(1) });
+                    final int[] ids = new int[cursor.getCount()];
+                    Log.i(TAG, "run: " + ids.length);
+                    if(cursor.moveToFirst()) {
+                        final int col = cursor.getColumnIndex(KEY_ID);
+                        int i = 0;
+                        while(i < ids.length) {
+                            ids[i] = cursor.getInt(col);
+                            Log.i(TAG, "run: id: "+ ids[i]);
+                            cursor.moveToNext();
+                            i++;
+                        }
+                    }
+                    cursor.close();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            idLoader.idsLoaded(ids);
+                        }
+                    });
+                }
+            });
         }
 
         void readItem(final int id, final ItemLoader loader) {

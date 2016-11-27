@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,7 +31,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.SettingsActivity;
-import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -111,14 +109,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
 
-        if(!Util.isNetworkAvailable(getApplicationContext())) {
-            Snackbar.make(findViewById(android.R.id.content), "Offline. Load form cache? ", Snackbar.LENGTH_INDEFINITE).setAction("Load", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            }).show();
-        }
+//        if(!Util.isNetworkAvailable(getApplicationContext())) {
+//            Snackbar.make(findViewById(android.R.id.content), "Offline. Load form cache? ", Snackbar.LENGTH_INDEFINITE).setAction("Load", new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+//            }).show();
+//        }
 
         final Handler timeAgoHandler = new Handler();
         timeAgoHandler.postDelayed(new Runnable() {
