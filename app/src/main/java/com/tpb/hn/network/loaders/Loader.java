@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
@@ -47,21 +49,29 @@ public class Loader extends BroadcastReceiver {
     private SharedPreferences prefs;
     private boolean online = false;
     private ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
+    private DB db;
 
     private Loader(Context context) {
         prefs = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        db = DB.getDB(context);
     }
 
     public static Loader getInstance(Context context) {
         if(instance == null) {
             instance = new Loader(context);
             instance.online = Util.isNetworkAvailable(context);
+            context.registerReceiver(instance, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
         return instance;
     }
 
+    public void removeReceiver(Context context) {
+        context.unregisterReceiver(this);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i(TAG, "onReceive: Network change");
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = cm.getActiveNetworkInfo();
         online = netInfo != null;
@@ -164,6 +174,7 @@ public class Loader extends BroadcastReceiver {
                         try {
                             final Item item = Parser.parseItem(response);
                             loader.itemLoaded(item);
+                            db.writeItem(item);
                         } catch(JSONException e) {
                             loader.itemError(id, ERROR_PARSING);
                         } catch(Exception e) {
@@ -180,7 +191,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     private void cacheLoadItem(final int id, ItemLoader loader) {
-
+        db.readItem(id, loader);
     }
 
     public void loadItems(final int[] ids, final boolean background, ItemLoader loader) {
@@ -204,6 +215,7 @@ public class Loader extends BroadcastReceiver {
                             try {
                                 final Item item = Parser.parseItem(response);
                                 loader.itemLoaded(item);
+                                db.writeItem(item);
                             } catch(JSONException jse) {
                                 Log.e(TAG, "onResponse: ", jse);
                                 loader.itemError(id, ERROR_PARSING);
@@ -222,6 +234,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     private void cacheLoadItems(final int[] ids, ItemLoader loader) {
+        db.readItems(ids, loader);
     }
 
     public void loadChildren(final int id, CommentLoader loader) {
@@ -379,7 +392,7 @@ public class Loader extends BroadcastReceiver {
             super(context, NAME, null, VERSION);
         }
 
-        public static DB getDB(Context context) {
+        static DB getDB(Context context) {
             if(instance == null) {
                 instance = new DB(context);
             }
@@ -404,11 +417,91 @@ public class Loader extends BroadcastReceiver {
 
         }
 
-        void writeItem(Item item) {
+        public void readItem(final int id, final ItemLoader loader) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final SQLiteDatabase db = DB.this.getReadableDatabase();
+                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID  + " = ? LIMIT 1";
+                    final Cursor cursor = db.rawQuery(QUERY, new String[] { Integer.toString(id) });
+                    if(cursor.moveToFirst()) {
+                        final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                        try {
+                            final Item item = Parser.parseItem(new JSONObject(JSON));
+                            item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
+                            loader.itemLoaded(item);
+                        } catch(JSONException jse) {
+                            loader.itemError(id, ERROR_PARSING);
+                        }
+                    } else {
+                        loader.itemError(id, ERROR_NOT_IN_CACHE);
+                    }
+                    cursor.close();
+                }
+            });
+        }
+
+        public void readItems(final int[] ids, final ItemLoader loader) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final SQLiteDatabase db = DB.this.getReadableDatabase();
+                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + buildWhereIn(ids.length);
+                    final Cursor cursor = db.rawQuery(QUERY, intArToStrAr(ids));
+                    if(cursor.moveToFirst()) {
+                        do {
+                            final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                            final int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                            try {
+
+                                final Item item = Parser.parseItem(new JSONObject(JSON));
+                                item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
+                                loader.itemLoaded(item);
+                            } catch(JSONException jse) {
+                                Log.e(TAG, "run: Loading from db " + JSON, jse);
+                                loader.itemError(id, ERROR_PARSING);
+                            }
+                        } while(cursor.moveToNext());
+                    } else {
+                        Log.e(TAG, "run: ", new Exception("Couldn't find any of the ids"));
+                        //TODO- Handle multiple errors
+                    }
+
+                    cursor.close();
+                }
+            });
+        }
+
+        private String buildWhereIn(int size) {
+            Log.i(TAG, "buildWhereIn: Building where for " + size);
+            final StringBuilder builder = new StringBuilder();
+            if(size > 0) {
+                String spacer = " ";
+                builder.append(" IN (");
+                while(size > 0) {
+                    builder.append(spacer);
+                    builder.append("?");
+                    spacer = ", ";
+                    size--;
+                }
+                builder.append(" )");
+            }
+            return builder.toString();
+        }
+
+        private String[] intArToStrAr(int[] a) {
+            final String[] s = new String[a.length];
+            for(int i = 0; i < a.length; i++) {
+                s[i] = Integer.toString(a[i]);
+            }
+            return s;
+        }
+
+        public void writeItem(Item item) {
             writeItem(item, false, "");
         }
 
-        void writeItem(final Item item, final boolean saved, final String mercury) {
+        public void writeItem(final Item item, final boolean saved, final String mercury) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {

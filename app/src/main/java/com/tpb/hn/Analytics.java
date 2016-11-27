@@ -5,6 +5,7 @@ import android.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
+import com.tpb.hn.network.loaders.Loader;
 
 /**
  * Created by theo on 28/10/16.
@@ -38,4 +39,10 @@ public class Analytics extends Application {
     }
 
 
+
+    @Override
+    public void onTerminate() {
+        Loader.getInstance(this).removeReceiver(this);
+        super.onTerminate();
+    }
 }

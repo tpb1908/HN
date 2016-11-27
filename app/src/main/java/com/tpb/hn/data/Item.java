@@ -30,7 +30,7 @@ public class Item implements Comparable<Item> {
 
     private boolean viewed;
     private boolean isNew;
-    private boolean parsedText;
+    private String parsedText;
 
     public int getId() {
         return id;
@@ -144,11 +144,11 @@ public class Item implements Comparable<Item> {
         isNew = aNew;
     }
 
-    public boolean isParsedText() {
+    public String getParsedText() {
         return parsedText;
     }
 
-    public void setParsedText(boolean parsedText) {
+    public void setParsedText(String parsedText) {
         this.parsedText = parsedText;
     }
 
