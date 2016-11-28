@@ -15,7 +15,7 @@ import com.tpb.hn.Util;
 
 public class HintingSeekBar extends SeekBar {
     private static final String TAG = HintingSeekBar.class.getSimpleName();
-    private Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
     private String mHint = "";
     private SeekHintProvider mProvider;
 

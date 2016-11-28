@@ -103,7 +103,7 @@ public class Formatter {
         return formatHTTPError(context, context.getString(resId), code);
     }
 
-    public static String formatHTTPError(Context context, String message, int code) {
+    private static String formatHTTPError(Context context, String message, int code) {
         if(context == null) return "Error";
         switch(code) {
             case -100: //Custom error parsing

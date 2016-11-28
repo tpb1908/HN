@@ -16,8 +16,8 @@ import okhttp3.Response;
  */
 
 public class APIPaths {
-    public static final String JSON = ".json";
-    public static final String PRETTY = "?print=pretty";
+    private static final String JSON = ".json";
+    private static final String PRETTY = "?print=pretty";
     private static final String TAG = APIPaths.class.getSimpleName();
     private static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
     private static final String ITEM = "item/";
@@ -42,7 +42,7 @@ public class APIPaths {
     private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
     private static final String ALGOLIA_ITEM_PATH = "items/";
     private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
-    public static OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
+    public static final OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
             .addInterceptor(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {

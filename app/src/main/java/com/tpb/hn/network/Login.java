@@ -28,7 +28,7 @@ public class Login {
 
     private String cookie = "";
 
-    public Login(LoginListener listener, String username, String password) {
+    private Login(LoginListener listener, String username, String password) {
         this.listener = listener;
         user = username;
         pass = password;

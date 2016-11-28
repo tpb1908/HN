@@ -47,7 +47,7 @@ public class AdBlockingWebView extends WebView {
         super(context, attrs, defStyleAttr);
         getSettings().setSupportZoom(true);
         this.setWebViewClient(new WebViewClient() {
-            private Map<String, Boolean> loadedUrls = new HashMap<>();
+            private final Map<String, Boolean> loadedUrls = new HashMap<>();
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -131,7 +131,7 @@ public class AdBlockingWebView extends WebView {
         setOnTouchListener(null);
     }
 
-    public void disableHorizontalScrolling() {
+    private void disableHorizontalScrolling() {
         setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

@@ -22,11 +22,11 @@ import java.util.Arrays;
 public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAdapter {
     private static final String TAG = FragmentPagerAdapter.class.getSimpleName();
 
-    private ArrayList<PageType> pages = new ArrayList<>();
-    private Fragment[] fragments;
+    private final ArrayList<PageType> pages = new ArrayList<>();
+    private final Fragment[] fragments;
 
-    private Item mItem;
-    private int mCommentId;
+    private final Item mItem;
+    private final int mCommentId;
 
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item, int commentId) {
         super(fragmentManager);

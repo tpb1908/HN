@@ -98,5 +98,7 @@
         </html>
         ]]>
     </string>
+    <string name="text_start_time">Start time</string>
+    <string name="text_end_time">End time</string>
 
 </resources>

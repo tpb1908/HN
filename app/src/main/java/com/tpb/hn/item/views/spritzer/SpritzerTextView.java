@@ -23,8 +23,8 @@ import com.tpb.hn.storage.SharedPrefsController;
  */
 public class SpritzerTextView extends TextView implements View.OnClickListener {
 
-    public static final String TAG = SpritzerTextView.class.getName();
-    public static final int PAINT_WIDTH_DP = 4;          // thickness of spritz guide bars in dp
+    private static final String TAG = SpritzerTextView.class.getName();
+    private static final int PAINT_WIDTH_DP = 4;          // thickness of spritz guide bars in dp
     private Spritzer mSpritzer;
     // For optimal drawing should be an even number
     private Paint mPaintGuides;

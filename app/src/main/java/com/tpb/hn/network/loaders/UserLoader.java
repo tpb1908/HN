@@ -20,7 +20,7 @@ import org.json.JSONObject;
 public class UserLoader {
     private static final String TAG = UserLoader.class.getSimpleName();
 
-    private HNUserLoadDone userListener;
+    private final HNUserLoadDone userListener;
 
     public UserLoader(HNUserLoadDone listener) {
         userListener = listener;

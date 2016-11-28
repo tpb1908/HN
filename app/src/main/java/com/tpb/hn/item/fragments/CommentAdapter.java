@@ -41,20 +41,20 @@ import butterknife.ButterKnife;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
     private static final String TAG = CommentAdapter.class.getSimpleName();
 
-    @BindArray(R.array.comment_colors) int[] mCommentColors;
+    @BindArray(R.array.comment_colors) private int[] mCommentColors;
 
     private Comment mRootComment;
-    private RecyclerView mRecycler;
-    private SwipeRefreshLayout mSwiper;
-    private UserOpener mOpener;
-    private int mScreenWidth;
+    private final RecyclerView mRecycler;
+    private final SwipeRefreshLayout mSwiper;
+    private final UserOpener mOpener;
+    private final int mScreenWidth;
 
     private ArrayList<CommentWrapper> mComments = new ArrayList<>();
-    private ArrayList<Integer> mVisibleItems = new ArrayList<>();
-    private boolean usingCards;
+    private final ArrayList<Integer> mVisibleItems = new ArrayList<>();
+    private final boolean usingCards;
     private boolean expandComments;
     private boolean shouldAnimate;
-    private int mCommentId;
+    private final int mCommentId;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener, int commentId) {
         mRecycler = recycler;
@@ -272,7 +272,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     private class CommentWrapper {
-        Comment comment;
+        final Comment comment;
         int depth = 0;
         boolean bound = false;
         boolean visible = true;

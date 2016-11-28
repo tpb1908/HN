@@ -43,18 +43,18 @@ import java.util.HashMap;
 
 public class Loader extends BroadcastReceiver {
     private static final String TAG = Loader.class.getSimpleName();
-    public static int ERROR_NOT_IN_CACHE = 100;
+    private static final int ERROR_NOT_IN_CACHE = 100;
     public static int ERROR_TIMEOUT = 200;
-    public static int ERROR_PARSING = 300;
-    public static int ERROR_NETWORK_CHANGE = 400;
-    public static int ERROR_UNKNOWN = 0;
-    public static int ERROR_PDF = 500;
+    private static final int ERROR_PARSING = 300;
+    private static final int ERROR_NETWORK_CHANGE = 400;
+    private static final int ERROR_UNKNOWN = 0;
+    private static final int ERROR_PDF = 500;
     private static Loader instance;
-    private static HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
-    private SharedPreferences prefs;
+    private static final HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
+    private final SharedPreferences prefs;
     private boolean online = false;
-    private ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
-    private DB db;
+    private final ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
+    private final DB db;
 
     private Loader(Context context) {
         prefs = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);

@@ -24,8 +24,8 @@ import java.util.Arrays;
  * onto a TextView at a given WPM.
  */
 public class Spritzer {
-    protected static final String TAG = "Spritzer";
-    protected static final int CHARS_LEFT_OF_PIVOT = 3;
+    private static final String TAG = "Spritzer";
+    static final int CHARS_LEFT_OF_PIVOT = 3;
     private static final boolean VERBOSE = false;
     private static final int MSG_PRINT_WORD = 1;
     private static final int MAX_WORD_LENGTH = 13;
@@ -34,8 +34,8 @@ public class Spritzer {
     private ArrayDeque<String> mWordQueue;        // The queue of words from mWordArray yet to be displayed
     private TextView mTarget;
     private int mWPM;
-    private Handler mSpritzHandler;
-    private Object mPlayingSync = new Object();
+    private final Handler mSpritzHandler;
+    private final Object mPlayingSync = new Object();
     private boolean mPlaying;
     private boolean mPlayingRequested;
     private boolean mSpritzThreadStarted;
@@ -72,7 +72,7 @@ public class Spritzer {
                 .split(" ");                    // split on spaces
     }
 
-    protected void init() {
+    private void init() {
 
         mDelayStrategy = new DefaultDelayStrategy();
         mWordQueue = new ArrayDeque<>();
@@ -198,7 +198,7 @@ public class Spritzer {
      *
      * @throws InterruptedException
      */
-    protected void processNextWord() throws InterruptedException {
+    private void processNextWord() throws InterruptedException {
         if(!mWordQueue.isEmpty()) {
             String word = mWordQueue.remove();
             mCurWordIdx += 1;
@@ -224,7 +224,7 @@ public class Spritzer {
      * @param word
      * @return
      */
-    protected String splitLongWord(String word) {
+    private String splitLongWord(String word) {
         if(word.length() > MAX_WORD_LENGTH) {
             int splitIndex = findSplitIndex(word);
             String firstSegment;
@@ -299,8 +299,8 @@ public class Spritzer {
      * @param word
      */
     private void printWord(String word) {
-        int startSpan = 0;
-        int endSpan = 0;
+        int startSpan;
+        int endSpan;
         word = word.trim();
         if(VERBOSE) Log.i(TAG + word.length(), word);
         if(word.length() == 1) {
@@ -446,8 +446,8 @@ public class Spritzer {
      * timing thread. This Handler communicates timing
      * thread events to the Main thread for UI update.
      */
-    protected static class SpritzHandler extends Handler {
-        private WeakReference<Spritzer> mWeakSpritzer;
+    static class SpritzHandler extends Handler {
+        private final WeakReference<Spritzer> mWeakSpritzer;
 
         public SpritzHandler(Spritzer muxer) {
             mWeakSpritzer = new WeakReference<>(muxer);

@@ -59,8 +59,8 @@ public class SharedPrefsController {
     private static boolean showSeekBarHint;
     private static boolean loadInBackground;
 
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
+    private final SharedPreferences prefs;
+    private final SharedPreferences.Editor editor;
 
     private SharedPrefsController(Context context) {
         prefs = context.getSharedPreferences(PREF_ID, Context.MODE_PRIVATE);

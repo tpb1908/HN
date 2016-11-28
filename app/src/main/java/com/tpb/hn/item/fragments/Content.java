@@ -59,18 +59,18 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
-    @BindColor(R.color.md_grey_50) int lightBG;
-    @BindColor(R.color.md_grey_bg) int darkBG;
-    @BindColor(R.color.colorPrimaryText) int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
-    @BindView(R.id.fullscreen) LinearLayout mFullscreen;
-    @BindView(R.id.webview_swiper) SwipeRefreshLayout mSwiper;
-    @BindView(R.id.webview_scroller) NestedScrollView mScrollView;
-    @BindView(R.id.webview) AdBlockingWebView mWebView;
-    @BindView(R.id.content_fragment_toolbar) android.widget.Toolbar mToolbar;
-    @BindView(R.id.content_progressbar) ProgressBar mProgressBar;
-    @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
-    @BindView(R.id.content_find_edittext) EditText mFindEditText;
+    @BindColor(R.color.md_grey_50) private int lightBG;
+    @BindColor(R.color.md_grey_bg) private int darkBG;
+    @BindColor(R.color.colorPrimaryText) private int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) private int darkText;
+    @BindView(R.id.fullscreen) private LinearLayout mFullscreen;
+    @BindView(R.id.webview_swiper) private SwipeRefreshLayout mSwiper;
+    @BindView(R.id.webview_scroller) private NestedScrollView mScrollView;
+    @BindView(R.id.webview) private AdBlockingWebView mWebView;
+    @BindView(R.id.content_fragment_toolbar) private android.widget.Toolbar mToolbar;
+    @BindView(R.id.content_progressbar) private ProgressBar mProgressBar;
+    @BindView(R.id.content_toolbar_switcher) private ViewSwitcher mSwitcher;
+    @BindView(R.id.content_find_edittext) private EditText mFindEditText;
     private Tracker mTracker;
     private Unbinder unbinder;
     private ItemViewActivity mParent;
@@ -87,8 +87,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     private String url;
     private String mReadablePage;
-
-    private Item mItem;
 
     public Content() {
     }
@@ -196,7 +194,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     @Override
     public void itemLoaded(Item item) {
-        mItem = item;
         if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
@@ -214,7 +211,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
             } else {
                 url = item.getUrl();
-                Loader.getInstance(getContext()).loadArticle(mItem, true, this);
+                Loader.getInstance(getContext()).loadArticle(item, true, this);
             }
         }
     }

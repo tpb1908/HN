@@ -47,23 +47,23 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Loader.idLoader,
         FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
-    @BindColor(R.color.colorPrimaryText) int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
-    private Context mContext;
-    private Loader mLoader;
+    @BindColor(R.color.colorPrimaryText) private int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) private int darkText;
+    private final Context mContext;
+    private final Loader mLoader;
     private String mCurrentPage;
-    private boolean mIsContent;
+    private final boolean mIsContent;
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
     private int[] mIds = new int[0];
     private int[] mOldIds = new int[0];
     private long mLastUpdateTime;
     private Item[] mData = new Item[] {};
-    private ContentManager mManager;
+    private final ContentManager mManager;
     private int mLastPosition = 0;
-    private RecyclerView mRecycler;
+    private final RecyclerView mRecycler;
     private LinearLayoutManager mLayoutManager;
-    private SwipeRefreshLayout mSwiper;
+    private final SwipeRefreshLayout mSwiper;
     private boolean mIsDarkTheme;
     private boolean mShouldScrollOnChange;
     private boolean mLoadInBackground;

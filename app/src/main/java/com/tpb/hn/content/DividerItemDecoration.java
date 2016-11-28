@@ -17,12 +17,12 @@ import android.view.View;
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
-    private Drawable mDivider;
+    private final Drawable mDivider;
     private boolean mShowFirstDivider = false;
     private boolean mShowLastDivider = false;
 
 
-    public DividerItemDecoration(Context context, AttributeSet attrs) {
+    private DividerItemDecoration(Context context, AttributeSet attrs) {
         final TypedArray a = context
                 .obtainStyledAttributes(attrs, new int[] {android.R.attr.listDivider});
         mDivider = a.getDrawable(0);

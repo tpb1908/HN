@@ -41,10 +41,10 @@ import butterknife.Unbinder;
 
 public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
-    @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
-    @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
-    @BindView(R.id.skimmer_error_textview) TextView mErrorView;
-    @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
+    @BindView(R.id.skimmer_text_view) private SpritzerTextView mTextView;
+    @BindView(R.id.skimmer_progress) private HintingSeekBar mSkimmerProgress;
+    @BindView(R.id.skimmer_error_textview) private TextView mErrorView;
+    @BindView(R.id.spritzer_swiper) private SwipeRefreshLayout mSwiper;
     private Tracker mTracker;
     private Unbinder unbinder;
     private ItemViewActivity mParent;

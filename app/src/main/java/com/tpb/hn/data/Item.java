@@ -13,10 +13,10 @@ import java.util.Arrays;
 public class Item implements Comparable<Item> {
     private static final String TAG = Item.class.getSimpleName();
 
-    protected int id;
-    protected String by;
-    protected int parent;
-    protected int score;
+    private int id;
+    private String by;
+    private int parent;
+    private int score;
     private boolean deleted;
     private long time;
     private String title;

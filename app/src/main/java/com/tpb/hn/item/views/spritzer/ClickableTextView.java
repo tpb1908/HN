@@ -32,7 +32,7 @@ public class ClickableTextView extends TextView {
         this.currentPos = currentPos;
     }
 
-    public static Integer[] getIndices(String s, char c) {
+    private static Integer[] getIndices(String s, char c) {
         int pos = s.indexOf(c, 0);
         List<Integer> indices = new ArrayList<>();
         while(pos != -1) {
