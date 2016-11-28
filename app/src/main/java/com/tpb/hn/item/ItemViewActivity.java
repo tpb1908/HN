@@ -58,6 +58,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     private FragmentPagerAdapter mAdapter;
     private int originalFlags;
     private boolean mShouldShowFab = false;
+    private int mOpenedCommentId;
 
     @OnClick(R.id.item_back_button)
     public void onClick() {
@@ -192,13 +193,14 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     }
 
     private void setupFragments(FragmentPagerAdapter.PageType[] possiblePages, Item item) {
-        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item);
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mStoryPager, possiblePages, item, mOpenedCommentId);
         mStoryPager.setAdapter(mAdapter);
         mStoryPager.setOffscreenPageLimit(mAdapter.getCount());
         mStoryTabs.setupWithViewPager(mStoryPager);
     }
 
     private void loadCommentParent(Item item) {
+        mOpenedCommentId = item.getId();
         Loader.getInstance(this).loadItem(item.getParent(), this);
     }
 

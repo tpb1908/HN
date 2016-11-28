@@ -42,6 +42,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
     private Tracker mTracker;
     private Unbinder unbinder;
     private Item mRootItem;
+    private int mCommentId;
     private Comment mRootComment;
     private CommentAdapter.UserOpener mOpener;
 
@@ -49,12 +50,18 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     private boolean mIsWaitingForContext = false;
 
+    public static Comments getInstance(int commentId) {
+        final Comments comments = new Comments();
+        comments.mCommentId = commentId;
+        return comments;
+    }
+
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, view);
-        mAdapter = new CommentAdapter(mRecycler, mSwiper, this);
+        mAdapter = new CommentAdapter(mRecycler, mSwiper, this, mCommentId);
         mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

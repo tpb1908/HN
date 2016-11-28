@@ -1,14 +1,11 @@
 package com.tpb.hn.item.fragments;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,11 +54,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private boolean usingCards;
     private boolean expandComments;
     private boolean shouldAnimate;
+    private int mCommentId;
 
-    public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener) {
+    public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener, int commentId) {
         mRecycler = recycler;
         mSwiper = swiper;
         mOpener = opener;
+        mCommentId = commentId;
         final Context context = mRecycler.getContext();
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
         usingCards = prefs.getUseCardsComments();
@@ -88,13 +87,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final CommentWrapper comment = mComments.get(mVisibleItems.get(pos));
         if(comment.parsedText == null) {
             if(comment.comment.getText() != null) {
-                final Spanned text;
-                if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    text = Html.fromHtml(comment.comment.getText(), Html.FROM_HTML_MODE_COMPACT);
-                } else {
-                    text = Html.fromHtml(comment.comment.getText());
-                }
-                comment.parsedText = text.toString().substring(0, text.toString().length() - 2);
+               comment.parsedText = Util.parseHTMLText(comment.comment.getText());
             }
         }
         holder.mBody.setText(comment.parsedText);
@@ -180,6 +173,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                             buildPositions();
                             notifyDataSetChanged();
                             mSwiper.setRefreshing(false);
+                            if(mCommentId != 0) scrollToComment();
                         }
                     }, 300);
                 }
@@ -196,7 +190,32 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             }, 500);
 
         }
+    }
 
+    private void scrollToComment() {
+        for(int i : mVisibleItems) {
+            if(mComments.get(i).comment.getId() == mCommentId) {
+                expandComments = true;
+                //TODO Add a setting for this behaviour
+                //TODO- Add the code when flattening the comments to expand only the chosen id
+                /*
+                Animating insertions while scrolling this fast just doesn't work
+                 */
+                final boolean animate = shouldAnimate;
+                shouldAnimate = false;
+                mRecycler.smoothScrollToPosition(i);
+                mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                            shouldAnimate = animate;
+                        }
+                    }
+                });
+                break;
+            }
+        }
     }
 
     private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
@@ -258,7 +277,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         boolean bound = false;
         boolean visible = true;
         boolean childrenVisible = true;
-        String parsedText;
+        CharSequence parsedText;
 
         CommentWrapper(Comment comment) {
             this.comment = comment;

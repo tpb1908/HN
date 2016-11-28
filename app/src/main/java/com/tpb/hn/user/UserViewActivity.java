@@ -173,7 +173,6 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
         mUser = user;
         userReady = true;
         if(viewsReady) bindData();
-        Log.i(TAG, "userLoaded: " + user.toString());
     }
 
     @Override

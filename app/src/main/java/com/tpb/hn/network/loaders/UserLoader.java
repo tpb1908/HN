@@ -38,7 +38,6 @@ public class UserLoader {
                         try {
                             final User user = Parser.parseUser(response);
                             if(userListener != null) userListener.userLoaded(user);
-                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: " + user.toString());
                         } catch(Exception e) {
                             Log.e(TAG, "onResponse: ", e);
                         }

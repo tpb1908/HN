@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.view.ContextThemeWrapper;
+import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 
@@ -96,6 +97,12 @@ public class Util {
         final int[] ints = new int[tokenizer.countTokens()];
         for(int i = 0; i < ints.length; i++) ints[i] = Integer.parseInt(tokenizer.nextToken());
         return ints;
+    }
+
+    public static CharSequence parseHTMLText(String text) {
+        if(text.endsWith("\n\n")) text = text.substring(0, Math.max(text.length() - 2, 0));
+
+        return Html.fromHtml(text);
     }
 
     public static int getApproximateNumberOfItems(String page) {

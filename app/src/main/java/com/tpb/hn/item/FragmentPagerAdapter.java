@@ -25,11 +25,13 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     private ArrayList<PageType> pages = new ArrayList<>();
     private Fragment[] fragments;
 
-    private Item item;
+    private Item mItem;
+    private int mCommentId;
 
-    public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
+    public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item, int commentId) {
         super(fragmentManager);
-        this.item = item;
+        mItem = item;
+        mCommentId = commentId;
         if(Analytics.VERBOSE) Log.i(TAG, "FragmentPagerAdapter: " + item);
         possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER, PageType.SKIMMER};
         final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]") ||
@@ -114,7 +116,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         Fragment page = new Fragment();
         switch(pages.get(position)) {
             case COMMENTS:
-                page = new Comments();
+                page = Comments.getInstance(mCommentId);
                 fragments[position] = page;
                 break;
             case BROWSER:
@@ -134,10 +136,10 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 fragments[position] = page;
                 break;
         }
-        if(fragments[position] != null && item != null) {
-            ((Loader.ItemLoader) fragments[position]).itemLoaded(item);
+        if(fragments[position] != null && mItem != null) {
+            ((Loader.ItemLoader) fragments[position]).itemLoaded(mItem);
         }
-        if(Analytics.VERBOSE) Log.i(TAG, "getItem: Getting item " + position);
+        if(Analytics.VERBOSE) Log.i(TAG, "getItem: Getting mItem " + position);
         return page;
     }
 

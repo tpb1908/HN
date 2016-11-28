@@ -2,15 +2,12 @@ package com.tpb.hn.content;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -442,13 +439,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(mData[pos].isDeleted()) {
                     commentHolder.mBody.setText(R.string.text_deleted_comment);
                 } else if(mData[pos].getText() != null) {
-                    final Spanned text;
-                    if(Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        text = Html.fromHtml(mData[pos].getText(), Html.FROM_HTML_MODE_COMPACT);
-                    } else {
-                        text = Html.fromHtml(mData[pos].getText());
-                    }
-                    commentHolder.mBody.setText(text.toString().substring(0, text.toString().length() - 2));
+                    if(Analytics.VERBOSE) Log.i(TAG, "onBindViewHolder: Setting text \n" + mData[pos].getText());
+                  //  commentHolder.mBody.setText(mData[pos].getText());
+                    commentHolder.mBody.setText(Util.parseHTMLText(mData[pos].getText()));
                 }
             }
             if(mIsUsingCards) {
@@ -487,6 +480,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.mURL.setText("");
             holder.mNumber.setText("");
             holder.mTitle.requestLayout();
+        } else if(viewHolder instanceof CommentHolder) {
+            ( (CommentHolder) viewHolder).mBody.requestLayout();
         }
 
     }
@@ -497,6 +492,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         card.setRadius(Util.pxFromDp(3));
         card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
     }
+
 
     //</editor-fold>
 
