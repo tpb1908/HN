@@ -16,6 +16,7 @@ public class Analytics extends Application {
     public static final String KEY_PAGE = "PAGE ";
     public static final String CATEGORY_ITEM = "ITEM";
     public static final String KEY_OPEN_ITEM = "OPENED";
+    public static final boolean VERBOSE = true;
     private Tracker mTracker;
 
     @Override

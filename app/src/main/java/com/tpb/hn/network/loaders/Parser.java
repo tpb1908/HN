@@ -123,7 +123,7 @@ public class Parser {
 
     public static int[] extractIntArray(String array) {
         final String[] items = array.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\s", "").split(",");
-        //Log.i(TAG, "extractIntArray: Extracting int array " + Arrays.toString(items));
+        //if(Analytics.VERBOSE) Log.i(TAG, "extractIntArray: Extracting int array " + Arrays.toString(items));
         final int[] results = new int[items.length];
 
         for(int i = 0; i < items.length; i++) {
@@ -134,7 +134,7 @@ public class Parser {
                 //TODO: write something here if you need to recover from formatting errors
             }
         }
-        //Log.i(TAG, "extractIntArray: " + Arrays.toString(results));
+        //if(Analytics.VERBOSE) Log.i(TAG, "extractIntArray: " + Arrays.toString(results));
         return results;
     }
 

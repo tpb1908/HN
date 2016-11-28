@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import com.tpb.hn.Analytics;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.fragments.Comments;
 import com.tpb.hn.item.fragments.Content;
@@ -29,7 +30,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item) {
         super(fragmentManager);
         this.item = item;
-        Log.i(TAG, "FragmentPagerAdapter: " + item);
+        if(Analytics.VERBOSE) Log.i(TAG, "FragmentPagerAdapter: " + item);
         possiblePages = new PageType[] {PageType.COMMENTS, PageType.BROWSER, PageType.TEXT_READER, PageType.AMP_READER, PageType.SKIMMER};
         final boolean pdf = item.getTitle().toLowerCase().contains("[pdf]") ||
                 (item.getUrl() != null && item.getUrl().endsWith(".pdf"));
@@ -93,7 +94,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
             @Override
             public void onPageSelected(int position) {
-                Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
+                if(Analytics.VERBOSE) Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
                 if(fragments[position] != null) {
                     ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
                     ((FragmentCycleListener) fragments[position]).onResumeFragment();
@@ -136,7 +137,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         if(fragments[position] != null && item != null) {
             ((Loader.ItemLoader) fragments[position]).itemLoaded(item);
         }
-        Log.i(TAG, "getItem: Getting item " + position);
+        if(Analytics.VERBOSE) Log.i(TAG, "getItem: Getting item " + position);
         return page;
     }
 

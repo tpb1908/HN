@@ -6,6 +6,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
+import com.tpb.hn.Analytics;
 
 import java.io.IOException;
 
@@ -70,21 +71,21 @@ public class Login {
                     public void onResponse(Response response) {
                         if(response.code() >= 200 && response.code() < 400) {//Success
                             try {
-//                            Log.i(TAG, "onResponse: Login loginResponse " + loginResponse.toString());
-//                            Log.i(TAG, "onResponse: Network loginResponse " + loginResponse.networkResponse().toString());
-//                            Log.i(TAG, "onResponse: ItemCache control " + loginResponse.cacheControl().toString());
-//                            Log.i(TAG, "onResponse: Body " + loginResponse.body().string());
-//                            Log.i(TAG, "onResponse: Response headers" + loginResponse.headers().toString());
+//                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Login loginResponse " + loginResponse.toString());
+//                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Network loginResponse " + loginResponse.networkResponse().toString());
+//                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: ItemCache control " + loginResponse.cacheControl().toString());
+//                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Body " + loginResponse.body().string());
+//                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Response headers" + loginResponse.headers().toString());
 
                                 //We want the prior loginResponse headers as there is a redirect
                                 final String res = response.priorResponse().headers().get("set-cookie");
                                 final int startPos = res.indexOf("user=") + 5;
                                 final int endPos = res.indexOf(";");
                                 cookie = res.substring(startPos, endPos);
-                                Log.i(TAG, "onResponse: Header " + response.priorResponse().headers().toString() + "\n\nCookie " + cookie);
+                                if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Header " + response.priorResponse().headers().toString() + "\n\nCookie " + cookie);
                                 checkWithCookie(cookie, false);
                             } catch(Exception e) {
-                                Log.i(TAG, "onResponse: Exception when getting header");
+                                if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Exception when getting header");
                                 listener.loginResponse(false);
                             }
                         } else {

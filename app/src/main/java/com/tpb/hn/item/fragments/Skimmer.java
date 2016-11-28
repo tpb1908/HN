@@ -138,7 +138,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     }
 
     private void setupSkimmer() {
-        Log.i(TAG, "setupSkimmer: " + mViewsReady + " | " + mTextView);
+        if(Analytics.VERBOSE) Log.i(TAG, "setupSkimmer: " + mViewsReady + " | " + mTextView);
         mTextView.setVisibility(View.VISIBLE);
         mSkimmerProgress.setVisibility(View.VISIBLE);
         mTextView.setWpm(SharedPrefsController.getInstance(getContext()).getSkimmerWPM());
@@ -215,7 +215,7 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
 
     @Override
     public void textLoaded(JSONObject result) {
-        Log.i(TAG, "textLoaded: " + result.toString());
+        if(Analytics.VERBOSE) Log.i(TAG, "textLoaded: " + result.toString());
         try {
             mArticle = result.getString("content");
             mContentReady = true;

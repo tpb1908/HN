@@ -217,7 +217,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
 
     @Override
     public void itemError(int id, int code) {
-        Log.i(TAG, "itemError: " + id + " | " + code);
+        if(Analytics.VERBOSE) Log.i(TAG, "itemError: " + id + " | " + code);
     }
 
     private void setTitle(Item item) {

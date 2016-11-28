@@ -169,10 +169,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     @Override
     void bindData() {
         if(mShown) return;
-        Log.i(TAG, "bindData: Binding data " + mShown);
         mShown = true;
         if(mIsShowingPDF) {
-            Log.i(TAG, "bindData: Setting up PDF buttons");
+            if(Analytics.VERBOSE) Log.i(TAG, "bindData: Setting up PDF buttons");
             setupPDFButtons();
         } else {
             if(mType == FragmentPagerAdapter.PageType.BROWSER) {

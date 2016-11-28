@@ -23,6 +23,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
@@ -75,7 +76,7 @@ public class Loader extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "onReceive: Network change");
+        if(Analytics.VERBOSE) Log.i(TAG, "onReceive: Network change");
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = cm.getActiveNetworkInfo();
         online = netInfo != null;
@@ -138,7 +139,7 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onResponse(String response) {
                             final int[] ids = Parser.extractIntArray(response);
-                            Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
+                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
                             loader.idsLoaded(ids);
                             Util.putIntArrayInPrefs(prefs.edit(), url, ids);
                         }
@@ -170,7 +171,7 @@ public class Loader extends BroadcastReceiver {
         networkLoadArticle(item.getUrl(), true, new TextLoader() {
             @Override
             public void textLoaded(JSONObject result) {
-                Log.i(TAG, "textLoaded: save success");
+                if(Analytics.VERBOSE) Log.i(TAG, "textLoaded: save success");
                 try {
                     final String MERCURY = result.getString("content");
                     db.writeItem(item, true, MERCURY);
@@ -191,7 +192,7 @@ public class Loader extends BroadcastReceiver {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
+                if(Analytics.VERBOSE) Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
             }
         });
         wv.loadUrl(item.getUrl());
@@ -335,7 +336,7 @@ public class Loader extends BroadcastReceiver {
                 listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
             listeners.get(url).add(new WeakReference<>(loader));
 
-            Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
+            if(Analytics.VERBOSE) Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
             AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
                     .setTag(url)
                     .setOkHttpClient(APIPaths.MERCURY_CLIENT)
@@ -346,7 +347,7 @@ public class Loader extends BroadcastReceiver {
                         public void onResponse(JSONObject response) {
                             try {
                                 if(response.has("content") && !response.get("content").equals("<div></div>")) {
-                                    Log.i(TAG, "onResponse: " + listeners.get(url));
+                                    if(Analytics.VERBOSE) Log.i(TAG, "onResponse: " + listeners.get(url));
                                     if(listeners.get(url) != null) {
                                         for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                             if(loader.get() == null) {
@@ -398,14 +399,14 @@ public class Loader extends BroadcastReceiver {
                         Log.e(TAG, "itemLoaded: ", jse);
                     }
                 } else {
-                    Log.i(TAG, "itemLoaded: not in cache");
+                    if(Analytics.VERBOSE) Log.i(TAG, "itemLoaded: not in cache");
                     loader.textError("", ERROR_NOT_IN_CACHE);
                 }
             }
 
             @Override
             public void itemError(int id, int code) {
-                Log.i(TAG, "itemError: " + code);
+                if(Analytics.VERBOSE) Log.i(TAG, "itemError: " + code);
                 loader.textError("", code);
             }
         });
@@ -501,7 +502,7 @@ public class Loader extends BroadcastReceiver {
         }
 
         void loadOffline(final idLoader idLoader) {
-            Log.i(TAG, "loadOffline: ");
+            if(Analytics.VERBOSE) Log.i(TAG, "loadOffline: ");
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -509,13 +510,13 @@ public class Loader extends BroadcastReceiver {
                     final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
                     final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(1)});
                     final int[] ids = new int[cursor.getCount()];
-                    Log.i(TAG, "run: " + ids.length);
+                    if(Analytics.VERBOSE) Log.i(TAG, "run: " + ids.length);
                     if(cursor.moveToFirst()) {
                         final int col = cursor.getColumnIndex(KEY_ID);
                         int i = 0;
                         while(i < ids.length) {
                             ids[i] = cursor.getInt(col);
-                            Log.i(TAG, "run: id: " + ids[i]);
+                            if(Analytics.VERBOSE) Log.i(TAG, "run: id: " + ids[i]);
                             cursor.moveToNext();
                             i++;
                         }
@@ -646,7 +647,7 @@ public class Loader extends BroadcastReceiver {
         }
 
         private String buildWhereIn(int size) {
-            Log.i(TAG, "buildWhereIn: Building where for " + size);
+            if(Analytics.VERBOSE) Log.i(TAG, "buildWhereIn: Building where for " + size);
             final StringBuilder builder = new StringBuilder();
             if(size > 0) {
                 String spacer = " ";

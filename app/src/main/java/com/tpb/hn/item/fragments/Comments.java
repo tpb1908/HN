@@ -104,7 +104,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     @Override
     public void itemLoaded(Item item) {
-        Log.i(TAG, "itemLoaded: " + item);
+        if(Analytics.VERBOSE) Log.i(TAG, "itemLoaded: " + item);
         mRootItem = item;
         if(mContextReady) {
             loadComments();
@@ -120,7 +120,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     @Override
     public void commentsLoaded(Comment rootComment) {
-        Log.i(TAG, "commentsLoaded: Comments loaded");
+        if(Analytics.VERBOSE) Log.i(TAG, "commentsLoaded: Comments loaded");
         mRootComment = rootComment;
         mContentReady = true;
         if(mViewsReady) bindData();
@@ -128,7 +128,7 @@ public class Comments extends ContentFragment implements Loader.CommentLoader,
 
     @Override
     public void commentError(int id, int code) {
-        Log.i(TAG, "commentError: " + id + " | " + code);
+        if(Analytics.VERBOSE) Log.i(TAG, "commentError: " + id + " | " + code);
     }
 
     @Override

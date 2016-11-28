@@ -2,7 +2,6 @@ package com.tpb.hn.data;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.util.Pair;
 
 import com.tpb.hn.R;
@@ -17,7 +16,6 @@ public class Formatter {
 
     public static String timeAgo(long time) {
         final long now = System.currentTimeMillis() / 1000;
-        Log.i(TAG, "timeAgo: " + time + " | " + now);
         final long delta = (now - time);
         if(delta / (365 * 24 * 3600) > 0) {
             final long div = delta / (365 * 24 * 3600);
@@ -46,7 +44,6 @@ public class Formatter {
 
     public static String shortTimeAgo(long time) {
         final long now = System.currentTimeMillis() / 1000;
-        Log.i(TAG, "shortTimeAgo: " + time + " | " + now);
         final long delta = (now - time);
 
         if(delta / (365 * 24 * 3600) > 0) {

@@ -6,6 +6,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.data.User;
 import com.tpb.hn.network.APIPaths;
 
@@ -26,7 +27,7 @@ public class UserLoader {
     }
 
     public void loadUser(String id) {
-        Log.i(TAG, "loadUser: Url " + APIPaths.getUserPath(id));
+        if(Analytics.VERBOSE) Log.i(TAG, "loadUser: Url " + APIPaths.getUserPath(id));
         AndroidNetworking.get(APIPaths.getUserPath(id))
                 .setTag(id)
                 .setPriority(Priority.IMMEDIATE)
@@ -37,7 +38,7 @@ public class UserLoader {
                         try {
                             final User user = Parser.parseUser(response);
                             if(userListener != null) userListener.userLoaded(user);
-                            Log.i(TAG, "onResponse: " + user.toString());
+                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: " + user.toString());
                         } catch(Exception e) {
                             Log.e(TAG, "onResponse: ", e);
                         }

@@ -18,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.content.DividerItemDecoration;
@@ -114,6 +115,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         }
     }
 
+
     @Override
     public int getItemCount() {
         return mVisibleItems.size();
@@ -132,12 +134,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         mComments.get(cPos).childrenVisible = visibility;
         int end = cPos + 1;
         for(; end < mComments.size(); end++) {
-            Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
+            if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
             if(mComments.get(end).depth > depth) {
                 mComments.get(end).visible = visibility;
             } else break;
         }
-        Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
+        if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
         if(cPos != end) {
             buildPositions();
             if(visibility) {
@@ -158,10 +160,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         mRootComment = comment;
 
-        Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
+        if(Analytics.VERBOSE) Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
         if(!mRootComment.getChildren().equals("")) {
-            Log.i(TAG, "loadComment: Beginning flattening");
+            if(Analytics.VERBOSE) Log.i(TAG, "loadComment: Beginning flattening");
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {

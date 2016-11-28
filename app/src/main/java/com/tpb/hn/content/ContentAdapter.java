@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
@@ -96,7 +97,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(mIsContent) {
                     loadItems(mCurrentPage);
                 } else {
-                    Log.i(TAG, "onRefresh: Reopening user");
+                    if(Analytics.VERBOSE) Log.i(TAG, "onRefresh: Reopening user");
                     mIds = new int[0];
                     notifyDataSetChanged();
                     mManager.openUser(null);
@@ -106,14 +107,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
         });
+
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 //TODO Snappy scrolling
+
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     loadItemsOnScroll(false);
                 }
+
             }
 
         });
@@ -131,6 +135,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
+
         final HolderSwipeCallback callback = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
@@ -203,7 +208,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void loadItemsOnScroll(boolean fastScroll) {
-        Log.i(TAG, "loadItemsOnScroll: ");
+        if(Analytics.VERBOSE) Log.i(TAG, "loadItemsOnScroll: ");
         int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(pos > mLastPosition && pos < mData.length && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
@@ -268,7 +273,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
         mLoader.getIds(page, this);
         mCountGuess = Util.getApproximateNumberOfItems(mCurrentPage);
-        Log.i(TAG, "loadItems: page selected");
+        if(Analytics.VERBOSE) Log.i(TAG, "loadItems: page selected");
         if(mIds.length == 0) mIds = new int[mCountGuess];
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mLastUpdateTime = new Date().getTime() / 1000;
@@ -292,12 +297,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void itemError(int id, int code) {
-        Log.i(TAG, "itemError: " + id + " | " + code);
+        if(Analytics.VERBOSE) Log.i(TAG, "itemError: " + id + " | " + code);
     }
 
     @Override
     public void idsLoaded(int[] ids) {
-        Log.i(TAG, "IdLoadDone: " + ids.length);
+        if(Analytics.VERBOSE) Log.i(TAG, "IdLoadDone: " + ids.length);
         this.mIds = ids;
         int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {

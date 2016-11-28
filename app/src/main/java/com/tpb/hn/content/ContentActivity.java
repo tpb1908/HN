@@ -167,7 +167,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
          */
             final boolean dark = (time >= times.first && time < times.second) //Standard s t e
                     || (time < times.first && times.second < times.first && time < times.second); // s mid t e
-            Log.i(TAG, "checkThemeChange: " + dark);
+            if(Analytics.VERBOSE) Log.i(TAG, "checkThemeChange: " + dark);
             if(dark != prefs.getUseDarkTheme()) {
                 if(!showDialog) {
                     prefs.setUseDarkTheme(dark);
@@ -214,7 +214,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         final boolean shouldRestart = data.getBooleanExtra("restart", false);
-        Log.i(TAG, "onActivityResult: " + shouldRestart);
+        if(Analytics.VERBOSE) Log.i(TAG, "onActivityResult: " + shouldRestart);
         if(shouldRestart) {
             recreate();
         }
@@ -233,7 +233,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void loginResponse(boolean success) {
-        Log.i(TAG, "loginResponse: Was login successful ? " + success);
+        if(Analytics.VERBOSE) Log.i(TAG, "loginResponse: Was login successful ? " + success);
     }
 
     @Override
