@@ -129,6 +129,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         final HolderSwipeCallback callback = new HolderSwipeCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, "Left", "Right") {
             @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                final int pos = viewHolder.getAdapterPosition();
+                return (pos >= 0 && pos < mData.length && mData[pos] != null &&
+                        !mData[pos].isComment() && !mData[pos].isDeleted()) ?
+                        super.getSwipeDirs(recyclerView, viewHolder) : 0;
+            }
+
+            @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 notifyItemChanged(viewHolder.getAdapterPosition());
                 final int pos = viewHolder.getAdapterPosition();
@@ -196,7 +204,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void loadItemsOnScroll(boolean fastScroll) {
-        if(Analytics.VERBOSE) Log.i(TAG, "loadItemsOnScroll: ");
         int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(pos > mLastPosition && pos < mData.length && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
