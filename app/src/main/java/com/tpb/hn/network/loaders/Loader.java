@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
@@ -53,6 +54,7 @@ public class Loader extends BroadcastReceiver {
     private static final HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
     private final SharedPreferences prefs;
     private boolean online = false;
+    private boolean loadingSaved = false;
     private final ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
     private final DB db;
 
@@ -124,11 +126,13 @@ public class Loader extends BroadcastReceiver {
                 url = APIPaths.getJobPath();
                 break;
             case "saved":
-                db.loadOffline(loader);
+                loadingSaved = true;
+                db.loadSaved(loader);
                 return;
             default:
                 url = "";
         }
+        loadingSaved = false;
         Log.d(TAG, "getIds: " + url);
         if(online) {
             AndroidNetworking.get(url)
@@ -205,7 +209,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadItem(final int id, final ItemLoader loader) {
-        if(online) {
+        if(online && !loadingSaved) {
             networkLoadItem(id, loader);
         } else {
             cacheLoadItem(id, loader);
@@ -244,7 +248,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadItems(final int[] ids, final boolean background, ItemLoader loader) {
-        if(online) {
+        if(online && !loadingSaved) {
             networkLoadItems(ids, background, loader);
         } else if(!background) {
             cacheLoadItems(ids, loader);
@@ -287,7 +291,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadChildren(final int id, CommentLoader loader) {
-        if(online) {
+        if(online && !loadingSaved) {
             networkLoadChildren(id, loader);
         } else {
             cacheLoadChildren(id);
@@ -487,6 +491,7 @@ public class Loader extends BroadcastReceiver {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            Log.i(TAG, "onCreate: Creating DB");
             final String CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE +
                     "( " +
                     KEY_ID + " INTEGER PRIMARY KEY, " +
@@ -503,13 +508,14 @@ public class Loader extends BroadcastReceiver {
 
         }
 
-        void loadOffline(final idLoader idLoader) {
-            if(Analytics.VERBOSE) Log.i(TAG, "loadOffline: ");
+        void loadSaved(final idLoader idLoader) {
+            if(Analytics.VERBOSE) Log.i(TAG, "loadSaved: ");
             AsyncTask.execute(() -> {
-                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final SQLiteDatabase db = DB.this.getReadableDatabase();
                 final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
-                final Cursor cursor = db1.rawQuery(QUERY, new String[] {Integer.toString(1)});
+                final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(1)});
                 final int[] ids = new int[cursor.getCount()];
+                Log.i(TAG, "loadSaved: " + cursor.getCount());
                 if(Analytics.VERBOSE) Log.i(TAG, "run: " + ids.length);
                 if(cursor.moveToFirst()) {
                     final int col = cursor.getColumnIndex(KEY_ID);
@@ -521,6 +527,7 @@ public class Loader extends BroadcastReceiver {
                         i++;
                     }
                 }
+                if(Analytics.VERBOSE) Log.i(TAG, "loadSaved: " + ids.length);
                 cursor.close();
                 new Handler(Looper.getMainLooper()).post(() -> idLoader.idsLoaded(ids));
             });
@@ -528,9 +535,9 @@ public class Loader extends BroadcastReceiver {
 
         void readItem(final int id, final ItemLoader loader) {
             AsyncTask.execute(() -> {
-                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final SQLiteDatabase db = DB.this.getReadableDatabase();
                 final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
-                final Cursor cursor = db1.rawQuery(QUERY, new String[] {Integer.toString(id)});
+                final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(id)});
                 final Handler handler = new Handler(Looper.getMainLooper());
                 if(cursor.moveToFirst()) {
                     final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
@@ -584,10 +591,33 @@ public class Loader extends BroadcastReceiver {
         }
 
         void writeItem(final Item item, final boolean saved, final String mercury) {
-            AsyncTask.execute(() -> DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
-                    null,
-                    itemToCV(item, saved, mercury),
-                    SQLiteDatabase.CONFLICT_REPLACE));
+            AsyncTask.execute(() -> {
+                if(item.isSaved()) {
+                DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
+                        null,
+                        itemToCV(item, saved, mercury),
+                        SQLiteDatabase.CONFLICT_REPLACE);
+                } else {
+                    String JSON = "";
+                    try {
+                        JSON = Parser.itemJSON(item);
+                    } catch(JSONException jse) {
+                        Log.e(TAG, "writeItem: ", jse);
+                    }
+                    final String SQL = "INSERT OR REPLACE INTO " + TABLE + " ( " + KEY_ID + ", " + KEY_JSON + ", " + KEY_MERCURY + ", " + KEY_SAVED + ") " +
+                            "VALUES  ( " + item.getId() + ", " + escape(JSON) + ", " + escape(mercury) + ", " +
+                            "COALESCE((SELECT " + KEY_SAVED + " FROM " + TABLE + " WHERE " + KEY_ID + " = " + item.getId() + "), " + (item.isSaved() ? 1 : 0) + ") " +
+                            ");";
+                    DB.this.getWritableDatabase().execSQL(SQL);
+                    //TODO- Stop the saved column being overwritten
+                }
+                //DB.this.getWritableDatabase().execSQL("UPDATE " + TABLE + " SET " + KEY_JSON + "=" + Parser.itemJSON(item) + );
+            });
+
+        }
+
+        private static String escape(String s) {
+            return DatabaseUtils.sqlEscapeString(s);
         }
 
         private ContentValues itemToCV(Item item, boolean saved, String mercury) {
