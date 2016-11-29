@@ -100,9 +100,12 @@ public class Util {
     }
 
     public static CharSequence parseHTMLText(String text) {
-        if(text.endsWith("\n\n")) text = text.substring(0, Math.max(text.length() - 2, 0));
-
         return Html.fromHtml(text);
+    }
+
+    public static CharSequence parseHTMLCommentText(String text) {
+        final String html = Html.fromHtml(text).toString();
+        return html.substring(0, Math.max(html.length() - 2, 0));
     }
 
     public static int getApproximateNumberOfItems(String page) {

@@ -87,7 +87,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final CommentWrapper comment = mComments.get(mVisibleItems.get(pos));
         if(comment.parsedText == null) {
             if(comment.comment.getText() != null) {
-               comment.parsedText = Util.parseHTMLText(comment.comment.getText());
+               comment.parsedText = Util.parseHTMLCommentText(comment.comment.getText());
             }
         }
         holder.mBody.setText(comment.parsedText);

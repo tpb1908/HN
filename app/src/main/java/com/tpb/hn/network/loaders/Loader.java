@@ -368,7 +368,9 @@ public class Loader extends BroadcastReceiver {
 
                         @Override
                         public void onError(ANError anError) {
-                            for(WeakReference<TextLoader> loader : listeners.get(url)) {
+                            final ArrayList<WeakReference<TextLoader>> get = listeners.get(url);
+                            for(int i = 0, getSize = get.size(); i < getSize; i++) {
+                                WeakReference<TextLoader> loader = get.get(i);
                                 if(loader.get() != null)
                                     loader.get().textError(url, ERROR_NETWORK_CHANGE);
                             }
