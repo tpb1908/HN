@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.tpb.hn.data.Formatter;
@@ -33,22 +32,17 @@ import butterknife.OnClick;
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
-    @BindViews({R.id.title_settings_theme, R.id.title_settings_content, R.id.title_settings_comments, R.id.title_settings_browser, R.id.title_settings_data, R.id.title_settings_info}) private List<TextView> mSettingsTitles;
-    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info}) private List<ExpandableRelativeLayout> mSettings;
+    @BindViews({R.id.title_settings_theme, R.id.title_settings_content, R.id.title_settings_comments, R.id.title_settings_browser, R.id.title_settings_data, R.id.title_settings_info}) List<TextView> mSettingsTitles;
+    @BindViews({R.id.settings_theme, R.id.settings_content, R.id.settings_comments, R.id.settings_browser, R.id.settings_data, R.id.settings_info}) List<ExpandableRelativeLayout> mSettings;
     private final ButterKnife.Action<View> TOGGLE = new ButterKnife.Action<View>() {
         @Override
         public void apply(@NonNull View view, final int index) {
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mSettings.get(index).toggle();
-                }
-            });
+            view.setOnClickListener(view1 -> mSettings.get(index).toggle());
         }
     };
-    @BindView(R.id.toolbar) private Toolbar mToolbar;
-    @BindView(R.id.settings_text_auto_start) private TextView mThemeStart;
-    @BindView(R.id.settings_text_auto_end) private TextView mThemeEnd;
+    @BindView(R.id.toolbar)  Toolbar mToolbar;
+    @BindView(R.id.settings_text_auto_start)  TextView mThemeStart;
+    @BindView(R.id.settings_text_auto_end) TextView mThemeEnd;
     private SharedPrefsController prefs;
 
     private boolean restartRequired = false;
@@ -168,16 +162,13 @@ public class SettingsActivity extends AppCompatActivity {
     public void onTimeClick(View view) {
         final boolean start = view.getId() == R.id.settings_text_auto_start;
         final int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        final TimePickerDialog picker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int h, int m) {
-                if(start) {
-                    mThemeStart.setText(Formatter.hmToString(h, m, ":"));
-                    prefs.setDarkTimes(Formatter.hmToInt(h, m), prefs.getDarkTimeRange().second);
-                } else {
-                    mThemeEnd.setText(Formatter.hmToString(h, m, ":"));
-                    prefs.setDarkTimes(prefs.getDarkTimeRange().first, Formatter.hmToInt(h, m));
-                }
+        final TimePickerDialog picker = new TimePickerDialog(this, (timePicker, h, m) -> {
+            if(start) {
+                mThemeStart.setText(Formatter.hmToString(h, m, ":"));
+                prefs.setDarkTimes(Formatter.hmToInt(h, m), prefs.getDarkTimeRange().second);
+            } else {
+                mThemeEnd.setText(Formatter.hmToString(h, m, ":"));
+                prefs.setDarkTimes(prefs.getDarkTimeRange().first, Formatter.hmToInt(h, m));
             }
         }, hour, 0, true);
 

@@ -332,8 +332,8 @@ public class Loader extends BroadcastReceiver {
         if(url.endsWith(".pdf")) {
             loader.textError(url, ERROR_PDF);
         } else {
-            if(listeners.get(url) == null)
-                listeners.put(url, new ArrayList<WeakReference<TextLoader>>());
+            //Ignore Intellij. This can only be replaced with a single method in API 24+
+            if(listeners.get(url) == null) listeners.put(url, new ArrayList<>());
             listeners.get(url).add(new WeakReference<>(loader));
 
             if(Analytics.VERBOSE) Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
@@ -503,116 +503,77 @@ public class Loader extends BroadcastReceiver {
 
         void loadOffline(final idLoader idLoader) {
             if(Analytics.VERBOSE) Log.i(TAG, "loadOffline: ");
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final SQLiteDatabase db = DB.this.getReadableDatabase();
-                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
-                    final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(1)});
-                    final int[] ids = new int[cursor.getCount()];
-                    if(Analytics.VERBOSE) Log.i(TAG, "run: " + ids.length);
-                    if(cursor.moveToFirst()) {
-                        final int col = cursor.getColumnIndex(KEY_ID);
-                        int i = 0;
-                        while(i < ids.length) {
-                            ids[i] = cursor.getInt(col);
-                            if(Analytics.VERBOSE) Log.i(TAG, "run: id: " + ids[i]);
-                            cursor.moveToNext();
-                            i++;
-                        }
+            AsyncTask.execute(() -> {
+                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
+                final Cursor cursor = db1.rawQuery(QUERY, new String[] {Integer.toString(1)});
+                final int[] ids = new int[cursor.getCount()];
+                if(Analytics.VERBOSE) Log.i(TAG, "run: " + ids.length);
+                if(cursor.moveToFirst()) {
+                    final int col = cursor.getColumnIndex(KEY_ID);
+                    int i = 0;
+                    while(i < ids.length) {
+                        ids[i] = cursor.getInt(col);
+                        if(Analytics.VERBOSE) Log.i(TAG, "run: id: " + ids[i]);
+                        cursor.moveToNext();
+                        i++;
                     }
-                    cursor.close();
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            idLoader.idsLoaded(ids);
-                        }
-                    });
                 }
+                cursor.close();
+                new Handler(Looper.getMainLooper()).post(() -> idLoader.idsLoaded(ids));
             });
         }
 
         void readItem(final int id, final ItemLoader loader) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final SQLiteDatabase db = DB.this.getReadableDatabase();
-                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
-                    final Cursor cursor = db.rawQuery(QUERY, new String[] {Integer.toString(id)});
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    if(cursor.moveToFirst()) {
-                        final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
-                        try {
-                            final Item item = Parser.parseItem(new JSONObject(JSON));
-                            item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loader.itemLoaded(item);
-                                }
-                            });
+            AsyncTask.execute(() -> {
+                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + " = ? LIMIT 1";
+                final Cursor cursor = db1.rawQuery(QUERY, new String[] {Integer.toString(id)});
+                final Handler handler = new Handler(Looper.getMainLooper());
+                if(cursor.moveToFirst()) {
+                    final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                    try {
+                        final Item item = Parser.parseItem(new JSONObject(JSON));
+                        item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
+                        handler.post(() -> loader.itemLoaded(item));
 
-                        } catch(JSONException jse) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loader.itemError(id, ERROR_PARSING);
-                                }
-                            });
+                    } catch(JSONException jse) {
+                        handler.post(() -> loader.itemError(id, ERROR_PARSING));
 
-                        }
-                    } else {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                loader.itemError(id, ERROR_NOT_IN_CACHE);
-                            }
-                        });
                     }
-                    cursor.close();
+                } else {
+                    handler.post(() -> loader.itemError(id, ERROR_NOT_IN_CACHE));
                 }
+                cursor.close();
             });
         }
 
         void readItems(final int[] ids, final ItemLoader loader) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final SQLiteDatabase db = DB.this.getReadableDatabase();
-                    final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + buildWhereIn(ids.length);
-                    final Cursor cursor = db.rawQuery(QUERY, intArToStrAr(ids));
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    if(cursor.moveToFirst()) {
-                        do {
-                            final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
-                            final int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
-                            try {
-                                final Item item = Parser.parseItem(new JSONObject(JSON));
-                                item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        loader.itemLoaded(item);
-                                    }
-                                });
-                            } catch(JSONException jse) {
-                                Log.e(TAG, "run: Loading from db " + JSON, jse);
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        loader.itemError(id, ERROR_PARSING);
-                                    }
-                                });
+            AsyncTask.execute(() -> {
+                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + buildWhereIn(ids.length);
+                final Cursor cursor = db1.rawQuery(QUERY, intArToStrAr(ids));
+                final Handler handler = new Handler(Looper.getMainLooper());
+                if(cursor.moveToFirst()) {
+                    do {
+                        final String JSON = cursor.getString(cursor.getColumnIndex(KEY_JSON));
+                        final int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                        try {
+                            final Item item = Parser.parseItem(new JSONObject(JSON));
+                            item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
+                            handler.post(() -> loader.itemLoaded(item));
+                        } catch(JSONException jse) {
+                            Log.e(TAG, "run: Loading from db " + JSON, jse);
+                            handler.post(() -> loader.itemError(id, ERROR_PARSING));
 
-                            }
-                        } while(cursor.moveToNext());
-                    } else {
-                        Log.e(TAG, "run: ", new Exception("Couldn't find any of the ids"));
-                        //TODO- Handle multiple errors
-                    }
-
-                    cursor.close();
+                        }
+                    } while(cursor.moveToNext());
+                } else {
+                    Log.e(TAG, "run: ", new Exception("Couldn't find any of the ids"));
+                    //TODO- Handle multiple errors
                 }
+
+                cursor.close();
             });
         }
 
@@ -621,15 +582,10 @@ public class Loader extends BroadcastReceiver {
         }
 
         void writeItem(final Item item, final boolean saved, final String mercury) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
-                            null,
-                            itemToCV(item, saved, mercury),
-                            SQLiteDatabase.CONFLICT_REPLACE);
-                }
-            });
+            AsyncTask.execute(() -> DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
+                    null,
+                    itemToCV(item, saved, mercury),
+                    SQLiteDatabase.CONFLICT_REPLACE));
         }
 
         private ContentValues itemToCV(Item item, boolean saved, String mercury) {

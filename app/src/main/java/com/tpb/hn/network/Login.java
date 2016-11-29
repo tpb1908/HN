@@ -8,9 +8,6 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.tpb.hn.Analytics;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -45,16 +42,13 @@ public class Login {
 
     private static OkHttpClient buildWithUserCookie(final String cookie) {
         return new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        final Request orig = chain.request();
+                .addInterceptor(chain -> {
+                    final Request orig = chain.request();
 
-                        final Request authorised = orig.newBuilder()
-                                .addHeader("Cookie", "user=" + cookie)
-                                .build();
-                        return chain.proceed(authorised);
-                    }
+                    final Request authorised = orig.newBuilder()
+                            .addHeader("Cookie", "user=" + cookie)
+                            .build();
+                    return chain.proceed(authorised);
                 })
                 .build();
     }

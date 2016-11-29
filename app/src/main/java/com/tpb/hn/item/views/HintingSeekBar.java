@@ -41,21 +41,11 @@ public class HintingSeekBar extends SeekBar {
     }
 
     public void setPercentageProvider() {
-        mProvider = new SeekHintProvider() {
-            @Override
-            public String getHint(int progress) {
-                return Integer.toString((int) (100 * progress / (float) getMax()));
-            }
-        };
+        mProvider = progress -> Integer.toString((int) (100 * progress / (float) getMax()));
     }
 
     public void setProgressProvider() {
-        mProvider = new SeekHintProvider() {
-            @Override
-            public String getHint(int progress) {
-                return Integer.toString(progress);
-            }
-        };
+        mProvider = Integer::toString;
     }
 
     public void setTextColor(int color) {

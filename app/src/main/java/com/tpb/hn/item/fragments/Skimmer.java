@@ -41,10 +41,10 @@ import butterknife.Unbinder;
 
 public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = Skimmer.class.getSimpleName();
-    @BindView(R.id.skimmer_text_view) private SpritzerTextView mTextView;
-    @BindView(R.id.skimmer_progress) private HintingSeekBar mSkimmerProgress;
-    @BindView(R.id.skimmer_error_textview) private TextView mErrorView;
-    @BindView(R.id.spritzer_swiper) private SwipeRefreshLayout mSwiper;
+    @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
+    @BindView(R.id.skimmer_progress)  HintingSeekBar mSkimmerProgress;
+    @BindView(R.id.skimmer_error_textview)  TextView mErrorView;
+    @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
     private Tracker mTracker;
     private Unbinder unbinder;
     private ItemViewActivity mParent;
@@ -160,27 +160,19 @@ public class Skimmer extends ContentFragment implements Loader.ItemLoader, Loade
     @Override
     public void onResumeFragment() {
         mParent.setUpFab(R.drawable.ic_refresh,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mTextView.setSpritzText(mArticle);
-                        mTextView.getSpritzer().start();
-                        if(Build.VERSION.SDK_INT >= 24) {
-                            mSkimmerProgress.setProgress(0, true);
-                        } else {
-                            mSkimmerProgress.setProgress(0);
-                        }
-                /*
-                In order to skip one word, we have to wait
-                for one minute / words per minute
-                 */
-                        mTextView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTextView.getSpritzer().pause();
-                            }
-                        }, 60000 / mTextView.getSpritzer().getWpm());
+                view -> {
+                    mTextView.setSpritzText(mArticle);
+                    mTextView.getSpritzer().start();
+                    if(Build.VERSION.SDK_INT >= 24) {
+                        mSkimmerProgress.setProgress(0, true);
+                    } else {
+                        mSkimmerProgress.setProgress(0);
                     }
+            /*
+            In order to skip one word, we have to wait
+            for one minute / words per minute
+             */
+                    mTextView.postDelayed(() -> mTextView.getSpritzer().pause(), 60000 / mTextView.getSpritzer().getWpm());
                 });
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());

@@ -47,8 +47,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Loader.idLoader,
         FastScrollRecyclerView.SectionedAdapter {
     private static final String TAG = ContentAdapter.class.getSimpleName();
-    @BindColor(R.color.colorPrimaryText) private int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) private int darkText;
+    @BindColor(R.color.colorPrimaryText) int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
     private final Context mContext;
     private final Loader mLoader;
     private String mCurrentPage;
@@ -88,20 +88,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mLastUpdateTime = new Date().getTime() / 1000;
         mLayoutManager = layoutManager;
 
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if(mIsContent) {
-                    loadItems(mCurrentPage);
-                } else {
-                    if(Analytics.VERBOSE) Log.i(TAG, "onRefresh: Reopening user");
-                    mIds = new int[0];
-                    notifyDataSetChanged();
-                    mManager.openUser(null);
-                }
-                if(mShouldScrollOnChange) {
-                    mRecycler.scrollToPosition(0);
-                }
+        swiper.setOnRefreshListener(() -> {
+            if(mIsContent) {
+                loadItems(mCurrentPage);
+            } else {
+                if(Analytics.VERBOSE) Log.i(TAG, "onRefresh: Reopening user");
+                mIds = new int[0];
+                notifyDataSetChanged();
+                mManager.openUser(null);
+            }
+            if(mShouldScrollOnChange) {
+                mRecycler.scrollToPosition(0);
             }
         });
 
@@ -114,21 +111,18 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     loadItemsOnScroll(false);
                 }
-
             }
-
         });
 
         if(recycler instanceof FastScrollRecyclerView) {
             ((FastScrollRecyclerView) recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
-                public void onFastScrollStart() {
-
-                }
-
-                @Override
                 public void onFastScrollStop() {
                     loadItemsOnScroll(true);
+                }
+                @Override
+                public void onFastScrollStart() {
+
                 }
             });
         }
@@ -168,12 +162,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         };
         callback.setColor(darkText);
         new ItemTouchHelper(callback).attachToRecyclerView(recycler);
-        mLoader.addNetworkListener(new Loader.NetworkChangeListener() {
-            @Override
-            public void networkStateChange(boolean netAvailable) {
-                mIsOffline = !netAvailable;
-                notifyDataSetChanged();
-            }
+        mLoader.addNetworkListener(netAvailable -> {
+            mIsOffline = !netAvailable;
+            notifyDataSetChanged();
         });
     }
 
@@ -319,17 +310,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     void beginBackgroundLoading() {
         if(mLoadInBackground) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final int[] notLoaded = new int[mIds.length];
-                    int count = 0;
-                    for(int i = 0; i < mIds.length; i++) {
-                        if(mData[i] == null) notLoaded[count++] = mIds[i];
-                    }
-
-                    mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), false, ContentAdapter.this);
+            AsyncTask.execute(() -> {
+                final int[] notLoaded = new int[mIds.length];
+                int count = 0;
+                for(int i = 0; i < mIds.length; i++) {
+                    if(mData[i] == null) notLoaded[count++] = mIds[i];
                 }
+
+                mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), false, ContentAdapter.this);
             });
         }
     }
@@ -558,12 +546,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            mBody.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ContentAdapter.this.openItem(getAdapterPosition(), null);
-                }
-            });
+            mBody.setOnClickListener(view -> ContentAdapter.this.openItem(getAdapterPosition(), null));
         }
 
     }

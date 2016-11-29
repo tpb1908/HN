@@ -43,16 +43,16 @@ import butterknife.OnLongClick;
 public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLoader, FragmentPagerAdapter.Fullscreen, CommentAdapter.UserOpener {
     private static final String TAG = ItemViewActivity.class.getSimpleName();
     public static Item mLaunchItem;
-    @BindView(R.id.item_toolbar) private Toolbar mStoryToolbar;
-    @BindView(R.id.item_viewpager) private LockableViewPager mStoryPager;
-    @BindView(R.id.item_appbar) private AppBarLayout mStoryAppbar;
-    @BindView(R.id.item_tabs) private TabLayout mStoryTabs;
-    @BindView(R.id.item_title) private TextView mTitle;
-    @BindView(R.id.item_url) private TextView mUrl;
-    @BindView(R.id.item_stats) private TextView mStats;
-    @BindView(R.id.item_author) private TextView mAuthor;
-    @BindView(R.id.item_fab) private FloatingActionButton mFab;
-    @BindView(R.id.item_back_button) private ImageButton mBackButton;
+    @BindView(R.id.item_toolbar)  Toolbar mStoryToolbar;
+    @BindView(R.id.item_viewpager)  LockableViewPager mStoryPager;
+    @BindView(R.id.item_appbar)  AppBarLayout mStoryAppbar;
+    @BindView(R.id.item_tabs)  TabLayout mStoryTabs;
+    @BindView(R.id.item_title)  TextView mTitle;
+    @BindView(R.id.item_url)  TextView mUrl;
+    @BindView(R.id.item_stats)  TextView mStats;
+    @BindView(R.id.item_author)  TextView mAuthor;
+    @BindView(R.id.item_fab)  FloatingActionButton mFab;
+    @BindView(R.id.item_back_button)  ImageButton mBackButton;
     private Tracker mTracker;
     private Item mRootItem;
     private FragmentPagerAdapter mAdapter;
@@ -116,11 +116,8 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
                 if(launchIntent.getSerializableExtra("type") != null) {
                     final FragmentPagerAdapter.PageType type = (FragmentPagerAdapter.PageType) launchIntent.getSerializableExtra("type");
                     final int index = mAdapter.indexOf(type);
-                    mStoryPager.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(index != -1) mStoryPager.setCurrentItem(index);
-                        }
+                    mStoryPager.post(() -> {
+                        if(index != -1) mStoryPager.setCurrentItem(index);
                     });
 
                 }
@@ -135,8 +132,8 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
         mLaunchItem = item;
         startActivity(new Intent(ItemViewActivity.this, UserViewActivity.class),
                 ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                        Pair.create((View) mBackButton, "button"),
-                        Pair.create((View) mStoryAppbar, "appbar")).toBundle());
+                        Pair.create(mBackButton, "button"),
+                        Pair.create(mStoryAppbar, "appbar")).toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 
@@ -172,12 +169,9 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     @Override
     protected void onResume() {
         super.onResume();
-        mFab.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mShouldShowFab = true;
-                showFab();
-            }
+        mFab.postDelayed(() -> {
+            mShouldShowFab = true;
+            showFab();
         }, 300);
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());

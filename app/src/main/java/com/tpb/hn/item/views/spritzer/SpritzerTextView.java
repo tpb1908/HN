@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
 import com.tpb.hn.item.views.HintingSeekBar;
@@ -114,36 +112,28 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
                 .autoDismiss(false)
                 .input(String.format(getContext().getString(R.string.hint_wpm_input), mSpritzer.getWpm()),
                         null,
-                        new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                boolean error = false;
-                                try {
-                                    final int wpm = Integer.parseInt(input.toString());
-                                    if(wpm > 2000) {
-                                        error = true;
-                                    } else {
-                                        prefs.setSkimmerWPM(wpm);
-                                        mSpritzer.setWpm(wpm);
-                                    }
-                                } catch(Exception e) {
+                        (dialog, input) -> {
+                            boolean error = false;
+                            try {
+                                final int wpm = Integer.parseInt(input.toString());
+                                if(wpm > 2000) {
                                     error = true;
-                                }
-
-                                if(error) {
-                                    dialog.getInputEditText().setError(getContext().getString(R.string.error_wpm_input));
                                 } else {
-                                    dialog.dismiss();
+                                    prefs.setSkimmerWPM(wpm);
+                                    mSpritzer.setWpm(wpm);
                                 }
+                            } catch(Exception e) {
+                                error = true;
+                            }
+
+                            if(error) {
+                                dialog.getInputEditText().setError(getContext().getString(R.string.error_wpm_input));
+                            } else {
+                                dialog.dismiss();
                             }
                         })
                 .canceledOnTouchOutside(true)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .cancelable(true)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)

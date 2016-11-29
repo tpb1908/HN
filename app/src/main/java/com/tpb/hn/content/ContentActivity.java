@@ -54,12 +54,12 @@ import butterknife.ButterKnife;
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
     public static Item mLaunchItem;
-    @BindView(R.id.content_toolbar) private Toolbar mContentToolbar;
-    @BindView(R.id.content_appbar) private AppBarLayout mAppBar;
-    @BindView(R.id.nav_spinner) private Spinner mNavSpinner;
-    @BindView(R.id.content_recycler) private FastScrollRecyclerView mRecycler;
-    @BindView(R.id.content_swiper) private SwipeRefreshLayout mRefreshSwiper;
-    @BindView(R.id.content_subtitle) private TextView mSubtitle;
+    @BindView(R.id.content_toolbar)  Toolbar mContentToolbar;
+    @BindView(R.id.content_appbar)  AppBarLayout mAppBar;
+    @BindView(R.id.nav_spinner)  Spinner mNavSpinner;
+    @BindView(R.id.content_recycler)  FastScrollRecyclerView mRecycler;
+    @BindView(R.id.content_swiper)  SwipeRefreshLayout mRefreshSwiper;
+    @BindView(R.id.content_subtitle)  TextView mSubtitle;
     private Tracker mTracker;
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
@@ -106,17 +106,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
             }
         });
+
+
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
 
-//        if(!Util.isNetworkAvailable(getApplicationContext())) {
-//            Snackbar.make(findViewById(android.R.id.content), "Offline. Load form cache? ", Snackbar.LENGTH_INDEFINITE).setAction("Load", new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                }
-//            }).show();
-//        }
 
         final Handler timeAgoHandler = new Handler();
         timeAgoHandler.postDelayed(new Runnable() {

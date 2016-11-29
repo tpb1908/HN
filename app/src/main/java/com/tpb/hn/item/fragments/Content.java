@@ -12,18 +12,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -59,18 +56,18 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         FragmentPagerAdapter.FragmentCycleListener,
         AdBlockingWebView.LinkHandler {
     private static final String TAG = Content.class.getSimpleName();
-    @BindColor(R.color.md_grey_50) private int lightBG;
-    @BindColor(R.color.md_grey_bg) private int darkBG;
-    @BindColor(R.color.colorPrimaryText) private int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) private int darkText;
-    @BindView(R.id.fullscreen) private LinearLayout mFullscreen;
-    @BindView(R.id.webview_swiper) private SwipeRefreshLayout mSwiper;
-    @BindView(R.id.webview_scroller) private NestedScrollView mScrollView;
-    @BindView(R.id.webview) private AdBlockingWebView mWebView;
-    @BindView(R.id.content_fragment_toolbar) private android.widget.Toolbar mToolbar;
-    @BindView(R.id.content_progressbar) private ProgressBar mProgressBar;
-    @BindView(R.id.content_toolbar_switcher) private ViewSwitcher mSwitcher;
-    @BindView(R.id.content_find_edittext) private EditText mFindEditText;
+    @BindColor(R.color.md_grey_50)  int lightBG;
+    @BindColor(R.color.md_grey_bg)  int darkBG;
+    @BindColor(R.color.colorPrimaryText)  int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse)  int darkText;
+    @BindView(R.id.fullscreen)  LinearLayout mFullscreen;
+    @BindView(R.id.webview_swiper)  SwipeRefreshLayout mSwiper;
+    @BindView(R.id.webview_scroller)  NestedScrollView mScrollView;
+    @BindView(R.id.webview)  AdBlockingWebView mWebView;
+    @BindView(R.id.content_fragment_toolbar)  android.widget.Toolbar mToolbar;
+    @BindView(R.id.content_progressbar)  ProgressBar mProgressBar;
+    @BindView(R.id.content_toolbar_switcher)  ViewSwitcher mSwitcher;
+    @BindView(R.id.content_find_edittext)  EditText mFindEditText;
     private Tracker mTracker;
     private Unbinder unbinder;
     private ItemViewActivity mParent;
@@ -112,7 +109,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setLinkHandler(this);
         mWebView.setShouldBlockAds(prefs.getBlockAds());
-        mWebView.setCacheEnabled(true);
+        mWebView.setCacheEnabled();
         if(Util.isNetworkAvailable(getContext())) {
             mWebView.setLoadFromNetwork();
         } else {
@@ -129,17 +126,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 bindData();
             }
         }
-        mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mWebView.reload();
-            }
-        });
-        mWebView.setLoadDoneListener(new AdBlockingWebView.LoadListener() {
-            @Override
-            public void loadDone() {
-                if(mSwiper != null) mSwiper.setRefreshing(false);
-            }
+        mSwiper.setOnRefreshListener(() -> mWebView.reload());
+        mWebView.setLoadDoneListener(() -> {
+            if(mSwiper != null) mSwiper.setRefreshing(false);
         });
         mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -286,15 +275,12 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
             mIsFindShown = true;
-            mFindEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                    if(i == EditorInfo.IME_ACTION_SEARCH) {
-                        findInPage();
-                        return true;
-                    }
-                    return false;
+            mFindEditText.setOnEditorActionListener((textView, i, keyEvent) -> {
+                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                    findInPage();
+                    return true;
                 }
+                return false;
             });
         }
     }
@@ -335,12 +321,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 mFullscreen.setVisibility(View.GONE);
                 mSwiper.setVisibility(View.VISIBLE);
                 mScrollView.addView(mWebView);
-                mScrollView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mParent.closeFullScreen();
-                        mScrollView.scrollTo(mWebView.getScrollX(), mWebView.getScrollY());
-                    }
+                mScrollView.post(() -> {
+                    mParent.closeFullScreen();
+                    mScrollView.scrollTo(mWebView.getScrollX(), mWebView.getScrollY());
                 });
 
                 final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
@@ -356,14 +339,11 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
     private void findInPage() {
         final String query = mFindEditText.getText().toString();
-        mWebView.setFindListener(new WebView.FindListener() {
-            @Override
-            public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
-                if(isDoneCounting) {
-                    mParent.setFabDrawable(R.drawable.ic_chevron_down);
-                    mParent.showFab();
-                    mIsSearchComplete = true;
-                }
+        mWebView.setFindListener((activeMatchOrdinal, numberOfMatches, isDoneCounting) -> {
+            if(isDoneCounting) {
+                mParent.setFabDrawable(R.drawable.ic_chevron_down);
+                mParent.showFab();
+                mIsSearchComplete = true;
             }
         });
         mWebView.findAllAsync(query);
@@ -386,19 +366,13 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
         mFullscreen.addView(browserButton);
         mFullscreen.addView(downloadButton);
 
-        browserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
-                toggleFullscreen(true);
-            }
+        browserButton.setOnClickListener(view -> {
+            mWebView.loadUrl(APIPaths.getPDFDisplayPath(url));
+            toggleFullscreen(true);
         });
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(i);
-            }
+        downloadButton.setOnClickListener(view -> {
+            final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
         });
     }
 
@@ -415,14 +389,11 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
 
         mShown = true;
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(mIsSearchComplete) {
-                            mWebView.findNext(true);
-                        } else {
-                            toggleFullscreen(!mIsFullscreen);
-                        }
+                view -> {
+                    if(mIsSearchComplete) {
+                        mWebView.findNext(true);
+                    } else {
+                        toggleFullscreen(!mIsFullscreen);
                     }
                 });
 

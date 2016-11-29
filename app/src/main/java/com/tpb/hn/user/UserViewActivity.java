@@ -47,13 +47,13 @@ import butterknife.OnLongClick;
 public class UserViewActivity extends AppCompatActivity implements UserLoader.HNUserLoadDone, ContentAdapter.ContentManager {
     private static final String TAG = UserViewActivity.class.getSimpleName();
     public static Item mLaunchItem;
-    @BindView(R.id.user_content_recycler) private RecyclerView mRecycler;
-    @BindView(R.id.user_content_swiper) private SwipeRefreshLayout mSwiper;
-    @BindView(R.id.user_name) private TextView mName;
-    @BindView(R.id.user_account_info) private TextView mInfo;
-    @BindView(R.id.user_account_about) private TextView mAbout;
-    @BindView(R.id.user_back_button) private ImageButton mBackButton;
-    @BindView(R.id.user_appbar) private AppBarLayout mAppBar;
+    @BindView(R.id.user_content_recycler)  RecyclerView mRecycler;
+    @BindView(R.id.user_content_swiper)  SwipeRefreshLayout mSwiper;
+    @BindView(R.id.user_name)  TextView mName;
+    @BindView(R.id.user_account_info)  TextView mInfo;
+    @BindView(R.id.user_account_about)  TextView mAbout;
+    @BindView(R.id.user_back_button)  ImageButton mBackButton;
+    @BindView(R.id.user_appbar)  AppBarLayout mAppBar;
     private User mUser;
     private boolean viewsReady = false;
     private boolean userReady = false;
@@ -138,12 +138,7 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
             mAbout.setText(Html.fromHtml(mUser.getAbout()));
             mAbout.setMovementMethod(LinkMovementMethod.getInstance());
             if(mAbout.getLineCount() > mAbout.getMaxLines()) {
-                mAbout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showLongAboutPopup();
-                    }
-                });
+                mAbout.setOnClickListener(view -> showLongAboutPopup());
             }
         }
         mAdapter.idsLoaded(mUser.getSubmitted());
@@ -187,9 +182,9 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
             Log.i(TAG, "openItem: " + item.toString());
             final Intent i = new Intent(UserViewActivity.this, ItemViewActivity.class);
             startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                    Pair.create((View) mBackButton, "button"),
-                    Pair.create((View) mAbout, "details"),
-                    Pair.create((View) mAppBar, "appbar")).toBundle());
+                    Pair.create(mBackButton, "button"),
+                    Pair.create(mAbout, "details"),
+                    Pair.create(mAppBar, "appbar")).toBundle());
             overridePendingTransition(R.anim.slide_up, R.anim.none);
         }
     }

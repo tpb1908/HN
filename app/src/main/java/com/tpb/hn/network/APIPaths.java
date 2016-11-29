@@ -4,12 +4,8 @@ import android.util.Log;
 
 import com.tpb.hn.BuildConfig;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by theo on 17/10/16.
@@ -43,15 +39,12 @@ public class APIPaths {
     private static final String ALGOLIA_ITEM_PATH = "items/";
     private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
     public static final OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
-            .addInterceptor(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    final Request request = chain.request();
-                    final Request newRequest = request.newBuilder()
-                            .addHeader(MERCURY_HEADER_KEY, MERCURY_KEY)
-                            .build();
-                    return chain.proceed(newRequest);
-                }
+            .addInterceptor(chain -> {
+                final Request request = chain.request();
+                final Request newRequest = request.newBuilder()
+                        .addHeader(MERCURY_HEADER_KEY, MERCURY_KEY)
+                        .build();
+                return chain.proceed(newRequest);
             })
             .build();
 

@@ -349,44 +349,38 @@ public class Spritzer {
     private void startTimerThread() {
         synchronized(mPlayingSync) {
             if(!mSpritzThreadStarted) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(VERBOSE) {
-                            Log.i(TAG, "Starting spritzThread with queue length " + mWordQueue.size());
-                        }
-                        mPlaying = true;
-                        mSpritzThreadStarted = true;
-                        while(mPlayingRequested) {
-                            try {
-                                processNextWord();
-                                if(mWordQueue.isEmpty()) {
-                                    if(VERBOSE) {
-                                        Log.i(TAG, "Queue is empty after processNextWord. Pausing");
-                                    }
-                                    mTarget.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if(mOnCompletionListener != null) {
-                                                mOnCompletionListener.onComplete();
-                                            }
-                                        }
-                                    });
-                                    mPlayingRequested = false;
-
-                                }
-                            } catch(InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-
-                        if(VERBOSE)
-                            Log.i(TAG, "Stopping spritzThread");
-                        mPlaying = false;
-                        mSpritzThreadStarted = false;
-
+                new Thread(() -> {
+                    if(VERBOSE) {
+                        Log.i(TAG, "Starting spritzThread with queue length " + mWordQueue.size());
                     }
+                    mPlaying = true;
+                    mSpritzThreadStarted = true;
+                    while(mPlayingRequested) {
+                        try {
+                            processNextWord();
+                            if(mWordQueue.isEmpty()) {
+                                if(VERBOSE) {
+                                    Log.i(TAG, "Queue is empty after processNextWord. Pausing");
+                                }
+                                mTarget.post(() -> {
+                                    if(mOnCompletionListener != null) {
+                                        mOnCompletionListener.onComplete();
+                                    }
+                                });
+                                mPlayingRequested = false;
+
+                            }
+                        } catch(InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                    if(VERBOSE)
+                        Log.i(TAG, "Stopping spritzThread");
+                    mPlaying = false;
+                    mSpritzThreadStarted = false;
+
                 }).start();
             }
         }

@@ -6,7 +6,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -112,7 +111,7 @@ public class AdBlockingWebView extends WebView {
         }
     }
 
-    public void setCacheEnabled(boolean enabled) {
+    public void setCacheEnabled() {
         getSettings().setAppCachePath(getContext().getApplicationContext().getCacheDir().getAbsolutePath());
         getSettings().setAllowFileAccess(true);
         getSettings().setAppCacheEnabled(true);
@@ -132,12 +131,7 @@ public class AdBlockingWebView extends WebView {
     }
 
     private void disableHorizontalScrolling() {
-        setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return motionEvent.getAction() == MotionEvent.ACTION_MOVE;
-            }
-        });
+        setOnTouchListener((view, motionEvent) -> motionEvent.getAction() == MotionEvent.ACTION_MOVE);
     }
 
     public void setShouldBlockAds(boolean shouldBlock) {

@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
     private static final String TAG = CommentAdapter.class.getSimpleName();
 
-    @BindArray(R.array.comment_colors) private int[] mCommentColors;
+    @BindArray(R.array.comment_colors) int[] mCommentColors;
 
     private Comment mRootComment;
     private final RecyclerView mRecycler;
@@ -157,36 +157,27 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
         if(!mRootComment.getChildren().equals("")) {
             if(Analytics.VERBOSE) Log.i(TAG, "loadComment: Beginning flattening");
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mComments = flatten(parseCommentString(mRootComment.getChildren()), 0);
-                    } catch(JSONException jse) {
-                        Log.e(TAG, "run: ", jse);
-                    }
-                    mRootComment.setDescendants(mComments.size());
-
-                    uiHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            buildPositions();
-                            notifyDataSetChanged();
-                            mSwiper.setRefreshing(false);
-                            if(mCommentId != 0) scrollToComment();
-                        }
-                    }, 300);
+            new Handler().post(() -> {
+                try {
+                    mComments = flatten(parseCommentString(mRootComment.getChildren()), 0);
+                } catch(JSONException jse) {
+                    Log.e(TAG, "run: ", jse);
                 }
-            });
+                mRootComment.setDescendants(mComments.size());
 
-        } else {
-            uiHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+                uiHandler.postDelayed(() -> {
                     buildPositions();
                     notifyDataSetChanged();
                     mSwiper.setRefreshing(false);
-                }
+                    if(mCommentId != 0) scrollToComment();
+                }, 300);
+            });
+
+        } else {
+            uiHandler.postDelayed(() -> {
+                buildPositions();
+                notifyDataSetChanged();
+                mSwiper.setRefreshing(false);
             }, 500);
 
         }
@@ -306,19 +297,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    CommentAdapter.this.switchItemVisibility(getAdapterPosition());
-                    return false;
-                }
+            itemView.setOnLongClickListener(view -> {
+                CommentAdapter.this.switchItemVisibility(getAdapterPosition());
+                return false;
             });
-            mTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CommentAdapter.this.openUser(getAdapterPosition());
-                }
-            });
+            mTitle.setOnClickListener(view -> CommentAdapter.this.openUser(getAdapterPosition()));
         }
 
     }
