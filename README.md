@@ -13,8 +13,16 @@ Spritz style skim reading
 
 ## TODO
 
-Media service for TTS
-
+- [ ]Picking of default browser mode and fragment
+- [ ]Media service for TTS
+- [ ]Snappy scrolling
+- [ ]Remove item from adapter when swiped in saved section
+- [ ]Blacklist of URLs (And hosts) for parsed sites. User editable
+- [ ]Font sizes
+- [ ]Make sure settings subsections are correct
+- [ ]Add a setting for scrolling to a comment when opened from UserViewActivity
+- [ ]Only expand a single comment tree when the above setting is on
+- [ ]Allow clearing cache
 
 ## Refactoring plan
 
@@ -23,5 +31,5 @@ Media service for TTS
 - [x] One application level 'loader' 
 - [x] which switches based on network
 - [x] Loader has sets of Ids
-- [ ] Enums for page
+- [ ] Enums for sections
 - [x] Rewrite database and listeners
