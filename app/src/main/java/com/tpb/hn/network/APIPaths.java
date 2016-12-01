@@ -13,31 +13,19 @@ import okhttp3.Request;
 
 public class APIPaths {
     private static final String JSON = ".json";
-    private static final String PRETTY = "?print=pretty";
     private static final String TAG = APIPaths.class.getSimpleName();
     private static final String BASE_PATH = "https://hacker-news.firebaseio.com/v0/";
     private static final String ITEM = "item/";
     private static final String USER = "user/";
-    private static final String MAX_ITEM = "maxitem";
     private static final String NEW_STORIES = "newstories";
     private static final String TOP_STORIES = "topstories";
     private static final String BEST_STORIES = "beststories";
     private static final String ASK_STORIES = "askstories";
     private static final String SHOW_STORIES = "showstories";
     private static final String JOB_STORIES = "jobstories";
-    private static final String UPDATED = "updates/";
-    private static final String BOILERPIPE_PATH = "http://boilerpipe-web.appspot.com/extract?url=";
     private static final String MERCURY_PARSER_PATH = "https://mercury.postlight.com/parser?url=";
     private static final String MERCURY_HEADER_KEY = "x-api-key";
     private static final String MERCURY_KEY = BuildConfig.MERCURY_API_TOKEN;
-    private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
-    private static final String READABILITY_PARSER = "https://readability.com/api/content/v1/parser?url=";
-    private static final String READABILITY_PARSER_KEY = BuildConfig.MERCURY_API_TOKEN;
-    private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
-    //https://hn.algolia.com/api
-    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
-    private static final String ALGOLIA_ITEM_PATH = "items/";
-    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
     public static final OkHttpClient MERCURY_CLIENT = new OkHttpClient.Builder()
             .addInterceptor(chain -> {
                 final Request request = chain.request();
@@ -47,6 +35,12 @@ public class APIPaths {
                 return chain.proceed(newRequest);
             })
             .build();
+    private static final String MERCURY_AMP_PATH = "https://mercury.postlight.com/amp?url=";
+    private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
+    //https://hn.algolia.com/api
+    private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
+    private static final String ALGOLIA_ITEM_PATH = "items/";
+    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
 
     public static String getItemPath(int itemId) {
         return BASE_PATH + ITEM + itemId + JSON;
@@ -54,10 +48,6 @@ public class APIPaths {
 
     public static String getUserPath(String usedId) {
         return BASE_PATH + USER + usedId + JSON;
-    }
-
-    public static String getMaxItemPath() {
-        return BASE_PATH + MAX_ITEM + JSON;
     }
 
     public static String getNewPath() {
@@ -84,28 +74,12 @@ public class APIPaths {
         return BASE_PATH + JOB_STORIES + JSON;
     }
 
-    public static String getUpdatedPath() {
-        return BASE_PATH + UPDATED + JSON;
-    }
-
-    public static String getPrettyPath(String path) {
-        return path + PRETTY;
-    }
-
-    public static String getReadabilityParserPath(String url) {
-        return READABILITY_PARSER + url + "&token=" + READABILITY_PARSER_KEY;
-    }
-
     public static String getMercuryAmpPath(String url) {
         return MERCURY_AMP_PATH + url;
     }
 
     public static String getMercuryParserPath(String url) {
         return MERCURY_PARSER_PATH + url;
-    }
-
-    public static String getBoilerpipePath(String url) {
-        return BOILERPIPE_PATH + url + "&output=htmlFragment";
     }
 
     public static String getPDFDisplayPath(String url) {
@@ -147,6 +121,5 @@ public class APIPaths {
     private String searchStoryComments(int storyId) {
         return ALGOLIA_BASE + "?tags=comment," + storyId;
     }
-
 
 }

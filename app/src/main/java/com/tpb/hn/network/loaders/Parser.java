@@ -60,7 +60,8 @@ public class Parser {
         if(obj.has(KEY_URL)) item.setUrl(obj.getString(KEY_URL));
         if(obj.has(KEY_KIDS)) item.setKids(extractIntArray(obj.getJSONArray(KEY_KIDS)));
         if(obj.has(KEY_TEXT)) item.setText(obj.getString(KEY_TEXT));
-        if(item.getText() != null) item.setText(item.getText().replaceAll("<(.|\n)*?>", "")); //Test for removing italics
+        if(item.getText() != null)
+            item.setText(item.getText().replaceAll("<(.|\n)*?>", "")); //Test for removing italics
         if(obj.has(KEY_PARENT)) item.setParent(obj.getInt(KEY_PARENT));
         if(obj.has(KEY_DELETED)) item.setDeleted(obj.getBoolean(KEY_DELETED));
         if(obj.has(KEY_SAVED)) item.setSaved(obj.getBoolean(KEY_SAVED));

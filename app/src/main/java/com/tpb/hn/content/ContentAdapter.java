@@ -46,29 +46,34 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Loader.ItemLoader,
         Loader.idLoader,
         FastScrollRecyclerView.SectionedAdapter {
+
     private static final String TAG = ContentAdapter.class.getSimpleName();
-    @BindColor(R.color.colorPrimaryText) int lightText;
-    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
+    //Views
     private final Context mContext;
     private final Loader mLoader;
+    private final ContentManager mManager;
+    private final RecyclerView mRecycler;
+    private final SwipeRefreshLayout mSwiper;
+    //Resources
+    @BindColor(R.color.colorPrimaryText) int lightText;
+    @BindColor(R.color.colorPrimaryTextInverse) int darkText;
     private String mCurrentPage;
-    private final boolean mIsContent;
-    private boolean mIsUsingCards = false;
-    private boolean mShouldMarkRead = false;
+    //Data and scrolling information
     private int[] mIds = new int[0];
     private int[] mOldIds = new int[0];
+    private Item[] mData = new Item[0];
     private long mLastUpdateTime;
-    private Item[] mData = new Item[] {};
-    private final ContentManager mManager;
-    private int mLastPosition = 0;
-    private final RecyclerView mRecycler;
+    private int mLastPosition;
+    private int mCountGuess;
     private LinearLayoutManager mLayoutManager;
-    private final SwipeRefreshLayout mSwiper;
+    //Settings flags
+    private final boolean mIsContent;
     private boolean mIsDarkTheme;
     private boolean mShouldScrollOnChange;
     private boolean mLoadInBackground;
-    private int mCountGuess;
     private boolean mIsOffline;
+    private boolean mIsUsingCards = false;
+    private boolean mShouldMarkRead = false;
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
@@ -83,23 +88,25 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mSwiper = swiper;
         mLayoutManager = layoutManager;
         mRecycler = recycler;
+
         mLoader = Loader.getInstance(context);
         getPrefs(context);
         mLastUpdateTime = new Date().getTime() / 1000;
-        mLayoutManager = layoutManager;
+
+        mLoader.addNetworkListener(netAvailable -> {
+            mIsOffline = !netAvailable;
+            notifyDataSetChanged();
+        });
 
         swiper.setOnRefreshListener(() -> {
             if(mIsContent) {
                 loadItems(mCurrentPage);
             } else {
-                if(Analytics.VERBOSE) Log.i(TAG, "onRefresh: Reopening user");
                 mIds = new int[0];
                 notifyDataSetChanged();
-                mManager.openUser(null);
+                mManager.openUser(null); //Reload the user
             }
-            if(mShouldScrollOnChange) {
-                mRecycler.scrollToPosition(0);
-            }
+            if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         });
 
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -107,7 +114,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 //TODO Snappy scrolling
-
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     loadItemsOnScroll(false);
                 }
@@ -117,12 +123,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if(recycler instanceof FastScrollRecyclerView) {
             ((FastScrollRecyclerView) recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
-                public void onFastScrollStop() {
-                    loadItemsOnScroll(true);
-                }
-                @Override
                 public void onFastScrollStart() {
 
+                }
+
+                @Override
+                public void onFastScrollStop() {
+                    loadItemsOnScroll(true);
                 }
             });
         }
@@ -131,6 +138,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 final int pos = viewHolder.getAdapterPosition();
+                //Check whether we should allow swiping or not
                 return (pos >= 0 && pos < mData.length && mData[pos] != null &&
                         !mData[pos].isComment() && !mData[pos].isDeleted()) ?
                         super.getSwipeDirs(recyclerView, viewHolder) : 0;
@@ -171,10 +179,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         };
         callback.setColor(darkText);
         new ItemTouchHelper(callback).attachToRecyclerView(recycler);
-        mLoader.addNetworkListener(netAvailable -> {
-            mIsOffline = !netAvailable;
-            notifyDataSetChanged();
-        });
     }
 
     void getPrefs(Context context) {
@@ -199,13 +203,15 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mRecycler.setAdapter(this);
             mRecycler.scrollToPosition(pos);
             mRecycler.invalidateItemDecorations();
-            if(!mIsUsingCards)
+            if(!mIsUsingCards) {
                 mRecycler.addItemDecoration(new DividerItemDecoration(mContext.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
+            }
         }
     }
 
     private void loadItemsOnScroll(boolean fastScroll) {
         int pos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
+        //Marking items as read
         if(pos > mLastPosition && pos < mData.length && mShouldMarkRead) {
             for(int i = mLastPosition; i < pos; i++) {
                 if(mData[i] != null) mData[i].setViewed(true);
@@ -362,7 +368,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    //<editor-fold-desc="Viewholders" >
+    //<editor-fold-desc="Binding" >
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -385,6 +391,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 final Item item = mData[pos];
                 holder.mInfo.setText(item.getInfo());
                 if(item.isDeleted()) {
+                    //This only happens in the UserViewActivity
                     holder.mTitle.setText(R.string.text_item_deleted);
                     holder.mNumber.setVisibility(View.GONE);
                     holder.mAuthor.setVisibility(View.GONE);
@@ -401,6 +408,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                         }
                     } else {
+                        //In the UserViewActivity we don't want to show author or number
                         holder.mAuthor.setVisibility(View.GONE);
                         holder.mNumber.setVisibility(View.GONE);
                     }
@@ -431,13 +439,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         } else if(viewHolder instanceof CommentHolder) {
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
-            if(mData.length > pos && mData[pos] != null) {
+            if(pos < mData.length && mData[pos] != null) {
                 commentHolder.mTime.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
                 if(mData[pos].isDeleted()) {
                     commentHolder.mBody.setText(R.string.text_deleted_comment);
                 } else if(mData[pos].getText() != null) {
-                    if(Analytics.VERBOSE) Log.i(TAG, "onBindViewHolder: Setting text \n" + mData[pos].getText());
-                  //  commentHolder.mBody.setText(mData[pos].getText());
                     commentHolder.mBody.setText(Util.parseHTMLText(mData[pos].getText()));
                 }
             }
@@ -447,6 +453,36 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if(mIsUsingCards) {
             setCardParams(((EmptyHolder) viewHolder).mCard);
         }
+    }
+
+    private void setCardParams(CardView card) {
+        card.setUseCompatPadding(true);
+        card.setCardElevation(Util.pxFromDp(4));
+        card.setRadius(Util.pxFromDp(3));
+        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder viewHolder) {
+        super.onViewRecycled(viewHolder);
+        if(viewHolder instanceof ItemHolder) {
+            final ItemHolder holder = (ItemHolder) viewHolder;
+            //Reset the view height if necessary
+            if(holder.mTitle.getLineCount() > 1) {
+                holder.mTitle.setText("");
+                holder.itemView.requestLayout();
+            }
+            //Reset the rest of the view
+            holder.mTitle.setText(R.string.text_title_empty);
+            holder.mInfo.setText(R.string.text_info_empty);
+            holder.mAuthor.setText("");
+            holder.mURL.setText("");
+            holder.mNumber.setText("");
+        } else if(viewHolder instanceof CommentHolder) {
+            //Reset the height of the comment holder
+            ((CommentHolder) viewHolder).mBody.requestLayout();
+        }
+
     }
 
     @Override
@@ -462,50 +498,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mData.length > 0 ? mData.length - 1 : mCountGuess;
     }
 
-    @Override
-    public void onViewRecycled(RecyclerView.ViewHolder viewHolder) {
-        super.onViewRecycled(viewHolder);
-        if(viewHolder instanceof ItemHolder) {
-            final ItemHolder holder = (ItemHolder) viewHolder;
-            if(holder.mTitle.getLineCount() > 1) {
-                holder.mTitle.setText("");
-                holder.itemView.requestLayout();
-            }
-            holder.mTitle.setText(R.string.text_title_empty);
-            holder.mInfo.setText(R.string.text_info_empty);
-            holder.mAuthor.setText("");
-            holder.mURL.setText("");
-            holder.mNumber.setText("");
-            holder.mTitle.requestLayout();
-        } else if(viewHolder instanceof CommentHolder) {
-            ( (CommentHolder) viewHolder).mBody.requestLayout();
-        }
-
-    }
-
-    private void setCardParams(CardView card) {
-        card.setUseCompatPadding(true);
-        card.setCardElevation(Util.pxFromDp(4));
-        card.setRadius(Util.pxFromDp(3));
-        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
-    }
-
-
     //</editor-fold>
 
     //<editor-fold-desc="Viewholder classes">
-
-    public interface ContentManager {
-
-        void openItem(Item item);
-
-        void openItem(Item item, FragmentPagerAdapter.PageType type);
-
-        void openUser(Item item);
-
-        void displayLastUpdate(long lastUpdate);
-
-    }
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
@@ -560,8 +555,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    //</editor-fold>
-
     class EmptyHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.empty_card) CardView mCard;
 
@@ -569,6 +562,19 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    //</editor-fold>
+
+    public interface ContentManager {
+
+        void openItem(Item item);
+
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
+
+        void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
 
     }
 

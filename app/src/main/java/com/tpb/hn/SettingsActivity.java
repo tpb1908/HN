@@ -40,8 +40,8 @@ public class SettingsActivity extends AppCompatActivity {
             view.setOnClickListener(view1 -> mSettings.get(index).toggle());
         }
     };
-    @BindView(R.id.toolbar)  Toolbar mToolbar;
-    @BindView(R.id.settings_text_auto_start)  TextView mThemeStart;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.settings_text_auto_start) TextView mThemeStart;
     @BindView(R.id.settings_text_auto_end) TextView mThemeEnd;
     private SharedPrefsController prefs;
 

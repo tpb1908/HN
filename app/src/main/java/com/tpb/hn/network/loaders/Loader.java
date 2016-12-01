@@ -45,17 +45,17 @@ import java.util.HashMap;
 public class Loader extends BroadcastReceiver {
     private static final String TAG = Loader.class.getSimpleName();
     private static final int ERROR_NOT_IN_CACHE = 100;
-    public static int ERROR_TIMEOUT = 200;
     private static final int ERROR_PARSING = 300;
     private static final int ERROR_NETWORK_CHANGE = 400;
     private static final int ERROR_UNKNOWN = 0;
     private static final int ERROR_PDF = 500;
-    private static Loader instance;
     private static final HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
+    public static int ERROR_TIMEOUT = 200;
+    private static Loader instance;
     private final SharedPreferences prefs;
-    private boolean online = false;
     private final ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
     private final DB db;
+    private boolean online = false;
 
     private Loader(Context context) {
         prefs = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
@@ -140,7 +140,8 @@ public class Loader extends BroadcastReceiver {
                         @Override
                         public void onResponse(String response) {
                             final int[] ids = Parser.extractIntArray(response);
-                            if(Analytics.VERBOSE) Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
+                            if(Analytics.VERBOSE)
+                                Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
                             loader.idsLoaded(ids);
                             Util.putIntArrayInPrefs(prefs.edit(), url, ids);
                         }
@@ -193,7 +194,8 @@ public class Loader extends BroadcastReceiver {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if(Analytics.VERBOSE) Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
+                if(Analytics.VERBOSE)
+                    Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
             }
         });
         wv.loadUrl(item.getUrl());
@@ -337,7 +339,8 @@ public class Loader extends BroadcastReceiver {
             if(listeners.get(url) == null) listeners.put(url, new ArrayList<>());
             listeners.get(url).add(new WeakReference<>(loader));
 
-            if(Analytics.VERBOSE) Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
+            if(Analytics.VERBOSE)
+                Log.i(TAG, "networkLoadArticle: " + listeners.get(url).toString());
             AndroidNetworking.get(APIPaths.getMercuryParserPath(url))
                     .setTag(url)
                     .setOkHttpClient(APIPaths.MERCURY_CLIENT)
@@ -348,7 +351,8 @@ public class Loader extends BroadcastReceiver {
                         public void onResponse(JSONObject response) {
                             try {
                                 if(response.has("content") && !response.get("content").equals("<div></div>")) {
-                                    if(Analytics.VERBOSE) Log.i(TAG, "onResponse: " + listeners.get(url));
+                                    if(Analytics.VERBOSE)
+                                        Log.i(TAG, "onResponse: " + listeners.get(url));
                                     if(listeners.get(url) != null) {
                                         for(WeakReference<TextLoader> loader : listeners.get(url)) {
                                             if(loader.get() == null) {
@@ -486,6 +490,10 @@ public class Loader extends BroadcastReceiver {
             return instance;
         }
 
+        private static String escape(String s) {
+            return DatabaseUtils.sqlEscapeString(s);
+        }
+
         @Override
         public void onCreate(SQLiteDatabase db) {
             Log.i(TAG, "onCreate: Creating DB");
@@ -518,7 +526,7 @@ public class Loader extends BroadcastReceiver {
                     int i = 0;
                     while(i < ids.length) {
                         ids[i] = cursor.getInt(col);
-                       // if(Analytics.VERBOSE) Log.i(TAG, "loadSaved run: id: " + ids[i]);
+                        // if(Analytics.VERBOSE) Log.i(TAG, "loadSaved run: id: " + ids[i]);
                         cursor.moveToNext();
                         i++;
                     }
@@ -591,10 +599,10 @@ public class Loader extends BroadcastReceiver {
         void writeItem(final Item item, final boolean saved, final String mercury) {
             AsyncTask.execute(() -> {
                 if(item.isSaved()) {
-                DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
-                        null,
-                        itemToCV(item, saved, mercury),
-                        SQLiteDatabase.CONFLICT_REPLACE);
+                    DB.this.getWritableDatabase().insertWithOnConflict(TABLE,
+                            null,
+                            itemToCV(item, saved, mercury),
+                            SQLiteDatabase.CONFLICT_REPLACE);
                 } else {
                     String JSON = "";
                     try {
@@ -610,10 +618,6 @@ public class Loader extends BroadcastReceiver {
                 }
             });
 
-        }
-
-        private static String escape(String s) {
-            return DatabaseUtils.sqlEscapeString(s);
         }
 
         private ContentValues itemToCV(Item item, boolean saved, String mercury) {

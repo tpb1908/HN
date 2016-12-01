@@ -76,10 +76,12 @@ public class Login {
                                 final int startPos = res.indexOf("user=") + 5;
                                 final int endPos = res.indexOf(";");
                                 cookie = res.substring(startPos, endPos);
-                                if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Header " + response.priorResponse().headers().toString() + "\n\nCookie " + cookie);
+                                if(Analytics.VERBOSE)
+                                    Log.i(TAG, "onResponse: Header " + response.priorResponse().headers().toString() + "\n\nCookie " + cookie);
                                 checkWithCookie(cookie, false);
                             } catch(Exception e) {
-                                if(Analytics.VERBOSE) Log.i(TAG, "onResponse: Exception when getting header");
+                                if(Analytics.VERBOSE)
+                                    Log.i(TAG, "onResponse: Exception when getting header");
                                 listener.loginResponse(false);
                             }
                         } else {

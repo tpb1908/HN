@@ -24,18 +24,18 @@ import java.util.Arrays;
  * onto a TextView at a given WPM.
  */
 public class Spritzer {
-    private static final String TAG = "Spritzer";
     static final int CHARS_LEFT_OF_PIVOT = 3;
+    private static final String TAG = "Spritzer";
     private static final boolean VERBOSE = false;
     private static final int MSG_PRINT_WORD = 1;
     private static final int MAX_WORD_LENGTH = 13;
+    private final Handler mSpritzHandler;
+    private final Object mPlayingSync = new Object();
     int mCurWordIdx;
     private String[] mWordArray;                  // A parsed list of words parsed from {@link #setText(String input)}
     private ArrayDeque<String> mWordQueue;        // The queue of words from mWordArray yet to be displayed
     private TextView mTarget;
     private int mWPM;
-    private final Handler mSpritzHandler;
-    private final Object mPlayingSync = new Object();
     private boolean mPlaying;
     private boolean mPlayingRequested;
     private boolean mSpritzThreadStarted;

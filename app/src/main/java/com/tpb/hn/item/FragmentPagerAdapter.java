@@ -96,7 +96,8 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
             @Override
             public void onPageSelected(int position) {
-                if(Analytics.VERBOSE) Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
+                if(Analytics.VERBOSE)
+                    Log.i(TAG, "onPageSelected: From " + oldPos + " to " + position);
                 if(fragments[position] != null) {
                     ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
                     ((FragmentCycleListener) fragments[position]).onResumeFragment();

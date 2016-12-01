@@ -40,21 +40,18 @@ import butterknife.ButterKnife;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder> {
     private static final String TAG = CommentAdapter.class.getSimpleName();
-
-    @BindArray(R.array.comment_colors) int[] mCommentColors;
-
-    private Comment mRootComment;
     private final RecyclerView mRecycler;
     private final SwipeRefreshLayout mSwiper;
     private final UserOpener mOpener;
     private final int mScreenWidth;
-
-    private ArrayList<CommentWrapper> mComments = new ArrayList<>();
     private final ArrayList<Integer> mVisibleItems = new ArrayList<>();
     private final boolean usingCards;
+    private final int mCommentId;
+    @BindArray(R.array.comment_colors) int[] mCommentColors;
+    private Comment mRootComment;
+    private ArrayList<CommentWrapper> mComments = new ArrayList<>();
     private boolean expandComments;
     private boolean shouldAnimate;
-    private final int mCommentId;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener, int commentId) {
         mRecycler = recycler;
@@ -87,7 +84,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final CommentWrapper comment = mComments.get(mVisibleItems.get(pos));
         if(comment.parsedText == null) {
             if(comment.comment.getText() != null) {
-               comment.parsedText = Util.parseHTMLCommentText(comment.comment.getText());
+                comment.parsedText = Util.parseHTMLCommentText(comment.comment.getText());
             }
         }
         holder.mBody.setText(comment.parsedText);
@@ -127,7 +124,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         mComments.get(cPos).childrenVisible = visibility;
         int end = cPos + 1;
         for(; end < mComments.size(); end++) {
-            if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
+            if(Analytics.VERBOSE)
+                Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
             if(mComments.get(end).depth > depth) {
                 mComments.get(end).visible = visibility;
             } else break;
