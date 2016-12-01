@@ -54,7 +54,6 @@ public class Loader extends BroadcastReceiver {
     private static final HashMap<String, ArrayList<WeakReference<TextLoader>>> listeners = new HashMap<>();
     private final SharedPreferences prefs;
     private boolean online = false;
-    private boolean loadingSaved = false;
     private final ArrayList<WeakReference<NetworkChangeListener>> mNetworkListeners = new ArrayList<>();
     private final DB db;
 
@@ -126,13 +125,11 @@ public class Loader extends BroadcastReceiver {
                 url = APIPaths.getJobPath();
                 break;
             case "saved":
-                loadingSaved = true;
                 db.loadSaved(loader);
                 return;
             default:
                 url = "";
         }
-        loadingSaved = false;
         Log.d(TAG, "getIds: " + url);
         if(online) {
             AndroidNetworking.get(url)
@@ -209,7 +206,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadItem(final int id, final ItemLoader loader) {
-        if(online && !loadingSaved) {
+        if(online) {
             networkLoadItem(id, loader);
         } else {
             cacheLoadItem(id, loader);
@@ -248,7 +245,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadItems(final int[] ids, final boolean background, ItemLoader loader) {
-        if(online && !loadingSaved) {
+        if(online) {
             networkLoadItems(ids, background, loader);
         } else if(!background) {
             cacheLoadItems(ids, loader);
@@ -291,7 +288,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void loadChildren(final int id, CommentLoader loader) {
-        if(online && !loadingSaved) {
+        if(online) {
             networkLoadChildren(id, loader);
         } else {
             cacheLoadChildren(id);
