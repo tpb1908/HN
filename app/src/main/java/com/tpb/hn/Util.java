@@ -108,6 +108,14 @@ public class Util {
         return html.substring(0, Math.max(html.length() - 2, 0));
     }
 
+    public static void reverse(int[] arr) {
+        for(int l = 0, r = arr.length - 1; l < r; l++, r--) {
+            final int t = arr[l];
+            arr[l] = arr[r];
+            arr[r] = t;
+        }
+    }
+
     public static int getApproximateNumberOfItems(String page) {
         switch(page.toLowerCase()) {
             case "top":

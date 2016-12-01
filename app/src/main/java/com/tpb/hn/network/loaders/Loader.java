@@ -509,7 +509,6 @@ public class Loader extends BroadcastReceiver {
         }
 
         void loadSaved(final idLoader idLoader) {
-            if(Analytics.VERBOSE) Log.i(TAG, "loadSaved: ");
             AsyncTask.execute(() -> {
                 final SQLiteDatabase db = DB.this.getReadableDatabase();
                 final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_SAVED + " = ?";
@@ -522,11 +521,12 @@ public class Loader extends BroadcastReceiver {
                     int i = 0;
                     while(i < ids.length) {
                         ids[i] = cursor.getInt(col);
-                        if(Analytics.VERBOSE) Log.i(TAG, "run: id: " + ids[i]);
+                       // if(Analytics.VERBOSE) Log.i(TAG, "loadSaved run: id: " + ids[i]);
                         cursor.moveToNext();
                         i++;
                     }
                 }
+                Util.reverse(ids);
                 if(Analytics.VERBOSE) Log.i(TAG, "loadSaved: " + ids.length);
                 cursor.close();
                 new Handler(Looper.getMainLooper()).post(() -> idLoader.idsLoaded(ids));
@@ -570,6 +570,7 @@ public class Loader extends BroadcastReceiver {
                         try {
                             final Item item = Parser.parseItem(new JSONObject(JSON));
                             item.setParsedText(cursor.getString(cursor.getColumnIndex(KEY_MERCURY)));
+                            item.setSaved(cursor.getInt(cursor.getColumnIndex(KEY_SAVED)) > 0);
                             handler.post(() -> loader.itemLoaded(item));
                         } catch(JSONException jse) {
                             Log.e(TAG, "run: Loading from db " + JSON, jse);
@@ -609,9 +610,7 @@ public class Loader extends BroadcastReceiver {
                             "COALESCE((SELECT " + KEY_SAVED + " FROM " + TABLE + " WHERE " + KEY_ID + " = " + item.getId() + "), " + (item.isSaved() ? 1 : 0) + ") " +
                             ");";
                     DB.this.getWritableDatabase().execSQL(SQL);
-                    //TODO- Stop the saved column being overwritten
                 }
-                //DB.this.getWritableDatabase().execSQL("UPDATE " + TABLE + " SET " + KEY_JSON + "=" + Parser.itemJSON(item) + );
             });
 
         }

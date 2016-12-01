@@ -143,6 +143,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(pos < mData.length && mData[pos] != null) {
                     if(mData[pos].isSaved()) {
                         mLoader.unsaveItem(mData[pos]);
+                        //TODO- If in saved items, remove this item
                     } else {
                         mLoader.saveItem(mData[pos], mContext, new Loader.ItemSaveListener() {
                             @Override
@@ -231,8 +232,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final ArrayList<Integer> toLoad = new ArrayList<>();
             for(int i = pos; i < pos2 && pos2 < mData.length; i++) {
                 if(mData[i] == null) toLoad.add(mIds[i]);
+                Log.i(TAG, "loadItemsOnScroll: Adding from " + i);
             }
-            mLoader.loadItems(Util.convertIntegers(toLoad), false, this);
+            if(toLoad.size() > 0) mLoader.loadItems(Util.convertIntegers(toLoad), false, this);
         }
         mLastPosition = pos;
     }
