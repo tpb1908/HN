@@ -124,19 +124,30 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         mComments.get(cPos).childrenVisible = visibility;
         int end = cPos + 1;
         for(; end < mComments.size(); end++) {
-            if(Analytics.VERBOSE)
-                Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
             if(mComments.get(end).depth > depth) {
                 mComments.get(end).visible = visibility;
-            } else break;
+                if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
+            } else {
+                if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: Breaking " + mComments.get(end));
+                end--;
+                break;
+            }
         }
         if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: cPos " + cPos + ", end " + end);
-        if(cPos != end) {
+        if(cPos < end) {
             buildPositions();
             if(visibility) {
-                notifyItemRangeInserted(cPos + 1, end - 1);
+                if(end - cPos == 1) {
+                    notifyItemInserted(end);
+                } else {
+                    notifyItemRangeInserted(cPos + 1, end);
+                }
             } else {
-                notifyItemRangeRemoved(cPos + 1, end - 1);
+                if(end - cPos == 1) {
+                    notifyItemRemoved(end);
+                } else {
+                    notifyItemRangeRemoved(cPos + 1, end);
+                }
             }
         }
     }
@@ -280,7 +291,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         @Override
         public String toString() {
             return "{" + comment.getId() + ", " +
-                    comment.getBy() +
+                    comment.getBy() + ", " +
                     depth + "}";
         }
     }

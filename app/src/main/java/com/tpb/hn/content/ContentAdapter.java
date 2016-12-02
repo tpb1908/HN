@@ -120,8 +120,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         });
 
-        if(recycler instanceof FastScrollRecyclerView) {
-            ((FastScrollRecyclerView) recycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
+        if(mRecycler instanceof FastScrollRecyclerView) {
+            ((FastScrollRecyclerView) mRecycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
                 public void onFastScrollStart() {
 
@@ -307,7 +307,21 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void idsLoaded(int[] ids) {
         if(Analytics.VERBOSE) Log.i(TAG, "IdLoadDone: " + ids.length);
         this.mIds = ids;
-        int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
+//        if(mRecycler instanceof FastScrollRecyclerView) {
+//            if(mIds.length > 50) {
+//                ((FastScrollRecyclerView) mRecycler).setThumbColor(mContext.getResources().getColor(R.color.colorAccent));
+//                ((FastScrollRecyclerView) mRecycler).setPopupBgColor(mContext.getResources().getColor(R.color.colorAccent));
+//                //https://github.com/timusus/RecyclerView-FastScroll/blob/1991d90c4a4b417f31c0f448cf03bfb44962bb45/recyclerview-fastscroll/src/main/java/com/simplecityapps/recyclerview_fastscroll/views/FastScroller.java#L97
+//                ((FastScrollRecyclerView) mRecycler).setTrackColor(0x1f000000);
+//
+//            } else {
+//                ((FastScrollRecyclerView) mRecycler).setThumbColor(mContext.getResources().getColor(android.R.color.transparent));
+//                ((FastScrollRecyclerView) mRecycler).setPopupBgColor(mContext.getResources().getColor(android.R.color.transparent));
+//                ((FastScrollRecyclerView) mRecycler).setTrackColor(mContext.getResources().getColor(android.R.color.transparent));
+//
+//            }
+//        }
+        final int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
         if(currentPos > ids.length) {
             mLayoutManager.scrollToPosition(ids.length);
         }

@@ -31,5 +31,5 @@ Spritz style skim reading
 - [x] One application level 'loader' 
 - [x] which switches based on network
 - [x] Loader has sets of Ids
-- [ ] Enums for sections
+- [x] Enums for sections
 - [x] Rewrite database and listeners
