@@ -10,6 +10,8 @@ import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 
+import com.tpb.hn.content.ContentActivity;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -116,22 +118,33 @@ public class Util {
         }
     }
 
-    public static int getApproximateNumberOfItems(String page) {
-        switch(page.toLowerCase()) {
-            case "top":
+    public static int getApproximateNumberOfItems(ContentActivity.Section section) {
+        switch(section) {
+            case TOP:
                 return 500;
-            case "best":
+            case BEST:
                 return 500;
-            case "ask":
+            case ASK:
                 return 100;
-            case "new":
+            case NEW:
                 return 500;
-            case "show":
+            case SHOW:
                 return 50;
-            case "job":
+            case JOB:
                 return 25;
             default:
                 return 100;
         }
+    }
+
+    public static ContentActivity.Section getSection(Context context, String section) {
+        final String[] sections = context.getResources().getStringArray(R.array.nav_spinner_items);
+        if(section.equals(sections[0])) return ContentActivity.Section.TOP;
+        if(section.equals(sections[1])) return ContentActivity.Section.NEW;
+        if(section.equals(sections[2])) return ContentActivity.Section.BEST;
+        if(section.equals(sections[3])) return ContentActivity.Section.ASK;
+        if(section.equals(sections[4])) return ContentActivity.Section.SHOW;
+        if(section.equals(sections[5])) return ContentActivity.Section.JOB;
+        return ContentActivity.Section.SAVED;
     }
 }

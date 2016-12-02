@@ -26,6 +26,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.Util;
+import com.tpb.hn.content.ContentActivity;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.APIPaths;
@@ -103,28 +104,28 @@ public class Loader extends BroadcastReceiver {
         AndroidNetworking.forceCancel("BG");
     }
 
-    public void getIds(String key, final idLoader loader) {
+    public void getIds(ContentActivity.Section section, final idLoader loader) {
         final String url;
-        switch(key.toLowerCase()) {
-            case "top":
+        switch(section) {
+            case TOP:
                 url = APIPaths.getTopPath();
                 break;
-            case "best":
+            case BEST:
                 url = APIPaths.getBestPath();
                 break;
-            case "ask":
+            case ASK:
                 url = APIPaths.getAskPath();
                 break;
-            case "new":
+            case NEW:
                 url = APIPaths.getNewPath();
                 break;
-            case "show":
+            case SHOW:
                 url = APIPaths.getShowPath();
                 break;
-            case "job":
+            case JOB:
                 url = APIPaths.getJobPath();
                 break;
-            case "saved":
+            case SAVED:
                 db.loadSaved(loader);
                 return;
             default:

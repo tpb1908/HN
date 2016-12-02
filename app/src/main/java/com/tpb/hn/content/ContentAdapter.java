@@ -57,7 +57,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     //Resources
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
-    private String mCurrentPage;
+    private ContentActivity.Section mCurrentPage;
     //Data and scrolling information
     private int[] mIds = new int[0];
     private int[] mOldIds = new int[0];
@@ -263,7 +263,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return Integer.toString(position);
     }
 
-    void loadItems(String page) {
+    void loadItems(ContentActivity.Section page) {
         this.mData = new Item[0];
         if(mCurrentPage != null && mCurrentPage.equals(page)) {
             this.mOldIds = mIds.clone();

@@ -3,7 +3,6 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -22,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.androidnetworking.AndroidNetworking;
 import com.google.android.gms.analytics.HitBuilders;
@@ -31,6 +29,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.SettingsActivity;
+import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
@@ -94,7 +93,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mAdapter.loadItems(mNavSpinner.getSelectedItem().toString());
+                mAdapter.loadItems(Util.getSection(ContentActivity.this, mNavSpinner.getSelectedItem().toString()));
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory(Analytics.CATEGORY_NAVIGATION)
                         .setAction(Analytics.KEY_PAGE + mNavSpinner.getSelectedItem().toString())
@@ -172,19 +171,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                             .title(R.string.title_change_theme)
                             .positiveText(android.R.string.ok)
                             .negativeText(R.string.action_later)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    prefs.setUseDarkTheme(dark);
-                                    ContentActivity.this.recreate();
-                                }
+                            .onPositive((dialog, which) -> {
+                                prefs.setUseDarkTheme(dark);
+                                ContentActivity.this.recreate();
                             })
-                            .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    mThemePostponeTime = time;
-                                }
-                            })
+                            .onNegative((dialog, which) -> mThemePostponeTime = time)
                             .show();
                 }
             }
@@ -268,6 +259,10 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 Pair.create((View) mNavSpinner, "button"),
                 Pair.create((View) mAppBar, "appbar")
         );
+    }
+
+    public enum Section {
+        TOP, BEST, NEW, ASK, SHOW, JOB, SAVED
     }
 
 }
