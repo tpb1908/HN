@@ -3,6 +3,7 @@ package com.tpb.hn.network;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.WebResourceResponse;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +22,7 @@ import okio.Okio;
  */
 
 public class AdBlocker {
+    private static final String TAG = AdBlocker.class.getSimpleName();
     private static final String AD_HOSTS_FILE = "adhosts.txt";
     private static final Set<String> AD_HOSTS = new HashSet<>();
 
@@ -41,14 +43,17 @@ public class AdBlocker {
     }
 
     private static void loadFromAssets(Context context) throws IOException {
-        InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
-        BufferedSource buffer = Okio.buffer(Okio.source(stream));
+        final long start = System.nanoTime();
+        final InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
+        final BufferedSource buffer = Okio.buffer(Okio.source(stream));
         String line;
         while((line = buffer.readUtf8Line()) != null) {
-            AD_HOSTS.add(line);
+            if(!line.contains("#")) AD_HOSTS.add(line);
         }
+
         buffer.close();
         stream.close();
+        Log.i(TAG, "loadFromAssets: time " + (System.nanoTime()-start)/1E9);
     }
 
     public static boolean isAd(String url) {
