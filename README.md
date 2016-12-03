@@ -1,14 +1,22 @@
 # HN
 
 ## Features
+
 Theming, light or dark and at time
-Options for card style
-Volume navigation
+
+Options for card style in main view and comments
+
+Volume key navigation in Content (Add this for comments)?
+
 Ad blocking in browser
+
 Lazy content loading
+
 Mercury web parser loading
+
 Amp page loading
-Spritz style skim reading
+
+Spritz style skim reading with skipping features not featured in Spritz
 
 
 ## TODO

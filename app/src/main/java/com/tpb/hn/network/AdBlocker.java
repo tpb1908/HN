@@ -6,15 +6,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
 import okhttp3.HttpUrl;
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * Created by theo on 25/10/16.
@@ -41,13 +41,13 @@ public class AdBlocker {
     private static void loadFromAssets(Context context) throws IOException {
         final long start = System.nanoTime();
         final InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
-        final BufferedSource buffer = Okio.buffer(Okio.source(stream));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String line;
-        while((line = buffer.readUtf8Line()) != null) {
+        while((line = reader.readLine()) != null) {
             if(!line.contains("#")) AD_HOSTS.add(line);
         }
 
-        buffer.close();
+        reader.close();
         stream.close();
         Log.i(TAG, "loadFromAssets: time " + (System.nanoTime()-start)/1E9);
     }
