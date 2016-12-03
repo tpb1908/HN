@@ -121,6 +121,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
 
         if(mRecycler instanceof FastScrollRecyclerView) {
+            ((FastScrollRecyclerView) mRecycler).setFastScrollEnabled(false);
             ((FastScrollRecyclerView) mRecycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
                 public void onFastScrollStart() {

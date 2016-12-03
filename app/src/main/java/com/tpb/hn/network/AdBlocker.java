@@ -44,7 +44,7 @@ public class AdBlocker {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String line;
         while((line = reader.readLine()) != null) {
-            if(!line.contains("#")) AD_HOSTS.add(line);
+            if(!line.startsWith("#")) AD_HOSTS.add(line);
         }
 
         reader.close();
@@ -53,7 +53,7 @@ public class AdBlocker {
     }
 
     public static boolean isAd(String url) {
-        HttpUrl httpUrl = HttpUrl.parse(url);
+        final HttpUrl httpUrl = HttpUrl.parse(url);
         return isAdHost(httpUrl != null ? httpUrl.host() : "");
     }
 
@@ -61,7 +61,7 @@ public class AdBlocker {
         if(TextUtils.isEmpty(host)) {
             return false;
         }
-        int index = host.indexOf(".");
+        final int index = host.indexOf(".");
         return index >= 0 && (AD_HOSTS.contains(host) ||
                 index + 1 < host.length() && isAdHost(host.substring(index + 1)));
     }
