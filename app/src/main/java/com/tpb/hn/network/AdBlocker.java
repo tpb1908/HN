@@ -28,17 +28,13 @@ public class AdBlocker {
 
     public static void init(final Context context) {
         if(AD_HOSTS.size() == 0) {
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    try {
-                        loadFromAssets(context);
-                    } catch(IOException ioe) {
+            AsyncTask.execute(() -> {
+                try {
+                    loadFromAssets(context);
+                } catch(IOException ioe) {
 
-                    }
-                    return null;
                 }
-            }.execute();
+            });
         }
     }
 

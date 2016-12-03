@@ -171,35 +171,41 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void saveItem(final Item item, final Context context, final ItemSaveListener saveListener) {
-        networkLoadArticle(item.getUrl(), true, new TextLoader() {
-            @Override
-            public void textLoaded(JSONObject result) {
-                if(Analytics.VERBOSE) Log.i(TAG, "textLoaded: save success");
-                try {
-                    final String MERCURY = result.getString("content");
-                    db.writeItem(item, true, MERCURY);
-                    saveListener.itemSaved(item);
-                } catch(JSONException jse) {
-                    saveListener.saveError(item, ERROR_PARSING);
-                    Log.e(TAG, "textLoaded: for save of " + item.getTitle(), jse);
+        if(item.getUrl() != null) {
+            networkLoadArticle(item.getUrl(), true, new TextLoader() {
+                @Override
+                public void textLoaded(JSONObject result) {
+                    if(Analytics.VERBOSE) Log.i(TAG, "textLoaded: save success");
+                    try {
+                        final String MERCURY = result.getString("content");
+                        db.writeItem(item, true, MERCURY);
+                        saveListener.itemSaved(item);
+                    } catch(JSONException jse) {
+                        saveListener.saveError(item, ERROR_PARSING);
+                        Log.e(TAG, "textLoaded: for save of " + item.getTitle(), jse);
+                    }
                 }
-            }
 
-            @Override
-            public void textError(String url, int code) {
-                saveListener.saveError(item, code);
-            }
-        });
-        final WebView wv = new WebView(context);
-        wv.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if(Analytics.VERBOSE)
-                    Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
-            }
-        });
-        wv.loadUrl(item.getUrl());
+                @Override
+                public void textError(String url, int code) {
+                    saveListener.saveError(item, code);
+                }
+            });
+            final WebView wv = new WebView(context);
+            wv.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    if(Analytics.VERBOSE)
+                        Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
+                }
+            });
+            wv.loadUrl(item.getUrl());
+        } else {
+            db.writeItem(item, true, "");
+            saveListener.itemSaved(item);
+        }
+
 
     }
 
