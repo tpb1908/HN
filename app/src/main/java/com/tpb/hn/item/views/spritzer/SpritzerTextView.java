@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
 import com.tpb.hn.item.views.HintingSeekBar;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SharedPrefsController;
 
 /**
  * Created by andrewgiang on 3/3/14.

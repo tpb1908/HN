@@ -36,7 +36,7 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.item.views.AdBlockingWebView;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.loaders.Loader;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;

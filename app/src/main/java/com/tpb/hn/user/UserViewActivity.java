@@ -33,7 +33,7 @@ import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.APIPaths;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.loaders.UserLoader;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SharedPrefsController;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

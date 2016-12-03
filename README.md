@@ -12,7 +12,7 @@ Spritz style skim reading
 
 
 ## TODO
-
+- [ ] Search view
 - [ ] Picking of default browser mode and fragment
 - [ ] Media service for TTS
 - [ ] Snappy scrolling

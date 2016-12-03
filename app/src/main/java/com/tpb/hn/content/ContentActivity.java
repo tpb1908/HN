@@ -28,7 +28,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.SettingsActivity;
 import com.tpb.hn.Util;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
@@ -36,7 +35,8 @@ import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.ItemViewActivity;
 import com.tpb.hn.network.AdBlocker;
 import com.tpb.hn.network.Login;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SettingsActivity;
+import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserViewActivity;
 
 import java.util.Calendar;
@@ -125,6 +125,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             }
         }, 1000 * 60);
         checkThemeChange(false);
+
+        //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
+        //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
 
     @Override

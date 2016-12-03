@@ -26,7 +26,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.item.FragmentPagerAdapter;
 import com.tpb.hn.item.views.HolderSwipeCallback;
 import com.tpb.hn.network.loaders.Loader;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SharedPrefsController;
 
 import java.util.ArrayList;
 import java.util.Arrays;

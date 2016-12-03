@@ -1,4 +1,4 @@
-package com.tpb.hn.storage;
+package com.tpb.hn.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -321,5 +321,6 @@ public class SharedPrefsController {
         Log.i(TAG, "getPageTypes: Array is " + Arrays.toString(pageTypes));
         return pageTypes;
     }
+
 
 }

@@ -1,4 +1,4 @@
-package com.tpb.hn;
+package com.tpb.hn.settings;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -14,8 +14,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+import com.tpb.hn.R;
 import com.tpb.hn.data.Formatter;
-import com.tpb.hn.storage.SharedPrefsController;
 
 import java.util.Calendar;
 import java.util.List;

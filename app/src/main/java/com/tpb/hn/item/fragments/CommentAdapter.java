@@ -23,7 +23,7 @@ import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Formatter;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.loaders.Parser;
-import com.tpb.hn.storage.SharedPrefsController;
+import com.tpb.hn.settings.SharedPrefsController;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -179,6 +179,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     notifyDataSetChanged();
                     mSwiper.setRefreshing(false);
                     if(mCommentId != 0) scrollToComment();
+
                 }, 300);
             });
 
@@ -197,22 +198,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             if(mComments.get(i).comment.getId() == mCommentId) {
                 expandComments = true;
                 //TODO Add a setting for this behaviour
-                //TODO- Add the code when flattening the comments to expand only the chosen id
+                //TODO- Add the code when flattening the comments to expand only the chosen id branch
                 /*
                 Animating insertions while scrolling this fast just doesn't work
                  */
-                final boolean animate = shouldAnimate;
-                shouldAnimate = false;
-                mRecycler.smoothScrollToPosition(i);
-                mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                        if(newState == RecyclerView.SCROLL_STATE_IDLE) {
-                            shouldAnimate = animate;
-                        }
-                    }
-                });
+                mRecycler.scrollToPosition(i);
                 break;
             }
         }
