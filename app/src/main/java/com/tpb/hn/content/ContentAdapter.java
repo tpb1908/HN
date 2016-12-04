@@ -88,7 +88,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                           final LinearLayoutManager layoutManager,
                           final SwipeRefreshLayout swiper) {
         ButterKnife.bind(this, recycler);
-        mState = context instanceof ContentActivity ? Items : User;
+        mState = manager instanceof ContentActivity ? Items : User;
         mContext = context;
         mManager = manager;
         mSwiper = swiper;

@@ -118,9 +118,13 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         mSearchButton.setOnClickListener((view) -> {
             if(!mIsSearching) {
+                mIsSearching = true;
                 mSwitcher.showNext();
                 mSearch.requestFocus();
-
+            } else {
+                mIsSearching = false;
+                mSearch.clearFocus();
+                mSwitcher.showNext();
             }
         });
 
@@ -146,6 +150,16 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mIsSearching) {
+            mSearchButton.callOnClick();
+        } else {
+            //TODO Option for prompting on back pressed
+            super.onBackPressed();
+        }
     }
 
     @Override
