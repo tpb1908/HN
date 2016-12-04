@@ -38,6 +38,8 @@ public class SharedPrefsController {
     private static final String KEY_AUTO_DARK = "AUTO_DARK";
     private static final String KEY_SHOW_SEEKBAR_HINT = "SEEKBAR_HINT";
     private static final String KEY_LOAD_IN_BACKGROUND = "BACKGROUND_LOAD";
+    private static final String KEY_SCROLLBAR = "SCROLLBAR";
+    private static final String KEY_FAST_SCROLL = "FAST_SCROLL";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -58,6 +60,8 @@ public class SharedPrefsController {
     private static int darkThemeEnd;
     private static boolean showSeekBarHint;
     private static boolean loadInBackground;
+    private static boolean showScrollbar;
+    private static boolean fastScroll;
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -98,6 +102,8 @@ public class SharedPrefsController {
         autoDarkTheme = prefs.getBoolean(KEY_AUTO_DARK, false);
         showSeekBarHint = prefs.getBoolean(KEY_SHOW_SEEKBAR_HINT, false);
         loadInBackground = prefs.getBoolean(KEY_LOAD_IN_BACKGROUND, true);
+        showScrollbar = prefs.getBoolean(KEY_SCROLLBAR, true);
+        fastScroll = prefs.getBoolean(KEY_FAST_SCROLL, true);
     }
 
     private void initInitialValues() {
@@ -289,6 +295,26 @@ public class SharedPrefsController {
 
     public boolean showSeekBarHint() {
         return showSeekBarHint;
+    }
+
+    public void setShowScrollbar(boolean shouldShow) {
+        showScrollbar = shouldShow;
+        editor.putBoolean(KEY_SCROLLBAR, showScrollbar);
+        editor.commit();
+    }
+
+    public boolean getShowScrollbar() {
+        return showScrollbar;
+    }
+
+    public void setFastScrolling(boolean shouldFastScroll) {
+        fastScroll = shouldFastScroll;
+        editor.putBoolean(KEY_FAST_SCROLL, fastScroll);
+        editor.commit();
+    }
+
+    public boolean getFastScroll() {
+        return fastScroll;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {

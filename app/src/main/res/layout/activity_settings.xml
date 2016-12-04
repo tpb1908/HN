@@ -219,10 +219,30 @@
                         android:text="@string/text_volume_navigation"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_scrollbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_volume_navigation"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_scrollbar"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
+                    <Switch
+                        android:id="@+id/switch_fast_scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_scrollbar"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_fast_scroll"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_volume_navigation"
+                        android:layout_below="@id/switch_fast_scroll"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>

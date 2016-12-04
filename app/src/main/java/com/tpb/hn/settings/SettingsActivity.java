@@ -74,6 +74,9 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_volume_navigation)).setChecked(prefs.getVolumeNavigation());
         ((Switch) ButterKnife.findById(this, R.id.switch_skimmer_show_seek_hint)).setChecked(prefs.showSeekBarHint());
         ((Switch) ButterKnife.findById(this, R.id.switch_data_load_in_background)).setChecked(prefs.getLoadInBackground());
+        ((Switch) ButterKnife.findById(this, R.id.switch_scrollbar)).setChecked(prefs.getShowScrollbar());
+        ((Switch) ButterKnife.findById(this, R.id.switch_fast_scroll)).setChecked(prefs.getFastScroll());
+        ((Switch) ButterKnife.findById(this, R.id.switch_fast_scroll)).setEnabled(prefs.getShowScrollbar());
         final Pair<Integer, Integer> timeRange = prefs.getDarkTimeRange();
         if(timeRange.first != -1) {
             final Pair<Integer, Integer> start = Formatter.intTohm(timeRange.first);
@@ -155,6 +158,13 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_data_load_in_background:
                 prefs.setLoadInBackground((sView.isChecked()));
+                break;
+            case R.id.switch_scrollbar:
+                prefs.setShowScrollbar(sView.isChecked());
+                findViewById(R.id.switch_fast_scroll).setEnabled(sView.isChecked());
+                break;
+            case R.id.switch_fast_scroll:
+                prefs.setFastScrolling(sView.isChecked());
                 break;
         }
     }

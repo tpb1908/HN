@@ -80,11 +80,19 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
     }
 
     public void setFastScrollEnabled(boolean enabled) {
-        mScrollbar.setEnabled(enabled);
+        mScrollbar.setSeekEnabled(enabled);
     }
 
     public boolean isFastScrollEnabled() {
-        return mScrollbar.isEnabled();
+        return mScrollbar.isSeekEnabled();
+    }
+
+    public void setScrollBarEnabled(boolean enabled) {
+        mScrollbar.setScrollBarEnabled(enabled);
+    }
+
+    public boolean isScrollBarEnabled() {
+        return mScrollbar.isScrollBarEnabled();
     }
 
     @Override

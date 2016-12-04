@@ -121,7 +121,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
 
         if(mRecycler instanceof FastScrollRecyclerView) {
-            ((FastScrollRecyclerView) mRecycler).setFastScrollEnabled(false);
             ((FastScrollRecyclerView) mRecycler).setStateChangeListener(new OnFastScrollStateChangeListener() {
                 @Override
                 public void onFastScrollStart() {
@@ -189,7 +188,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mIsDarkTheme = prefs.getUseDarkTheme();
         mShouldScrollOnChange = prefs.getShouldScrollToTop();
         mLoadInBackground = prefs.getLoadInBackground();
-
+        if(mRecycler instanceof FastScrollRecyclerView) {
+            ((FastScrollRecyclerView) mRecycler).setScrollBarEnabled(prefs.getShowScrollbar());
+            ((FastScrollRecyclerView) mRecycler).setFastScrollEnabled(prefs.getFastScroll());
+        }
         final boolean oldCardStyle = mIsUsingCards;
         mIsUsingCards = prefs.getUseCards();
         /*We don't want to do this when the adapter is created

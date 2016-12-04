@@ -39,13 +39,12 @@ import com.simplecityapps.recyclerview_fastscroll.R;
 import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateChangeListener;
 import com.simplecityapps.recyclerview_fastscroll.utils.Utils;
 
-import static android.R.attr.action;
-
 public class FastScroller {
     private static final int DEFAULT_AUTO_HIDE_DELAY = 1500;
 
     private FastScrollRecyclerView mRecyclerView;
-    private boolean mIsEnabled = true;
+    private boolean mIsScrollBarEnabled = true;
+    private boolean mIsSeekEnabled = true;
     private FastScrollPopup mPopup;
 
     private int mThumbHeight;
@@ -133,7 +132,9 @@ public class FastScroller {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                show();
+                if(mIsScrollBarEnabled) {
+                    show();
+                }
             }
         });
 
@@ -154,14 +155,25 @@ public class FastScroller {
         return mIsDragging;
     }
 
-    public void setEnabled(boolean enabled) {
-        mIsEnabled = enabled;
+    public void setSeekEnabled(boolean enabled) {
+        mIsSeekEnabled = enabled;
         mIsDragging = enabled && mIsDragging;
     }
 
-    public boolean isEnabled() {
-        return mIsEnabled;
+    public boolean isSeekEnabled() {
+        return mIsSeekEnabled;
     }
+
+    public void setScrollBarEnabled(boolean enabled) {
+        mIsScrollBarEnabled = enabled;
+        mIsSeekEnabled = enabled && mIsSeekEnabled;
+        mIsDragging = enabled && mIsDragging;
+    }
+
+    public boolean isScrollBarEnabled() {
+        return mIsScrollBarEnabled;
+    }
+
 
     /**
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
@@ -170,7 +182,7 @@ public class FastScroller {
     public void handleTouchEvent(MotionEvent ev, int downX, int downY, int lastY,
                                  OnFastScrollStateChangeListener stateChangeListener) {
         ViewConfiguration config = ViewConfiguration.get(mRecyclerView.getContext());
-        if(!mIsEnabled) return;
+        if(!mIsSeekEnabled) return;
 
         int action = ev.getAction();
         int y = (int) ev.getY();
