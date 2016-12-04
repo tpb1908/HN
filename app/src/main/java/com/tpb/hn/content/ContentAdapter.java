@@ -241,7 +241,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             final ArrayList<Integer> toLoad = new ArrayList<>();
             for(int i = pos; i < pos2 && pos2 < mData.length; i++) {
                 if(mData[i] == null) toLoad.add(mIds[i]);
-                Log.i(TAG, "loadItemsOnScroll: Adding from " + i);
             }
             if(toLoad.size() > 0) mLoader.loadItems(Util.convertIntegers(toLoad), false, this);
         }
@@ -337,7 +336,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void idError(int code) {
-
+        Toast.makeText(mContext, R.string.error_id_loading, Toast.LENGTH_SHORT).show();
+        loadItems(mCurrentPage);
     }
 
     void beginBackgroundLoading() {
