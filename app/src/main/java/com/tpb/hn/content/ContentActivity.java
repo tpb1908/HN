@@ -265,7 +265,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     public enum Section {
-        TOP, BEST, NEW, ASK, SHOW, JOB, SAVED
+        TOP, BEST, NEW, ASK, SHOW, JOB, SAVED, SEARCH
     }
 
 }

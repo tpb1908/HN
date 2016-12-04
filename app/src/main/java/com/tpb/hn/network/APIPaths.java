@@ -3,6 +3,7 @@ package com.tpb.hn.network;
 import android.util.Log;
 
 import com.tpb.hn.BuildConfig;
+import com.tpb.hn.content.ContentActivity;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,8 +40,9 @@ public class APIPaths {
     private static final String DOCS_PDF_BASE = "https://docs.google.com/gview?embedded=true&url=";
     //https://hn.algolia.com/api
     private static final String ALGOLIA_BASE = "http://hn.algolia.com/api/v1/";
+    private static final String ALGOLIA_SEARCH = "search?query";
     private static final String ALGOLIA_ITEM_PATH = "items/";
-    private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
+    private static final String ALGOLIA_DATE = "search_by_date?query=";
 
     private static final String TAG_STORY = "story";
     private static final String TAG_COMMENT = "comment";
@@ -135,6 +137,14 @@ public class APIPaths {
 
     private String searchStoryComments(int storyId) {
         return ALGOLIA_BASE + "?tags=comment," + storyId;
+    }
+
+    void getCommentSearchPath(String query, ContentActivity.Section tag) {
+        final String path = ALGOLIA_BASE + ALGOLIA_SEARCH + query;
+    }
+
+    void appendDateFilterToSearch(int since) {
+
     }
 
 }
