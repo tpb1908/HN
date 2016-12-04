@@ -147,4 +147,9 @@ public class Util {
         if(section.equals(sections[5])) return ContentActivity.Section.JOB;
         return ContentActivity.Section.SAVED;
     }
+
+    public static String pluralise(String s, int i) {
+        return i == 1 ? s : s + "s";
+    }
+
 }

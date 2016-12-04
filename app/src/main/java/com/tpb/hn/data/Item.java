@@ -2,6 +2,8 @@ package com.tpb.hn.data;
 
 import android.support.annotation.NonNull;
 
+import com.tpb.hn.Util;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -186,9 +188,9 @@ public class Item implements Comparable<Item> {
     }
 
     public String getInfo() {
-        String info = score + " points | ";
+        String info = score + Util.pluralise(" point", score) + " | ";
         if(descendants > 0) {
-            info += descendants + " comments | ";
+            info += descendants + Util.pluralise(" comment", descendants) + " | ";
         }
         return info + Formatter.timeAgo(time);
     }
