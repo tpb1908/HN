@@ -18,8 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.androidnetworking.AndroidNetworking;
@@ -59,10 +62,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
+    @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
+    @BindView(R.id.content_search_edittext) EditText mSearch;
+    @BindView(R.id.button_search) ImageButton mSearchButton;
     private Tracker mTracker;
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
+    private boolean mIsSearching = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,11 +92,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mAdapter = new ContentAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
         mVolumeNavigation = prefs.getVolumeNavigation();
-        mNavSpinner.setAdapter(new ArrayAdapter<>(
+
+        final ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.nav_spinner_items)
-        ));
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.nav_spinner_items));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mNavSpinner.setAdapter(spinnerAdapter);
+
         mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -103,6 +113,22 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        mSearchButton.setOnClickListener((view) -> {
+            if(!mIsSearching) {
+                mIsSearching = true;
+                mSwitcher.showNext();
+                mSearch.requestFocus();
+                mSwitcher.setInAnimation(ContentActivity.this, android.R.anim.fade_in);
+                mSwitcher.setOutAnimation(ContentActivity.this, R.anim.shrink_horizontal);
+            } else {
+                mIsSearching = false;
+                mSearch.clearFocus();
+                mSwitcher.showNext();
+                mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+                mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
             }
         });
 
@@ -128,6 +154,16 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mIsSearching) {
+            mSearchButton.callOnClick();
+        } else {
+            //TODO Option for prompting on back pressed
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -265,7 +301,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     public enum Section {
-        TOP, BEST, NEW, ASK, SHOW, JOB, SAVED
+        TOP, BEST, NEW, ASK, SHOW, JOB, SAVED, SEARCH
     }
 
 }

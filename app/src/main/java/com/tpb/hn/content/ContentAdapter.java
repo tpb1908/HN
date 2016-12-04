@@ -38,6 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tpb.hn.content.ContentAdapter.AdapterState.*;
+
 /**
  * Created by theo on 18/10/16.
  */
@@ -67,13 +69,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private int mCountGuess;
     private LinearLayoutManager mLayoutManager;
     //Settings flags
-    private final boolean mIsContent;
+    private AdapterState mState;
     private boolean mIsDarkTheme;
     private boolean mShouldScrollOnChange;
     private boolean mLoadInBackground;
     private boolean mIsOffline;
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
+
+    enum AdapterState {
+        Items, User, Search
+    }
 
     //TODO- Clean this up
     public ContentAdapter(Context context,
@@ -82,7 +88,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                           final LinearLayoutManager layoutManager,
                           final SwipeRefreshLayout swiper) {
         ButterKnife.bind(this, recycler);
-        mIsContent = manager instanceof ContentActivity;
+        mState = manager instanceof ContentActivity ? Items : User;
         mContext = context;
         mManager = manager;
         mSwiper = swiper;
@@ -99,7 +105,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         });
 
         swiper.setOnRefreshListener(() -> {
-            if(mIsContent) {
+            if(mState == Items) {
                 loadItems(mCurrentPage);
             } else {
                 mIds = new int[0];
@@ -415,7 +421,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.mURL.setVisibility(View.GONE);
                 } else {
                     holder.mTitle.setText(item.getTitle());
-                    if(mIsContent) {
+                    if(mState == Items) {
                         holder.mAuthor.setVisibility(View.VISIBLE);
                         holder.mAuthor.setText(item.getFormattedBy());
                         holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
@@ -505,9 +511,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         if(position < mData.length && mData[position] != null) {
-            return mData[position].isComment() ? mIsContent ? 0 : 1 : 0;
+            return mData[position].isComment() ? mState == Items ? 0 : 1 : 0;
         }
-        return mIsContent ? 0 : -1;
+        return mState == Items ? 0 : -1;
     }
 
     @Override
