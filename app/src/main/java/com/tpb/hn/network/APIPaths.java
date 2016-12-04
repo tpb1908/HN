@@ -42,6 +42,21 @@ public class APIPaths {
     private static final String ALGOLIA_ITEM_PATH = "items/";
     private static final String ALGOLIA_DATE_BASE = "http://hn.algolia.com/api/v1/search_by_date?query=";
 
+    private static final String TAG_STORY = "story";
+    private static final String TAG_COMMENT = "comment";
+    private static final String TAG_POLL = "poll";
+    private static final String TAG_POLLOPT = "pollopt";
+    private static final String TAG_SHOW = "show_hn";
+    private static final String TAG_ASK = "ask_hn";
+    private static final String TAG_FRONT_PAGE = "front_page";
+    private static final String TAG_AUTHOR = "author_:";
+    private static final String TAG_STORY_SEARCH = "story_:";
+    private static final String FILTER_CREATED_AT  = "created_at_i";
+    private static final String FILTER_POINTS = "points";
+    private static final String FILTER_COMMENT_COUNT = "num_comments";
+    private static final String PARAM_PAGE = "page=";
+    private static final String PARAM_HITS_PER_PAGE = "hitsPerPage=";
+
     public static String getItemPath(int itemId) {
         return BASE_PATH + ITEM + itemId + JSON;
     }
