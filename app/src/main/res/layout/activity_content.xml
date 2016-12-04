@@ -19,20 +19,70 @@
             android:background="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <Spinner
-                android:id="@+id/nav_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:transitionName="button">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            </Spinner>
+                <Spinner
+                    android:id="@+id/nav_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:transitionName="button">
 
-            <TextView
-                android:id="@+id/content_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
-                android:textSize="16sp"/>
+                </Spinner>
+
+                <ViewSwitcher
+                    android:id="@+id/content_toolbar_switcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@id/nav_spinner"
+                    android:layout_toStartOf="@+id/button_search"
+                    android:inAnimation="@anim/expand_horizontal"
+                    android:outAnimation="@android:anim/fade_out">
+
+                    <TextView
+                        android:id="@+id/content_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
+                        android:textSize="16sp"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/content_find_edittext"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="16dp"
+                            android:focusable="true"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text">
+
+                            <requestFocus/>
+
+                        </EditText>
+
+                    </RelativeLayout>
+
+                </ViewSwitcher>
+
+                <ImageButton
+                    android:id="@+id/button_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/md_transparent"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_search"/>
+
+            </RelativeLayout>
+
 
         </android.support.v7.widget.Toolbar>
 
