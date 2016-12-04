@@ -216,7 +216,9 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             mFindEditText.setText("");
-            mSwitcher.showPrevious();
+            mSwitcher.showNext();
+            mSwitcher.setInAnimation(getContext(), R.anim.expand_horizontal);
+            mSwitcher.setOutAnimation(getContext(), android.R.anim.fade_out);
             mIsFindShown = false;
             mIsSearchComplete = false;
             mParent.hideFab();
@@ -247,6 +249,8 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
             findInPage();
         } else {
             mSwitcher.showNext();
+            mSwitcher.setInAnimation(getContext(), android.R.anim.fade_in);
+            mSwitcher.setOutAnimation(getContext(), R.anim.shrink_horizontal);
             mFindEditText.requestFocus();
             mFindEditText.addTextChangedListener(new TextWatcher() {
                 long lastUpdate = System.currentTimeMillis();

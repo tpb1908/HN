@@ -121,10 +121,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 mIsSearching = true;
                 mSwitcher.showNext();
                 mSearch.requestFocus();
+                mSwitcher.setInAnimation(ContentActivity.this, android.R.anim.fade_in);
+                mSwitcher.setOutAnimation(ContentActivity.this, R.anim.shrink_horizontal);
             } else {
                 mIsSearching = false;
                 mSearch.clearFocus();
                 mSwitcher.showNext();
+                mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+                mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
             }
         });
 
