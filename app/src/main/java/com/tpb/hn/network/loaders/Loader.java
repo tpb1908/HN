@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -172,6 +173,17 @@ public class Loader extends BroadcastReceiver {
 
     public void saveItem(final Item item, final Context context, final ItemSaveListener saveListener) {
         if(item.getUrl() != null) {
+            final WebView wv = new WebView(context);
+            wv.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+                    if(Analytics.VERBOSE)
+                        Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
+                }
+            });
+            wv.loadUrl(item.getUrl());
+
             networkLoadArticle(item.getUrl(), true, new TextLoader() {
                 @Override
                 public void textLoaded(JSONObject result) {
@@ -188,19 +200,17 @@ public class Loader extends BroadcastReceiver {
 
                 @Override
                 public void textError(String url, int code) {
-                    saveListener.saveError(item, code);
+                    if(Analytics.VERBOSE) Log.i(TAG, "textError: " + code);
+                    if(code == ERROR_PDF) {
+                        final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(i);
+                    } else {
+                        saveListener.saveError(item, code);
+                    }
                 }
             });
-            final WebView wv = new WebView(context);
-            wv.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    if(Analytics.VERBOSE)
-                        Log.i(TAG, "onPageFinished: Saved page finished for " + item.getTitle());
-                }
-            });
-            wv.loadUrl(item.getUrl());
+
         } else {
             db.writeItem(item, true, "");
             saveListener.itemSaved(item);
