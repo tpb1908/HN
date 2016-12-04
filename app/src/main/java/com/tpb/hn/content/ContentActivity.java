@@ -69,6 +69,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
+    private boolean mIsSearching = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +112,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        mSearchButton.setOnClickListener((view) -> {
+            if(!mIsSearching) {
+                mSwitcher.showNext();
+                mSearch.requestFocus();
 
             }
         });
