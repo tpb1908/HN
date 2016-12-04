@@ -64,7 +64,6 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_content_cards)).setChecked(prefs.getUseCards());
         ((Switch) ButterKnife.findById(this, R.id.switch_comment_cards)).setChecked(prefs.getUseCardsComments());
         ((Switch) ButterKnife.findById(this, R.id.switch_comment_expansion)).setChecked(prefs.getExpandComments());
-        ((Switch) ButterKnife.findById(this, R.id.switch_comment_animation)).setChecked(prefs.getAnimateComments());
         ((Switch) ButterKnife.findById(this, R.id.switch_mark_read)).setChecked(prefs.getMarkReadWhenPassed());
         ((Switch) ButterKnife.findById(this, R.id.switch_browser_ads)).setChecked(prefs.getBlockAds());
         ((Switch) ButterKnife.findById(this, R.id.switch_scroll_to_top)).setChecked(prefs.getShouldScrollToTop());
@@ -126,9 +125,6 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_comment_expansion:
                 prefs.setExpandComments(sView.isChecked());
-                break;
-            case R.id.switch_comment_animation:
-                prefs.setAnimateComments(sView.isChecked());
                 break;
             case R.id.switch_mark_read:
                 prefs.setMarkReadWhenPassed(sView.isChecked());

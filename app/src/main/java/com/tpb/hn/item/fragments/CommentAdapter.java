@@ -51,7 +51,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private Comment mRootComment;
     private ArrayList<CommentWrapper> mComments = new ArrayList<>();
     private boolean expandComments;
-    private boolean shouldAnimate;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener, int commentId) {
         mRecycler = recycler;
@@ -62,7 +61,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
         usingCards = prefs.getUseCardsComments();
         expandComments = prefs.getExpandComments();
-        shouldAnimate = prefs.getAnimateComments();
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerItemDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
@@ -99,22 +97,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             holder.mCard.setCardElevation(Util.pxFromDp(4));
             holder.mCard.setRadius(Util.pxFromDp(3));
         }
-        if(!comment.bound && shouldAnimate) {
-            setTranslateAnimation(holder.itemView, comment.depth);
-            comment.bound = true;
-        }
     }
 
+    @Override
+    public void onViewRecycled(CommentHolder holder) {
+        super.onViewRecycled(holder);
+        holder.itemView.clearAnimation();
+
+    }
 
     @Override
     public int getItemCount() {
         return mVisibleItems.size();
-    }
-
-    private void setTranslateAnimation(View view, int multiplier) {
-        final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
-        animation.setDuration(Math.max(300, Math.min(800, multiplier * 150)));
-        view.startAnimation(animation);
     }
 
     private void switchItemVisibility(int pos) {
@@ -264,7 +258,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private class CommentWrapper {
         final Comment comment;
         int depth = 0;
-        boolean bound = false;
         boolean visible = true;
         boolean childrenVisible = true;
         CharSequence parsedText;
@@ -295,6 +288,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         CommentHolder(@NonNull View itemView) {
             super(itemView);
+            final TranslateAnimation animation = new TranslateAnimation(-mScreenWidth, 0, 0, 0);
+            animation.setDuration(300);
+            itemView.startAnimation(animation);
             ButterKnife.bind(this, itemView);
             itemView.setOnLongClickListener(view -> {
                 CommentAdapter.this.switchItemVisibility(getAdapterPosition());

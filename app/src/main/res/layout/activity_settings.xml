@@ -293,28 +293,15 @@
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                         />
 
-                    <Switch
-                        android:id="@+id/switch_comment_animation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@id/switch_comment_expansion"
-                        android:onClick="onSwitchClick"
-                        android:text="@string/text_animate_comments"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                        />
-
 
 
                     <!-- Sort order-->
-                    <!-- Animate -->
                     <!-- Mark new children-->
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_comment_animation"
+                        android:layout_below="@id/switch_comment_expansion"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>

@@ -27,7 +27,6 @@ public class SharedPrefsController {
     private static final String KEY_DARK_THEME = "DARK_THEME";
     private static final String KEY_USE_CARDS_COMMENTS = "CARD_COMMENTS";
     private static final String KEY_EXPAND_COMMENTS = "EXPAND_COMMENTS";
-    private static final String KEY_ANIMATE_COMMENTS = "ANIMATE_COMMENTS";
     private static final String KEY_BLOCK_ADS = "BLOCK_ADS";
     private static final String KEY_SCROLL_TO_TOP = "SCROLL_TO_TOP";
     private static final String KEY_DISABLE_HORIZONTAL_SCROLLING = "HORIZONTAL_SCROLLING";
@@ -49,7 +48,6 @@ public class SharedPrefsController {
     private static boolean markReadWhenPassed;
     private static boolean useDarkTheme;
     private static boolean expandComments;
-    private static boolean animateComments;
     private static boolean shouldBlockAds;
     private static boolean shouldScrollToTop;
     private static boolean disableHorizontalScrolling;
@@ -91,7 +89,6 @@ public class SharedPrefsController {
         useDarkTheme = prefs.getBoolean(KEY_DARK_THEME, false);
         useCardsComments = prefs.getBoolean(KEY_USE_CARDS_COMMENTS, false);
         expandComments = prefs.getBoolean(KEY_EXPAND_COMMENTS, true);
-        animateComments = prefs.getBoolean(KEY_ANIMATE_COMMENTS, true);
         shouldBlockAds = prefs.getBoolean(KEY_BLOCK_ADS, true);
         shouldScrollToTop = prefs.getBoolean(KEY_SCROLL_TO_TOP, true);
         disableHorizontalScrolling = prefs.getBoolean(KEY_DISABLE_HORIZONTAL_SCROLLING, false);
@@ -199,23 +196,13 @@ public class SharedPrefsController {
         editor.commit();
     }
 
-    public boolean getAnimateComments() {
-        return animateComments;
-    }
-
-    public void setAnimateComments(boolean shouldAnimateComments) {
-        animateComments = shouldAnimateComments;
-        editor.putBoolean(KEY_ANIMATE_COMMENTS, animateComments);
-        editor.commit();
-    }
-
     public boolean getBlockAds() {
         return shouldBlockAds;
     }
 
     public void setBlockAds(boolean blockAds) {
         shouldBlockAds = blockAds;
-        editor.putBoolean(KEY_ANIMATE_COMMENTS, shouldBlockAds);
+        editor.putBoolean(KEY_BLOCK_ADS, shouldBlockAds);
         editor.commit();
     }
 
