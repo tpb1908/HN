@@ -27,6 +27,9 @@
                     android:id="@+id/nav_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:gravity="center_vertical"
                     android:transitionName="button">
 
                 </Spinner>
@@ -45,7 +48,8 @@
                         android:id="@+id/content_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="bottom"
+                        android:paddingBottom="8dp"
                         android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
                         android:textSize="16sp"/>
 
@@ -54,7 +58,7 @@
                         android:layout_height="wrap_content">
 
                         <EditText
-                            android:id="@+id/content_find_edittext"
+                            android:id="@+id/content_search_edittext"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"

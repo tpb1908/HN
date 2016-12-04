@@ -18,8 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.androidnetworking.AndroidNetworking;
@@ -59,6 +62,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
+    @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
+    @BindView(R.id.content_search_edittext) EditText mSearch;
+    @BindView(R.id.button_search) ImageButton mSearchButton;
     private Tracker mTracker;
     private ContentAdapter mAdapter;
     private boolean mVolumeNavigation;
@@ -85,11 +91,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mAdapter = new ContentAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
         mVolumeNavigation = prefs.getVolumeNavigation();
-        mNavSpinner.setAdapter(new ArrayAdapter<>(
+
+        final ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.nav_spinner_items)
-        ));
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.nav_spinner_items));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mNavSpinner.setAdapter(spinnerAdapter);
+
         mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
