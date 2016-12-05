@@ -178,7 +178,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         final ArrayAdapter<CharSequence> dateAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
                 getResources().getStringArray(R.array.date_filter_spinner_items)
         );
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -186,7 +187,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         final ArrayAdapter<CharSequence> typeAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
                 getResources().getStringArray(R.array.type_filter_spinner_items)
         );
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -194,7 +196,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         final ArrayAdapter<CharSequence> sortAdapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
                 getResources().getStringArray(R.array.sort_filter_spinner_items)
         );
         sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
