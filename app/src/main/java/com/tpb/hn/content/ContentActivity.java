@@ -70,6 +70,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
     @BindView(R.id.content_search_edittext) EditText mSearch;
     @BindView(R.id.button_search) ImageButton mSearchButton;
+    @BindView(R.id.button_close_search) ImageButton mCloseSearchButton;
     @BindView(R.id.spinner_filter_type) Spinner mTypeSpinner;
     @BindView(R.id.spinner_filter_date) Spinner mDateSpinner;
     @BindView(R.id.spinner_filter_sort) Spinner mSortSpinner;
@@ -111,15 +112,19 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
                 mSearch.requestFocus();
                 mSwitcher.setInAnimation(ContentActivity.this, android.R.anim.fade_in);
-                mSwitcher.setOutAnimation(ContentActivity.this, R.anim.shrink_horizontal);
-            } else {
-                mIsSearching = false;
-                mSearch.clearFocus();
-                mSwitcher.showNext();
-                mSearchFilterHolder.setVisibility(View.GONE);
-                mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
                 mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+            } else {
+                //Perform search
             }
+        });
+
+        mCloseSearchButton.setOnClickListener((view) -> {
+            mIsSearching = false;
+            mSearch.clearFocus();
+            mSwitcher.showNext();
+            mSearchFilterHolder.setVisibility(View.GONE);
+            mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+            mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
         });
 
         setupSpinners();
