@@ -235,9 +235,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             is no inertia and we have stopped at this point
              */
             if(pos > mLastPosition || fastScroll) {
-                pos2 = Math.min(pos + 15, mIds.length);
+                pos2 = Math.min(pos + 25, mIds.length);
             } else {
-                pos2 = Math.max(pos - 15, 0);
+                pos2 = Math.max(pos - 25, 0);
             }
             if(pos2 < pos) {
                 final int t = pos;
@@ -334,9 +334,11 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mLayoutManager.scrollToPosition(ids.length);
         }
         mData = new Item[ids.length + 1];
+        AndroidNetworking.forceCancel("BG");
         mLoader.loadItems(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false, this);
         notifyDataSetChanged();
         mSwiper.setRefreshing(false);
+        beginBackgroundLoading();
         //Id loading will only happen once each time the mData is to be set
     }
 
@@ -354,14 +356,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 for(int i = 0; i < mIds.length; i++) {
                     if(mData[i] == null) notLoaded[count++] = mIds[i];
                 }
-
-                mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), false, ContentAdapter.this);
+                mLoader.loadItems(Arrays.copyOfRange(notLoaded, 0, count), true, ContentAdapter.this);
             });
         }
-    }
-
-    void cancelBackgroundLoading() {
-        mLoader.cancelBackgroundLoading();
     }
 
     private void attemptLoadAgain(int pos) {
