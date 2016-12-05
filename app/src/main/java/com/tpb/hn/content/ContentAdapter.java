@@ -444,9 +444,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     if(item.isViewed()) {
                         holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Medium_Inverse);
-                    } else {
-                        holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
-                        holder.mTitle.setTextColor(mIsDarkTheme ? darkText : lightText);
                     }
                     if(item.isNew()) {
                         holder.mNumber.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Large);
@@ -490,17 +487,19 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         super.onViewRecycled(viewHolder);
         if(viewHolder instanceof ItemHolder) {
             final ItemHolder holder = (ItemHolder) viewHolder;
+            holder.mTitle.setTextAppearance(mContext, android.R.style.TextAppearance_Material_Title);
+            holder.mTitle.setTextColor(mIsDarkTheme ? darkText : lightText);
+            //Reset the rest of the view
+            holder.mInfo.setText(R.string.text_info_empty);
+            holder.mAuthor.setText("");
+            holder.mURL.setText("");
+            holder.mNumber.setText("");
             //Reset the view height if necessary
             if(holder.mTitle.getLineCount() > 1) {
                 holder.mTitle.setText("");
                 holder.itemView.requestLayout();
             }
-            //Reset the rest of the view
             holder.mTitle.setText(R.string.text_title_empty);
-            holder.mInfo.setText(R.string.text_info_empty);
-            holder.mAuthor.setText("");
-            holder.mURL.setText("");
-            holder.mNumber.setText("");
         } else if(viewHolder instanceof CommentHolder) {
             //Reset the height of the comment holder
             ((CommentHolder) viewHolder).mBody.requestLayout();
