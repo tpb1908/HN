@@ -296,7 +296,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         super.onResume();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mAdapter.cancelBackgroundLoading();
         mAdapter.getLastUpdate();
         mAdapter.getPrefs(this);
         checkThemeChange(true);
