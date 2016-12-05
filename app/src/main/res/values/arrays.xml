@@ -11,6 +11,31 @@
         <item>Saved</item>
     </string-array>
 
+    <string-array name="date_filter_spinner_items">
+        <item>All time</item>
+        <item>Year</item>
+        <item>6 months</item>
+        <item>3 months</item>
+        <item>1 month</item>
+        <item>Week</item>
+        <item>Day</item>
+    </string-array>
+
+    <string-array name="type_filter_spinner_items">
+        <item>All</item>
+        <item>Story</item>
+        <item>Comment</item>
+        <item>Poll</item>
+        <item>Show HN</item>
+        <item>Ask HN</item>
+    </string-array>
+
+    <string-array name="sort_filter_spinner_items">
+        <item>Points</item>
+        <item>Data</item>
+        <item>Comments</item>
+    </string-array>
+
     <integer-array name="comment_colors">
         <item>@color/md_red_500</item>
         <item>@color/md_pink_500</item>

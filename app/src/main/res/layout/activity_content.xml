@@ -10,82 +10,148 @@
         android:id="@+id/content_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:transitionName="appbar">
+        android:transitionName="appbar"
+        android:animateLayoutChanges="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/content_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:animateLayoutChanges="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true">
+
+                    <ViewSwitcher
+                        android:id="@+id/content_toolbar_switcher"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/button_search"
+                        android:inAnimation="@anim/expand_horizontal"
+                        android:outAnimation="@android:anim/fade_out">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <Spinner
+                                android:id="@+id/nav_spinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="16dp"
+                                android:paddingBottom="16dp"
+                                android:transitionName="button">
+                            </Spinner>
+
+                            <TextView
+                                android:id="@+id/content_subtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
+                                android:textSize="16sp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+
+                            <ImageButton
+                                android:id="@+id/button_close_search"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/md_transparent"
+                                android:paddingTop="16dp"
+                                android:paddingBottom="16dp"
+                                android:paddingEnd="16dp"
+                                android:src="@drawable/ic_close"/>
+
+
+                            <EditText
+                                android:id="@+id/content_search_edittext"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+
+                                android:focusable="true"
+                                android:imeOptions="actionSearch"
+                                android:inputType="text">
+
+                                <requestFocus/>
+
+                            </EditText>
+
+                        </LinearLayout>
+
+                    </ViewSwitcher>
+
+                    <ImageButton
+                        android:id="@+id/button_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/md_transparent"
+                        android:padding="16dp"
+                        android:src="@drawable/ic_search"/>
+
+
+                </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/content_search_filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:contentInsetStart="16dp"
+            app:contentInsetEnd="16dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:orientation="horizontal">
 
                 <Spinner
-                    android:id="@+id/nav_spinner"
+                    android:id="@+id/spinner_filter_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:gravity="center_vertical"
-                    android:transitionName="button">
+                    android:layout_alignParentStart="true"
+                    android:background="@null">
 
                 </Spinner>
 
-                <ViewSwitcher
-                    android:id="@+id/content_toolbar_switcher"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/spinner_filter_date"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@id/nav_spinner"
-                    android:layout_toStartOf="@+id/button_search"
-                    android:inAnimation="@anim/expand_horizontal"
-                    android:outAnimation="@android:anim/fade_out">
+                    android:layout_toEndOf="@+id/spinner_filter_type"
+                    android:layout_toStartOf="@+id/spinner_filter_sort"
+                    android:background="@null">
+                </Spinner>
 
-                    <TextView
-                        android:id="@+id/content_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:paddingBottom="8dp"
-                        android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Subtitle"
-                        android:textSize="16sp"/>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                       >
-
-                        <EditText
-                            android:id="@+id/content_search_edittext"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:focusable="true"
-                            android:imeOptions="actionSearch"
-                            android:inputType="text">
-
-                            <requestFocus/>
-
-                        </EditText>
-
-                    </FrameLayout>
-
-                </ViewSwitcher>
-
-                <ImageButton
-                    android:id="@+id/button_search"
+                <Spinner
+                    android:id="@+id/spinner_filter_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/md_transparent"
-                    android:padding="16dp"
-                    android:src="@drawable/ic_search"/>
+                    android:background="@null">
+
+                </Spinner>
 
             </RelativeLayout>
-
 
         </android.support.v7.widget.Toolbar>
 

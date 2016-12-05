@@ -60,5 +60,6 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }
 apply plugin: 'com.google.gms.google-services'

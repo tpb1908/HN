@@ -55,18 +55,27 @@ import butterknife.ButterKnife;
 
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
-    public static Item mLaunchItem;
+
+    private Tracker mTracker;
+
     @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
     @BindView(R.id.content_appbar) AppBarLayout mAppBar;
     @BindView(R.id.nav_spinner) Spinner mNavSpinner;
     @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
+
+    @BindView(R.id.content_search_filters) Toolbar mSearchFilterHolder;
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
     @BindView(R.id.content_search_edittext) EditText mSearch;
     @BindView(R.id.button_search) ImageButton mSearchButton;
-    private Tracker mTracker;
+    @BindView(R.id.button_close_search) ImageButton mCloseSearchButton;
+    @BindView(R.id.spinner_filter_type) Spinner mTypeSpinner;
+    @BindView(R.id.spinner_filter_date) Spinner mDateSpinner;
+    @BindView(R.id.spinner_filter_sort) Spinner mSortSpinner;
+
     private ContentAdapter mAdapter;
+    public static Item mLaunchItem;
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
     private boolean mIsSearching = false;
@@ -93,45 +102,31 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mRecycler.setAdapter(mAdapter);
         mVolumeNavigation = prefs.getVolumeNavigation();
 
-        final ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.nav_spinner_items));
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mNavSpinner.setAdapter(spinnerAdapter);
-
-        mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mAdapter.loadItems(Util.getSection(ContentActivity.this, mNavSpinner.getSelectedItem().toString()));
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory(Analytics.CATEGORY_NAVIGATION)
-                        .setAction(Analytics.KEY_PAGE + mNavSpinner.getSelectedItem().toString())
-                        .build());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         mSearchButton.setOnClickListener((view) -> {
+            //TODO Find a way of animating without the judder
             if(!mIsSearching) {
                 mIsSearching = true;
                 mSwitcher.showNext();
+                mSearchFilterHolder.setVisibility(View.VISIBLE);
+
                 mSearch.requestFocus();
                 mSwitcher.setInAnimation(ContentActivity.this, android.R.anim.fade_in);
-                mSwitcher.setOutAnimation(ContentActivity.this, R.anim.shrink_horizontal);
-            } else {
-                mIsSearching = false;
-                mSearch.clearFocus();
-                mSwitcher.showNext();
-                mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
                 mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+            } else {
+                //Perform search
             }
         });
 
+        mCloseSearchButton.setOnClickListener((view) -> {
+            mIsSearching = false;
+            mSearch.clearFocus();
+            mSwitcher.showNext();
+            mSearchFilterHolder.setVisibility(View.GONE);
+            mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+            mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+        });
+
+        setupSpinners();
 
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
@@ -156,10 +151,64 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
 
+    private void setupSpinners() {
+        final ArrayAdapter<CharSequence> navAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.nav_spinner_items)
+        );
+        navAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mNavSpinner.setAdapter(navAdapter);
+
+        mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mAdapter.loadItems(Util.getSection(ContentActivity.this, mNavSpinner.getSelectedItem().toString()));
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(Analytics.CATEGORY_NAVIGATION)
+                        .setAction(Analytics.KEY_PAGE + mNavSpinner.getSelectedItem().toString())
+                        .build());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        final ArrayAdapter<CharSequence> dateAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
+                getResources().getStringArray(R.array.date_filter_spinner_items)
+        );
+        dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mDateSpinner.setAdapter(dateAdapter);
+
+        final ArrayAdapter<CharSequence> typeAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
+                getResources().getStringArray(R.array.type_filter_spinner_items)
+        );
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTypeSpinner.setAdapter(typeAdapter);
+
+        final ArrayAdapter<CharSequence> sortAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.simple_spinner_dropdown_item,
+                android.R.id.text1,
+                getResources().getStringArray(R.array.sort_filter_spinner_items)
+        );
+        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSortSpinner.setAdapter(sortAdapter);
+
+    }
+
     @Override
     public void onBackPressed() {
         if(mIsSearching) {
-            mSearchButton.callOnClick();
+            mCloseSearchButton.callOnClick();
         } else {
             //TODO Option for prompting on back pressed
             super.onBackPressed();
