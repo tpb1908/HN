@@ -31,6 +31,8 @@ Spritz style skim reading with skipping features not featured in Spritz
 - [ ] Add a setting for scrolling to a comment when opened from UserViewActivity
 - [ ] Only expand a single comment tree when the above setting is on
 - [ ] Allow clearing cache
+- [ ] Preload greater number of items and don't both cancelling background task
+- [ ] Filter by user in search
 
 ## Refactoring plan
 
