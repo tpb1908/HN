@@ -343,8 +343,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     private ActivityOptionsCompat getSharedTransition() {
         return ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                Pair.create((View) mNavSpinner, "button"),
-                Pair.create((View) mAppBar, "appbar")
+                Pair.create(mIsSearching ? mCloseSearchButton : mNavSpinner, "button"),
+                Pair.create(mAppBar, "appbar")
         );
     }
 
