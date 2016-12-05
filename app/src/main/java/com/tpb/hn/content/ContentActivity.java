@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -66,7 +65,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
 
-    @BindView(R.id.content_search_filters) LinearLayout mSearchFilterHolder;
+    @BindView(R.id.content_search_filters) Toolbar mSearchFilterHolder;
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
     @BindView(R.id.content_search_edittext) EditText mSearch;
     @BindView(R.id.button_search) ImageButton mSearchButton;
