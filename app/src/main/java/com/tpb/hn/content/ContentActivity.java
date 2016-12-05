@@ -206,7 +206,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     public void onBackPressed() {
         if(mIsSearching) {
-            mSearchButton.callOnClick();
+            mCloseSearchButton.callOnClick();
         } else {
             //TODO Option for prompting on back pressed
             super.onBackPressed();
