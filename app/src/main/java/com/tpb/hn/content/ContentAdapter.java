@@ -268,7 +268,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return Integer.toString(position);
+        return Integer.toString(position + 1);
     }
 
     void loadItems(ContentActivity.Section page) {
