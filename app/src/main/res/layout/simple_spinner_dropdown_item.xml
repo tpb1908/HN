@@ -10,6 +10,8 @@
          android:singleLine="true"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
+         android:paddingStart="8dp"
+         android:paddingEnd="8dp"
          android:ellipsize="marquee"
          android:drawableEnd="@drawable/ic_arrow_drop_down"/>
 
