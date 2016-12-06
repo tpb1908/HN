@@ -3,6 +3,8 @@ package com.tpb.hn.content;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -76,6 +78,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
     private boolean mIsSearching = false;
+    private boolean mIsKeyboardOpen = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,13 +110,13 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mVolumeNavigation = prefs.getVolumeNavigation();
 
         mSearchButton.setOnClickListener((view) -> {
-            //TODO Find a way of animating without the judder
             if(!mIsSearching) {
                 mIsSearching = true;
                 mSwitcher.showNext();
                 mSearchFilterHolder.setVisibility(View.VISIBLE);
                 mSearch.requestFocus();
                 Util.showKeyboard(this, mSearch);
+                mIsKeyboardOpen = true;
                 mSwitcher.setInAnimation(this, android.R.anim.fade_in);
                 mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
             } else {
@@ -124,12 +127,31 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mCloseSearchButton.setOnClickListener((view) -> {
             mIsSearching = false;
             mSearch.clearFocus();
-            mSwitcher.showNext();
-            mSearchFilterHolder.setVisibility(View.GONE);
-            mSwitcher.setInAnimation(this, R.anim.expand_horizontal);
-            mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
-            Util.hideKeyboard(this, mSearch);
+            if(mIsKeyboardOpen) {
+                //TODO Find out how to deal with keyboard closed by back press (As it doesn't trigger the key listeners)
+                Util.hideKeyboard(this, mSearch, new ResultReceiver(new Handler(Looper.getMainLooper())) {
+                    @Override
+                    protected void onReceiveResult(int resultCode, Bundle resultData) {
+                        super.onReceiveResult(resultCode, resultData);
+                        mIsKeyboardOpen = false;
+                        try {
+                            Thread.sleep(20);
+                        } catch(InterruptedException ignored) {
+                        } //~ 1 frame stops animation judder
+                        mSwitcher.showNext();
+                        mSearchFilterHolder.setVisibility(View.GONE);
+                        mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+                        mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+                    }
+                });
+            } else {
+                mSwitcher.showNext();
+                mSearchFilterHolder.setVisibility(View.GONE);
+                mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
+                mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+            }
         });
+
 
         setupSpinners();
 
@@ -155,6 +177,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
+
+
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
@@ -23,6 +24,7 @@ import java.util.StringTokenizer;
  */
 
 public class Util {
+    private static final String TAG = Util.class.getSimpleName();
 
     public static float dpFromPx(final float px) {
         return px / Resources.getSystem().getDisplayMetrics().density;
@@ -164,9 +166,13 @@ public class Util {
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
-    public static void hideKeyboard(Context context, View view) {
+    public static void hideKeyboard(Context context, View view, ResultReceiver reciever) {
         final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if(reciever == null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } else {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0, reciever);
+        }
     }
 
 }

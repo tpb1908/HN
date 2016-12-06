@@ -6,22 +6,37 @@ Theming, light or dark and at time
 
 Options for card style in main view and comments
 
+Top or bottom navigation bar
+
+Search with filtering (In progress)
+
+Fast scrolling
+
 Volume key navigation in Content (Add this for comments)?
+
+User viewing
+
+Spritz style skim reading with skipping features not featured in Spritz
+
+Mercury web parser for readability
 
 Ad blocking in browser
 
-Lazy content loading
+Find in page for browser
 
-Mercury web parser loading
+Lazy content loading
 
 Amp page loading
 
-Spritz style skim reading with skipping features not featured in Spritz
+Offline saving
+
+PDF viewing in app or downloading
 
 
 ## TODO
 - [ ] Search view
 - [ ] Filter by user in search
+- [ ] Custom date ranges in search
 - [ ] Picking of default browser mode and fragment
 - [ ] Media service for TTS
 - [ ] Snappy scrolling
@@ -35,6 +50,7 @@ Spritz style skim reading with skipping features not featured in Spritz
 - [x] Preload greater number of items and don't both cancelling background task
 - [ ] Free floating FAB for scrolling
 - [x] Option for bottom toolbar
+- [x] Allow collapsing of all comments between child and parent
 
 ## Refactoring plan
 
