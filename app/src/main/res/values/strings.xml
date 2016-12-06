@@ -65,6 +65,7 @@
     <string name="text_load_in_background">Load while you are viewing an item</string>
     <string name="text_scrollbar">Show scroll bar</string>
     <string name="text_fast_scroll">Enable fast scrolling</string>
+    <string name="text_bottom_toolbar">Show toolbar at bottom of screen</string>
 
     <string name="text_comment_title_date">%1$s | %2$s</string>
 

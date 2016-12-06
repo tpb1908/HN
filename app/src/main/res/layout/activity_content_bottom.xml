@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <!--TODO bottom toolbars. Do this either with two separate layouts or by programmatically inflating the layout -->
+    <!-- The standard layout can remain, along with another one with a relative layout -->
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/content_swiper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/content_appbar"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            android:id="@+id/content_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:fastScrollPopupBackgroundSize="64dp"
+            app:fastScrollPopupBgColor="@color/colorAccent"
+            app:fastScrollPopupTextColor="@color/colorPrimaryText"
+            app:fastScrollPopupTextSize="32sp"
+            app:fastScrollThumbColor="@color/colorAccent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/content_appbar"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:transitionName="appbar"
+        android:animateLayoutChanges="true">
+
+        <include layout="@layout/toolbar_search_filters" />
+
+        <include layout="@layout/toolbar_content"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+</RelativeLayout>

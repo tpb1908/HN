@@ -34,7 +34,7 @@ Spritz style skim reading with skipping features not featured in Spritz
 - [ ] Allow clearing cache
 - [x] Preload greater number of items and don't both cancelling background task
 - [ ] Free floating FAB for scrolling
-- [ ] Option for bottom toolbar
+- [x] Option for bottom toolbar
 
 ## Refactoring plan
 
