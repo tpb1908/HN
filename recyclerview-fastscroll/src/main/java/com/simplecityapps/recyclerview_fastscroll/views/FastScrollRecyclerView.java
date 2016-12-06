@@ -34,28 +34,10 @@ import com.simplecityapps.recyclerview_fastscroll.utils.Utils;
 public class FastScrollRecyclerView extends RecyclerView implements RecyclerView.OnItemTouchListener {
 
     private FastScroller mScrollbar;
-
-    /**
-     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
-     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
-     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
-     * scroller.
-     */
-    public static class ScrollPositionState {
-        // The index of the first visible row
-        public int rowIndex;
-        // The offset of the first visible row
-        public int rowTopOffset;
-        // The height of a given row (they are currently all the same height)
-        public int rowHeight;
-    }
-
     private ScrollPositionState mScrollPosState = new ScrollPositionState();
-
     private int mDownX;
     private int mDownY;
     private int mLastY;
-
     private OnFastScrollStateChangeListener mStateChangeListener;
 
     public FastScrollRecyclerView(Context context) {
@@ -79,20 +61,20 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
         return mScrollbar.getThumbHeight();
     }
 
-    public void setFastScrollEnabled(boolean enabled) {
-        mScrollbar.setSeekEnabled(enabled);
-    }
-
     public boolean isFastScrollEnabled() {
         return mScrollbar.isSeekEnabled();
     }
 
-    public void setScrollBarEnabled(boolean enabled) {
-        mScrollbar.setScrollBarEnabled(enabled);
+    public void setFastScrollEnabled(boolean enabled) {
+        mScrollbar.setSeekEnabled(enabled);
     }
 
     public boolean isScrollBarEnabled() {
         return mScrollbar.isScrollBarEnabled();
+    }
+
+    public void setScrollBarEnabled(boolean enabled) {
+        mScrollbar.setScrollBarEnabled(enabled);
     }
 
     @Override
@@ -113,6 +95,11 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent ev) {
         handleTouchEvent(ev);
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
     }
 
     /**
@@ -140,11 +127,6 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
                 break;
         }
         return mScrollbar.isDragging();
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
     }
 
     /**
@@ -353,5 +335,20 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
     public interface SectionedAdapter {
         @NonNull
         String getSectionName(int position);
+    }
+
+    /**
+     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
+     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
+     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
+     * scroller.
+     */
+    public static class ScrollPositionState {
+        // The index of the first visible row
+        public int rowIndex;
+        // The offset of the first visible row
+        public int rowTopOffset;
+        // The height of a given row (they are currently all the same height)
+        public int rowHeight;
     }
 }

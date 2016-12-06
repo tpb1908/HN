@@ -55,9 +55,7 @@ import butterknife.ButterKnife;
 
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
-
-    private Tracker mTracker;
-
+    public static Item mLaunchItem;
     @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
     @BindView(R.id.content_appbar) AppBarLayout mAppBar;
     @BindView(R.id.nav_spinner) Spinner mNavSpinner;
@@ -73,9 +71,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @BindView(R.id.spinner_filter_type) Spinner mTypeSpinner;
     @BindView(R.id.spinner_filter_date) Spinner mDateSpinner;
     @BindView(R.id.spinner_filter_sort) Spinner mSortSpinner;
-
+    private Tracker mTracker;
     private ContentAdapter mAdapter;
-    public static Item mLaunchItem;
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
     private boolean mIsSearching = false;
@@ -159,6 +156,25 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     private void setupSpinners() {
         final ArrayAdapter<CharSequence> navAdapter = new ArrayAdapter<>(
                 this,
@@ -211,35 +227,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSortSpinner.setAdapter(sortAdapter);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(mIsSearching) {
-            mCloseSearchButton.callOnClick();
-        } else {
-            //TODO Option for prompting on back pressed
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(mVolumeNavigation) {
-            switch(event.getKeyCode()) {
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollUp();
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollDown();
-                    }
-                    return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 
     private void checkThemeChange(boolean showDialog) {
@@ -302,12 +289,23 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     @Override
+    public void onBackPressed() {
+        if(mIsSearching) {
+            mCloseSearchButton.callOnClick();
+        } else {
+            //TODO Option for prompting on back pressed
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mAdapter.getLastUpdate();
         mAdapter.getPrefs(this);
+        mVolumeNavigation = SharedPrefsController.getInstance(this).getVolumeNavigation();
         checkThemeChange(true);
     }
 

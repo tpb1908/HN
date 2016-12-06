@@ -41,39 +41,30 @@ import com.simplecityapps.recyclerview_fastscroll.utils.Utils;
 
 public class FastScroller {
     private static final int DEFAULT_AUTO_HIDE_DELAY = 1500;
-
+    private final Runnable mHideRunnable;
+    public Point mThumbPosition = new Point(-1, -1);
+    public Point mOffset = new Point(0, 0);
+    boolean mAnimatingShow;
     private FastScrollRecyclerView mRecyclerView;
     private boolean mIsScrollBarEnabled = true;
     private boolean mIsSeekEnabled = true;
     private FastScrollPopup mPopup;
-
     private int mThumbHeight;
     private int mWidth;
-
     private Paint mThumb;
     private Paint mTrack;
-
     private Rect mTmpRect = new Rect();
     private Rect mInvalidateRect = new Rect();
     private Rect mInvalidateTmpRect = new Rect();
-
     // The inset is the buffer around which a point will still register as a click on the scrollbar
     private int mTouchInset;
-
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
     private int mTouchOffset;
-
-    public Point mThumbPosition = new Point(-1, -1);
-    public Point mOffset = new Point(0, 0);
-
     private boolean mIsDragging;
-
     private Animator mAutoHideAnimator;
-    boolean mAnimatingShow;
     private int mAutoHideDelay = DEFAULT_AUTO_HIDE_DELAY;
     private boolean mAutoHideEnabled = true;
-    private final Runnable mHideRunnable;
 
     public FastScroller(Context context, FastScrollRecyclerView recyclerView, AttributeSet attrs) {
 
@@ -155,18 +146,12 @@ public class FastScroller {
         return mIsDragging;
     }
 
-    public void setSeekEnabled(boolean enabled) {
-        mIsSeekEnabled = enabled;
-        mIsDragging = enabled && mIsDragging;
-    }
-
     public boolean isSeekEnabled() {
         return mIsSeekEnabled;
     }
 
-    public void setScrollBarEnabled(boolean enabled) {
-        mIsScrollBarEnabled = enabled;
-        mIsSeekEnabled = enabled && mIsSeekEnabled;
+    public void setSeekEnabled(boolean enabled) {
+        mIsSeekEnabled = enabled;
         mIsDragging = enabled && mIsDragging;
     }
 
@@ -174,6 +159,11 @@ public class FastScroller {
         return mIsScrollBarEnabled;
     }
 
+    public void setScrollBarEnabled(boolean enabled) {
+        mIsScrollBarEnabled = enabled;
+        mIsSeekEnabled = enabled && mIsSeekEnabled;
+        mIsDragging = enabled && mIsDragging;
+    }
 
     /**
      * Handles the touch event and determines whether to show the fast scroller (or updates it if
@@ -280,13 +270,13 @@ public class FastScroller {
         mRecyclerView.invalidate(mInvalidateRect);
     }
 
+    public int getOffsetX() {
+        return mOffset.x;
+    }
+
     // Setter/getter for the popup alpha for animations
     public void setOffsetX(int x) {
         setOffset(x, mOffset.y);
-    }
-
-    public int getOffsetX() {
-        return mOffset.x;
     }
 
     public void show() {

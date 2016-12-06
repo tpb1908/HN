@@ -113,14 +113,14 @@ public class FastScrollPopup {
         }
     }
 
+    public float getAlpha() {
+        return mAlpha;
+    }
+
     // Setter/getter for the popup alpha for animations
     public void setAlpha(float alpha) {
         mAlpha = alpha;
         mRecyclerView.invalidate(mBgBounds);
-    }
-
-    public float getAlpha() {
-        return mAlpha;
     }
 
     public void draw(Canvas canvas) {

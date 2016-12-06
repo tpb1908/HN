@@ -77,11 +77,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private boolean mIsUsingCards = false;
     private boolean mShouldMarkRead = false;
 
-    enum AdapterState {
-        Items, User, Search
-    }
-
-    //TODO- Clean this up
     public ContentAdapter(Context context,
                           ContentManager manager,
                           RecyclerView recycler,
@@ -374,8 +369,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    //<editor-fold-desc="Binding" >
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == 0) {
@@ -387,6 +380,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
     }
+
+    //<editor-fold-desc="Binding" >
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
@@ -458,11 +453,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void setCardParams(CardView card) {
-        card.setUseCompatPadding(true);
-        card.setCardElevation(Util.pxFromDp(4));
-        card.setRadius(Util.pxFromDp(3));
-        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
+    @Override
+    public int getItemViewType(int position) {
+        if(position < mData.length && mData[position] != null) {
+            return mData[position].isComment() ? mState == Items ? 0 : 1 : 0;
+        }
+        return mState == Items ? 0 : -1;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.length > 0 ? mData.length - 1 : mCountGuess;
     }
 
     @Override
@@ -490,22 +491,32 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if(position < mData.length && mData[position] != null) {
-            return mData[position].isComment() ? mState == Items ? 0 : 1 : 0;
-        }
-        return mState == Items ? 0 : -1;
+    private void setCardParams(CardView card) {
+        card.setUseCompatPadding(true);
+        card.setCardElevation(Util.pxFromDp(4));
+        card.setRadius(Util.pxFromDp(3));
+        card.setPadding(0, Util.pxFromDp(8), 0, Util.pxFromDp(8));
     }
 
-    @Override
-    public int getItemCount() {
-        return mData.length > 0 ? mData.length - 1 : mCountGuess;
+    enum AdapterState {
+        Items, User, Search
     }
 
     //</editor-fold>
 
     //<editor-fold-desc="Viewholder classes">
+
+    public interface ContentManager {
+
+        void openItem(Item item);
+
+        void openItem(Item item, FragmentPagerAdapter.PageType type);
+
+        void openUser(Item item);
+
+        void displayLastUpdate(long lastUpdate);
+
+    }
 
     class ItemHolder extends RecyclerView.ViewHolder {
 
@@ -560,6 +571,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
+    //</editor-fold>
+
     class EmptyHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.empty_card) CardView mCard;
 
@@ -567,20 +580,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-    }
-
-    //</editor-fold>
-
-    public interface ContentManager {
-
-        void openItem(Item item);
-
-        void openItem(Item item, FragmentPagerAdapter.PageType type);
-
-        void openUser(Item item);
-
-        void displayLastUpdate(long lastUpdate);
-
     }
 
 }

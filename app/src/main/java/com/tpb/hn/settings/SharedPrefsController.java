@@ -287,14 +287,14 @@ public class SharedPrefsController {
         return showSeekBarHint;
     }
 
+    public boolean getShowScrollbar() {
+        return showScrollbar;
+    }
+
     public void setShowScrollbar(boolean shouldShow) {
         showScrollbar = shouldShow;
         editor.putBoolean(KEY_SCROLLBAR, showScrollbar);
         editor.commit();
-    }
-
-    public boolean getShowScrollbar() {
-        return showScrollbar;
     }
 
     public void setFastScrolling(boolean shouldFastScroll) {
@@ -307,14 +307,14 @@ public class SharedPrefsController {
         return fastScroll;
     }
 
+    public boolean getBottomToolbar() {
+        return bottomToolbar;
+    }
+
     public void setBottomToolbar(boolean bottom) {
         bottomToolbar = bottom;
         editor.putBoolean(KEY_BOTTOM_TOOLBAR, bottomToolbar);
         editor.commit();
-    }
-
-    public boolean getBottomToolbar() {
-        return bottomToolbar;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {

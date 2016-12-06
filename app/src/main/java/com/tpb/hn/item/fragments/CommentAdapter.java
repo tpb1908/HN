@@ -100,15 +100,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     }
 
     @Override
+    public int getItemCount() {
+        return mVisibleItems.size();
+    }
+
+    @Override
     public void onViewRecycled(CommentHolder holder) {
         super.onViewRecycled(holder);
         holder.itemView.clearAnimation();
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return mVisibleItems.size();
     }
 
     private void switchItemVisibility(int pos) {

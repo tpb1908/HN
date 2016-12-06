@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar
+    android:id="@+id/content_search_filters"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content_search_filters"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
-    app:contentInsetStart="16dp"
     app:contentInsetEnd="16dp"
+    app:contentInsetStart="16dp"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:orientation="horizontal"
         android:paddingBottom="16dp"
-        android:orientation="horizontal">
+        android:paddingTop="16dp">
 
         <Spinner
             android:id="@+id/spinner_filter_type"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
             android:layout_height="wrap_content"
+            android:layout_weight="0.3"
             android:background="@null">
 
         </Spinner>
@@ -29,16 +29,16 @@
         <Spinner
             android:id="@+id/spinner_filter_date"
             android:layout_width="0dp"
-            android:layout_weight="0.4"
             android:layout_height="wrap_content"
+            android:layout_weight="0.4"
             android:background="@null">
         </Spinner>
 
         <Spinner
             android:id="@+id/spinner_filter_sort"
             android:layout_width="0dp"
-            android:layout_weight="0.3"
             android:layout_height="wrap_content"
+            android:layout_weight="0.3"
             android:background="@null">
 
         </Spinner>

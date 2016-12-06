@@ -96,13 +96,13 @@ public class DraggableListDialog extends DialogFragment {
         }
 
         @Override
-        public long getItemId(int position) {
-            return mItems.get(position).first;
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_draggable, parent, false), R.id.text_draggable, true);
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_draggable, parent, false), R.id.text_draggable, true);
+        public long getItemId(int position) {
+            return mItems.get(position).first;
         }
 
         public class ViewHolder extends DragItemAdapter.ViewHolder {
