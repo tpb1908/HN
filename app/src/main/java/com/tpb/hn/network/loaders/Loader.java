@@ -21,6 +21,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.ANConstants;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
@@ -306,8 +307,10 @@ public class Loader extends BroadcastReceiver {
 
                         @Override
                         public void onError(ANError anError) {
+                            if(!anError.getErrorDetail().equals(ANConstants.REQUEST_CANCELLED_ERROR)) {
+                                loader.itemError(id, ERROR_NETWORK_CHANGE);
+                            }
 
-                            loader.itemError(id, ERROR_NETWORK_CHANGE);
                         }
                     });
         }

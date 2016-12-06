@@ -115,14 +115,13 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 mIsSearching = true;
                 mSwitcher.showNext();
                 mSearchFilterHolder.setVisibility(View.VISIBLE);
-
                 mSearch.requestFocus();
-                mSwitcher.setInAnimation(ContentActivity.this, android.R.anim.fade_in);
-                mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+                Util.showKeyboard(this, mSearch);
+                mSwitcher.setInAnimation(this, android.R.anim.fade_in);
+                mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
             } else {
                 //Perform search
             }
-            Util.toggleKeyboard(this);
         });
 
         mCloseSearchButton.setOnClickListener((view) -> {
@@ -130,9 +129,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             mSearch.clearFocus();
             mSwitcher.showNext();
             mSearchFilterHolder.setVisibility(View.GONE);
-            mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
-            mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
-            Util.toggleKeyboard(this);
+            mSwitcher.setInAnimation(this, R.anim.expand_horizontal);
+            mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
+            Util.hideKeyboard(this, mSearch);
         });
 
         setupSpinners();
