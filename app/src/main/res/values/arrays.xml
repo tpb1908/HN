@@ -28,11 +28,12 @@
         <item>Poll</item>
         <item>Show HN</item>
         <item>Ask HN</item>
+        <item>Saved</item>
     </string-array>
 
     <string-array name="sort_filter_spinner_items">
         <item>Points</item>
-        <item>Data</item>
+        <item>Date</item>
         <item>Comments</item>
     </string-array>
 
