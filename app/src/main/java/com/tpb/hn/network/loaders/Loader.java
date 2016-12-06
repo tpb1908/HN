@@ -167,6 +167,17 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
+    public void search(String query, ContentActivity.Section typeFilter, int dateFilter, int sortFilter, idLoader loader) {
+
+        String url = sortFilter == 1 ? "search" : "search by date";
+        if(typeFilter != null) { //Add tag
+
+        }
+        if(dateFilter != -1) { //Add numeric filter
+
+        }
+    }
+
     public void removeListeners() {
         listeners.clear();
     }

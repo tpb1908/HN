@@ -9,6 +9,7 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.inputmethod.InputMethodManager;
 
 import com.tpb.hn.content.ContentActivity;
 
@@ -150,6 +151,11 @@ public class Util {
 
     public static String pluralise(String s, int i) {
         return i == 1 ? s : s + "s";
+    }
+
+    public static void toggleKeyboard(Context context) {
+        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
 }

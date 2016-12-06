@@ -276,8 +276,7 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
                 public void afterTextChanged(Editable editable) {
                 }
             });
-            final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            Util.toggleKeyboard(getContext());
             mIsFindShown = true;
             mFindEditText.setOnEditorActionListener((textView, i, keyEvent) -> {
                 if(i == EditorInfo.IME_ACTION_SEARCH) {
@@ -389,7 +388,6 @@ public class Content extends ContentFragment implements Loader.ItemLoader,
     public void onResumeFragment() {
         mLazyLoadCanStart = true;
         if(mViewsReady && mContentReady) bindData();
-
 
         mShown = true;
         mParent.setUpFab(mIsFullscreen ? R.drawable.ic_chevron_down : R.drawable.ic_zoom_out_arrows,

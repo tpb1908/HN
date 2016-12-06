@@ -115,6 +115,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             } else {
                 //Perform search
             }
+            Util.toggleKeyboard(this);
         });
 
         mCloseSearchButton.setOnClickListener((view) -> {
@@ -124,6 +125,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             mSearchFilterHolder.setVisibility(View.GONE);
             mSwitcher.setInAnimation(ContentActivity.this, R.anim.expand_horizontal);
             mSwitcher.setOutAnimation(ContentActivity.this, android.R.anim.fade_out);
+            Util.toggleKeyboard(this);
         });
 
         setupSpinners();

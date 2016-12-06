@@ -32,9 +32,8 @@
     </string-array>
 
     <string-array name="sort_filter_spinner_items">
-        <item>Points</item>
+        <item>Popularity</item>
         <item>Date</item>
-        <item>Comments</item>
     </string-array>
 
     <integer-array name="comment_colors">
