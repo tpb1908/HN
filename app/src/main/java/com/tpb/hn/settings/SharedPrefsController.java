@@ -39,6 +39,7 @@ public class SharedPrefsController {
     private static final String KEY_LOAD_IN_BACKGROUND = "BACKGROUND_LOAD";
     private static final String KEY_SCROLLBAR = "SCROLLBAR";
     private static final String KEY_FAST_SCROLL = "FAST_SCROLL";
+    private static final String KEY_BOTTOM_TOOLBAR = "BOTTOM_TOOLBAR";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -60,6 +61,7 @@ public class SharedPrefsController {
     private static boolean loadInBackground;
     private static boolean showScrollbar;
     private static boolean fastScroll;
+    private static boolean bottomToolbar;
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -101,6 +103,7 @@ public class SharedPrefsController {
         loadInBackground = prefs.getBoolean(KEY_LOAD_IN_BACKGROUND, true);
         showScrollbar = prefs.getBoolean(KEY_SCROLLBAR, true);
         fastScroll = prefs.getBoolean(KEY_FAST_SCROLL, true);
+        bottomToolbar = prefs.getBoolean(KEY_BOTTOM_TOOLBAR, false);
     }
 
     private void initInitialValues() {
@@ -302,6 +305,16 @@ public class SharedPrefsController {
 
     public boolean getFastScroll() {
         return fastScroll;
+    }
+
+    public void setBottomToolbar(boolean bottom) {
+        bottomToolbar = bottom;
+        editor.putBoolean(KEY_BOTTOM_TOOLBAR, bottomToolbar);
+        editor.commit();
+    }
+
+    public boolean getBottomToolbar() {
+        return bottomToolbar;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {
