@@ -89,6 +89,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         holder.mTitle.setText(
                 String.format(holder.itemView.getContext().getString(R.string.text_comment_title_date),
                         comment.comment.getFormattedBy(), Formatter.timeAgo(comment.comment.getTime())));
+        if(comment.comment.getBy().equals(mRootComment.getBy())) {
+            holder.mTitle.setTextAppearance(holder.mTitle.getContext(), android.R.style.TextAppearance_Material_Headline);
+        } else {
+            holder.mTitle.setTextAppearance(holder.mTitle.getContext(), android.R.style.TextAppearance_Material_Subhead);
+        }
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 
