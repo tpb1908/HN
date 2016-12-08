@@ -378,10 +378,21 @@
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+
+                    <Switch
+                        android:id="@+id/switch_fullscreen_hide_navigation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_skimmer_show_seek_hint"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_hide_navigation_fullscreen"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_skimmer_show_seek_hint"
+                        android:layout_below="@id/switch_fullscreen_hide_navigation"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                     <!--Default browser page -->

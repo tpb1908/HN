@@ -91,7 +91,7 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
             setTheme(R.style.AppTheme_Dark);
         }
 
-        setContentView(R.layout.activity_item_view);
+        setContentView(R.layout.activity_viewer);
         ButterKnife.bind(this);
         setSupportActionBar(mStoryToolbar);
 

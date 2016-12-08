@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -28,15 +29,15 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.helpers.Util;
-import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.helpers.APIPaths;
+import com.tpb.hn.helpers.Formatter;
+import com.tpb.hn.helpers.Util;
+import com.tpb.hn.network.Loader;
+import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.viewer.ViewerActivity;
 import com.tpb.hn.viewer.views.AdBlockingWebView;
-import com.tpb.hn.helpers.APIPaths;
-import com.tpb.hn.network.Loader;
-import com.tpb.hn.settings.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,6 +77,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
     private boolean mIsShowingPDF = false;
     private boolean mLazyLoadCanStart;
     private boolean mDisableHorizontalScrolling;
+    private boolean mFullScreenContent;
 
     private FragmentPagerAdapter.PageType mType;
 
@@ -104,6 +106,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
         mDisableHorizontalScrolling = prefs.getDisableHorizontalScrolling();
         mLazyLoadCanStart = !prefs.getLazyLoad();
+        mFullScreenContent = prefs.getFullscreenContent();
         mWebView.setHorizontalScrollingEnabled(!prefs.getDisableHorizontalScrolling());
         mWebView.bindProgressBar(mProgressBar, true, true);
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -308,6 +311,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
+            if(mFullScreenContent) mParent.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         } else {
             mWebView.setZoomEnabled(false);
@@ -336,7 +340,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
                 mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
                 mIsSearchComplete = false;
             }
-
+            if(mFullScreenContent) mParent.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
