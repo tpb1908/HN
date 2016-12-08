@@ -57,7 +57,7 @@ public class Formatter {
             return div + (div == 1 ? " wk" : " wks");
         } else if(delta / (24 * 3600) > 0) {
             final long div = delta / (24 * 3600);
-            return div + (div == 1 ? " d" : " ds");
+            return div + (div == 1 ? " dy" : " dys");
         } else if(delta / (3600) > 0) {
             final long div = delta / (3600);
             return div + (div == 1 ? " hr" : " hrs");

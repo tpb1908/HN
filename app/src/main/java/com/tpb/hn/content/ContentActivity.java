@@ -84,6 +84,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
+
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
 
         if(prefs.getUseDarkTheme()) {
@@ -305,10 +306,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final boolean shouldRestart = data.getBooleanExtra("restart", false);
-        if(Analytics.VERBOSE) Log.i(TAG, "onActivityResult: " + shouldRestart);
-        if(shouldRestart) {
-            recreate();
+        if(data != null) {
+            final boolean shouldRestart = data.getBooleanExtra("restart", false);
+            if(Analytics.VERBOSE) Log.i(TAG, "onActivityResult: " + shouldRestart);
+            if(shouldRestart) {
+                recreate();
+            }
         }
     }
 
