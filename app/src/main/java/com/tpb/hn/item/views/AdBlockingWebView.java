@@ -195,5 +195,4 @@ public class AdBlockingWebView extends WebView {
 
     }
 
-
 }

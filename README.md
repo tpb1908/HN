@@ -1,67 +1,6 @@
 # HN
 
-## Features
-
-Theming, light or dark and at time
-
-Options for card style in main view and comments
-
-Top or bottom navigation bar
-
-Search with filtering (In progress)
-
-Fast scrolling
-
-Volume key navigation in Content (Add this for comments)?
-
-User viewing
-
-Spritz style skim reading with skipping features not featured in Spritz
-
-Mercury web parser for readability
-
-Ad blocking in browser
-
-Find in page for browser
-
-Lazy content loading
-
-Amp page loading
-
-Offline saving
-
-PDF viewing in app or downloading
-
-
-## TODO
-- [ ] Search view
-- [ ] Filter by user in search
-- [ ] Custom date ranges in search
-- [ ] Picking of default browser mode and fragment
-- [ ] Media service for TTS
-- [ ] Snappy scrolling
-- [ ] Remove item from adapter when swiped in saved section
-- [ ] Blacklist of URLs (And hosts) for parsed sites. User editable
-- [ ] Font sizes
-- [ ] Make sure settings subsections are correct
-- [ ] Add a setting for scrolling to a comment when opened from UserViewActivity
-- [ ] Only expand a single comment tree when the above setting is on
-- [ ] Allow clearing cache
-- [x] Preload greater number of items and don't both cancelling background task
-- [ ] Free floating FAB for scrolling
-- [x] Option for bottom toolbar
-- [x] Allow collapsing of all comments between child and parent
-
-## Refactoring plan
-
-- [x] Fragment structure 
-- [x] Three booleans, for views, data, and context
-- [x] One application level 'loader' 
-- [x] which switches based on network
-- [x] Loader has sets of Ids
-- [x] Enums for sections
-- [x] Rewrite database and listeners
-
+See project for feature TODOs and their progress
 
 ### License 
 
