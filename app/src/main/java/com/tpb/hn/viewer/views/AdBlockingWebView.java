@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.webkit.WebChromeClient;
@@ -16,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.tpb.hn.helpers.AdBlocker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,9 @@ public class AdBlockingWebView extends WebView {
     private LoadListener mLoadListener;
     private boolean shouldBlockAds = true;
     private boolean shouldOverrideHeaders;
+    private ArrayList<String> mTextContent = new ArrayList<>();
+    private int mTextContentPosition = 0;
+    private boolean mIsLoadingText = false;
     //http://stackoverflow.com/questions/14670638/webview-load-website-when-online-load-local-file-when-offline
 
     public AdBlockingWebView(Context context) {
@@ -82,6 +87,10 @@ public class AdBlockingWebView extends WebView {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                if(mIsLoadingText) {
+                    reload();
+                    mIsLoadingText = false;
+                }
                 if(mLoadListener != null) mLoadListener.loadDone();
             }
 
@@ -100,6 +109,52 @@ public class AdBlockingWebView extends WebView {
                 return super.shouldInterceptRequest(view, request);
             }
         });
+    }
+
+
+    @Override
+    public void loadData(String data, String mimeType, String encoding) {
+        mIsLoadingText = true;
+        if(mTextContentPosition == mTextContent.size() - 1 || mTextContent.isEmpty()) {
+            mTextContent.add(data);
+            mTextContentPosition = mTextContent.size() - 1;
+            Log.i(TAG, "loadData: Adding new page " + mTextContent.size());
+        }
+        super.loadData(data, mimeType, encoding);
+    }
+
+    @Override
+    public void goBack() {
+        if(mTextContentPosition != 0) {
+            mTextContentPosition--;
+            final String page = mTextContent.get(mTextContentPosition);
+            Log.i(TAG, "goBack: ");
+            loadData(page, "text/html", "utf-8");
+        } else {
+            super.goBack();
+        }
+    }
+
+    @Override
+    public void goForward() {
+        if(mTextContentPosition < mTextContent.size() - 1) {
+            mTextContentPosition++;
+            final String page = mTextContent.get(mTextContentPosition);
+            loadData(page, "text/html", "utf-8");
+        } else {
+            super.goForward();
+        }
+    }
+
+    @Override
+    public boolean canGoBack() {
+        Log.i(TAG, "canGoBack: " + (mTextContent.size() > 1 && mTextContentPosition > 0));
+        return (mTextContent.size() > 1 && mTextContentPosition > 0) || super.canGoBack();
+    }
+
+    @Override
+    public boolean canGoForward() {
+        return (mTextContent.size() > 1 && mTextContentPosition < mTextContent.size() - 1) || super.canGoForward();
     }
 
     public void setHorizontalScrollingEnabled(boolean enabled) {

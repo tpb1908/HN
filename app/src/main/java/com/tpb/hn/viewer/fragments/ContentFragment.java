@@ -83,8 +83,6 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
     private boolean mFullScreenContent;
 
     private FragmentPagerAdapter.PageType mType;
-
-    private boolean mIsLoading = false;
     private boolean mIsFullscreen = false;
     private boolean mShown = false;
 
@@ -137,10 +135,6 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
 
         mWebView.setLoadDoneListener(() -> {
             if(mSwiper != null) mSwiper.setRefreshing(false);
-            if(mType == TEXT_READER && mIsLoading) {
-                mIsLoading = false;
-                mWebView.reload();
-            }
         });
         mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -449,7 +443,6 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
                     return Pair.create(true, APIPaths.getMercuryAmpPath(url));
                 case TEXT_READER:
                     Loader.getInstance(getContext()).redirectThroughMercury(url, this);
-                    mIsLoading = true;
                     mShown = false;
                     Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
                     return Pair.create(false, null);
