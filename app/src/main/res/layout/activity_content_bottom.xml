@@ -24,6 +24,7 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/content_appbar"
         android:layout_width="match_parent"
@@ -37,5 +38,7 @@
         <include layout="@layout/shard_toolbar_content"/>
 
     </android.support.design.widget.AppBarLayout>
+
+
 
 </FrameLayout>

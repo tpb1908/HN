@@ -48,6 +48,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.tpb.hn.viewer.FragmentPagerAdapter.PageType.AMP_READER;
+import static com.tpb.hn.viewer.FragmentPagerAdapter.PageType.TEXT_READER;
+
 /**
  * Created by theo on 25/11/16.
  */
@@ -81,6 +84,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
 
     private FragmentPagerAdapter.PageType mType;
 
+    private boolean mIsLoading = false;
     private boolean mIsFullscreen = false;
     private boolean mShown = false;
 
@@ -130,8 +134,13 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
             }
         }
         mSwiper.setOnRefreshListener(() -> mWebView.reload());
+
         mWebView.setLoadDoneListener(() -> {
             if(mSwiper != null) mSwiper.setRefreshing(false);
+            if(mType == TEXT_READER && mIsLoading) {
+                mIsLoading = false;
+                mWebView.reload();
+            }
         });
         mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
@@ -158,6 +167,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
 
     @Override
     void bindData() {
+        if(Analytics.VERBOSE) Log.i(TAG, "bindData: Binding");
         if(mShown) return;
         mShown = true;
         if(mIsShowingPDF) {
@@ -166,9 +176,10 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
         } else {
             if(mType == FragmentPagerAdapter.PageType.BROWSER) {
                 mWebView.loadUrl(url);
-            } else if(mType == FragmentPagerAdapter.PageType.AMP_READER) {
+            } else if(mType == AMP_READER) {
                 mWebView.loadUrl(APIPaths.getMercuryAmpPath(url));
-            } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+            } else if(mType == TEXT_READER) {
+                if(Analytics.VERBOSE) Log.i(TAG, "bindData: Mercury");
                     /*
                     We have to do the theming on bind
                     If we do when the JSON is returned, and the JSON is returned from ItemCache
@@ -186,14 +197,14 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
 
     @Override
     public void itemLoaded(Item item) {
-        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == FragmentPagerAdapter.PageType.AMP_READER) {
+        if(mType == FragmentPagerAdapter.PageType.BROWSER || mType == AMP_READER) {
             url = item.getUrl();
             mIsShowingPDF = url.toLowerCase().endsWith(".pdf");
             mContentReady = true;
             if(mViewsReady) bindData();
 
 
-        } else if(mType == FragmentPagerAdapter.PageType.TEXT_READER) {
+        } else if(mType == TEXT_READER) {
             //Text reader deals with Item text, or readability
             if(item.getUrl() == null) {
                 mReadablePage = Formatter.wrapInDiv(item.getText());
@@ -428,20 +439,29 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
 
     @Override
     public Pair<Boolean, String> handleLink(String url) {
-        switch(mType) {
-            case AMP_READER:
-                return Pair.create(true, APIPaths.getMercuryAmpPath(url));
-            case TEXT_READER:
-                Loader.getInstance(getContext()).redirectThroughMercury(url, this);
-                Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
-                return Pair.create(false, null);
-            default:
-                return Pair.create(true, url);
+        if(url.endsWith(".pdf")) {
+            final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(i);
+            return new Pair<>(false, url);
+        } else {
+            switch(mType) {
+                case AMP_READER:
+                    return Pair.create(true, APIPaths.getMercuryAmpPath(url));
+                case TEXT_READER:
+                    Loader.getInstance(getContext()).redirectThroughMercury(url, this);
+                    mIsLoading = true;
+                    mShown = false;
+                    Toast.makeText(getContext(), R.string.text_redirecting_reader, Toast.LENGTH_LONG).show();
+                    return Pair.create(false, null);
+                default:
+                    return Pair.create(true, url);
+            }
         }
     }
 
     @Override
     public void textLoaded(JSONObject result) {
+        Log.i(TAG, "textLoaded: Text loaded");
         try {
             mReadablePage = result.getString("content");
             mContentReady = true;

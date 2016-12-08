@@ -137,7 +137,6 @@ public class AdBlockingWebView extends WebView {
         shouldBlockAds = shouldBlock;
     }
 
-
     public void bindProgressBar(final ProgressBar progressBar, final boolean animate, final boolean hideWhenDone) {
         mBoundProgressBar = progressBar;
         this.setWebChromeClient(new WebChromeClient() {

@@ -207,7 +207,6 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
 
     @Override
     public void textLoaded(JSONObject result) {
-        if(Analytics.VERBOSE) Log.i(TAG, "textLoaded: " + result.toString());
         try {
             mArticle = result.getString("content");
             mContentReady = true;
