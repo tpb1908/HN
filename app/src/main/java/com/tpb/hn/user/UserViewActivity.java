@@ -67,7 +67,10 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
 
     @OnLongClick(R.id.user_back_button)
     boolean onLongClick() {
-        startActivity(new Intent(getApplicationContext(), ContentActivity.class));
+        final Intent i = new Intent(getApplicationContext(), ContentActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        finish();
         return true;
     }
 

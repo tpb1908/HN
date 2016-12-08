@@ -12,6 +12,7 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -96,11 +97,30 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             setContentView(R.layout.activity_content_bottom);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+            ButterKnife.bind(this);
+            mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                boolean onscreen = true;
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if(dy > 10) {
+                        if(onscreen && !mIsSearching) {
+                            mAppBar.animate().translationY(mAppBar.getHeight());
+                            onscreen = false;
+                        }
+                    } else {
+                        if(!onscreen) {
+                            mAppBar.animate().translationY(0);
+                            onscreen = true;
+                        }
+                    }
+                }
+            });
         } else {
             setContentView(R.layout.activity_content_top);
+            ButterKnife.bind(this);
         }
-
-        ButterKnife.bind(this);
 
         AdBlocker.init(getApplicationContext());
         AndroidNetworking.initialize(getApplicationContext());
