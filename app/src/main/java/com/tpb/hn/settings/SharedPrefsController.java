@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.Pair;
 
-import com.tpb.hn.item.FragmentPagerAdapter;
+import com.tpb.hn.viewer.FragmentPagerAdapter;
 
 import java.util.Arrays;
 

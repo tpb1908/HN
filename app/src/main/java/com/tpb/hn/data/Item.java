@@ -2,7 +2,8 @@ package com.tpb.hn.data;
 
 import android.support.annotation.NonNull;
 
-import com.tpb.hn.Util;
+import com.tpb.hn.helpers.Util;
+import com.tpb.hn.helpers.Formatter;
 
 import java.net.MalformedURLException;
 import java.net.URL;

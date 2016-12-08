@@ -3,6 +3,8 @@ package com.tpb.hn.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tpb.hn.helpers.Formatter;
+
 import java.util.Arrays;
 
 /**

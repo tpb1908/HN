@@ -13,9 +13,9 @@
         android:transitionName="appbar"
         android:animateLayoutChanges="true">
 
-        <include layout="@layout/toolbar_content"/>
+        <include layout="@layout/shard_toolbar_content"/>
 
-        <include layout="@layout/toolbar_search_filters"/>
+        <include layout="@layout/shard_toolbar_search_filters"/>
 
     </android.support.design.widget.AppBarLayout>
 

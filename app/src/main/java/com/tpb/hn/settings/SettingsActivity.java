@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.tpb.hn.R;
-import com.tpb.hn.data.Formatter;
+import com.tpb.hn.helpers.Formatter;
 
 import java.util.Calendar;
 import java.util.List;

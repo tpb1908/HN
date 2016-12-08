@@ -31,6 +31,8 @@
 
     <string name="button_skimmer_restart">Restart</string>
 
+    <string name="text_start_time">Start time</string>
+    <string name="text_end_time">End time</string>
     <string name="text_last_updated">Updated %1$s</string>
     <string name="text_item_by">By %1$s</string>
     <string name="text_title_empty"><b>\u2026</b></string>
@@ -66,9 +68,7 @@
     <string name="text_scrollbar">Show scroll bar</string>
     <string name="text_fast_scroll">Enable fast scrolling</string>
     <string name="text_bottom_toolbar">Show toolbar at bottom of screen</string>
-
     <string name="text_comment_title_date">%1$s | %2$s</string>
-
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
 
@@ -102,7 +102,5 @@
         </html>
         ]]>
     </string>
-    <string name="text_start_time">Start time</string>
-    <string name="text_end_time">End time</string>
 
 </resources>

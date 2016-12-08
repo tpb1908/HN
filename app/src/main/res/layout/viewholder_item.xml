@@ -30,7 +30,7 @@
 
         </FrameLayout>
 
-        <include layout="@layout/item_details">
+        <include layout="@layout/shard_item_details">
 
         </include>
 
