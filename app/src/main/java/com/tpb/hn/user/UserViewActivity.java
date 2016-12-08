@@ -67,9 +67,7 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
 
     @OnLongClick(R.id.user_back_button)
     boolean onLongClick() {
-        final Intent i = new Intent(getApplicationContext(), ContentActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
+        ContentActivity.returning = true;
         finish();
         return true;
     }
@@ -206,5 +204,12 @@ public class UserViewActivity extends AppCompatActivity implements UserLoader.HN
     @Override
     public void displayLastUpdate(long lastUpdate) {
         //Ignored
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(ContentActivity.returning) finish();
+
     }
 }

@@ -67,9 +67,7 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
 
     @OnLongClick(R.id.item_back_button)
     boolean onLongClick() {
-        final Intent i = new Intent(getApplicationContext(), ContentActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
+        ContentActivity.returning = true;
         finish();
         return true;
     }
@@ -172,12 +170,18 @@ public class ItemViewActivity extends AppCompatActivity implements Loader.ItemLo
     @Override
     protected void onResume() {
         super.onResume();
-        mFab.postDelayed(() -> {
-            mShouldShowFab = true;
-            showFab();
-        }, 300);
-        mTracker.setScreenName(TAG);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        if(ContentActivity.returning) {
+            finish();
+        } else {
+            super.onResume();
+            mFab.postDelayed(() -> {
+                mShouldShowFab = true;
+                showFab();
+            }, 300);
+            mTracker.setScreenName(TAG);
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
+
     }
 
     @Override

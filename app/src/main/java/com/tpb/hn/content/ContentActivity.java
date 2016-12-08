@@ -59,6 +59,7 @@ import butterknife.ButterKnife;
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.ContentManager, Login.LoginListener {
     private static final String TAG = ContentActivity.class.getSimpleName();
     public static Item mLaunchItem;
+    public static boolean returning = false;
     @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
     @BindView(R.id.content_appbar) AppBarLayout mAppBar;
     @BindView(R.id.nav_spinner) Spinner mNavSpinner;
@@ -348,6 +349,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     protected void onResume() {
         super.onResume();
+        returning = false;
         mTracker.setScreenName(TAG);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         mAdapter.getLastUpdate();
