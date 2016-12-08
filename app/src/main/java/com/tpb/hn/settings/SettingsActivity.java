@@ -75,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_data_load_in_background)).setChecked(prefs.getLoadInBackground());
         ((Switch) ButterKnife.findById(this, R.id.switch_scrollbar)).setChecked(prefs.getShowScrollbar());
         ((Switch) ButterKnife.findById(this, R.id.switch_fast_scroll)).setChecked(prefs.getFastScroll());
+        ((Switch) ButterKnife.findById(this, R.id.switch_fullscreen_hide_navigation)).setChecked(prefs.getFullscreenContent());
         ButterKnife.findById(this, R.id.switch_fast_scroll).setEnabled(prefs.getShowScrollbar());
         ((Switch) ButterKnife.findById(this, R.id.switch_bottom_toolbar)).setChecked(prefs.getBottomToolbar());
 
@@ -167,6 +168,9 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.switch_bottom_toolbar:
                 prefs.setBottomToolbar(sView.isChecked());
                 restartRequired = true;
+                break;
+            case R.id.switch_fullscreen_hide_navigation:
+                prefs.setFullScreenContent(sView.isChecked());
                 break;
         }
     }

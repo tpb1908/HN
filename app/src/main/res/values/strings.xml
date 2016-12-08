@@ -71,6 +71,7 @@
     <string name="text_comment_title_date">%1$s | %2$s</string>
     <string name="text_open_with_docs">Open in app with Google Docs</string>
     <string name="text_download_pdf">Download PDF</string>
+    <string name="text_hide_navigation_fullscreen">Hide navigation in fullscreen</string>
 
     <string name="action_find_in_page">Find in page</string>
     <string name="action_settings">Settings</string>

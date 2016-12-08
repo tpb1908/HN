@@ -83,7 +83,7 @@ public class UserActivity extends AppCompatActivity implements UserLoader.HNUser
         } else {
             setTheme(R.style.AppTheme);
         }
-        setContentView(R.layout.activity_user_view);
+        setContentView(R.layout.activity_user);
         ButterKnife.bind(this);
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mAdapter = new FeedAdapter(getApplication(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mSwiper);
