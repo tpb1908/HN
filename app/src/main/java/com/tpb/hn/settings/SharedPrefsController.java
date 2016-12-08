@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 /**
  * Created by theo on 18/10/16.
- * TODO- Font sizes
  * http://stackoverflow.com/questions/4877153/android-application-wide-font-size-preference
  */
 

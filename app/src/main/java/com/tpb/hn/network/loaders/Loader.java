@@ -595,9 +595,9 @@ public class Loader extends BroadcastReceiver {
 
         void readItems(final int[] ids, final ItemLoader loader) {
             AsyncTask.execute(() -> {
-                final SQLiteDatabase db1 = DB.this.getReadableDatabase();
+                final SQLiteDatabase db = DB.this.getReadableDatabase();
                 final String QUERY = "SELECT * FROM " + TABLE + " WHERE " + KEY_ID + buildWhereIn(ids.length);
-                final Cursor cursor = db1.rawQuery(QUERY, intArToStrAr(ids));
+                final Cursor cursor = db.rawQuery(QUERY, intArToStrAr(ids));
                 final Handler handler = new Handler(Looper.getMainLooper());
                 if(cursor.moveToFirst()) {
                     do {
@@ -616,7 +616,6 @@ public class Loader extends BroadcastReceiver {
                     } while(cursor.moveToNext());
                 } else {
                     Log.e(TAG, "run: ", new Exception("Couldn't find any of the ids"));
-                    //TODO- Handle multiple errors
                 }
 
                 cursor.close();

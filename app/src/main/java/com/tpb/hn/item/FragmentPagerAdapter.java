@@ -38,11 +38,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 (item.getUrl() != null && item.getUrl().endsWith(".pdf"));
 
         boolean containsBrowser = Arrays.asList(possiblePages).contains(PageType.BROWSER);
-        /*TODO
-            Set up a list of URLs which require a particular page, and allow the user to add
-            to it.
-            For example GitHub won't load in the reader modes, only in browser
-         */
+
         for(PageType pt : possiblePages) {
             switch(pt) {
                 case COMMENTS:
@@ -149,7 +145,6 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
             return pages.indexOf(PageType.COMMENTS);
         } else {
             final int index = pages.indexOf(type);
-            //TODO- Allow picking the default browser mode, and the default fragment
             if(index == -1) {
                 for(int i = 0; i < pages.size(); i++) {
                     if(pages.get(i) == PageType.AMP_READER ||

@@ -114,7 +114,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                //TODO Snappy scrolling
                 if(newState == RecyclerView.SCROLL_STATE_SETTLING || newState == RecyclerView.SCROLL_STATE_IDLE) {
                     loadItemsOnScroll(false);
                 }
@@ -152,7 +151,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if(pos < mData.length && mData[pos] != null) {
                     if(mData[pos].isSaved()) {
                         mLoader.unsaveItem(mData[pos]);
-                        //TODO- If in saved items, remove this item
                     } else {
                         mLoader.saveItem(mData[pos], mContext, new Loader.ItemSaveListener() {
                             @Override

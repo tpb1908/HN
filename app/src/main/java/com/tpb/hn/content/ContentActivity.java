@@ -150,7 +150,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             mIsSearching = false;
             mSearch.clearFocus();
             if(mIsKeyboardOpen) {
-                //TODO Find out how to deal with keyboard closed by back press (As it doesn't trigger the key listeners)
                 Util.hideKeyboard(this, mSearch, new ResultReceiver(new Handler(Looper.getMainLooper())) {
                     @Override
                     protected void onReceiveResult(int resultCode, Bundle resultData) {
@@ -295,7 +294,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                     prefs.setUseDarkTheme(dark);
                     recreate();
                 } else if(time - mThemePostponeTime > 5) { //Wait 5 minutes to remind
-                    //FIXME- Dialogs stacking up
                     new MaterialDialog.Builder(this)
                             .title(R.string.title_change_theme)
                             .positiveText(android.R.string.ok)
@@ -341,7 +339,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         if(mIsSearching) {
             mCloseSearchButton.callOnClick();
         } else {
-            //TODO Option for prompting on back pressed
             super.onBackPressed();
         }
     }

@@ -33,7 +33,6 @@ public class DraggableListDialog extends DialogFragment {
     private boolean mUsingCheckboxes = false;
     private String[] mValues;
 
-    //TODO- Move this whole thing into settings as that is the only place it is required
 
     public static DraggableListDialog newInstance(String[] values) {
         final DraggableListDialog dialog = new DraggableListDialog();

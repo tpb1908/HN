@@ -196,11 +196,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         for(int i : mVisibleItems) {
             if(mComments.get(i).comment.getId() == mCommentId) {
                 expandComments = true;
-                //TODO Add a setting for this behaviour
-                //TODO- Add the code when flattening the comments to expand only the chosen id branch
-                /*
-                Animating insertions while scrolling this fast just doesn't work
-                 */
                 mRecycler.scrollToPosition(i);
                 break;
             }

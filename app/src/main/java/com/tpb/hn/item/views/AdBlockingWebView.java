@@ -31,7 +31,6 @@ public class AdBlockingWebView extends WebView {
     private LoadListener mLoadListener;
     private boolean shouldBlockAds = true;
     private boolean shouldOverrideHeaders;
-    //TODO- Allow setting max cache size, and clearing cache
     //http://stackoverflow.com/questions/14670638/webview-load-website-when-online-load-local-file-when-offline
 
     public AdBlockingWebView(Context context) {
