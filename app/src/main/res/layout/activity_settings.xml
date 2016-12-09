@@ -389,10 +389,20 @@
                         android:textAlignment="viewStart"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_skimmer_text_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/switch_fullscreen_hide_navigation"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_skimmer_text_body"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_fullscreen_hide_navigation"
+                        android:layout_below="@id/switch_skimmer_text_body"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                     <!--Default browser page -->
