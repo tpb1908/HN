@@ -171,10 +171,11 @@ public class Spritzer {
     }
 
     private void updateProgress() {
-        if(!mJustJumped && !mWordQueue.isEmpty()) {
+        Log.i(TAG, "updateProgress: ");
+        if(!mWordQueue.isEmpty() && !mJustJumped) {
             final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up
-               if(mSeekBar != null) mSeekBar.setProgress(mCurWordIdx);
+                if(mSeekBar != null && !mJustJumped) mSeekBar.setProgress(mCurWordIdx);
                 if(mScrollView != null) mScrollView.smoothScrollBy(0, (int) (mScrollView.getChildAt(0).getHeight() * pcDif));
             }
         }
@@ -405,6 +406,10 @@ public class Spritzer {
                 public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
                     if(fromUser) {
                         if((float) Math.abs(mCurWordIdx - pos) > 0.01f * mWordArray.length) {
+                            mScrollView.smoothScrollBy(0,
+                                    (int) (mScrollView.getChildAt(0).getHeight()
+                                            * Math.abs((mCurWordIdx - pos) / (float) mWordQueue.size())));
+
                             mCurWordIdx = pos;
                             mJustJumped = true;
                             step();

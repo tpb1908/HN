@@ -315,4 +315,5 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
          */
         void onPlay();
     }
+
 }
