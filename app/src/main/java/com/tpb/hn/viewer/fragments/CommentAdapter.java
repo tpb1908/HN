@@ -161,7 +161,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         mRootComment = comment;
 
-        if(Analytics.VERBOSE) Log.i(TAG, "loadItem: Root comment " + mRootComment.toString());
         final Handler uiHandler = new Handler(mRecycler.getContext().getMainLooper());
         if(!mRootComment.getChildren().equals("")) {
             if(Analytics.VERBOSE) Log.i(TAG, "loadComment: Beginning flattening");

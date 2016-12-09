@@ -33,8 +33,8 @@ public class AdBlockingWebView extends WebView {
     private LoadListener mLoadListener;
     private boolean shouldBlockAds = true;
     private boolean shouldOverrideHeaders;
-    private ArrayList<String> mTextContent = new ArrayList<>();
-    private int mTextContentPosition = 0;
+    private ArrayList<String> mContent = new ArrayList<>();
+    private int mPosition = 0;
     private boolean mIsLoadingText = false;
     //http://stackoverflow.com/questions/14670638/webview-load-website-when-online-load-local-file-when-offline
 
@@ -111,24 +111,57 @@ public class AdBlockingWebView extends WebView {
         });
     }
 
+    /*
+    loadData {
+      if position = content.size() - 1 or content is empty {
+        add to the end
+      } else {
+        if(flag = forward) {
+            check if next item is the same as item to load
+            if not, clear all of the other items
+        }
+      }
+     }
+       next {
+        increment counter
+        set flag
+        loadData
+       }
+
+       previous {
+        decrement counter
+        set flag
+        loadData
+       }
+
+     */
 
     @Override
     public void loadData(String data, String mimeType, String encoding) {
         mIsLoadingText = true;
-        if(mTextContentPosition == mTextContent.size() - 1 || mTextContent.isEmpty()) {
-            mTextContent.add(data);
-            mTextContentPosition = mTextContent.size() - 1;
-            Log.i(TAG, "loadData: Adding new page " + mTextContent.size());
+        if(mPosition == mContent.size() - 1 || mContent.isEmpty() ) {
+            if(mPosition == 0 || !data.equals(mContent.get(mPosition))) {
+                mContent.add(data);
+                mPosition = mContent.size() - 1;
+            }
+            Log.i(TAG, "loadData: Adding to top " + mPosition);
+        } else if(mPosition < mContent.size() - 1 && !data.equals(mContent.get(mPosition + 1)) && !data.equals(mContent.get(mPosition))) {
+            Log.i(TAG, "loadData: Clearing " + mContent.size());
+            mContent.subList(mPosition + 1, mContent.size()).clear();
+            Log.i(TAG, "loadData: Cleared " + mContent.size());
+            mContent.add(data);
+            mPosition = mContent.size() - 1;
+            Log.i(TAG, "loadData: pos " + mPosition + " of " + mContent.size());
         }
         super.loadData(data, mimeType, encoding);
     }
 
     @Override
     public void goBack() {
-        if(mTextContentPosition != 0) {
-            mTextContentPosition--;
-            final String page = mTextContent.get(mTextContentPosition);
-            Log.i(TAG, "goBack: ");
+        if(mPosition > 0) {
+            Log.i(TAG, "goBack: " + mPosition + "->" + (mPosition - 1));
+            mPosition--;
+            final String page = mContent.get(mPosition);
             loadData(page, "text/html", "utf-8");
         } else {
             super.goBack();
@@ -137,9 +170,10 @@ public class AdBlockingWebView extends WebView {
 
     @Override
     public void goForward() {
-        if(mTextContentPosition < mTextContent.size() - 1) {
-            mTextContentPosition++;
-            final String page = mTextContent.get(mTextContentPosition);
+        if(mPosition < mContent.size() - 1) {
+            Log.i(TAG, "goForward: " + mPosition + "->" + (mPosition + 1));
+            mPosition++;
+            final String page = mContent.get(mPosition);
             loadData(page, "text/html", "utf-8");
         } else {
             super.goForward();
@@ -148,13 +182,16 @@ public class AdBlockingWebView extends WebView {
 
     @Override
     public boolean canGoBack() {
-        Log.i(TAG, "canGoBack: " + (mTextContent.size() > 1 && mTextContentPosition > 0));
-        return (mTextContent.size() > 1 && mTextContentPosition > 0) || super.canGoBack();
+        Log.i(TAG, "canGoBack: " + (mContent.size() > 1 && mPosition > 0));
+        return (mContent.size() > 1 && mPosition > 0) || super.canGoBack();
     }
 
     @Override
     public boolean canGoForward() {
-        return (mTextContent.size() > 1 && mTextContentPosition < mTextContent.size() - 1) || super.canGoForward();
+        Log.i(TAG, "canGoForward: pos " + mPosition);
+        Log.i(TAG, "canGoForward: " + mContent.size());
+        Log.i(TAG, "canGoForward: " +  (mContent.size() > 1 && mPosition < mContent.size() - 1));
+        return (mContent.size() > 1 && mPosition < mContent.size() - 1) || super.canGoForward();
     }
 
     public void setHorizontalScrollingEnabled(boolean enabled) {
