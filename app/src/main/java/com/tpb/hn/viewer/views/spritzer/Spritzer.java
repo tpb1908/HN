@@ -171,7 +171,6 @@ public class Spritzer {
     }
 
     private void updateProgress() {
-        Log.i(TAG, "updateProgress: ");
         if(!mWordQueue.isEmpty() && !mJustJumped) {
             final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up

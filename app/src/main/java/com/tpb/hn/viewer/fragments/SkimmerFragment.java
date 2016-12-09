@@ -70,7 +70,11 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
         mTextView.attachSeekBar(mSkimmerProgress);
         mTextView.attachScrollView(mBodyScrollview);
         mSwiper.setOnRefreshListener(() -> itemLoaded(mItem));
-        mTextBody.setListener((pos) -> mTextView.setPosition(pos));
+        mTextBody.setListener((pos) -> {
+            mTextView.setPosition(pos);
+            mTextBody.highlightWord(pos + 1);
+        });
+
         if(mContentReady) {
             setupSkimmer();
         } else if(savedInstanceState != null) {
@@ -183,10 +187,11 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
                     } else {
                         mSkimmerProgress.setProgress(0);
                     }
-            /*
-            In order to skip one word, we have to wait
-            for one minute / words per minute
-             */
+                    mBodyScrollview.scrollTo(0, 0);
+                /*
+                In order to skip one word, we have to wait
+                for one minute / words per minute
+                 */
                     mTextView.postDelayed(() -> mTextView.getSpritzer().pause(), 60000 / mTextView.getSpritzer().getWpm());
                 });
         mTracker.setScreenName(TAG);

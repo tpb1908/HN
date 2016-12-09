@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class ClickableTextView extends TextView {
 
     @Override
     public void setText(final CharSequence text, BufferType type) {
-        //setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, BufferType.SPANNABLE);
         new Handler().post(() -> {
             final Spannable spans = (Spannable) getText();
