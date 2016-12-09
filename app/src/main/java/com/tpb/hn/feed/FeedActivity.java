@@ -21,10 +21,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,18 +36,20 @@ import com.google.android.gms.analytics.Tracker;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.helpers.Util;
-import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.viewer.FragmentPagerAdapter;
-import com.tpb.hn.viewer.ViewerActivity;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.helpers.AdBlocker;
+import com.tpb.hn.helpers.Formatter;
+import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Login;
 import com.tpb.hn.settings.SettingsActivity;
 import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserActivity;
+import com.tpb.hn.viewer.FragmentPagerAdapter;
+import com.tpb.hn.viewer.ViewerActivity;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,6 +85,11 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     private int mThemePostponeTime = Integer.MAX_VALUE;
     private boolean mIsSearching = false;
     private boolean mIsKeyboardOpen = false;
+
+    private long mFilterDateStart =  new Date().getTime();
+    private long mFilterDateEnd = 0;
+    private ItemType mFilterType = ItemType.ALL;
+    private boolean mFilterSort;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,7 +150,8 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 mIsKeyboardOpen = true;
                 mSwitcher.setInAnimation(this, android.R.anim.fade_in);
                 mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
-            } else {
+            } else if(!mSearch.getText().toString().isEmpty()){
+                mAdapter.search(mSearch.getText().toString(), mFilterType, mFilterDateStart, mFilterDateEnd, mFilterSort);
                 //Perform search
             }
         });
@@ -194,7 +204,6 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             }
         }, 1000 * 60);
         checkThemeChange(false);
-
         //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
         //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
@@ -221,6 +230,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     }
 
     private void setupSpinners() {
+        Log.i(TAG, "setupSpinners: Setting up");
         final ArrayAdapter<CharSequence> navAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -253,6 +263,46 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
         );
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDateSpinner.setAdapter(dateAdapter);
+        mDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                final String[] items = getResources().getStringArray(R.array.date_filter_spinner_items);
+                if(view == null) return;
+                final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
+                final Date date = new Date();
+                Log.i(TAG, "onItemSelected: " + date.getTime());
+                if(selected.equals(items[0])) { //All time
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = 0;
+                } else if(selected.equals(items[1])) { //Year
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (12 * 28 * 24 * 3600);
+                } else if(selected.equals(items[2])) { //6 months
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (6 * 28 * 24 * 3600);
+                } else if(selected.equals(items[3])) {
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (3 * 28 * 24 * 3600);
+                } else if(selected.equals(items[4])) { //Month
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (28 * 24 * 3600);
+                } else if(selected.equals(items[5])) { //Week
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (7 * 24 * 3600);
+                } else if(selected.equals(items[6])) {
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (24 * 3600);
+                } else {
+                    showDateRangeDialog();
+                }
+
+                Log.i(TAG, "onItemSelected: " + mFilterDateStart + ", " + mFilterDateEnd);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+
 
         final ArrayAdapter<CharSequence> typeAdapter = new ArrayAdapter<>(
                 this,
@@ -262,6 +312,34 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
         );
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mTypeSpinner.setAdapter(typeAdapter);
+        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                final String[] items = getResources().getStringArray(R.array.type_filter_spinner_items);
+                if(view == null) return;
+                final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
+                if(selected.equals(items[0])) {
+                    mFilterType = ItemType.ALL;
+                } else if(selected.equals(items[1])) {
+                    mFilterType = ItemType.STORY;
+                } else if(selected.equals(items[2])) {
+                    mFilterType = ItemType.COMMENT;
+                } else if(selected.equals(items[3])) {
+                    mFilterType = ItemType.POLL;
+                } else if(selected.equals(items[4])) {
+                    mFilterType = ItemType.SHOW;
+                } else if(selected.equals(items[5])) {
+                    mFilterType = ItemType.ASK;
+                } else {
+                    mFilterType = ItemType.SAVED;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         final ArrayAdapter<CharSequence> sortAdapter = new ArrayAdapter<>(
                 this,
@@ -271,7 +349,46 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
         );
         sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSortSpinner.setAdapter(sortAdapter);
+        mSortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                final String[] items = getResources().getStringArray(R.array.sort_filter_spinner_items);
+                if(view == null) return;
+                final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
+                mFilterSort = !selected.equals(items[0]);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+    }
+
+    private void showDateRangeDialog() {
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.text_title_date_range)
+                .customView(R.layout.dialog_date_range, false)
+                .positiveText(android.R.string.ok)
+                .onPositive((dlg, which) -> {
+                    final DatePicker start = (DatePicker) dlg.getCustomView().findViewById(R.id.date_start);
+                    final DatePicker end =  (DatePicker) dlg.getCustomView().findViewById(R.id.date_end);
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.set(start.getYear(), start.getMonth(), start.getDayOfMonth());
+                    final long date1 = calendar.getTime().getTime();
+                    calendar.set(end.getYear(), end.getMonth(), end.getDayOfMonth());
+                    final long date2 = calendar.getTime().getTime();
+                    if(date1 > date2) {
+                        Toast.makeText(FeedActivity.this, R.string.text_switching_dates, Toast.LENGTH_SHORT).show();
+                    }
+                    mFilterDateStart = Math.min(date1, date2);
+                    mFilterDateEnd = Math.max(date1, date2);
+                    Log.i(TAG, "showDateRangeDialog: Start " + mFilterDateStart + ", " + mFilterDateEnd);
+
+                })
+                .build();
+        dialog.show();
     }
 
     private void checkThemeChange(boolean showDialog) {

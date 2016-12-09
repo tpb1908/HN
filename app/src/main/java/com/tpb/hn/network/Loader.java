@@ -27,18 +27,18 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.tpb.hn.Analytics;
-import com.tpb.hn.helpers.Util;
-import com.tpb.hn.feed.FeedActivity;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
+import com.tpb.hn.feed.FeedActivity;
 import com.tpb.hn.helpers.APIPaths;
+import com.tpb.hn.helpers.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -144,7 +144,7 @@ public class Loader extends BroadcastReceiver {
                         public void onResponse(String response) {
                             final int[] ids = Parser.extractIntArray(response);
                             if(Analytics.VERBOSE)
-                                Log.i(TAG, "onResponse: ids " + Arrays.toString(ids));
+                                Log.i(TAG, "onResponse: ids " + ids.length);
                             loader.idsLoaded(ids);
                             Util.putIntArrayInPrefs(prefs.edit(), url, ids);
                         }
@@ -168,13 +168,16 @@ public class Loader extends BroadcastReceiver {
         }
     }
 
-    public void search(String query, FeedActivity.Section typeFilter, int dateFilter, int sortFilter, idLoader loader) {
+    public void search(String query, ItemType typeFilter, long dateStart, long dateEnd, boolean sortFilter, idLoader loader) {
+        Log.i(TAG, "search: " + query + ", " + typeFilter + ", " + dateStart + ", " + dateEnd + ", " + sortFilter);
 
-        String url = sortFilter == 1 ? "search" : "search by date";
-        if(typeFilter != null) { //Add tag
+        if(typeFilter != ItemType.ALL) { //Add tag
 
         }
-        if(dateFilter != -1) { //Add numeric filter
+        if(dateStart != 0) { //Add numeric filter
+
+        }
+        if(sortFilter) { //Sort by date
 
         }
     }
