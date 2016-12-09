@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.tpb.hn.data.Item;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.viewer.ViewerActivity;
 import com.tpb.hn.viewer.views.HintingSeekBar;
+import com.tpb.hn.viewer.views.spritzer.ClickableTextView;
 import com.tpb.hn.viewer.views.spritzer.SpritzerTextView;
 import com.tpb.hn.network.Loader;
 import com.tpb.hn.settings.SharedPrefsController;
@@ -42,8 +44,10 @@ import butterknife.Unbinder;
 public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoader, Loader.TextLoader, FragmentPagerAdapter.FragmentCycleListener {
     private static final String TAG = SkimmerFragment.class.getSimpleName();
     @BindView(R.id.skimmer_text_view) SpritzerTextView mTextView;
+    @BindView(R.id.skimmer_text_body) ClickableTextView mTextBody;
     @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
+    @BindView(R.id.skimmer_body_scrollview) NestedScrollView mBodyScrollview;
     @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
     private Tracker mTracker;
     private Unbinder unbinder;
@@ -64,12 +68,13 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
             mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryTextInverse));
         }
         mTextView.attachSeekBar(mSkimmerProgress);
-        mSwiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                itemLoaded(mItem);
-            }
+        mTextView.attachScrollView(mBodyScrollview);
+        mSwiper.setOnRefreshListener(() -> itemLoaded(mItem));
+        mTextBody.setListener((pos) -> {
+            mTextView.setPosition(pos);
+            mTextBody.highlightWord(pos + 1);
         });
+
         if(mContentReady) {
             setupSkimmer();
         } else if(savedInstanceState != null) {
@@ -99,35 +104,49 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @Override
     void bindData() {
         mSwiper.setRefreshing(false);
-        mArticle = Html.fromHtml(mArticle).
-                toString().
-                replace("\n", " ");
+        mArticle = Html.fromHtml(mArticle).toString().replace("\n", " ");;
+        mTextBody.setText(mArticle);
         setupSkimmer();
     }
 
     @OnLongClick(R.id.skimmer_touch_area)
-    boolean onLongClick() {
+    boolean onAreaLongClick() {
         mTextView.play();
         return false;
     }
 
     @OnTouch(R.id.skimmer_touch_area)
-    boolean onTouch(MotionEvent motionEvent) {
+    boolean onAreaTouch(MotionEvent motionEvent) {
         if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
             mTextView.pause();
         }
         return false;
     }
 
-    @OnClick(R.id.skimmer_text_view)
-    void onSpritzerClick() {
-        mTextView.showTextDialog();
+    @OnLongClick(R.id.skimmer_text_body)
+    boolean onBodyLongClick() {
+        mTextBody.setClickEnabled(false);
+        mTextView.play();
+        return false;
     }
 
-    @OnLongClick(R.id.skimmer_text_view)
-    boolean onSpritzerLongClick() {
+    @OnTouch(R.id.skimmer_text_body)
+    boolean onBodyTouch(MotionEvent motionEvent) {
+        if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            mTextView.pause();
+            mTextBody.highlightWord(mTextView.getCurrentWordIndex());
+            mBodyScrollview.smoothScrollTo(0,
+                    mTextBody.getLayout().getLineTop(
+                            mTextBody.getLayout().getLineForOffset(
+                                    mTextBody.getHighlightedPosition())));
+            mTextBody.postDelayed(() -> mTextBody.setClickEnabled(true), 20);
+        }
+        return false;
+    }
+
+    @OnClick(R.id.skimmer_text_view)
+    void onSpritzerClick() {
         mTextView.showWPMDialog();
-        return true;
     }
 
     private void displayErrorMessage() {
@@ -168,10 +187,11 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
                     } else {
                         mSkimmerProgress.setProgress(0);
                     }
-            /*
-            In order to skip one word, we have to wait
-            for one minute / words per minute
-             */
+                    mBodyScrollview.scrollTo(0, 0);
+                /*
+                In order to skip one word, we have to wait
+                for one minute / words per minute
+                 */
                     mTextView.postDelayed(() -> mTextView.getSpritzer().pause(), 60000 / mTextView.getSpritzer().getWpm());
                 });
         mTracker.setScreenName(TAG);

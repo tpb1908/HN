@@ -2,6 +2,7 @@ package com.tpb.hn.viewer.views.spritzer;
 
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
@@ -41,6 +42,7 @@ public class Spritzer {
     private boolean mSpritzThreadStarted;
     private boolean mJustJumped;
     private HintingSeekBar mSeekBar;
+    private NestedScrollView mScrollView;
     private DelayStrategy mDelayStrategy;
     private OnCompletionListener mOnCompletionListener;
 
@@ -169,10 +171,11 @@ public class Spritzer {
     }
 
     private void updateProgress() {
-        if(mSeekBar != null && !mJustJumped && !mWordQueue.isEmpty()) {
+        if(!mWordQueue.isEmpty() && !mJustJumped) {
             final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up
-                mSeekBar.setProgress(mCurWordIdx);
+                if(mSeekBar != null && !mJustJumped) mSeekBar.setProgress(mCurWordIdx);
+                if(mScrollView != null) mScrollView.smoothScrollBy(0, (int) (mScrollView.getChildAt(0).getHeight() * pcDif));
             }
         }
     }
@@ -402,6 +405,10 @@ public class Spritzer {
                 public void onProgressChanged(SeekBar seekBar, int pos, boolean fromUser) {
                     if(fromUser) {
                         if((float) Math.abs(mCurWordIdx - pos) > 0.01f * mWordArray.length) {
+                            mScrollView.smoothScrollBy(0,
+                                    (int) (mScrollView.getChildAt(0).getHeight()
+                                            * Math.abs((mCurWordIdx - pos) / (float) mWordQueue.size())));
+
                             mCurWordIdx = pos;
                             mJustJumped = true;
                             step();
@@ -420,6 +427,10 @@ public class Spritzer {
                 }
             });
         }
+    }
+
+    public void attachScrollView(NestedScrollView scrollView) {
+        mScrollView = scrollView;
     }
 
     public void setDelayStrategy(DelayStrategy strategy) {

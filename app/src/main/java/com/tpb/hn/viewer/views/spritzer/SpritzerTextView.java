@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.widget.NestedScrollView;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,8 +14,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.tpb.hn.R;
-import com.tpb.hn.viewer.views.HintingSeekBar;
 import com.tpb.hn.settings.SharedPrefsController;
+import com.tpb.hn.viewer.views.HintingSeekBar;
 
 /**
  * Created by andrewgiang on 3/3/14.
@@ -29,7 +30,7 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
     private float mPaintWidthPx;
     private String mTestString;
     private boolean mDefaultClickListener = false;
-    private int mAdditonalPadding;
+    private int mAdditionalPadding;
     private OnClickControlListener mClickControlListener;
 
     public SpritzerTextView(Context context) {
@@ -82,8 +83,8 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
             final int padding = paddingArray.getDimensionPixelOffset(0, 0);
             final int paddingTop = paddingArray.getDimensionPixelOffset(1, 0);
             final int paddingBottom = paddingArray.getDimensionPixelOffset(2, 0);
-            mAdditonalPadding = Math.max(padding, Math.max(paddingTop, paddingBottom));
-            Log.w(TAG, "Additional Padding " + mAdditonalPadding);
+            mAdditionalPadding = Math.max(padding, Math.max(paddingTop, paddingBottom));
+            Log.w(TAG, "Additional Padding " + mAdditionalPadding);
         } finally {
             paddingArray.recycle();
         }
@@ -140,26 +141,12 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
                 .show();
     }
 
-    public void showTextDialog() {
-        final ClickableTextView text = new ClickableTextView(getContext(), mSpritzer.mCurWordIdx - 1);
-        text.setText(mSpritzer.getWordArray());
-        final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                .title(R.string.title_text_dialog)
-                .customView(text, true)
-                .negativeText(android.R.string.cancel)
-                .show();
-
-        text.setListener(new ClickableTextView.OnSpanClickListener() {
-            @Override
-            public void spanClicked(int pos) {
-                mSpritzer.setPosition(pos);
-                dialog.dismiss();
-            }
-        });
+    public void setPosition(int pos) {
+        mSpritzer.setPosition(pos);
     }
 
     private int getPivotPadding() {
-        return getPivotIndicatorLength() * 2 + mAdditonalPadding;
+        return getPivotIndicatorLength() * 2 + mAdditionalPadding;
     }
 
     @Override
@@ -260,6 +247,10 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         mSpritzer.attachSeekBar(bar);
     }
 
+    public void attachScrollView(NestedScrollView scrollView) {
+        mSpritzer.attachScrollView(scrollView);
+    }
+
     public void setOnCompletionListener(Spritzer.OnCompletionListener listener) {
         mSpritzer.setOnCompletionListener(listener);
     }
@@ -324,4 +315,5 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
          */
         void onPlay();
     }
+
 }
