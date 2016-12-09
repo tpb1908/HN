@@ -21,6 +21,10 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.helpers.Util;
+import com.tpb.hn.data.Item;
+import com.tpb.hn.data.Item;
+import com.tpb.hn.data.ItemType;
+import com.tpb.hn.data.ItemType;
 import com.tpb.hn.helpers.DividerDecoration;
 import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.data.Item;
@@ -283,6 +287,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mLastUpdateTime = new Date().getTime() / 1000;
         mManager.displayLastUpdate(mLastUpdateTime);
+    }
+
+    void search(String query, ItemType typeFilter, long dateStart, long dateEnd, boolean sortFilter) {
+        this.mData = new Item[0];
+        mCurrentPage = FeedActivity.Section.SEARCH;
+        mCountGuess = Util.getApproximateNumberOfItems(mCurrentPage);
+        mIds = new int[mCountGuess];
+        if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
+        mLastUpdateTime = new Date().getTime() / 1000;
+        mManager.displayLastUpdate(mLastUpdateTime);
+        notifyDataSetChanged();
+        mSwiper.setRefreshing(true);
+        mLoader.search(query, typeFilter, dateStart, dateEnd, sortFilter, this);
     }
 
     @Override
