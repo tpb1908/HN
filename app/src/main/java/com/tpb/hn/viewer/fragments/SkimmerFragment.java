@@ -51,10 +51,13 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
     private Tracker mTracker;
     private Unbinder unbinder;
+
     private ViewerActivity mParent;
     private Item mItem;
     private boolean mIsWaitingForAttach = false;
     private String mArticle;
+
+    private boolean mBodyEnabled;
 
     @Override
     View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,12 +71,17 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
             mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryTextInverse));
         }
         mTextView.attachSeekBar(mSkimmerProgress);
-        mTextView.attachScrollView(mBodyScrollview);
+        mBodyEnabled = prefs.getSkimmerBody();
+        if(mBodyEnabled) {
+            mTextBody.setVisibility(View.VISIBLE);
+            mTextView.attachScrollView(mBodyScrollview);
+            mTextBody.setListener((pos) -> {
+                mTextView.setPosition(pos);
+                mTextBody.highlightWord(pos + 1);
+            });
+        }
+
         mSwiper.setOnRefreshListener(() -> itemLoaded(mItem));
-        mTextBody.setListener((pos) -> {
-            mTextView.setPosition(pos);
-            mTextBody.highlightWord(pos + 1);
-        });
 
         if(mContentReady) {
             setupSkimmer();
@@ -105,7 +113,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     void bindData() {
         mSwiper.setRefreshing(false);
         mArticle = Html.fromHtml(mArticle).toString().replace("\n", " ");;
-        mTextBody.setText(mArticle);
+        if(mBodyEnabled) mTextBody.setText(mArticle);
         setupSkimmer();
     }
 
@@ -118,6 +126,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @OnTouch(R.id.skimmer_touch_area)
     boolean onAreaTouch(MotionEvent motionEvent) {
         if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
+
             mTextView.pause();
         }
         return false;
@@ -146,7 +155,17 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
 
     @OnClick(R.id.skimmer_text_view)
     void onSpritzerClick() {
-        mTextView.showWPMDialog();
+        if(mBodyEnabled) {
+            mTextView.showTextDialog();
+        } else {
+            mTextView.showWPMDialog();
+        }
+    }
+
+    @OnLongClick(R.id.skimmer_text_view)
+    boolean onSpritzerLongClick() {
+        if(mBodyEnabled) mTextView.showWPMDialog();
+        return true;
     }
 
     private void displayErrorMessage() {

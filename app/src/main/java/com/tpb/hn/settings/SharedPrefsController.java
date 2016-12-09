@@ -40,6 +40,7 @@ public class SharedPrefsController {
     private static final String KEY_FAST_SCROLL = "FAST_SCROLL";
     private static final String KEY_BOTTOM_TOOLBAR = "BOTTOM_TOOLBAR";
     private static final String KEY_FULLSCREEN_CONTENT = "FULLSCREEN_CONTENT";
+    private static final String KEY_SKIMMER_BODY = "SKIMMER_BODY";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -63,6 +64,7 @@ public class SharedPrefsController {
     private static boolean fastScroll;
     private static boolean bottomToolbar;
     private static boolean fullscreenInContent;
+    private static boolean skimmerTextBody;
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -106,6 +108,7 @@ public class SharedPrefsController {
         fastScroll = prefs.getBoolean(KEY_FAST_SCROLL, true);
         bottomToolbar = prefs.getBoolean(KEY_BOTTOM_TOOLBAR, false);
         fullscreenInContent = prefs.getBoolean(KEY_FULLSCREEN_CONTENT, true);
+        skimmerTextBody = prefs.getBoolean(KEY_SKIMMER_BODY, true);
     }
 
     private void initInitialValues() {
@@ -326,6 +329,16 @@ public class SharedPrefsController {
     public void setFullScreenContent(boolean fullscreen) {
         fullscreenInContent = fullscreen;
         editor.putBoolean(KEY_FULLSCREEN_CONTENT, fullscreenInContent);
+        editor.commit();
+    }
+
+    public boolean getSkimmerBody() {
+        return skimmerTextBody;
+    }
+
+    public void setSkimmerBody(boolean body) {
+        skimmerTextBody = body;
+        editor.putBoolean(KEY_SKIMMER_BODY, skimmerTextBody);
         editor.commit();
     }
 
