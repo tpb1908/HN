@@ -1,6 +1,7 @@
 package com.tpb.hn.viewer.views.spritzer;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.TextPaint;
@@ -50,19 +51,22 @@ public class ClickableTextView extends TextView {
     public void setText(CharSequence text, BufferType type) {
         setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, BufferType.SPANNABLE);
-        final Spannable spans = (Spannable) getText();
-        Integer[] indices = getIndices(getText().toString(), ' ');
-        int start = 0;
-        int end = 0;
-        // to cater last/only word loop will run equal to the length of indices.length
-        for(int i = 0; i <= indices.length; i++) {
-            final ClickableSpan clickSpan = getClickableSpan(i, i == currentPos);
-            // to cater last/only word
-            end = (i < indices.length ? indices[i] : spans.length());
-            spans.setSpan(clickSpan, start, end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            start = end + 1;
-        }
+        new Handler().post(() -> {
+            final Spannable spans = (Spannable) getText();
+            Integer[] indices = getIndices(getText().toString(), ' ');
+            int start = 0;
+            int end = 0;
+            // to cater last/only word loop will run equal to the length of indices.length
+            for(int i = 0; i <= indices.length; i++) {
+                final ClickableSpan clickSpan = getClickableSpan(i, i == currentPos);
+                // to cater last/only word
+                end = (i < indices.length ? indices[i] : spans.length());
+                spans.setSpan(clickSpan, start, end,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                start = end + 1;
+            }
+        });
+
     }
 
     public void setText(String[] text) {
