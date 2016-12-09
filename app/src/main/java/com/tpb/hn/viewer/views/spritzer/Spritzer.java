@@ -2,6 +2,7 @@ package com.tpb.hn.viewer.views.spritzer;
 
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
@@ -41,6 +42,7 @@ public class Spritzer {
     private boolean mSpritzThreadStarted;
     private boolean mJustJumped;
     private HintingSeekBar mSeekBar;
+    private NestedScrollView mScrollView;
     private DelayStrategy mDelayStrategy;
     private OnCompletionListener mOnCompletionListener;
 
@@ -169,10 +171,11 @@ public class Spritzer {
     }
 
     private void updateProgress() {
-        if(mSeekBar != null && !mJustJumped && !mWordQueue.isEmpty()) {
+        if(!mJustJumped && !mWordQueue.isEmpty()) {
             final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up
-                mSeekBar.setProgress(mCurWordIdx);
+               if(mSeekBar != null) mSeekBar.setProgress(mCurWordIdx);
+                if(mScrollView != null) mScrollView.smoothScrollBy(0, (int) (mScrollView.getChildAt(0).getHeight() * pcDif));
             }
         }
     }
@@ -420,6 +423,10 @@ public class Spritzer {
                 }
             });
         }
+    }
+
+    public void attachScrollView(NestedScrollView scrollView) {
+        mScrollView = scrollView;
     }
 
     public void setDelayStrategy(DelayStrategy strategy) {

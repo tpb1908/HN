@@ -68,6 +68,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
             mSkimmerProgress.setTextColor(getResources().getColor(R.color.colorPrimaryTextInverse));
         }
         mTextView.attachSeekBar(mSkimmerProgress);
+        mTextView.attachScrollView(mBodyScrollview);
         mSwiper.setOnRefreshListener(() -> itemLoaded(mItem));
         mTextBody.setListener((pos) -> mTextView.setPosition(pos));
         if(mContentReady) {
