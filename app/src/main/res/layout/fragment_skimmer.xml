@@ -44,6 +44,19 @@
                 android:paddingTop="8dp"
                 android:visibility="invisible"/>
 
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tpb.hn.viewer.views.spritzer.ClickableTextView
+                    android:id="@+id/skimmer_text_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false"
+                    android:padding="16dp"/>
+
+            </android.support.v4.widget.NestedScrollView>
+
         </LinearLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>

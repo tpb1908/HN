@@ -22,10 +22,25 @@ import java.util.List;
 public class ClickableTextView extends TextView {
     private final int currentPos;
     private OnSpanClickListener mListener;
+    private Integer[] indices = new Integer[0];
+    private int oldSelectedPosition = 0;
+    private int lastSelectedStart = 0;
+    private int lastSelectedEnd = 0;
+    private boolean isClickEnabled = true;
+
+    public ClickableTextView(Context context) {
+        super(context);
+        currentPos = 0;
+    }
 
     public ClickableTextView(Context context, int currentPos) {
         super(context);
         this.currentPos = currentPos;
+    }
+
+    public ClickableTextView(Context context, @NonNull AttributeSet attributeSet) {
+        super(context, attributeSet);
+        this.currentPos = 0;
     }
 
     public ClickableTextView(Context context, @NonNull AttributeSet attributeSet, int currentPos) {
@@ -43,17 +58,26 @@ public class ClickableTextView extends TextView {
         return indices.toArray(new Integer[0]);
     }
 
+    public boolean isClickEnabled() {
+        return isClickEnabled;
+    }
+
+    public void setClickEnabled(boolean clickEnabled) {
+        isClickEnabled = clickEnabled;
+    }
+
     public void setListener(OnSpanClickListener listener) {
         mListener = listener;
     }
 
     @Override
-    public void setText(CharSequence text, BufferType type) {
+    public void setText(final CharSequence text, BufferType type) {
         setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, BufferType.SPANNABLE);
         new Handler().post(() -> {
             final Spannable spans = (Spannable) getText();
-            Integer[] indices = getIndices(getText().toString(), ' ');
+
+            indices = getIndices(getText().toString(), ' ');
             int start = 0;
             int end = 0;
             // to cater last/only word loop will run equal to the length of indices.length
@@ -66,7 +90,36 @@ public class ClickableTextView extends TextView {
                 start = end + 1;
             }
         });
+    }
 
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        if(getText() != null && selStart != getText().length() && selEnd != getText().length()) {
+            onSelectionChanged(getText().length(), getText().length());
+            return;
+        }
+        super.onSelectionChanged(selStart, selEnd);
+    }
+
+    public void highlightWord(int pos) {
+        final Spannable spans = (Spannable) getText();
+        int start = 0;
+        int end = 0;
+        int i;
+        // to cater last/only word loop will run equal to the length of indices.length
+        for(i = 0; i < pos && i <= indices.length; i++) {
+            // to cater last/only word
+            start = end + 1;
+            end = (i < indices.length ? indices[i] : spans.length());
+        }
+        final ClickableSpan clearSpan = getClickableSpan(oldSelectedPosition, false);
+        spans.setSpan(clearSpan, lastSelectedStart, lastSelectedEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        oldSelectedPosition = pos;
+        lastSelectedStart = start;
+        lastSelectedEnd = end;
+        final ClickableSpan clickSpan = getClickableSpan(i, true);
+        spans.setSpan(clickSpan, start, end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     public void setText(String[] text) {
@@ -82,7 +135,7 @@ public class ClickableTextView extends TextView {
         return new CleanClickableSpan(pos, underline) {
             @Override
             public void onClick(View widget) {
-                if(mListener != null) mListener.spanClicked(pos);
+                if(mListener != null && isClickEnabled) mListener.spanClicked(pos);
             }
         };
     }

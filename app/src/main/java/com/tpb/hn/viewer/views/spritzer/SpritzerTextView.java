@@ -158,6 +158,10 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
         });
     }
 
+    public void setPosition(int pos) {
+        mSpritzer.setPosition(pos);
+    }
+
     private int getPivotPadding() {
         return getPivotIndicatorLength() * 2 + mAdditonalPadding;
     }
