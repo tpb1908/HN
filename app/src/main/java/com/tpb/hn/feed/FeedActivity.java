@@ -267,6 +267,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 final String[] items = getResources().getStringArray(R.array.date_filter_spinner_items);
+                if(view == null) return;
                 final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
                 final Date date = new Date();
                 Log.i(TAG, "onItemSelected: " + date.getTime());
@@ -315,6 +316,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 final String[] items = getResources().getStringArray(R.array.type_filter_spinner_items);
+                if(view == null) return;
                 final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
                 if(selected.equals(items[0])) {
                     mFilterType = ItemType.ALL;
@@ -351,6 +353,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 final String[] items = getResources().getStringArray(R.array.sort_filter_spinner_items);
+                if(view == null) return;
                 final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
                 mFilterSort = !selected.equals(items[0]);
             }
