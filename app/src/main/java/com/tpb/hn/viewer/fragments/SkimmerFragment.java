@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.util.Log;
@@ -46,6 +47,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @BindView(R.id.skimmer_text_body) ClickableTextView mTextBody;
     @BindView(R.id.skimmer_progress) HintingSeekBar mSkimmerProgress;
     @BindView(R.id.skimmer_error_textview) TextView mErrorView;
+    @BindView(R.id.skimmer_body_scrollview) NestedScrollView mBodyScrollview;
     @BindView(R.id.spritzer_swiper) SwipeRefreshLayout mSwiper;
     private Tracker mTracker;
     private Unbinder unbinder;
@@ -128,6 +130,9 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
         if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
             mTextView.pause();
             mTextBody.highlightWord(mTextView.getCurrentWordIndex());
+            mBodyScrollview.smoothScrollTo(0,
+                    mTextBody.getLayout().getLineTop(
+                            mTextBody.getLayout().getLineForOffset(mTextBody.getHighlightedPosition())));
             mTextBody.postDelayed(() -> mTextBody.setClickEnabled(true), 20);
         }
         return false;

@@ -45,6 +45,7 @@
                 android:visibility="invisible"/>
 
             <android.support.v4.widget.NestedScrollView
+                android:id="@+id/skimmer_body_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
