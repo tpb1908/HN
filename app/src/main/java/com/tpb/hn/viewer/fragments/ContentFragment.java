@@ -436,7 +436,13 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
         if(url.endsWith(".pdf")) {
             final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(i);
-            return new Pair<>(false, url);
+            return new Pair<>(false, null);
+        } else if(url.endsWith(".png")
+                || url.endsWith(".jpg")
+                || url.endsWith(".gif")
+                || url.endsWith(".bmp")
+                || url.endsWith(".webp")) {
+            return new Pair<>(true, url);
         } else {
             switch(mType) {
                 case AMP_READER:
