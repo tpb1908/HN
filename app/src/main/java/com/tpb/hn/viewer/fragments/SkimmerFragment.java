@@ -132,7 +132,8 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
             mTextBody.highlightWord(mTextView.getCurrentWordIndex());
             mBodyScrollview.smoothScrollTo(0,
                     mTextBody.getLayout().getLineTop(
-                            mTextBody.getLayout().getLineForOffset(mTextBody.getHighlightedPosition())));
+                            mTextBody.getLayout().getLineForOffset(
+                                    mTextBody.getHighlightedPosition())));
             mTextBody.postDelayed(() -> mTextBody.setClickEnabled(true), 20);
         }
         return false;

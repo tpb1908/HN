@@ -140,24 +140,6 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
                 .show();
     }
 
-    public void showTextDialog() {
-        final ClickableTextView text = new ClickableTextView(getContext(), mSpritzer.mCurWordIdx - 1);
-        text.setText(mSpritzer.getWordArray());
-        final MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                .title(R.string.title_text_dialog)
-                .customView(text, true)
-                .negativeText(android.R.string.cancel)
-                .show();
-
-        text.setListener(new ClickableTextView.OnSpanClickListener() {
-            @Override
-            public void spanClicked(int pos) {
-                mSpritzer.setPosition(pos);
-                dialog.dismiss();
-            }
-        });
-    }
-
     public void setPosition(int pos) {
         mSpritzer.setPosition(pos);
     }
