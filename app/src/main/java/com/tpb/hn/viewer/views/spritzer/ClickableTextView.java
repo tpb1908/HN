@@ -5,9 +5,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +20,8 @@ import java.util.List;
  */
 
 public class ClickableTextView extends TextView {
+    private static final String TAG = ClickableTextView.class.getSimpleName();
+
     private final int currentPos;
     private OnSpanClickListener mListener;
     private Integer[] indices = new Integer[0];
@@ -72,7 +74,7 @@ public class ClickableTextView extends TextView {
 
     @Override
     public void setText(final CharSequence text, BufferType type) {
-        setMovementMethod(LinkMovementMethod.getInstance());
+        //setMovementMethod(LinkMovementMethod.getInstance());
         super.setText(text, BufferType.SPANNABLE);
         new Handler().post(() -> {
             final Spannable spans = (Spannable) getText();
@@ -94,6 +96,7 @@ public class ClickableTextView extends TextView {
 
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
+        Log.i(TAG, "onSelectionChanged: ");
         if(getText() != null && selStart != getText().length() && selEnd != getText().length()) {
             onSelectionChanged(getText().length(), getText().length());
             return;
