@@ -21,10 +21,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -261,6 +263,45 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
         );
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDateSpinner.setAdapter(dateAdapter);
+        mDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                final String[] items = getResources().getStringArray(R.array.date_filter_spinner_items);
+                final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
+                final Date date = new Date();
+                Log.i(TAG, "onItemSelected: " + date.getTime());
+                if(selected.equals(items[0])) { //All time
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = 0;
+                } else if(selected.equals(items[1])) { //Year
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (12 * 28 * 24 * 3600);
+                } else if(selected.equals(items[2])) { //6 months
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (6 * 28 * 24 * 3600);
+                } else if(selected.equals(items[3])) {
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (3 * 28 * 24 * 3600);
+                } else if(selected.equals(items[4])) { //Month
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (28 * 24 * 3600);
+                } else if(selected.equals(items[5])) { //Week
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (7 * 24 * 3600);
+                } else if(selected.equals(items[6])) {
+                    mFilterDateEnd = date.getTime();
+                    mFilterDateStart = mFilterDateEnd - (24 * 3600);
+                } else {
+                    showDateRangeDialog();
+                }
+
+                Log.i(TAG, "onItemSelected: " + mFilterDateStart + ", " + mFilterDateEnd);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+
 
         final ArrayAdapter<CharSequence> typeAdapter = new ArrayAdapter<>(
                 this,
@@ -320,6 +361,31 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             }
         });
 
+    }
+
+    private void showDateRangeDialog() {
+        final MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.text_title_date_range)
+                .customView(R.layout.dialog_date_range, false)
+                .positiveText(android.R.string.ok)
+                .onPositive((dlg, which) -> {
+                    final DatePicker start = (DatePicker) dlg.getCustomView().findViewById(R.id.date_start);
+                    final DatePicker end =  (DatePicker) dlg.getCustomView().findViewById(R.id.date_end);
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.set(start.getYear(), start.getMonth(), start.getDayOfMonth());
+                    final long date1 = calendar.getTime().getTime();
+                    calendar.set(end.getYear(), end.getMonth(), end.getDayOfMonth());
+                    final long date2 = calendar.getTime().getTime();
+                    if(date1 > date2) {
+                        Toast.makeText(FeedActivity.this, R.string.text_switching_dates, Toast.LENGTH_SHORT).show();
+                    }
+                    mFilterDateStart = Math.min(date1, date2);
+                    mFilterDateEnd = Math.max(date1, date2);
+                    Log.i(TAG, "showDateRangeDialog: Start " + mFilterDateStart + ", " + mFilterDateEnd);
+
+                })
+                .build();
+        dialog.show();
     }
 
     private void checkThemeChange(boolean showDialog) {
