@@ -62,7 +62,7 @@ public class APIPaths {
     private static final String FILTER_COMMENT_COUNT = "num_comments";
     private static final String PARAM_PAGE = "page=";
     private static final String PARAM_URL = "url";
-    private static final String PARAM_TITLE = "titile";
+    private static final String PARAM_TITLE = "title";
     private static final String PARAM_HITS_PER_PAGE = "hitsPerPage=";
 
     public static String getItemPath(int itemId) {

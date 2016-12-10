@@ -382,7 +382,6 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                     if(date2 > date1) {
                         Toast.makeText(FeedActivity.this, R.string.text_switching_dates, Toast.LENGTH_SHORT).show();
                     }
-                    Log.i(TAG, "showDateRangeDialog: " + date1 + ", " + date2);
                     mFilterDateStart = Math.min(date1, date2);
                     mFilterDateEnd = Math.max(date1, date2);
                     Log.i(TAG, "showDateRangeDialog: Start " + mFilterDateStart + ", " + mFilterDateEnd);
