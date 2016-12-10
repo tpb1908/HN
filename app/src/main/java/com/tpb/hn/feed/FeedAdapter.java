@@ -272,6 +272,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     void loadItems(FeedActivity.Section page) {
+        mState = mManager instanceof FeedActivity ? ITEMS : USER;
         this.mData = new Item[0];
         if(mCurrentPage != null && mCurrentPage.equals(page)) {
             this.mOldIds = mIds.clone();
