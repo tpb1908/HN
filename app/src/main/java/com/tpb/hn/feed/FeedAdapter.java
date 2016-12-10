@@ -29,6 +29,7 @@ import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Loader;
 import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
+import com.tpb.hn.viewer.views.FloatingFAB;
 import com.tpb.hn.viewer.views.ViewHolderSwipeCallback;
 
 import java.util.ArrayList;
@@ -52,7 +53,8 @@ import static com.tpb.hn.feed.FeedAdapter.AdapterState.USER;
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         Loader.ItemLoader,
         Loader.idLoader,
-        FastScrollRecyclerView.SectionedAdapter {
+        FastScrollRecyclerView.SectionedAdapter,
+        FloatingFAB.FloatingFABListener {
 
     private static final String TAG = FeedAdapter.class.getSimpleName();
     //Views
@@ -264,6 +266,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         final int currentPos = mLayoutManager.findFirstVisibleItemPosition();
         int height = mLayoutManager.findLastVisibleItemPosition() - currentPos;
         mRecycler.smoothScrollToPosition(Math.max(currentPos - height, 0));
+    }
+
+    @Override
+    public void fabDown() {
+    }
+
+    @Override
+    public void fabUp() {
+        scrollDown();
+    }
+
+    @Override
+    public void fabDrag(float velocitypc) {
+
     }
 
     @NonNull

@@ -51,7 +51,7 @@ public class FloatingFAB extends FloatingActionButton {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if(listener != null) listener.fabUp();
+                if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f && listener != null) listener.fabUp();
                 return true;
         }
         return super.onTouchEvent(ev);

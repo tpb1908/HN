@@ -51,6 +51,7 @@ import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserActivity;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.viewer.ViewerActivity;
+import com.tpb.hn.viewer.views.FloatingFAB;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,6 +83,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
     @BindView(R.id.content_recycler) FastScrollRecyclerView mRecycler;
     @BindView(R.id.content_swiper) SwipeRefreshLayout mRefreshSwiper;
     @BindView(R.id.content_subtitle) TextView mSubtitle;
+    @BindView(R.id.floating_fab) FloatingFAB mFFAB;
 
     @BindView(R.id.content_search_filters) Toolbar mSearchFilterHolder;
     @BindView(R.id.content_toolbar_switcher) ViewSwitcher mSwitcher;
@@ -155,6 +157,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mAdapter = new FeedAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
+        mFFAB.setListener(mAdapter);
         mVolumeNavigation = prefs.getVolumeNavigation();
 
         mContentToolbar.setTitle("");
