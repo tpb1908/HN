@@ -20,7 +20,7 @@
             android:contentInsetRight="0dp"
             android:contentInsetStart="0dp"
             android:minHeight="?attr/actionBarSize"
-            android:selectableItemBackground="?attr/colorPrimary"
+            android:background="?attr/colorPrimary"
             app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
             app:contentInsetRight="0dp"
@@ -146,7 +146,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/spinner_font"
-                        android:selectableItemBackground="?android:attr/listDivider"/>
+                        android:background="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -254,7 +254,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/switch_fast_scroll"
-                        android:selectableItemBackground="?android:attr/listDivider"/>
+                        android:background="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -333,7 +333,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/switch_comment_child_count"
-                        android:selectableItemBackground="?android:attr/listDivider"/>
+                        android:background="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -424,7 +424,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/switch_skimmer_text_body"
-                        android:selectableItemBackground="?android:attr/listDivider"/>
+                        android:background="?android:attr/listDivider"/>
 
                     <!--Default browser page -->
                     <!-- Open links in system browser -->
@@ -467,7 +467,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_below="@id/switch_data_load_in_background"
-                        android:selectableItemBackground="?android:attr/listDivider"/>
+                        android:background="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
