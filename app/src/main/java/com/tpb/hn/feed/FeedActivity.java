@@ -1,6 +1,10 @@
 package com.tpb.hn.feed;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,8 +52,10 @@ import com.tpb.hn.user.UserActivity;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.viewer.ViewerActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,6 +68,11 @@ import butterknife.ButterKnife;
 
 public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedManager, Login.LoginListener {
     private static final String TAG = FeedActivity.class.getSimpleName();
+    private static final String TOP_ACTION = "com.tpb.hn.feed.feedactivity.top";
+    private static final String BEST_ACTION = "com.tpb.hn.feed.feedactivity.best";
+    private static final String NEW_ACTION = "com.tpb.hn.feed.feedactivity.new";
+    private static final String SEARCH_ACTION = "com.tpb.hn.feed.feedactivity.search";
+
     public static Item mLaunchItem;
     public static boolean returning = false;
     @BindView(R.id.content_toolbar) Toolbar mContentToolbar;
@@ -133,8 +144,12 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             ButterKnife.bind(this);
         }
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) setupAppShortcuts();
+
         AdBlocker.init(getApplicationContext());
         AndroidNetworking.initialize(getApplicationContext());
+
+        setupSpinners();
 
         mRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mAdapter = new FeedAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
@@ -185,12 +200,26 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
         });
 
-
-        setupSpinners();
-
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
 
+        final Intent launchIntent = getIntent();
+        if(launchIntent != null) {
+            switch(launchIntent.getAction()) {
+                case TOP_ACTION:
+                    mNavSpinner.setSelection(0);
+                    mAdapter.loadItems(Section.TOP);
+                    break;
+                case NEW_ACTION:
+                    mNavSpinner.setSelection(1);
+                    break;
+                case BEST_ACTION:
+                    mNavSpinner.setSelection(2);
+                    break;
+                case SEARCH_ACTION:
+                    new Handler().postDelayed(() -> mSearchButton.callOnClick(), 300);
+            }
+        }
 
         final Handler timeAgoHandler = new Handler();
         timeAgoHandler.postDelayed(new Runnable() {
@@ -206,6 +235,32 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
         }, 1000 * 60);
         checkThemeChange(false);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    private void setupAppShortcuts() {
+        final ShortcutManager manager = getSystemService(ShortcutManager.class);
+        if(manager.getDynamicShortcuts().size() == 0) {
+            final List<ShortcutInfo> shortcuts = new ArrayList<>();
+            shortcuts.add(new ShortcutInfo.Builder(this, "top")
+                    .setShortLabel(getString(R.string.shortcut_top))
+                    .setIntent(new Intent(TOP_ACTION))
+                    .build());
+            shortcuts.add(new ShortcutInfo.Builder(this, "best")
+                    .setShortLabel(getString(R.string.shortcut_best))
+                    .setIntent(new Intent(BEST_ACTION))
+                    .build());
+            shortcuts.add(new ShortcutInfo.Builder(this, "new")
+                    .setShortLabel(getString(R.string.shortcut_new))
+                    .setIntent(new Intent(NEW_ACTION))
+                    .build());
+            shortcuts.add(new ShortcutInfo.Builder(this, "search")
+                    .setShortLabel(getString(R.string.shortcut_search))
+                    .setIntent(new Intent(SEARCH_ACTION))
+                    .build());
+             manager.setDynamicShortcuts(shortcuts);
+        }
+
     }
 
     @Override

@@ -20,21 +20,27 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+                <action android:name="com.tpb.hn.feed.feedactivity.top" />
+                <action android:name="com.tpb.hn.feed.feedactivity.best" />
+                <action android:name="com.tpb.hn.feed.feedactivity.new" />
+                <action android:name="com.tpb.hn.feed.feedactivity.search" />
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+
+
         </activity>
 
         <activity android:name=".viewer.ViewerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:scheme="https"/>
                 <data android:scheme="http"/>
-                <data
-                    android:host="news.ycombinator.com"
+                <data android:host="news.ycombinator.com"
                     android:pathPrefix="/item"/>
             </intent-filter>
         </activity>
@@ -46,8 +52,6 @@
         <activity android:name=".user.UserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:scheme="https"/>
@@ -71,7 +75,6 @@
                 <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH"/>
             </intent-filter>
         </receiver>
-
 
     </application>
 
