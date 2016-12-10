@@ -169,6 +169,11 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return mAdapter.dispatchKeyEvent(event.getKeyCode()) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if(FeedActivity.returning) {
