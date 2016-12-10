@@ -39,5 +39,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include layout="@layout/shard_floating_fab" />
 
 </merge>
