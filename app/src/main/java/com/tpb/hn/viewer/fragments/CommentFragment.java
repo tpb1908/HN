@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,8 @@ import static android.view.View.GONE;
 public class CommentFragment extends LoadingFragment implements Loader.CommentLoader,
         CommentAdapter.UserOpener,
         Loader.ItemLoader,
-        FragmentPagerAdapter.FragmentCycleListener {
+        FragmentPagerAdapter.FragmentCycleListener,
+        FragmentPagerAdapter.KeyEventHandler {
     private static final String TAG = CommentFragment.class.getSimpleName();
     @BindView(R.id.comment_recycler) RecyclerView mRecycler;
     @BindView(R.id.comment_swiper) SwipeRefreshLayout mSwiper;
@@ -104,6 +106,18 @@ public class CommentFragment extends LoadingFragment implements Loader.CommentLo
         mSwiper.setRefreshing(false);
         mSwiper.setVisibility(GONE);
         mMessageView.setText(error ? R.string.error_comment_loading : R.string.text_no_comments);
+    }
+
+    @Override
+    public boolean onKeyEvent(int keyCode) {
+        if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            mAdapter.scrollDown();
+            return true;
+        } else if(keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            mAdapter.scrollUp();
+            return true;
+        }
+        return false;
     }
 
     @Override

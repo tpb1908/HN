@@ -164,6 +164,14 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     }
 
+    boolean dispatchKeyEvent(int keycode) {
+        boolean canDispatch = false;
+        for(Fragment f: fragments) {
+            if(f instanceof KeyEventHandler) canDispatch |= ((KeyEventHandler) f).onKeyEvent(keycode);
+        }
+        return canDispatch;
+    }
+
     @Override
     public int getCount() {
         return pages.size();
@@ -209,6 +217,12 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     }
 
+    public interface KeyEventHandler {
+
+        boolean onKeyEvent(int keyCode);
+
+    }
+
     interface Fullscreen {
 
         void openFullScreen();
@@ -216,5 +230,6 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
         void closeFullScreen();
 
     }
+
 
 }

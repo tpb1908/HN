@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -215,6 +216,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 break;
             }
         }
+    }
+
+    public void scrollDown() {
+        final int currentPos = ((LinearLayoutManager)mRecycler.getLayoutManager()).findLastVisibleItemPosition();
+        int height = currentPos - ((LinearLayoutManager)mRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        mRecycler.smoothScrollToPosition(Math.min(currentPos + height, mVisibleItems.size()));
+    }
+
+    public void scrollUp() {
+        final int currentPos = ((LinearLayoutManager)mRecycler.getLayoutManager()).findFirstVisibleItemPosition();
+        int height = ((LinearLayoutManager)mRecycler.getLayoutManager()).findLastVisibleItemPosition() - currentPos;
+        mRecycler.smoothScrollToPosition(Math.max(currentPos - height, 0));
     }
 
     private ArrayList<CommentWrapper> flatten(Comment[] comments, int depth) {
