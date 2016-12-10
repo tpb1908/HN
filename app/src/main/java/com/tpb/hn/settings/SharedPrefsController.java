@@ -41,6 +41,7 @@ public class SharedPrefsController {
     private static final String KEY_BOTTOM_TOOLBAR = "BOTTOM_TOOLBAR";
     private static final String KEY_FULLSCREEN_CONTENT = "FULLSCREEN_CONTENT";
     private static final String KEY_SKIMMER_BODY = "SKIMMER_BODY";
+    private static final String KEY_COMMENT_VOLUME_NAVIGATION = "COMMENT_VOLUME_NAVIGATION";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -65,6 +66,7 @@ public class SharedPrefsController {
     private static boolean bottomToolbar;
     private static boolean fullscreenInContent;
     private static boolean skimmerTextBody;
+    private static boolean commentVolumeNavigation;
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -109,6 +111,7 @@ public class SharedPrefsController {
         bottomToolbar = prefs.getBoolean(KEY_BOTTOM_TOOLBAR, false);
         fullscreenInContent = prefs.getBoolean(KEY_FULLSCREEN_CONTENT, true);
         skimmerTextBody = prefs.getBoolean(KEY_SKIMMER_BODY, true);
+        commentVolumeNavigation = prefs.getBoolean(KEY_COMMENT_VOLUME_NAVIGATION, false);
     }
 
     private void initInitialValues() {
@@ -340,6 +343,16 @@ public class SharedPrefsController {
         skimmerTextBody = body;
         editor.putBoolean(KEY_SKIMMER_BODY, skimmerTextBody);
         editor.commit();
+    }
+
+    public void setCommentVolumeNavigation(boolean enabled) {
+        commentVolumeNavigation = enabled;
+        editor.putBoolean(KEY_COMMENT_VOLUME_NAVIGATION, commentVolumeNavigation);
+        editor.commit();
+    }
+
+    public boolean getCommentVolumeNavigation() {
+        return commentVolumeNavigation;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {

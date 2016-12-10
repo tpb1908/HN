@@ -27,6 +27,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
 
     private final Item mItem;
     private final int mCommentId;
+    private int mCurrentPosition = 0;
 
     public FragmentPagerAdapter(FragmentManager fragmentManager, ViewPager pager, PageType[] possiblePages, Item item, int commentId) {
         super(fragmentManager);
@@ -97,6 +98,7 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
                 if(fragments[position] != null) {
                     ((FragmentCycleListener) fragments[oldPos]).onPauseFragment();
                     ((FragmentCycleListener) fragments[position]).onResumeFragment();
+                    mCurrentPosition = position;
                 }
                 oldPos = position;
             }
@@ -165,11 +167,8 @@ public class FragmentPagerAdapter extends android.support.v4.app.FragmentPagerAd
     }
 
     boolean dispatchKeyEvent(int keycode) {
-        boolean canDispatch = false;
-        for(Fragment f: fragments) {
-            if(f instanceof KeyEventHandler) canDispatch |= ((KeyEventHandler) f).onKeyEvent(keycode);
-        }
-        return canDispatch;
+        return fragments[mCurrentPosition] instanceof KeyEventHandler &&
+                ((KeyEventHandler) fragments[mCurrentPosition]).onKeyEvent(keycode);
     }
 
     @Override

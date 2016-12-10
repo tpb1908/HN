@@ -20,6 +20,7 @@ import com.tpb.hn.R;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.network.Loader;
+import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 
 import butterknife.BindView;
@@ -47,6 +48,7 @@ public class CommentFragment extends LoadingFragment implements Loader.CommentLo
     private int mCommentId;
     private Comment mRootComment;
     private CommentAdapter.UserOpener mOpener;
+    private boolean mVolumeNavigation;
 
     private CommentAdapter mAdapter;
 
@@ -63,6 +65,9 @@ public class CommentFragment extends LoadingFragment implements Loader.CommentLo
         final View view = inflater.inflate(R.layout.fragment_comments, container, false);
         mTracker = ((Analytics) getActivity().getApplication()).getDefaultTracker();
         unbinder = ButterKnife.bind(this, view);
+
+        final SharedPrefsController prefs = SharedPrefsController.getInstance(getContext());
+        mVolumeNavigation = prefs.getCommentVolumeNavigation();
         mAdapter = new CommentAdapter(mRecycler, mSwiper, this, mCommentId);
         mSwiper.setOnRefreshListener(() -> {
             mAdapter.clear();
@@ -110,12 +115,14 @@ public class CommentFragment extends LoadingFragment implements Loader.CommentLo
 
     @Override
     public boolean onKeyEvent(int keyCode) {
-        if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-            mAdapter.scrollDown();
-            return true;
-        } else if(keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            mAdapter.scrollUp();
-            return true;
+        if(mVolumeNavigation) {
+            if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                mAdapter.scrollDown();
+                return true;
+            } else if(keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                mAdapter.scrollUp();
+                return true;
+            }
         }
         return false;
     }
