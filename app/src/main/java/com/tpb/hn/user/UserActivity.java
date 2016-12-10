@@ -182,6 +182,7 @@ public class UserActivity extends AppCompatActivity implements UserLoader.HNUser
             mLaunchItem = item;
             Log.i(TAG, "openItem: " + item.toString());
             final Intent i = new Intent(UserActivity.this, ViewerActivity.class);
+            i.putExtra("launcher", TAG);
             startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
                     Pair.create(mBackButton, "button"),
                     Pair.create(mAbout, "details"),
