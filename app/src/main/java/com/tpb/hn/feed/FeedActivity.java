@@ -159,6 +159,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         mRecycler.setAdapter(mAdapter);
 
         mFFAB.setListener(mAdapter);
+        mFFAB.setVisibility(prefs.getShowFloatingFAB() ? View.VISIBLE : View.GONE);
 
         mVolumeNavigation = prefs.getVolumeNavigation();
 
@@ -535,6 +536,8 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         mAdapter.getLastUpdate();
         mAdapter.getPrefs(this);
         mVolumeNavigation = SharedPrefsController.getInstance(this).getVolumeNavigation();
+        mFFAB.setVisibility(SharedPrefsController.getInstance(this).getShowFloatingFAB() ? View.VISIBLE : View.GONE);
+
         checkThemeChange(true);
     }
 

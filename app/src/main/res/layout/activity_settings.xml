@@ -250,10 +250,20 @@
                         android:text="@string/text_fast_scroll"
                         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
+                    <Switch
+                        android:id="@+id/switch_floating_fab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_fast_scroll"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_floating_fab"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_fast_scroll"
+                        android:layout_below="@id/switch_floating_fab"
                         android:background="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>

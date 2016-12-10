@@ -43,6 +43,7 @@ public class SharedPrefsController {
     private static final String KEY_SKIMMER_BODY = "SKIMMER_BODY";
     private static final String KEY_COMMENT_VOLUME_NAVIGATION = "COMMENT_VOLUME_NAVIGATION";
     private static final String KEY_COMMENT_CHILDREN = "COMMENT_CHILDREN";
+    private static final String KEY_FLOATING_FAB = "FLOATING_FAB";
     private static SharedPrefsController instance;
     private static FragmentPagerAdapter.PageType[] pageTypes;
     private static int skimmerWPM;
@@ -69,6 +70,7 @@ public class SharedPrefsController {
     private static boolean skimmerTextBody;
     private static boolean commentVolumeNavigation;
     private static boolean commentChildCount;
+    private boolean showFloatingFAB;
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
@@ -115,6 +117,7 @@ public class SharedPrefsController {
         skimmerTextBody = prefs.getBoolean(KEY_SKIMMER_BODY, true);
         commentVolumeNavigation = prefs.getBoolean(KEY_COMMENT_VOLUME_NAVIGATION, false);
         commentChildCount = prefs.getBoolean(KEY_COMMENT_CHILDREN, true);
+        shouldBlockAds = prefs.getBoolean(KEY_FLOATING_FAB, false);
     }
 
     private void initInitialValues() {
@@ -366,6 +369,16 @@ public class SharedPrefsController {
 
     public boolean getCommentChildren() {
         return commentChildCount;
+    }
+
+    public void setShowFloatingFAB(boolean show) {
+        showFloatingFAB = show;
+        editor.putBoolean(KEY_FLOATING_FAB, showFloatingFAB);
+        editor.commit();
+    }
+
+    public boolean getShowFloatingFAB() {
+        return showFloatingFAB;
     }
 
     public Pair<Integer, Integer> getDarkTimeRange() {
