@@ -45,6 +45,8 @@ public class APIPaths {
     private static final String ALGOLIA_SEARCH = "search?query=";
     private static final String ALGOLIA_TAGS = "&tags=";
     private static final String ALGOLIA_ITEM_PATH = "items/";
+    private static final String ALGOLIA_ATTRIBUTES = "&attributesToRetrieve=objectID";
+    private static final String ALGOLIA_ITEM_COUNT = "&hitsPerPage=100";
     private static final String ALGOLIA_NUMERIC_FILTERS = "&numericFilters=";
     private static final String ALGOLIA_ATTRIBUTE_FILTER = "&restrictSearchableAttributes=";
     private static final String ALGOLIA_SEARCH_BY_DATE = "search_by_date?query=";
@@ -145,11 +147,11 @@ public class APIPaths {
     }
 
     public static String getSearchPath(String query) {
-        return ALGOLIA_BASE + ALGOLIA_SEARCH + query;
+        return ALGOLIA_BASE + ALGOLIA_SEARCH + query + ALGOLIA_ATTRIBUTES + ALGOLIA_ITEM_COUNT;
     }
 
     public static String getSearchPathByDate(String query) {
-        return ALGOLIA_BASE + ALGOLIA_SEARCH_BY_DATE + query;
+        return ALGOLIA_BASE + ALGOLIA_SEARCH_BY_DATE + query + ALGOLIA_ATTRIBUTES + ALGOLIA_ITEM_COUNT;
     }
 
     public static String appendTags(String query, ItemType type) {
