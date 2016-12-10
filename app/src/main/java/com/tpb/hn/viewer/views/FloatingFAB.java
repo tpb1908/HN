@@ -19,6 +19,7 @@ public class FloatingFAB extends FloatingActionButton {
 
     private float mInitialX, mInitialY, mLastDifY;
     private boolean mIsDragging = false;
+    private float mAcceleration = 1f;
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private FloatingFABListener listener;
 
@@ -41,7 +42,12 @@ public class FloatingFAB extends FloatingActionButton {
     private Runnable drag = new Runnable() {
         @Override
         public void run() {
-            listener.fabDrag(mLastDifY);
+            listener.fabDrag(mLastDifY * mAcceleration);
+            if(getY() >= ((View) getParent()).getHeight() - getHeight()) {
+                mAcceleration  = Math.max(mAcceleration + 0.1f, 2f);
+            } else {
+                mAcceleration = 1f;
+            }
             mUiHandler.postDelayed(this, 167);
         }
     };
@@ -59,8 +65,10 @@ public class FloatingFAB extends FloatingActionButton {
                 final float dify = (ev.getRawY() - mInitialY)/((View) getParent()).getHeight();
                 if(dify > 0 && mLastDifY < 0) {
                     setImageResource(R.drawable.ic_arrow_downward);
+                    mAcceleration = 1f;
                 } else if(dify < 0 && mLastDifY > 0) {
                     setImageResource(R.drawable.ic_arrow_upward);
+                    mAcceleration = 1f;
                 }
                 if(Math.abs(dify-mLastDifY) > 0.1f || mLastDifY == 0) {
                     mIsDragging = true;
@@ -74,6 +82,7 @@ public class FloatingFAB extends FloatingActionButton {
                 break;
             case MotionEvent.ACTION_UP:
                 mUiHandler.removeCallbacks(drag);
+                mAcceleration = 1f;
                 if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f && listener != null) listener.fabUp();
                 mIsDragging = false;
                 return true;
@@ -90,8 +99,11 @@ public class FloatingFAB extends FloatingActionButton {
         int newY = (int) movement.getRawY() - offsetY - getHeight() / 2;
         if(newX < 0) newX = 0;
         if(newX > ((View) getParent()).getWidth() - getWidth()) newX = ((View) getParent()).getWidth() - getWidth();
+
+
         if(newY < 0) newY = 0;
         if(newY > ((View) getParent()).getHeight() - getHeight()) newY = ((View) getParent()).getHeight() - getHeight();
+
         setX(newX);
         setY(newY);
 
