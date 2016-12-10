@@ -317,13 +317,22 @@
                         />
 
 
-                    <!-- Sort order-->
-                    <!-- Mark new children-->
+                    <Switch
+                        android:id="@+id/switch_comment_child_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/switch_comment_volume_navigation"
+                        android:onClick="onSwitchClick"
+                        android:text="@string/text_comment_child_count"
+                        android:textAlignment="viewStart"
+                        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                        />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:layout_below="@id/switch_comment_volume_navigation"
+                        android:layout_below="@id/switch_comment_child_count"
                         android:selectableItemBackground="?android:attr/listDivider"/>
 
                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>

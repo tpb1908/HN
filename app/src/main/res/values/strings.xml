@@ -77,6 +77,7 @@
     <string name="text_title_date_range">Select a start and end date</string>
     <string name="text_switching_dates">Switching mis-ordered dates</string>
     <string name="text_comment_children"> %1$d comment</string>
+    <string name="text_comment_child_count">Show child count on each comment</string>
 
     <string name="shortcut_top">Top</string>
     <string name="shortcut_best">Best</string>
