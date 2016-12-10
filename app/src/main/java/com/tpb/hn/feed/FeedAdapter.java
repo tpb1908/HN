@@ -71,6 +71,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private long mLastUpdateTime;
     private int mLastPosition;
     private int mCountGuess;
+    private int mReloadCount;
     private LinearLayoutManager mLayoutManager;
     //Settings flags
     private AdapterState mState;
@@ -326,6 +327,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void idsLoaded(int[] ids) {
+        mReloadCount = 0;
         if(Analytics.VERBOSE) Log.i(TAG, "IdLoadDone: " + ids.length);
         this.mIds = ids;
         final int currentPos = Math.max(mLayoutManager.findFirstVisibleItemPosition(), 0);
@@ -344,7 +346,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @Override
     public void idError(int code) {
         Toast.makeText(mContext, R.string.error_id_loading, Toast.LENGTH_SHORT).show();
-        loadItems(mCurrentPage);
+        if(mReloadCount < 5) {
+            mReloadCount++;
+            loadItems(mCurrentPage);
+        } else {
+            Toast.makeText(mContext, R.string.error_too_many_reloads, Toast.LENGTH_LONG).show();
+        }
+
     }
 
     void beginBackgroundLoading() {
