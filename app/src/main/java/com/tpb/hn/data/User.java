@@ -113,7 +113,7 @@ public class User implements Parcelable {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "USER{" +
                 "id='" + id + '\'' +
                 ", delay=" + delay +
                 ", created=" + created +

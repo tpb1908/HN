@@ -20,18 +20,15 @@ import com.simplecityapps.recyclerview_fastscroll.interfaces.OnFastScrollStateCh
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.helpers.Util;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.data.Item;
-import com.tpb.hn.data.ItemType;
 import com.tpb.hn.data.ItemType;
 import com.tpb.hn.helpers.DividerDecoration;
 import com.tpb.hn.helpers.Formatter;
-import com.tpb.hn.data.Item;
-import com.tpb.hn.viewer.FragmentPagerAdapter;
-import com.tpb.hn.viewer.views.ViewHolderSwipeCallback;
+import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Loader;
 import com.tpb.hn.settings.SharedPrefsController;
+import com.tpb.hn.viewer.FragmentPagerAdapter;
+import com.tpb.hn.viewer.views.ViewHolderSwipeCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +40,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tpb.hn.feed.FeedAdapter.AdapterState.*;
+import static com.tpb.hn.feed.FeedAdapter.AdapterState.ITEMS;
+import static com.tpb.hn.feed.FeedAdapter.AdapterState.SEARCH;
+import static com.tpb.hn.feed.FeedAdapter.AdapterState.USER;
 
 /**
  * Created by theo on 18/10/16.
@@ -88,7 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                        final LinearLayoutManager layoutManager,
                        final SwipeRefreshLayout swiper) {
         ButterKnife.bind(this, recycler);
-        mState = manager instanceof FeedActivity ? Items : User;
+        mState = manager instanceof FeedActivity ? ITEMS : USER;
         mContext = context;
         mManager = manager;
         mSwiper = swiper;
@@ -105,12 +104,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         });
 
         swiper.setOnRefreshListener(() -> {
-            if(mState == Items) {
+            if(mState == ITEMS) {
                 loadItems(mCurrentPage);
-            } else {
+            } else if(mState == USER){
                 mIds = new int[0];
                 notifyDataSetChanged();
                 mManager.openUser(null); //Reload the user
+            } else {
+                //TODO- Retry search
             }
             if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         });
@@ -293,6 +294,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         this.mData = new Item[0];
         mCurrentPage = FeedActivity.Section.SEARCH;
         mCountGuess = Util.getApproximateNumberOfItems(mCurrentPage);
+        mState = SEARCH;
         mIds = new int[mCountGuess];
         if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         mLastUpdateTime = new Date().getTime() / 1000;
@@ -415,10 +417,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     holder.mURL.setVisibility(View.GONE);
                 } else {
                     holder.mTitle.setText(item.getTitle());
-                    if(mState == Items) {
+                    if(mState == ITEMS || mState == SEARCH) {
                         holder.mAuthor.setVisibility(View.VISIBLE);
                         holder.mAuthor.setText(item.getFormattedBy());
-                        holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                        if(mState == ITEMS) {
+                            holder.mNumber.setVisibility(View.VISIBLE);
+                            holder.mNumber.setText(String.format(Locale.getDefault(), "%d", pos + 1));
+                        } else {
+                            holder.mNumber.setVisibility(View.GONE);
+                        }
                         if(item.isSaved() && mIsOffline) {
                             holder.mNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_offline);
                         } else {
@@ -454,7 +461,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         } else if(viewHolder instanceof CommentHolder) {
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(pos < mData.length && mData[pos] != null) {
-                commentHolder.mTime.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
+                if(mState == USER) {
+                    commentHolder.mTitle.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
+                } else {
+                    commentHolder.mTitle.setText(mData[pos].getBy() + " | " + Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
+                }
                 if(mData[pos].isDeleted()) {
                     commentHolder.mBody.setText(R.string.text_deleted_comment);
                 } else if(mData[pos].getText() != null) {
@@ -472,9 +483,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @Override
     public int getItemViewType(int position) {
         if(position < mData.length && mData[position] != null) {
-            return mData[position].isComment() ? mState == Items ? 0 : 1 : 0;
+            return mData[position].isComment() ? mState == ITEMS ? 0 : 1 : 0;
         }
-        return mState == Items ? 0 : -1;
+        return mState == ITEMS ? 0 : -1;
     }
 
     @Override
@@ -515,7 +526,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     enum AdapterState {
-        Items, User, Search
+        ITEMS, USER, SEARCH
     }
 
     //</editor-fold>
@@ -576,7 +587,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     class CommentHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.comment_card) CardView mCard;
-        @BindView(R.id.comment_time) TextView mTime;
+        @BindView(R.id.comment_title) TextView mTitle;
         @BindView(R.id.comment_body) TextView mBody;
 
         CommentHolder(@NonNull View itemView) {

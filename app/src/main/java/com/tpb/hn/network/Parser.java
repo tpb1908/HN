@@ -115,6 +115,16 @@ public class Parser {
         return obj.toString();
     }
 
+    public static int[] parseSearchResult(JSONObject json) throws JSONException {
+        final JSONArray array = json.getJSONArray("hits");
+        final int[] ids = new int[array.length()];
+        for(int i = 0; i < ids.length; i++) {
+            ids[i] = array.getJSONObject(i).getInt("objectID");
+
+        }
+        return ids;
+    }
+
     private static int[] extractIntArray(JSONArray array) {
         final int[] kids = new int[array.length()];
         for(int i = 0; i < array.length(); i++) {

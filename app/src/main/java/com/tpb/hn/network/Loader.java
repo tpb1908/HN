@@ -171,15 +171,32 @@ public class Loader extends BroadcastReceiver {
     public void search(String query, ItemType typeFilter, long dateStart, long dateEnd, boolean sortFilter, idLoader loader) {
         Log.i(TAG, "search: " + query + ", " + typeFilter + ", " + dateStart + ", " + dateEnd + ", " + sortFilter);
 
-        if(typeFilter != ItemType.ALL) { //Add tag
+        String search = sortFilter ? APIPaths.getSearchPathByDate(query) : APIPaths.getSearchPath(query);
+        if(typeFilter != ItemType.ALL) search = APIPaths.appendTags(search, typeFilter);
 
-        }
-        if(dateStart != 0) { //Add numeric filter
+        if(dateStart != -1 && dateEnd != -1) search = APIPaths.appendDateRange(search, dateStart, dateEnd);
 
-        }
-        if(sortFilter) { //Sort by date
+        Log.i(TAG, "search: " + search);
+        AndroidNetworking.get(search)
+                .setPriority(Priority.IMMEDIATE)
+                .setTag("search")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.length());
+                        try {
+                            loader.idsLoaded(Parser.parseSearchResult(response));
+                        } catch(Exception e) {
+                            Log.e(TAG, "onResponse: ", e);
+                        }
+                    }
 
-        }
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.e(TAG, "onError: ", anError);
+                    }
+                });
     }
 
     public void removeListeners() {

@@ -272,25 +272,25 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 final Date date = new Date();
                 Log.i(TAG, "onItemSelected: " + date.getTime());
                 if(selected.equals(items[0])) { //All time
-                    mFilterDateEnd = date.getTime();
-                    mFilterDateStart = 0;
+                    mFilterDateEnd = -1;
+                    mFilterDateStart = -1;
                 } else if(selected.equals(items[1])) { //Year
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (12 * 28 * 24 * 3600);
                 } else if(selected.equals(items[2])) { //6 months
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (6 * 28 * 24 * 3600);
                 } else if(selected.equals(items[3])) {
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (3 * 28 * 24 * 3600);
                 } else if(selected.equals(items[4])) { //Month
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (28 * 24 * 3600);
                 } else if(selected.equals(items[5])) { //Week
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (7 * 24 * 3600);
                 } else if(selected.equals(items[6])) {
-                    mFilterDateEnd = date.getTime();
+                    mFilterDateEnd = date.getTime() / 1000;
                     mFilterDateStart = mFilterDateEnd - (24 * 3600);
                 } else {
                     showDateRangeDialog();
@@ -376,10 +376,10 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                     final DatePicker end =  (DatePicker) dlg.getCustomView().findViewById(R.id.date_end);
                     final Calendar calendar = Calendar.getInstance();
                     calendar.set(start.getYear(), start.getMonth(), start.getDayOfMonth());
-                    final long date1 = calendar.getTime().getTime();
+                    final long date1 = calendar.getTime().getTime() / 1000;
                     calendar.set(end.getYear(), end.getMonth(), end.getDayOfMonth());
-                    final long date2 = calendar.getTime().getTime();
-                    if(date1 > date2) {
+                    final long date2 = calendar.getTime().getTime() / 1000;
+                    if(date2 > date1) {
                         Toast.makeText(FeedActivity.this, R.string.text_switching_dates, Toast.LENGTH_SHORT).show();
                     }
                     mFilterDateStart = Math.min(date1, date2);
