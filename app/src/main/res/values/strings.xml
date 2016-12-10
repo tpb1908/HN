@@ -77,6 +77,11 @@
     <string name="text_title_date_range">Select a start and end date</string>
     <string name="text_switching_dates">Switching mis-ordered dates</string>
 
+    <string name="shortcut_top">Top</string>
+    <string name="shortcut_best">Best</string>
+    <string name="shortcut_new">New</string>
+    <string name="shortcut_search">Search</string>
+
     <string name="action_find_in_page">Find in page</string>
     <string name="action_settings">Settings</string>
     <string name="action_reset">Reset settings</string>

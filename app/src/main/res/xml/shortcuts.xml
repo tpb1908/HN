@@ -1,0 +1,51 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="top"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_top">
+
+        <intent
+            android:action="android.intent.action.View"
+            android:targetPackage="com.tpb.hn.feed"
+            android:targetClass="com.tpb.hn.feed.FeedActivity" />
+
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="best"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_best">
+
+        <intent
+            android:action="android.intent.action.View"
+            android:targetPackage="com.tpb.hn.feed"
+            android:targetClass="com.tpb.hn.feed.FeedActivity" />
+
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="new"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_new">
+
+        <intent
+            android:action="android.intent.action.View"
+            android:targetPackage="com.tpb.hn.feed"
+            android:targetClass="com.tpb.hn.feed.FeedActivity" />
+
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_search">
+
+        <intent
+            android:action="android.intent.action.View"
+            android:targetPackage="com.tpb.hn.feed"
+            android:targetClass="com.tpb.hn.feed.FeedActivity" />
+
+    </shortcut>
+
+</shortcuts>
