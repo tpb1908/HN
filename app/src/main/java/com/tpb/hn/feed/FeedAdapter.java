@@ -401,7 +401,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         if(viewType == 0) {
             return new ItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_item, parent, false));
         } else if(viewType == 1) {
-            return new CommentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_user_comment, parent, false));
+            return new CommentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_feed_comment, parent, false));
         } else {
             return new EmptyHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_empty, parent, false));
         }
@@ -471,10 +471,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             final CommentHolder commentHolder = (CommentHolder) viewHolder;
             if(pos < mData.length && mData[pos] != null) {
                 if(mState == USER) {
-                    commentHolder.mTitle.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
+                    commentHolder.mUser.setVisibility(View.GONE);
                 } else {
-                    commentHolder.mTitle.setText(mData[pos].getBy() + " | " + Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
+                    commentHolder.mUser.setVisibility(View.VISIBLE);
+                    commentHolder.mUser.setText(mData[pos].getBy() + " | ");
                 }
+                commentHolder.mDate.setText(Formatter.appendAgo(Formatter.timeAgo(mData[pos].getTime())));
                 if(mData[pos].isDeleted()) {
                     commentHolder.mBody.setText(R.string.text_deleted_comment);
                 } else if(mData[pos].getText() != null) {
@@ -596,13 +598,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     class CommentHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.comment_card) CardView mCard;
-        @BindView(R.id.comment_title) TextView mTitle;
+        @BindView(R.id.comment_user) TextView mUser;
+        @BindView(R.id.comment_date) TextView mDate;
         @BindView(R.id.comment_body) TextView mBody;
 
         CommentHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mBody.setOnClickListener(view -> FeedAdapter.this.openItem(getAdapterPosition(), null));
+            mUser.setOnClickListener(view -> FeedAdapter.this.openUser(getAdapterPosition()));
         }
 
     }
