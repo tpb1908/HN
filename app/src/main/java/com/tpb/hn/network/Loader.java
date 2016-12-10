@@ -170,16 +170,19 @@ public class Loader extends BroadcastReceiver {
 
     public void search(String query, ItemType typeFilter, long dateStart, long dateEnd, boolean sortFilter, idLoader loader) {
         Log.i(TAG, "search: " + query + ", " + typeFilter + ", " + dateStart + ", " + dateEnd + ", " + sortFilter);
+        /*
+            Precedence
+            - Sort filter
+            - Query
+            - Tags
+            - Date range
+         */
+        String search = sortFilter ? APIPaths.getSearchPathByDate(query) : APIPaths.getSearchPath(query);
+        if(typeFilter != ItemType.ALL) search = APIPaths.appendTags(search, typeFilter);
 
-        if(typeFilter != ItemType.ALL) { //Add tag
+        if(dateStart != -1 && dateEnd != -1) search = APIPaths.appendDateRange(search, dateStart, dateEnd);
 
-        }
-        if(dateStart != 0) { //Add numeric filter
-
-        }
-        if(sortFilter) { //Sort by date
-
-        }
+        Log.i(TAG, "search: " + search);
     }
 
     public void removeListeners() {

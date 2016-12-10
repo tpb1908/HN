@@ -3,6 +3,7 @@ package com.tpb.hn.helpers;
 import android.util.Log;
 
 import com.tpb.hn.BuildConfig;
+import com.tpb.hn.data.ItemType;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -135,47 +136,40 @@ public class APIPaths {
         return "";
     }
 
-    public String getStorySearchPath(String query) {
+    public static String getStorySearchPath(String query) {
         return ALGOLIA_BASE + ALGOLIA_SEARCH + query + ALGOLIA_TAGS + TAG_STORY;
     }
 
-    public String getStorySearchPathByDate(String query) {
+    public static String getStorySearchPathByDate(String query) {
         return ALGOLIA_BASE + ALGOLIA_SEARCH_BY_DATE + query + ALGOLIA_TAGS + TAG_STORY;
     }
 
-    public String getCommentSearchPath(String query) {
+    public static String getSearchPath(String query) {
+        return ALGOLIA_BASE + ALGOLIA_SEARCH + query;
+    }
+
+    public static String getSearchPathByDate(String query) {
+        return ALGOLIA_BASE + ALGOLIA_SEARCH_BY_DATE + query;
+    }
+
+    public static String appendTags(String query, ItemType type) {
+        return query + ALGOLIA_TAGS + type.toString();
+    }
+
+    public static String appendDateRange(String query, long start, long end) {
+        return query + ALGOLIA_NUMERIC_FILTERS + FILTER_CREATED_AT +
+                ">=" + start + "," + FILTER_CREATED_AT + "<=" + end;
+    }
+
+    public static String getCommentSearchPath(String query) {
         return ALGOLIA_BASE + ALGOLIA_SEARCH + query + ALGOLIA_TAGS + TAG_COMMENT;
     }
 
-    public String getCommentSearchPathByDate(String query) {
-        return ALGOLIA_BASE + ALGOLIA_SEARCH_BY_DATE + query + ALGOLIA_TAGS + TAG_COMMENT;
-    }
-
-    public String getStorySearchByUrl(String query) {
-        return appendAttributeFilterToSearch(getStorySearchPath(query), PARAM_URL);
-    }
-
-    public String getStorySearchByUrlByDate(String query) {
-        return appendAttributeFilterToSearch(getStorySearchPathByDate(query), PARAM_URL);
-    }
-
-    public String getStorySearchByTitle(String query) {
-        return appendAttributeFilterToSearch(getStorySearchPath(query), PARAM_TITLE);
-    }
-
-    public String getStorySearchByTitleByDate(String query) {
-        return appendAttributeFilterToSearch(getStorySearchPathByDate(query), PARAM_TITLE);
-    }
-
-    public String getCommentSearchPath(String query, int parent) {
+    public static String getCommentSearchPath(String query, int parent) {
         return ALGOLIA_BASE + ALGOLIA_SEARCH + query + ALGOLIA_TAGS + TAG_COMMENT + "," + TAG_STORY_SEARCH + parent;
     }
 
-    public String appendDateFilterToSearch(String base, int since) {
-        return base + ALGOLIA_NUMERIC_FILTERS + FILTER_CREATED_AT + ">" + since;
-    }
-
-    private String appendAttributeFilterToSearch(String base, String attribute) {
+    private static String appendAttributeFilterToSearch(String base, String attribute) {
         return base + ALGOLIA_ATTRIBUTE_FILTER + attribute;
     }
 
