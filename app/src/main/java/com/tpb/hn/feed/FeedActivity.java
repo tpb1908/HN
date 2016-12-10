@@ -60,7 +60,7 @@ import butterknife.ButterKnife;
  * Displays the content feed
  */
 
-public class FeedActivity extends AppCompatActivity implements FeedAdapter.ContentManager, Login.LoginListener {
+public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedManager, Login.LoginListener {
     private static final String TAG = FeedActivity.class.getSimpleName();
     public static Item mLaunchItem;
     public static boolean returning = false;
@@ -206,11 +206,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
             }
         }, 1000 * 60);
         checkThemeChange(false);
-        //final String[] values = new String[] {"Test", "Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7", "Test8", "Test9", "Test10", "Test11", "Test12", "Test13", "Test14", "Test15", "Test16"};
-        //DraggableListDialog.newInstance(values).show(getSupportFragmentManager(), "Test");
     }
-
-
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -517,6 +513,11 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     @Override
     public void displayLastUpdate(long lastUpdate) {
         mSubtitle.setText(String.format(this.getString(R.string.text_last_updated), Formatter.shortTimeAgo(lastUpdate)));
+    }
+
+    @Override
+    public void refresh() {
+        mSearchButton.callOnClick();
     }
 
     private ActivityOptionsCompat getSharedTransition() {

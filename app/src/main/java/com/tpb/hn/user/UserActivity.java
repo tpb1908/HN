@@ -44,7 +44,7 @@ import butterknife.OnLongClick;
  * Created by theo on 19/11/16.
  */
 
-public class UserActivity extends AppCompatActivity implements UserLoader.HNUserLoadDone, FeedAdapter.ContentManager {
+public class UserActivity extends AppCompatActivity implements UserLoader.HNUserLoadDone, FeedAdapter.FeedManager {
     private static final String TAG = UserActivity.class.getSimpleName();
     public static Item mLaunchItem;
     @BindView(R.id.user_content_recycler) RecyclerView mRecycler;
@@ -205,6 +205,11 @@ public class UserActivity extends AppCompatActivity implements UserLoader.HNUser
     @Override
     public void displayLastUpdate(long lastUpdate) {
         //Ignored
+    }
+
+    @Override
+    public void refresh() {
+        //This may be used if we implement search
     }
 
     @Override
