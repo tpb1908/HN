@@ -1,11 +1,14 @@
 package com.tpb.hn.viewer.views;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.tpb.hn.R;
 
 /**
  * Created by theo on 10/12/16.
@@ -15,6 +18,8 @@ public class FloatingFAB extends FloatingActionButton {
     private static final String TAG = FloatingFAB.class.getSimpleName();
 
     private float mInitialX, mInitialY, mLastDifY;
+    private boolean mIsDragging = false;
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private FloatingFABListener listener;
 
     public FloatingFAB(Context context) {
@@ -33,6 +38,14 @@ public class FloatingFAB extends FloatingActionButton {
         this.listener = listener;
     }
 
+    private Runnable drag = new Runnable() {
+        @Override
+        public void run() {
+            listener.fabDrag(mLastDifY);
+            mUiHandler.postDelayed(this, 167);
+        }
+    };
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch(ev.getAction()) {
@@ -44,14 +57,25 @@ public class FloatingFAB extends FloatingActionButton {
             case MotionEvent.ACTION_MOVE:
                 moveToPosition(ev);
                 final float dify = (ev.getRawY() - mInitialY)/((View) getParent()).getHeight();
+                if(dify > 0 && mLastDifY < 0) {
+                    setImageResource(R.drawable.ic_arrow_downward);
+                } else if(dify < 0 && mLastDifY > 0) {
+                    setImageResource(R.drawable.ic_arrow_upward);
+                }
                 if(Math.abs(dify-mLastDifY) > 0.1f || mLastDifY == 0) {
+                    mIsDragging = true;
                     mLastDifY = dify;
-                    if(listener != null) listener.fabDrag(dify);
-                    Log.i(TAG, "onTouchEvent: pcy " + dify);
+                    if(listener != null) {
+                        mUiHandler.post(drag);
+                    } else {
+                        mIsDragging = false;
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                mUiHandler.removeCallbacks(drag);
                 if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f && listener != null) listener.fabUp();
+                mIsDragging = false;
                 return true;
         }
         return super.onTouchEvent(ev);

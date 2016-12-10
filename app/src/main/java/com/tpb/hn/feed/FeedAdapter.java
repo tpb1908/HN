@@ -279,7 +279,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void fabDrag(float velocitypc) {
-
+        final int height = mRecycler.getHeight();
+        final float scroll = 0.2f * velocitypc * height;
+        mRecycler.smoothScrollBy(0, (int) scroll);
     }
 
     @NonNull
