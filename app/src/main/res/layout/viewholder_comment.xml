@@ -46,6 +46,17 @@
                 android:text="@string/text_info_empty"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"/>
 
+            <TextView
+                android:id="@+id/comment_children"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/comment_body"
+                android:layout_marginTop="8dp"
+                android:drawableEnd="@drawable/ic_chevron_up"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/text_comment_children"/>
+
         </RelativeLayout>
 
     </LinearLayout>

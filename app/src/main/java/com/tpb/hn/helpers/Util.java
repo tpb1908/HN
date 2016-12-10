@@ -176,4 +176,12 @@ public class Util {
         }
     }
 
+    public static int countOccurrences(String s, char o) {
+        int i = 0;
+        for(char c : s.toCharArray()) {
+            if(c == o) i++;
+        }
+        return i;
+    }
+
 }
