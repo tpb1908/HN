@@ -79,6 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((Switch) ButterKnife.findById(this, R.id.switch_skimmer_text_body)).setChecked(prefs.getSkimmerBody());
         ((Switch) ButterKnife.findById(this, R.id.switch_comment_volume_navigation)).setChecked(prefs.getCommentVolumeNavigation());
         ((Switch) ButterKnife.findById(this, R.id.switch_comment_child_count)).setChecked(prefs.getCommentChildren());
+        ((Switch) ButterKnife.findById(this, R.id.switch_floating_fab)).setChecked(prefs.getShowFloatingFAB());
         ButterKnife.findById(this, R.id.switch_fast_scroll).setEnabled(prefs.getShowScrollbar());
         ((Switch) ButterKnife.findById(this, R.id.switch_bottom_toolbar)).setChecked(prefs.getBottomToolbar());
 
@@ -183,6 +184,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case R.id.switch_comment_child_count:
                 prefs.setCommentChildren(sView.isChecked());
+                break;
+            case R.id.switch_floating_fab:
+                prefs.setShowFloatingFAB(sView.isChecked());
                 break;
         }
     }
