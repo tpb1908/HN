@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tpb.hn.viewer.views.FloatingFAB
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/floating_fab"
+    android:layout_width="56dp"
+    android:layout_height="56dp"
+    android:src="@drawable/ic_arrow_downward">
+
+</com.tpb.hn.viewer.views.FloatingFAB>
