@@ -10,7 +10,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/comment_time"
+            android:id="@+id/comment_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/text_title_empty"
@@ -20,7 +20,7 @@
             android:id="@+id/comment_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/comment_time"
+            android:layout_below="@id/comment_title"
             android:autoLink="web|email"
             android:text="@string/text_info_empty"
             android:textAppearance="@android:style/TextAppearance.Material.Small"/>

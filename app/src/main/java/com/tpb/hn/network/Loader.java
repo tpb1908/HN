@@ -184,7 +184,12 @@ public class Loader extends BroadcastReceiver {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i(TAG, "onResponse: " + response.toString());
+                        Log.i(TAG, "onResponse: " + response.length());
+                        try {
+                            loader.idsLoaded(Parser.parseSearchResult(response));
+                        } catch(Exception e) {
+                            Log.e(TAG, "onResponse: ", e);
+                        }
                     }
 
                     @Override
