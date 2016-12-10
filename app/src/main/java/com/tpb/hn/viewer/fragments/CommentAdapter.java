@@ -52,6 +52,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
     private Comment mRootComment;
     private ArrayList<CommentWrapper> mComments = new ArrayList<>();
     private boolean expandComments;
+    private boolean showChildCount;
 
     public CommentAdapter(RecyclerView recycler, SwipeRefreshLayout swiper, UserOpener opener, int commentId) {
         mRecycler = recycler;
@@ -62,6 +63,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         final SharedPrefsController prefs = SharedPrefsController.getInstance(context);
         usingCards = prefs.getUseCardsComments();
         expandComments = prefs.getExpandComments();
+        showChildCount = prefs.getCommentChildren();
         if(!usingCards) {
             mRecycler.addItemDecoration(new DividerDecoration(context.getDrawable(android.R.drawable.divider_horizontal_dim_dark)));
         }
@@ -98,7 +100,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         if(comment.comment.getDescendants() == 0) {
             holder.childrenVisible = comment.childrenVisible;
             holder.mChildren.setVisibility(View.GONE);
-        } else {
+        } else if(showChildCount){
             holder.childrenVisible = true;
             holder.mChildren.setText(Util.pluralise(
                     String.format(
