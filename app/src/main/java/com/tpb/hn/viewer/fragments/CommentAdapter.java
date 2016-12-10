@@ -94,6 +94,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         } else {
             holder.mTitle.setTextAppearance(holder.mTitle.getContext(), android.R.style.TextAppearance_Material_Subhead);
         }
+        if(comment.comment.getDescendants() == 0) {
+            holder.childrenVisible = comment.childrenVisible;
+            holder.mChildren.setVisibility(View.GONE);
+        } else {
+            holder.childrenVisible = true;
+            holder.mChildren.setText(Util.pluralise(
+                    String.format(
+                            holder.itemView.getContext().getString(R.string.text_comment_children),
+                            comment.comment.getDescendants()),
+                    comment.comment.getDescendants()));
+            holder.mChildren.setVisibility(View.VISIBLE);
+            holder.mChildren.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0,
+                    comment.childrenVisible ? R.drawable.ic_chevron_up : R.drawable.ic_chevron_down, 0);
+        }
         holder.mColorBar.setBackgroundColor(mCommentColors[comment.depth % mCommentColors.length]);
         holder.mPadding.getLayoutParams().width = Util.pxFromDp(comment.depth * 4);
 
@@ -282,8 +296,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         @BindView(R.id.comment_card) CardView mCard;
         @BindView(R.id.comment_date) TextView mTitle;
         @BindView(R.id.comment_body) TextView mBody;
+        @BindView(R.id.comment_children) TextView mChildren;
         @BindView(R.id.comment_color) FrameLayout mColorBar;
         @BindView(R.id.comment_padding) FrameLayout mPadding;
+        boolean childrenVisible;
 
         CommentHolder(@NonNull View itemView) {
             super(itemView);
@@ -295,7 +311,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                 CommentAdapter.this.switchItemVisibility(getAdapterPosition());
                 return false;
             });
-            mTitle.setOnClickListener(view -> CommentAdapter.this.openUser(getAdapterPosition()));
+            mChildren.setOnClickListener(view -> {
+                childrenVisible = !childrenVisible;
+                CommentAdapter.this.switchItemVisibility(getAdapterPosition());
+                mChildren.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0,
+                        childrenVisible ? R.drawable.ic_chevron_up : R.drawable.ic_chevron_down, 0);
+            });
+            mTitle.setOnClickListener(view -> {
+                childrenVisible = !childrenVisible;
+                CommentAdapter.this.switchItemVisibility(getAdapterPosition());
+                mChildren.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0,
+                        childrenVisible ? R.drawable.ic_chevron_up : R.drawable.ic_chevron_down, 0);
+            });
         }
 
     }

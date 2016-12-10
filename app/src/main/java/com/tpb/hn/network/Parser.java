@@ -3,6 +3,7 @@ package com.tpb.hn.network;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
+import com.tpb.hn.helpers.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,10 +74,11 @@ public class Parser {
         comment.setId(obj.getInt(KEY_ID));
         if(obj.has(KEY_PARENT_ID)) comment.setParent(obj.getInt(KEY_PARENT_ID));
         if(obj.has(KEY_CREATED_AT_I)) comment.setTime(obj.getInt(KEY_CREATED_AT_I));
-
         comment.setText(obj.getString(KEY_TEXT));
         comment.setBy(obj.getString(KEY_AUTHOR));
         comment.setChildren(obj.getString(KEY_CHILDREN));
+        //We subtract one for an empty array
+        comment.setDescendants(Util.countOccurrences(comment.getChildren(), '[') - 1);
         return comment;
     }
 
