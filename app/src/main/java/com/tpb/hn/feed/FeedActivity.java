@@ -84,6 +84,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     private boolean mVolumeNavigation;
     private int mThemePostponeTime = Integer.MAX_VALUE;
     private boolean mIsSearching = false;
+    private boolean mHasSearched = false;
     private boolean mIsKeyboardOpen = false;
 
     private long mFilterDateStart =  new Date().getTime();
@@ -152,6 +153,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
             } else if(!mSearch.getText().toString().isEmpty()){
                 mAdapter.search(mSearch.getText().toString(), mFilterType, mFilterDateStart, mFilterDateEnd, mFilterSort);
+                mHasSearched = true;
                 //Perform search
             }
         });
@@ -242,6 +244,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
         mNavSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mHasSearched = false;
                 mAdapter.loadItems(Util.getSection(FeedActivity.this, mNavSpinner.getSelectedItem().toString()));
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory(Analytics.CATEGORY_NAVIGATION)
@@ -295,7 +298,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 } else {
                     showDateRangeDialog();
                 }
-
+                if(mHasSearched) mSearchButton.callOnClick();
                 Log.i(TAG, "onItemSelected: " + mFilterDateStart + ", " + mFilterDateEnd);
             }
 
@@ -333,6 +336,8 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 } else {
                     mFilterType = ItemType.SAVED;
                 }
+                if(mHasSearched) mSearchButton.callOnClick();
+
             }
 
             @Override
@@ -356,6 +361,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
                 if(view == null) return;
                 final String selected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
                 mFilterSort = !selected.equals(items[0]);
+                if(mHasSearched) mSearchButton.callOnClick();
             }
 
             @Override
