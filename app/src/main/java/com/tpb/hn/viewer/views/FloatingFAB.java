@@ -3,6 +3,7 @@ package com.tpb.hn.viewer.views;
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,7 +14,7 @@ import android.view.View;
 public class FloatingFAB extends FloatingActionButton {
     private static final String TAG = FloatingFAB.class.getSimpleName();
 
-    private float mInitialX, mInitialY;
+    private float mInitialX, mInitialY, mLastDifY;
     private FloatingFABListener listener;
 
     public FloatingFAB(Context context) {
@@ -38,12 +39,19 @@ public class FloatingFAB extends FloatingActionButton {
             case MotionEvent.ACTION_DOWN:
                 mInitialX = ev.getRawX();
                 mInitialY = ev.getRawY();
+                if(listener != null) listener.fabDown();
                 return true;
             case MotionEvent.ACTION_MOVE:
                 moveToPosition(ev);
+                final float dify = (ev.getRawY() - mInitialY)/((View) getParent()).getHeight();
+                if(Math.abs(dify-mLastDifY) > 0.1f || mLastDifY == 0) {
+                    mLastDifY = dify;
+                    if(listener != null) listener.fabDrag(dify);
+                    Log.i(TAG, "onTouchEvent: pcy " + dify);
+                }
                 break;
             case MotionEvent.ACTION_UP:
-
+                if(listener != null) listener.fabUp();
                 return true;
         }
         return super.onTouchEvent(ev);
@@ -66,6 +74,12 @@ public class FloatingFAB extends FloatingActionButton {
     }
 
     public interface FloatingFABListener {
+
+        void fabDown();
+
+        void fabUp();
+
+        void fabDrag(float velocitypc);
 
     }
 
