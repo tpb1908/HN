@@ -82,6 +82,7 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
     private boolean mDisableHorizontalScrolling;
     private boolean mFullScreenContent;
 
+
     private FragmentPagerAdapter.PageType mType;
     private boolean mIsFullscreen = false;
     private boolean mShown = false;
