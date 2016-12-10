@@ -8,6 +8,7 @@
     <string name="error_comment_loading">Couldn"'"t load comments. Swipe to retry</string>
     <string name="error_opening_deleted">Can"'"t open deleted %1$s</string>
     <string name="error_id_loading">Couldnt"'"t load item ids</string>
+    <string name="error_too_many_reloads">Reloaded too many times. Swipe to try again</string>
 
     <string name="error_http_400">400 Bad Request</string>
     <string name="error_http_401">401 Unauthorised</string>
