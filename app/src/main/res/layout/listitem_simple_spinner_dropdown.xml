@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_arrow_drop_down"
         android:ellipsize="marquee"
+        android:maxLines="1"
         android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:singleLine="true"/>
+        android:paddingStart="8dp"/>
 
 </FrameLayout>

@@ -53,8 +53,8 @@
                     android:id="@+id/skimmer_text_body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="false"
                     android:padding="16dp"
+                    android:textIsSelectable="false"
                     android:visibility="gone"/>
 
             </android.support.v4.widget.NestedScrollView>

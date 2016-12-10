@@ -136,64 +136,6 @@ public class AdBlockingWebView extends WebView {
 
      */
 
-    @Override
-    public void loadData(String data, String mimeType, String encoding) {
-        mIsLoadingText = true;
-        if(mPosition == mContent.size() - 1 || mContent.isEmpty() ) {
-            if(mPosition == 0 || !data.equals(mContent.get(mPosition))) {
-                mContent.add(data);
-                mPosition = mContent.size() - 1;
-            }
-            Log.i(TAG, "loadData: Adding to top " + mPosition);
-        } else if(mPosition < mContent.size() - 1 && !data.equals(mContent.get(mPosition + 1)) && !data.equals(mContent.get(mPosition))) {
-            Log.i(TAG, "loadData: Clearing " + mContent.size());
-            mContent.subList(mPosition + 1, mContent.size()).clear();
-            Log.i(TAG, "loadData: Cleared " + mContent.size());
-            mContent.add(data);
-            mPosition = mContent.size() - 1;
-            Log.i(TAG, "loadData: pos " + mPosition + " of " + mContent.size());
-        }
-        super.loadData(data, mimeType, encoding);
-    }
-
-    @Override
-    public void goBack() {
-        if(mPosition > 0) {
-            Log.i(TAG, "goBack: " + mPosition + "->" + (mPosition - 1));
-            mPosition--;
-            final String page = mContent.get(mPosition);
-            loadData(page, "text/html", "utf-8");
-        } else {
-            super.goBack();
-        }
-    }
-
-    @Override
-    public void goForward() {
-        if(mPosition < mContent.size() - 1) {
-            Log.i(TAG, "goForward: " + mPosition + "->" + (mPosition + 1));
-            mPosition++;
-            final String page = mContent.get(mPosition);
-            loadData(page, "text/html", "utf-8");
-        } else {
-            super.goForward();
-        }
-    }
-
-    @Override
-    public boolean canGoBack() {
-        Log.i(TAG, "canGoBack: " + (mContent.size() > 1 && mPosition > 0));
-        return (mContent.size() > 1 && mPosition > 0) || super.canGoBack();
-    }
-
-    @Override
-    public boolean canGoForward() {
-        Log.i(TAG, "canGoForward: pos " + mPosition);
-        Log.i(TAG, "canGoForward: " + mContent.size());
-        Log.i(TAG, "canGoForward: " +  (mContent.size() > 1 && mPosition < mContent.size() - 1));
-        return (mContent.size() > 1 && mPosition < mContent.size() - 1) || super.canGoForward();
-    }
-
     public void setHorizontalScrollingEnabled(boolean enabled) {
         if(enabled) {
             enableHorizontalScrolling();
@@ -272,6 +214,64 @@ public class AdBlockingWebView extends WebView {
     public void loadUrl(String url) {
         super.loadUrl(url);
         this.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void loadData(String data, String mimeType, String encoding) {
+        mIsLoadingText = true;
+        if(mPosition == mContent.size() - 1 || mContent.isEmpty()) {
+            if(mPosition == 0 || !data.equals(mContent.get(mPosition))) {
+                mContent.add(data);
+                mPosition = mContent.size() - 1;
+            }
+            Log.i(TAG, "loadData: Adding to top " + mPosition);
+        } else if(mPosition < mContent.size() - 1 && !data.equals(mContent.get(mPosition + 1)) && !data.equals(mContent.get(mPosition))) {
+            Log.i(TAG, "loadData: Clearing " + mContent.size());
+            mContent.subList(mPosition + 1, mContent.size()).clear();
+            Log.i(TAG, "loadData: Cleared " + mContent.size());
+            mContent.add(data);
+            mPosition = mContent.size() - 1;
+            Log.i(TAG, "loadData: pos " + mPosition + " of " + mContent.size());
+        }
+        super.loadData(data, mimeType, encoding);
+    }
+
+    @Override
+    public boolean canGoBack() {
+        Log.i(TAG, "canGoBack: " + (mContent.size() > 1 && mPosition > 0));
+        return (mContent.size() > 1 && mPosition > 0) || super.canGoBack();
+    }
+
+    @Override
+    public void goBack() {
+        if(mPosition > 0) {
+            Log.i(TAG, "goBack: " + mPosition + "->" + (mPosition - 1));
+            mPosition--;
+            final String page = mContent.get(mPosition);
+            loadData(page, "text/html", "utf-8");
+        } else {
+            super.goBack();
+        }
+    }
+
+    @Override
+    public boolean canGoForward() {
+        Log.i(TAG, "canGoForward: pos " + mPosition);
+        Log.i(TAG, "canGoForward: " + mContent.size());
+        Log.i(TAG, "canGoForward: " + (mContent.size() > 1 && mPosition < mContent.size() - 1));
+        return (mContent.size() > 1 && mPosition < mContent.size() - 1) || super.canGoForward();
+    }
+
+    @Override
+    public void goForward() {
+        if(mPosition < mContent.size() - 1) {
+            Log.i(TAG, "goForward: " + mPosition + "->" + (mPosition + 1));
+            mPosition++;
+            final String page = mContent.get(mPosition);
+            loadData(page, "text/html", "utf-8");
+        } else {
+            super.goForward();
+        }
     }
 
     public interface LinkHandler {

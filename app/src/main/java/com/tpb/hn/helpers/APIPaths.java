@@ -59,7 +59,7 @@ public class APIPaths {
     private static final String TAG_FRONT_PAGE = "front_page";
     private static final String TAG_AUTHOR = "author_:";
     private static final String TAG_STORY_SEARCH = "story_:";
-    private static final String FILTER_CREATED_AT  = "created_at_i";
+    private static final String FILTER_CREATED_AT = "created_at_i";
     private static final String FILTER_POINTS = "points";
     private static final String FILTER_COMMENT_COUNT = "num_comments";
     private static final String PARAM_PAGE = "page=";

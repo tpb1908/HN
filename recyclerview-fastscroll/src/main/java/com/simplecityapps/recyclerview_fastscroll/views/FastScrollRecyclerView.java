@@ -110,7 +110,7 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
         int action = ev.getAction();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
-        switch (action) {
+        switch(action) {
             case MotionEvent.ACTION_DOWN:
                 // Keep track of the down positions
                 mDownX = x;
@@ -176,7 +176,7 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
         int availableScrollBarHeight = getAvailableScrollBarHeight();
 
         // Only show the scrollbar if there is height to be scrolled
-        if (availableScrollHeight <= 0) {
+        if(availableScrollHeight <= 0) {
             mScrollbar.setThumbPosition(-1, -1);
             return;
         }
@@ -189,7 +189,7 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
 
         // Calculate the position and size of the scroll bar
         int scrollBarX;
-        if (Utils.isRtl(getResources())) {
+        if(Utils.isRtl(getResources())) {
             scrollBarX = 0;
         } else {
             scrollBarX = getWidth() - mScrollbar.getWidth();
@@ -202,12 +202,12 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
      */
     public String scrollToPositionAtProgress(float touchFraction) {
         int itemCount = getAdapter().getItemCount();
-        if (itemCount == 0) {
+        if(itemCount == 0) {
             return "";
         }
         int spanCount = 1;
         int rowCount = itemCount;
-        if (getLayoutManager() instanceof GridLayoutManager) {
+        if(getLayoutManager() instanceof GridLayoutManager) {
             spanCount = ((GridLayoutManager) getLayoutManager()).getSpanCount();
             rowCount = (int) Math.ceil((double) rowCount / spanCount);
         }
@@ -231,7 +231,7 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
         layoutManager.scrollToPositionWithOffset(spanCount * exactItemPos / mScrollPosState.rowHeight,
                 -(exactItemPos % mScrollPosState.rowHeight));
 
-        if (!(getAdapter() instanceof SectionedAdapter)) {
+        if(!(getAdapter() instanceof SectionedAdapter)) {
             return "";
         }
 
@@ -246,24 +246,24 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
      */
     public void onUpdateScrollbar() {
 
-        if (getAdapter() == null) {
+        if(getAdapter() == null) {
             return;
         }
 
         int rowCount = getAdapter().getItemCount();
-        if (getLayoutManager() instanceof GridLayoutManager) {
+        if(getLayoutManager() instanceof GridLayoutManager) {
             int spanCount = ((GridLayoutManager) getLayoutManager()).getSpanCount();
             rowCount = (int) Math.ceil((double) rowCount / spanCount);
         }
         // Skip early if, there are no items.
-        if (rowCount == 0) {
+        if(rowCount == 0) {
             mScrollbar.setThumbPosition(-1, -1);
             return;
         }
 
         // Skip early if, there no child laid out in the container.
         getCurScrollState(mScrollPosState);
-        if (mScrollPosState.rowIndex < 0) {
+        if(mScrollPosState.rowIndex < 0) {
             mScrollbar.setThumbPosition(-1, -1);
             return;
         }
@@ -282,14 +282,14 @@ public class FastScrollRecyclerView extends RecyclerView implements RecyclerView
         int itemCount = getAdapter().getItemCount();
 
         // Return early if there are no items, or no children.
-        if (itemCount == 0 || getChildCount() == 0) {
+        if(itemCount == 0 || getChildCount() == 0) {
             return;
         }
 
         View child = getChildAt(0);
 
         stateOut.rowIndex = getChildAdapterPosition(child);
-        if (getLayoutManager() instanceof GridLayoutManager) {
+        if(getLayoutManager() instanceof GridLayoutManager) {
             stateOut.rowIndex = stateOut.rowIndex / ((GridLayoutManager) getLayoutManager()).getSpanCount();
         }
         stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);

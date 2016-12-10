@@ -101,7 +101,7 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
             final String data = launchIntent.getDataString();
             Loader.getInstance(this).loadItem(APIPaths.parseItemUrl(data), this);
         } else {
-            final String launchActivity  = launchIntent.getStringExtra("launcher");
+            final String launchActivity = launchIntent.getStringExtra("launcher");
             if(FeedActivity.class.getSimpleName().equals(launchActivity)) {
                 mLaunchItem = FeedActivity.mLaunchItem;
             } else {

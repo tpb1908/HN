@@ -49,7 +49,7 @@ public class AdBlocker {
 
         reader.close();
         stream.close();
-        Log.i(TAG, "loadFromAssets: time " + (System.nanoTime()-start)/1E9);
+        Log.i(TAG, "loadFromAssets: time " + (System.nanoTime() - start) / 1E9);
     }
 
     public static boolean isAd(String url) {

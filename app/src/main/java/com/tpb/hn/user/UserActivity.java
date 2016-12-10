@@ -23,17 +23,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tpb.hn.R;
-import com.tpb.hn.feed.FeedActivity;
-import com.tpb.hn.feed.FeedAdapter;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
 import com.tpb.hn.data.User;
-import com.tpb.hn.viewer.FragmentPagerAdapter;
-import com.tpb.hn.viewer.ViewerActivity;
+import com.tpb.hn.feed.FeedActivity;
+import com.tpb.hn.feed.FeedAdapter;
 import com.tpb.hn.helpers.APIPaths;
 import com.tpb.hn.helpers.AdBlocker;
 import com.tpb.hn.network.UserLoader;
 import com.tpb.hn.settings.SharedPrefsController;
+import com.tpb.hn.viewer.FragmentPagerAdapter;
+import com.tpb.hn.viewer.ViewerActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

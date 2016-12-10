@@ -102,9 +102,9 @@ public class FastScrollPopup {
      * Animates the visibility of the fast scroller popup.
      */
     public void animateVisibility(boolean visible) {
-        if (mVisible != visible) {
+        if(mVisible != visible) {
             mVisible = visible;
-            if (mAlphaAnimator != null) {
+            if(mAlphaAnimator != null) {
                 mAlphaAnimator.cancel();
             }
             mAlphaAnimator = ObjectAnimator.ofFloat(this, "alpha", visible ? 1f : 0f);
@@ -124,7 +124,7 @@ public class FastScrollPopup {
     }
 
     public void draw(Canvas canvas) {
-        if (isVisible()) {
+        if(isVisible()) {
             // Draw the fast scroller popup
             int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.translate(mBgBounds.left, mBgBounds.top);
@@ -136,11 +136,11 @@ public class FastScrollPopup {
 
             float[] radii;
 
-            if (Utils.isRtl(mRes)) {
-                radii = new float[]{mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0};
+            if(Utils.isRtl(mRes)) {
+                radii = new float[] {mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0};
             } else {
 
-                radii = new float[]{mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0, mCornerRadius, mCornerRadius};
+                radii = new float[] {mCornerRadius, mCornerRadius, mCornerRadius, mCornerRadius, 0, 0, mCornerRadius, mCornerRadius};
             }
 
             mBackgroundPath.addRoundRect(mBackgroundRect, radii, Path.Direction.CW);
@@ -156,7 +156,7 @@ public class FastScrollPopup {
     }
 
     public void setSectionName(String sectionName) {
-        if (!sectionName.equals(mSectionName)) {
+        if(!sectionName.equals(mSectionName)) {
             mSectionName = sectionName;
             mTextPaint.getTextBounds(sectionName, 0, sectionName.length(), mTextBounds);
             // Update the width to use measureText since that is more accurate
@@ -172,13 +172,13 @@ public class FastScrollPopup {
     public Rect updateFastScrollerBounds(FastScrollRecyclerView recyclerView, int thumbOffsetY) {
         mInvalidateRect.set(mBgBounds);
 
-        if (isVisible()) {
+        if(isVisible()) {
             // Calculate the dimensions and position of the fast scroller popup
             int edgePadding = recyclerView.getScrollBarWidth();
             int bgPadding = (mBackgroundSize - mTextBounds.height()) / 2;
             int bgHeight = mBackgroundSize;
             int bgWidth = Math.max(mBackgroundSize, mTextBounds.width() + (2 * bgPadding));
-            if (Utils.isRtl(mRes)) {
+            if(Utils.isRtl(mRes)) {
                 mBgBounds.left = (2 * recyclerView.getScrollBarWidth());
                 mBgBounds.right = mBgBounds.left + bgWidth;
             } else {

@@ -10,8 +10,8 @@
         android:id="@+id/content_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:transitionName="appbar"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:transitionName="appbar">
 
         <include layout="@layout/shard_toolbar_content"/>
 

@@ -99,7 +99,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
     private boolean mHasSearched = false;
     private boolean mIsKeyboardOpen = false;
 
-    private long mFilterDateStart =  new Date().getTime();
+    private long mFilterDateStart = new Date().getTime();
     private long mFilterDateEnd = 0;
     private ItemType mFilterType = ItemType.ALL;
     private boolean mFilterSort;
@@ -132,7 +132,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
                             mAppBar.animate().translationY(mAppBar.getHeight());
                             onscreen = false;
                         }
-                    } else if(dy < 0){
+                    } else if(dy < 0) {
                         if(!onscreen) {
                             mAppBar.animate().translationY(0);
                             onscreen = true;
@@ -194,6 +194,25 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         checkThemeChange(false);
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(mVolumeNavigation) {
+            switch(event.getKeyCode()) {
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollUp();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        mAdapter.scrollDown();
+                    }
+                    return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     @OnClick(R.id.button_close_search)
     void closeClick() {
         mIsSearching = false;
@@ -233,7 +252,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             mIsKeyboardOpen = true;
             mSwitcher.setInAnimation(this, android.R.anim.fade_in);
             mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
-        } else if(!mSearch.getText().toString().isEmpty()){
+        } else if(!mSearch.getText().toString().isEmpty()) {
             mAdapter.search(mSearch.getText().toString(), mFilterType, mFilterDateStart, mFilterDateEnd, mFilterSort);
             mHasSearched = true;
             //Perform search
@@ -261,28 +280,9 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
                     .setShortLabel(getString(R.string.shortcut_search))
                     .setIntent(new Intent(SEARCH_ACTION))
                     .build());
-             manager.setDynamicShortcuts(shortcuts);
+            manager.setDynamicShortcuts(shortcuts);
         }
 
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if(mVolumeNavigation) {
-            switch(event.getKeyCode()) {
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollUp();
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                        mAdapter.scrollDown();
-                    }
-                    return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 
     private void setupSpinners() {
@@ -357,7 +357,8 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
         });
 
 
@@ -433,7 +434,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
                 .positiveText(android.R.string.ok)
                 .onPositive((dlg, which) -> {
                     final DatePicker start = (DatePicker) dlg.getCustomView().findViewById(R.id.date_start);
-                    final DatePicker end =  (DatePicker) dlg.getCustomView().findViewById(R.id.date_end);
+                    final DatePicker end = (DatePicker) dlg.getCustomView().findViewById(R.id.date_end);
                     final Calendar calendar = Calendar.getInstance();
                     calendar.set(start.getYear(), start.getMonth(), start.getDayOfMonth());
                     final long date1 = calendar.getTime().getTime() / 1000;

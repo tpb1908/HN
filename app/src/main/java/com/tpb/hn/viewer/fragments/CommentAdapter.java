@@ -17,11 +17,11 @@ import android.widget.TextView;
 
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.helpers.Util;
-import com.tpb.hn.helpers.DividerDecoration;
 import com.tpb.hn.data.Comment;
-import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.helpers.DividerDecoration;
+import com.tpb.hn.helpers.Formatter;
+import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Parser;
 import com.tpb.hn.settings.SharedPrefsController;
 
@@ -139,9 +139,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
         for(; end < mComments.size(); end++) {
             if(mComments.get(end).depth > depth) {
                 mComments.get(end).visible = visibility;
-                if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
+                if(Analytics.VERBOSE)
+                    Log.i(TAG, "switchItemVisibility: CommentWrapper " + mComments.get(end));
             } else {
-                if(Analytics.VERBOSE) Log.i(TAG, "switchItemVisibility: Breaking " + mComments.get(end));
+                if(Analytics.VERBOSE)
+                    Log.i(TAG, "switchItemVisibility: Breaking " + mComments.get(end));
                 end--;
                 break;
             }

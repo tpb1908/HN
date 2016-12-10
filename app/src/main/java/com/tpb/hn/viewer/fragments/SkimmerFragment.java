@@ -19,13 +19,13 @@ import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.Loader;
+import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.viewer.ViewerActivity;
 import com.tpb.hn.viewer.views.HintingSeekBar;
 import com.tpb.hn.viewer.views.spritzer.ClickableTextView;
 import com.tpb.hn.viewer.views.spritzer.SpritzerTextView;
-import com.tpb.hn.network.Loader;
-import com.tpb.hn.settings.SharedPrefsController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,7 +112,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @Override
     void bindData() {
         mSwiper.setRefreshing(false);
-        mArticle = Html.fromHtml(mArticle).toString().replace("\n", " ");;
+        mArticle = Html.fromHtml(mArticle).toString().replace("\n", " ");
         if(mBodyEnabled) mTextBody.setText(mArticle);
         setupSkimmer();
     }

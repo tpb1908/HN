@@ -174,7 +174,8 @@ public class Loader extends BroadcastReceiver {
         String search = sortFilter ? APIPaths.getSearchPathByDate(query) : APIPaths.getSearchPath(query);
         if(typeFilter != ItemType.ALL) search = APIPaths.appendTags(search, typeFilter);
 
-        if(dateStart != -1 && dateEnd != -1) search = APIPaths.appendDateRange(search, dateStart, dateEnd);
+        if(dateStart != -1 && dateEnd != -1)
+            search = APIPaths.appendDateRange(search, dateStart, dateEnd);
 
         Log.i(TAG, "search: " + search);
         AndroidNetworking.get(search)

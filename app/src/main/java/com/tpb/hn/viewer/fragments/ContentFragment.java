@@ -316,7 +316,8 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
             final ViewGroup.LayoutParams params = mWebView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             mWebView.setLayoutParams(params);
-            if(mFullScreenContent) mParent.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if(mFullScreenContent)
+                mParent.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         } else {
             mWebView.setZoomEnabled(false);
@@ -345,7 +346,8 @@ public class ContentFragment extends LoadingFragment implements Loader.ItemLoade
                 mParent.setFabDrawable(R.drawable.ic_zoom_out_arrows);
                 mIsSearchComplete = false;
             }
-            if(mFullScreenContent) mParent.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if(mFullScreenContent)
+                mParent.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 

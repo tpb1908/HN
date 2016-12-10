@@ -107,7 +107,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         swiper.setOnRefreshListener(() -> {
             if(mState == ITEMS) {
                 loadItems(mCurrentPage);
-            } else if(mState == USER){
+            } else if(mState == USER) {
                 mIds = new int[0];
                 notifyDataSetChanged();
                 mManager.openUser(null); //Reload the user

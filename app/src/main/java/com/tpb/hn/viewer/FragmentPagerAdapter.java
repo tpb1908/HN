@@ -7,10 +7,10 @@ import android.util.Log;
 
 import com.tpb.hn.Analytics;
 import com.tpb.hn.data.Item;
+import com.tpb.hn.network.Loader;
 import com.tpb.hn.viewer.fragments.CommentFragment;
 import com.tpb.hn.viewer.fragments.ContentFragment;
 import com.tpb.hn.viewer.fragments.SkimmerFragment;
-import com.tpb.hn.network.Loader;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -107,8 +107,8 @@ public class FastScroller {
         mHideRunnable = new Runnable() {
             @Override
             public void run() {
-                if (!mIsDragging) {
-                    if (mAutoHideAnimator != null) {
+                if(!mIsDragging) {
+                    if(mAutoHideAnimator != null) {
                         mAutoHideAnimator.cancel();
                     }
                     mAutoHideAnimator = ObjectAnimator.ofInt(FastScroller.this, "offsetX", (Utils.isRtl(mRecyclerView.getResources()) ? -1 : 1) * mWidth);
@@ -129,7 +129,7 @@ public class FastScroller {
             }
         });
 
-        if (mAutoHideEnabled) {
+        if(mAutoHideEnabled) {
             postAutoHideDelayed();
         }
     }
@@ -176,25 +176,25 @@ public class FastScroller {
 
         int action = ev.getAction();
         int y = (int) ev.getY();
-        switch (action) {
+        switch(action) {
             case MotionEvent.ACTION_DOWN:
-                if (isNearPoint(downX, downY)) {
+                if(isNearPoint(downX, downY)) {
                     mTouchOffset = downY - mThumbPosition.y;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Check if we should start scrolling
-                if (!mIsDragging && isNearPoint(downX, downY) &&
+                if(!mIsDragging && isNearPoint(downX, downY) &&
                         Math.abs(y - downY) > config.getScaledTouchSlop()) {
                     mRecyclerView.getParent().requestDisallowInterceptTouchEvent(true);
                     mIsDragging = true;
                     mTouchOffset += (lastY - downY);
                     mPopup.animateVisibility(true);
-                    if (stateChangeListener != null) {
+                    if(stateChangeListener != null) {
                         stateChangeListener.onFastScrollStart();
                     }
                 }
-                if (mIsDragging) {
+                if(mIsDragging) {
                     // Update the fastscroller section name at this touch position
                     int top = 0;
                     int bottom = mRecyclerView.getHeight() - mThumbHeight;
@@ -208,10 +208,10 @@ public class FastScroller {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mTouchOffset = 0;
-                if (mIsDragging) {
+                if(mIsDragging) {
                     mIsDragging = false;
                     mPopup.animateVisibility(false);
-                    if (stateChangeListener != null) {
+                    if(stateChangeListener != null) {
                         stateChangeListener.onFastScrollStop();
                     }
                 }
@@ -221,7 +221,7 @@ public class FastScroller {
 
     public void draw(Canvas canvas) {
 
-        if (mThumbPosition.x < 0 || mThumbPosition.y < 0) {
+        if(mThumbPosition.x < 0 || mThumbPosition.y < 0) {
             return;
         }
 
@@ -246,7 +246,7 @@ public class FastScroller {
     }
 
     public void setThumbPosition(int x, int y) {
-        if (mThumbPosition.x == x && mThumbPosition.y == y) {
+        if(mThumbPosition.x == x && mThumbPosition.y == y) {
             return;
         }
         // do not create new objects here, this is called quite often
@@ -259,7 +259,7 @@ public class FastScroller {
 
 
     public void setOffset(int x, int y) {
-        if (mOffset.x == x && mOffset.y == y) {
+        if(mOffset.x == x && mOffset.y == y) {
             return;
         }
         // do not create new objects here, this is called quite often
@@ -280,8 +280,8 @@ public class FastScroller {
     }
 
     public void show() {
-        if (!mAnimatingShow) {
-            if (mAutoHideAnimator != null) {
+        if(!mAnimatingShow) {
+            if(mAutoHideAnimator != null) {
                 mAutoHideAnimator.cancel();
             }
             mAutoHideAnimator = ObjectAnimator.ofInt(this, "offsetX", 0);
@@ -303,7 +303,7 @@ public class FastScroller {
             mAnimatingShow = true;
             mAutoHideAnimator.start();
         }
-        if (mAutoHideEnabled) {
+        if(mAutoHideEnabled) {
             postAutoHideDelayed();
         } else {
             cancelAutoHide();
@@ -311,14 +311,14 @@ public class FastScroller {
     }
 
     protected void postAutoHideDelayed() {
-        if (mRecyclerView != null) {
+        if(mRecyclerView != null) {
             cancelAutoHide();
             mRecyclerView.postDelayed(mHideRunnable, mAutoHideDelay);
         }
     }
 
     protected void cancelAutoHide() {
-        if (mRecyclerView != null) {
+        if(mRecyclerView != null) {
             mRecyclerView.removeCallbacks(mHideRunnable);
         }
     }
@@ -351,14 +351,14 @@ public class FastScroller {
 
     public void setAutoHideDelay(int hideDelay) {
         mAutoHideDelay = hideDelay;
-        if (mAutoHideEnabled) {
+        if(mAutoHideEnabled) {
             postAutoHideDelayed();
         }
     }
 
     public void setAutoHideEnabled(boolean autoHideEnabled) {
         mAutoHideEnabled = autoHideEnabled;
-        if (autoHideEnabled) {
+        if(autoHideEnabled) {
             postAutoHideDelayed();
         } else {
             cancelAutoHide();

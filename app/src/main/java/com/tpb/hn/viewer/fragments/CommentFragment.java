@@ -18,8 +18,8 @@ import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.data.Comment;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.viewer.FragmentPagerAdapter;
 import com.tpb.hn.network.Loader;
+import com.tpb.hn.viewer.FragmentPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

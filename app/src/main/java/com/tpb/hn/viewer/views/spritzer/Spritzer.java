@@ -175,7 +175,8 @@ public class Spritzer {
             final float pcDif = Math.abs((mCurWordIdx - mSeekBar.getProgress()) / (float) mWordQueue.size());
             if(pcDif > 0.01f) { //We don't want to be up
                 if(mSeekBar != null && !mJustJumped) mSeekBar.setProgress(mCurWordIdx);
-                if(mScrollView != null) mScrollView.smoothScrollBy(0, (int) (mScrollView.getChildAt(0).getHeight() * pcDif));
+                if(mScrollView != null)
+                    mScrollView.smoothScrollBy(0, (int) (mScrollView.getChildAt(0).getHeight() * pcDif));
             }
         }
     }
