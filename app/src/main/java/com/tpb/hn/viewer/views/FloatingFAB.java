@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by theo on 10/12/16.
@@ -53,9 +54,14 @@ public class FloatingFAB extends FloatingActionButton {
         getLocationOnScreen(location);
         final int offsetX = (location[0] - (int) getX());
         final int offsetY = (location[1] - (int) getY());
-
-        setX((int) movement.getRawX() - offsetX - getWidth() / 2);
-        setY((int) movement.getRawY() - offsetY - getHeight() / 2);
+        int newX = (int) movement.getRawX() - offsetX - getWidth() / 2;
+        int newY = (int) movement.getRawY() - offsetY - getHeight() / 2;
+        if(newX < 0) newX = 0;
+        if(newX > ((View) getParent()).getWidth() - getWidth()) newX = ((View) getParent()).getWidth() - getWidth();
+        if(newY < 0) newY = 0;
+        if(newY > ((View) getParent()).getHeight() - getHeight()) newY = ((View) getParent()).getHeight() - getHeight();
+        setX(newX);
+        setY(newY);
 
     }
 
