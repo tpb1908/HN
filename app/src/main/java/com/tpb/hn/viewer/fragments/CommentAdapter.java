@@ -280,7 +280,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
     class CommentHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.comment_card) CardView mCard;
-        @BindView(R.id.comment_title) TextView mTitle;
+        @BindView(R.id.comment_date) TextView mTitle;
         @BindView(R.id.comment_body) TextView mBody;
         @BindView(R.id.comment_color) FrameLayout mColorBar;
         @BindView(R.id.comment_padding) FrameLayout mPadding;
