@@ -57,7 +57,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     //Views
     private final Context mContext;
     private final Loader mLoader;
-    private final ContentManager mManager;
+    private final FeedManager mManager;
     private final RecyclerView mRecycler;
     private final SwipeRefreshLayout mSwiper;
     //Resources
@@ -83,7 +83,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private boolean mShouldMarkRead = false;
 
     public FeedAdapter(Context context,
-                       ContentManager manager,
+                       FeedManager manager,
                        RecyclerView recycler,
                        final LinearLayoutManager layoutManager,
                        final SwipeRefreshLayout swiper) {
@@ -112,7 +112,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 notifyDataSetChanged();
                 mManager.openUser(null); //Reload the user
             } else {
-                //TODO- Retry search
+                mManager.refresh();
             }
             if(mShouldScrollOnChange) mRecycler.scrollToPosition(0);
         });
@@ -544,7 +544,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     //<editor-fold-desc="Viewholder classes">
 
-    public interface ContentManager {
+    public interface FeedManager {
 
         void openItem(Item item);
 
@@ -553,6 +553,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         void openUser(Item item);
 
         void displayLastUpdate(long lastUpdate);
+
+        void refresh();
 
     }
 
