@@ -59,6 +59,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by theo on 17/10/16.
@@ -144,10 +145,10 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             ButterKnife.bind(this);
         }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) setupAppShortcuts();
-
         AdBlocker.init(getApplicationContext());
         AndroidNetworking.initialize(getApplicationContext());
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) setupAppShortcuts();
 
         setupSpinners();
 
@@ -155,50 +156,6 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         mAdapter = new FeedAdapter(getApplicationContext(), this, mRecycler, (LinearLayoutManager) mRecycler.getLayoutManager(), mRefreshSwiper);
         mRecycler.setAdapter(mAdapter);
         mVolumeNavigation = prefs.getVolumeNavigation();
-
-        mSearchButton.setOnClickListener((view) -> {
-            if(!mIsSearching) {
-                mIsSearching = true;
-                mSwitcher.showNext();
-                mSearchFilterHolder.setVisibility(View.VISIBLE);
-                mSearch.requestFocus();
-                Util.showKeyboard(this, mSearch);
-                mIsKeyboardOpen = true;
-                mSwitcher.setInAnimation(this, android.R.anim.fade_in);
-                mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
-            } else if(!mSearch.getText().toString().isEmpty()){
-                mAdapter.search(mSearch.getText().toString(), mFilterType, mFilterDateStart, mFilterDateEnd, mFilterSort);
-                mHasSearched = true;
-                //Perform search
-            }
-        });
-
-        mCloseSearchButton.setOnClickListener((view) -> {
-            mIsSearching = false;
-            mSearch.clearFocus();
-            if(mIsKeyboardOpen) {
-                Util.hideKeyboard(this, mSearch, new ResultReceiver(new Handler(Looper.getMainLooper())) {
-                    @Override
-                    protected void onReceiveResult(int resultCode, Bundle resultData) {
-                        super.onReceiveResult(resultCode, resultData);
-                        mIsKeyboardOpen = false;
-                        try {
-                            Thread.sleep(20);
-                        } catch(InterruptedException ignored) {
-                        } //~ 1 frame stops animation judder
-                        mSwitcher.showNext();
-                        mSearchFilterHolder.setVisibility(View.GONE);
-                        mSwitcher.setInAnimation(FeedActivity.this, R.anim.expand_horizontal);
-                        mSwitcher.setOutAnimation(FeedActivity.this, android.R.anim.fade_out);
-                    }
-                });
-            } else {
-                mSwitcher.showNext();
-                mSearchFilterHolder.setVisibility(View.GONE);
-                mSwitcher.setInAnimation(FeedActivity.this, R.anim.expand_horizontal);
-                mSwitcher.setOutAnimation(FeedActivity.this, android.R.anim.fade_out);
-            }
-        });
 
         mContentToolbar.setTitle("");
         setSupportActionBar(mContentToolbar);
@@ -235,6 +192,52 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
         }, 1000 * 60);
         checkThemeChange(false);
+    }
+
+    @OnClick(R.id.button_close_search)
+    void closeClick() {
+        mIsSearching = false;
+        mSearch.clearFocus();
+        if(mIsKeyboardOpen) {
+            Util.hideKeyboard(this, mSearch, new ResultReceiver(new Handler(Looper.getMainLooper())) {
+                @Override
+                protected void onReceiveResult(int resultCode, Bundle resultData) {
+                    super.onReceiveResult(resultCode, resultData);
+                    mIsKeyboardOpen = false;
+                    try {
+                        Thread.sleep(20);
+                    } catch(InterruptedException ignored) {
+                    } //~ 1 frame stops animation judder
+                    mSwitcher.showNext();
+                    mSearchFilterHolder.setVisibility(View.GONE);
+                    mSwitcher.setInAnimation(FeedActivity.this, R.anim.expand_horizontal);
+                    mSwitcher.setOutAnimation(FeedActivity.this, android.R.anim.fade_out);
+                }
+            });
+        } else {
+            mSwitcher.showNext();
+            mSearchFilterHolder.setVisibility(View.GONE);
+            mSwitcher.setInAnimation(FeedActivity.this, R.anim.expand_horizontal);
+            mSwitcher.setOutAnimation(FeedActivity.this, android.R.anim.fade_out);
+        }
+    }
+
+    @OnClick(R.id.button_search)
+    void searchClick() {
+        if(!mIsSearching) {
+            mIsSearching = true;
+            mSwitcher.showNext();
+            mSearchFilterHolder.setVisibility(View.VISIBLE);
+            mSearch.requestFocus();
+            Util.showKeyboard(this, mSearch);
+            mIsKeyboardOpen = true;
+            mSwitcher.setInAnimation(this, android.R.anim.fade_in);
+            mSwitcher.setOutAnimation(this, android.R.anim.fade_out);
+        } else if(!mSearch.getText().toString().isEmpty()){
+            mAdapter.search(mSearch.getText().toString(), mFilterType, mFilterDateStart, mFilterDateEnd, mFilterSort);
+            mHasSearched = true;
+            //Perform search
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.N_MR1)
