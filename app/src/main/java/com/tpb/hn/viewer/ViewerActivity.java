@@ -21,15 +21,15 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
-import com.tpb.hn.feed.FeedActivity;
 import com.tpb.hn.data.Item;
-import com.tpb.hn.viewer.fragments.CommentAdapter;
-import com.tpb.hn.viewer.views.LockableViewPager;
+import com.tpb.hn.feed.FeedActivity;
 import com.tpb.hn.helpers.APIPaths;
 import com.tpb.hn.helpers.AdBlocker;
 import com.tpb.hn.network.Loader;
 import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserActivity;
+import com.tpb.hn.viewer.fragments.CommentAdapter;
+import com.tpb.hn.viewer.views.LockableViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,16 +101,16 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
             final String data = launchIntent.getDataString();
             Loader.getInstance(this).loadItem(APIPaths.parseItemUrl(data), this);
         } else {
-            if(UserActivity.mLaunchItem != null && UserActivity.mLaunchItem.isComment() && FeedActivity.mLaunchItem == null) {
-                loadCommentParent(UserActivity.mLaunchItem);
+            final String launchActivity  = launchIntent.getStringExtra("launcher");
+            if(FeedActivity.class.getSimpleName().equals(launchActivity)) {
+                mLaunchItem = FeedActivity.mLaunchItem;
+            } else {
+                mLaunchItem = UserActivity.mLaunchItem;
+            }
+            if(mLaunchItem.isComment()) {
+                loadCommentParent(mLaunchItem);
                 Toast.makeText(getApplicationContext(), R.string.text_traversing_comments, Toast.LENGTH_LONG).show();
             } else {
-                if(FeedActivity.mLaunchItem != null) {
-                    mLaunchItem = FeedActivity.mLaunchItem;
-                    FeedActivity.mLaunchItem = null;
-                } else {
-                    mLaunchItem = UserActivity.mLaunchItem;
-                }
                 mRootItem = mLaunchItem;
                 setupFragments(prefs.getPageTypes(), mLaunchItem);
                 setTitle(mLaunchItem);
@@ -131,10 +131,11 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
     @Override
     public void openUser(Item item) {
         mLaunchItem = item;
-        startActivity(new Intent(ViewerActivity.this, UserActivity.class),
-                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                        Pair.create(mBackButton, "button"),
-                        Pair.create(mStoryAppbar, "appbar")).toBundle());
+        final Intent i = new Intent(ViewerActivity.this, UserActivity.class);
+        i.putExtra("launcher", TAG);
+        startActivity(i, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                Pair.create(mBackButton, "button"),
+                Pair.create(mStoryAppbar, "appbar")).toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
 

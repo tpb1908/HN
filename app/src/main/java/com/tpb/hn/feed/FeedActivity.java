@@ -489,7 +489,9 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     @Override
     public void openItem(Item item, FragmentPagerAdapter.PageType type) {
         final Intent i = new Intent(FeedActivity.this, ViewerActivity.class);
+        Log.i(TAG, "openItem: isComment " + item.isComment());
         mLaunchItem = item;
+        i.putExtra("launcher", TAG);
         i.putExtra("type", type);
         startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
@@ -501,6 +503,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.Conte
     public void openUser(Item item) {
         mLaunchItem = item;
         final Intent i = new Intent(FeedActivity.this, UserActivity.class);
+        i.putExtra("launcher", TAG);
         startActivity(i, getSharedTransition().toBundle());
         overridePendingTransition(R.anim.slide_up, R.anim.none);
     }
