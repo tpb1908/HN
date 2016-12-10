@@ -2,6 +2,7 @@ package com.tpb.hn.feed;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -340,7 +341,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         mLoader.loadItems(Arrays.copyOfRange(ids, currentPos, Math.min(currentPos + 10, ids.length)), false, this);
         notifyDataSetChanged();
         mSwiper.setRefreshing(false);
-        beginBackgroundLoading();
+        new Handler().postDelayed(this::beginBackgroundLoading, 600);
         //Id loading will only happen once each time the mData is to be set
     }
 
