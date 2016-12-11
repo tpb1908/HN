@@ -18,10 +18,10 @@ public class FloatingFAB extends FloatingActionButton {
     private static final String TAG = FloatingFAB.class.getSimpleName();
 
     private float mInitialX, mInitialY, mLastDifY;
-    private boolean mIsDragging = false;
     private float mAcceleration = 1f;
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private FloatingFABListener listener;
+    private FloatingFABState mState = FloatingFABState.DOWN;
 
     public FloatingFAB(Context context) {
         super(context);
@@ -58,33 +58,31 @@ public class FloatingFAB extends FloatingActionButton {
             case MotionEvent.ACTION_DOWN:
                 mInitialX = ev.getRawX();
                 mInitialY = ev.getRawY();
-                if(listener != null) listener.fabDown();
+                if(listener != null) listener.fabDown(mState);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 moveToPosition(ev);
                 final float dify = (ev.getRawY() - mInitialY)/((View) getParent()).getHeight();
                 if(dify > 0 && mLastDifY < 0) {
                     setImageResource(R.drawable.ic_arrow_downward);
+                    mState = FloatingFABState.DOWN;
                     mAcceleration = 1f;
                 } else if(dify < 0 && mLastDifY > 0) {
                     setImageResource(R.drawable.ic_arrow_upward);
+                    mState = FloatingFABState.UP;
                     mAcceleration = 1f;
                 }
                 if(Math.abs(dify-mLastDifY) > 0.1f || mLastDifY == 0) {
-                    mIsDragging = true;
                     mLastDifY = dify;
                     if(listener != null) {
                         mUiHandler.post(drag);
-                    } else {
-                        mIsDragging = false;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 mUiHandler.removeCallbacks(drag);
                 mAcceleration = 1f;
-                if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f && listener != null) listener.fabUp();
-                mIsDragging = false;
+                if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f && listener != null) listener.fabUp(mState);
                 return true;
         }
         return super.onTouchEvent(ev);
@@ -111,11 +109,17 @@ public class FloatingFAB extends FloatingActionButton {
 
     public interface FloatingFABListener {
 
-        void fabDown();
+        void fabDown(FloatingFABState state);
 
-        void fabUp();
+        void fabUp(FloatingFABState state);
 
         void fabDrag(float velocitypc);
+
+    }
+
+    public enum FloatingFABState {
+
+        UP, DOWN
 
     }
 

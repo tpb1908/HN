@@ -269,12 +269,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
     @Override
-    public void fabDown() {
+    public void fabDown(FloatingFAB.FloatingFABState state) {
     }
 
     @Override
-    public void fabUp() {
-        scrollDown();
+    public void fabUp(FloatingFAB.FloatingFABState state) {
+        if(state == FloatingFAB.FloatingFABState.UP) {
+            scrollUp();
+        } else {
+            scrollDown();
+        }
     }
 
     @Override
