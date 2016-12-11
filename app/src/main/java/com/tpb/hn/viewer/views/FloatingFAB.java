@@ -17,7 +17,7 @@ import com.tpb.hn.R;
 public class FloatingFAB extends FloatingActionButton {
     private static final String TAG = FloatingFAB.class.getSimpleName();
 
-    private float mInitialX, mInitialY, mLastDifY;
+    private float mInitialX, mInitialY, mLastdypc;
     private float mAcceleration = 1f;
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private FloatingFABListener mListener;
@@ -49,7 +49,7 @@ public class FloatingFAB extends FloatingActionButton {
     private Runnable drag = new Runnable() {
         @Override
         public void run() {
-            mListener.fabDrag(mLastDifY * mAcceleration);
+            mListener.fabDrag(mLastdypc * mAcceleration);
             if(getY() >= ((View) getParent()).getHeight() - getHeight() || getY() <= getHeight()/2) {
                 mAcceleration  = Math.max(mAcceleration + 0.1f, 2f);
             } else {
@@ -80,19 +80,19 @@ public class FloatingFAB extends FloatingActionButton {
                 return true;
             case MotionEvent.ACTION_MOVE:
                 moveToPosition(ev);
-                final float dy = (ev.getRawY() - mInitialY)/parentHeight;
-                if(dy > 0 && (mLastDifY < 0 || !mInDragRange)) {
+                final float dypc = (ev.getRawY() - mInitialY)/parentHeight;
+                if(dypc > 0 && (mLastdypc < 0 || !mInDragRange)) {
                     setImageResource(R.drawable.ic_arrow_downward);
                     mState = FloatingFABState.DOWN;
                     mAcceleration = 1f;
-                } else if(dy < 0 && (mLastDifY > 0 || !mInDragRange)) {
+                } else if(dypc < 0 && (mLastdypc > 0 || !mInDragRange)) {
                     setImageResource(R.drawable.ic_arrow_upward);
                     mState = FloatingFABState.UP;
                     mAcceleration = 1f;
                 }
                 if((getY() < parentHeight/3 || getY() > parentHeight - parentHeight/3)) {
-                    if((Math.abs(dy-mLastDifY) > 0.05f || mLastDifY == 0)) {
-                        mLastDifY = dy;
+                    if((Math.abs(dypc- mLastdypc) > 0.05f || mLastdypc == 0)) {
+                        mLastdypc = dypc;
                         mInDragRange = true;
                         mListener.fabLongPressUp(mState);
                         mUiHandler.removeCallbacks(longPress);
@@ -112,6 +112,12 @@ public class FloatingFAB extends FloatingActionButton {
                     mLongPress = false;
                 } else if(Math.abs((ev.getRawY() - mInitialY))/parentHeight < 0.05f) {
                     mListener.fabUp(mState);
+                }
+                if(!mInDragRange) {
+                    mUiHandler.postDelayed(() ->   setImageResource(mState == FloatingFABState.DOWN ?
+                            R.drawable.ic_arrow_downward : R.drawable.ic_arrow_upward),
+                            400);
+
                 }
                 mAcceleration = 1f;
 
