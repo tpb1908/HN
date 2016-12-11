@@ -77,14 +77,21 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </com.tpb.hn.viewer.views.LockableViewPager>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/item_fab"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="invisible"
         app:layout_anchor="@id/item_viewpager"
-        app:layout_anchorGravity="bottom|right"/>
+        app:layout_anchorGravity="bottom|right">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/item_fab"
+            android:transitionName="fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            />
+
+    </FrameLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -57,7 +57,6 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
     private Item mRootItem;
     private FragmentPagerAdapter mAdapter;
     private int originalFlags;
-    private boolean mShouldShowFab = false;
     private int mOpenedCommentId;
 
     @OnClick(R.id.item_back_button)
@@ -140,7 +139,7 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
     }
 
     public void showFab() {
-        if(mShouldShowFab) mFab.show();
+        mFab.show();
     }
 
     public void hideFab() {
@@ -180,10 +179,6 @@ public class ViewerActivity extends AppCompatActivity implements Loader.ItemLoad
             finish();
         } else {
             super.onResume();
-            mFab.postDelayed(() -> {
-                mShouldShowFab = true;
-                showFab();
-            }, 300);
             mTracker.setScreenName(TAG);
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }

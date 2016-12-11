@@ -595,10 +595,17 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
     }
 
     private ActivityOptionsCompat getSharedTransition() {
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                Pair.create(mIsSearching ? mCloseSearchButton : mNavSpinner, "button"),
-                Pair.create(mAppBar, "appbar")
-        );
+        return SharedPrefsController.getInstance(this).getShowFloatingFAB() ?
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        Pair.create(mIsSearching ? mCloseSearchButton : mNavSpinner, "button"),
+                        Pair.create(mAppBar, "appbar"),
+                        Pair.create(mFFAB, "fab")
+                ) :
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        Pair.create(mIsSearching ? mCloseSearchButton : mNavSpinner, "button"),
+                        Pair.create(mAppBar, "appbar")
+                );
+
     }
 
     public enum Section {
