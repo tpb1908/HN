@@ -117,7 +117,7 @@ public class SharedPrefsController {
         skimmerTextBody = prefs.getBoolean(KEY_SKIMMER_BODY, true);
         commentVolumeNavigation = prefs.getBoolean(KEY_COMMENT_VOLUME_NAVIGATION, false);
         commentChildCount = prefs.getBoolean(KEY_COMMENT_CHILDREN, true);
-        shouldBlockAds = prefs.getBoolean(KEY_FLOATING_FAB, false);
+        showFloatingFAB = prefs.getBoolean(KEY_FLOATING_FAB, false);
     }
 
     private void initInitialValues() {
