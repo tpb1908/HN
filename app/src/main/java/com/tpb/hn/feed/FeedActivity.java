@@ -538,6 +538,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         mVolumeNavigation = SharedPrefsController.getInstance(this).getVolumeNavigation();
         new Handler().postDelayed(() -> {
             if(SharedPrefsController.getInstance(this).getShowFloatingFAB()) {
+                mFFAB.setAlpha(1.0f);
                 mFFAB.show();
             } else {
                 mFFAB.hide();
