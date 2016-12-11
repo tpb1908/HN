@@ -160,6 +160,21 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
 
         mFFAB.setListener(mAdapter);
         mFFAB.setVisibility(prefs.getShowFloatingFAB() ? View.VISIBLE : View.INVISIBLE);
+        if(prefs.getShowFloatingFAB()) {
+            mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                boolean scrollingDown;
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    if(scrollingDown != dy > 0) {
+                        scrollingDown = dy > 0;
+                        mFFAB.setState(scrollingDown ? FloatingFAB.FloatingFABState.DOWN : FloatingFAB.FloatingFABState.UP);
+                    }
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+
+            });
+        }
 
         mVolumeNavigation = prefs.getVolumeNavigation();
 
