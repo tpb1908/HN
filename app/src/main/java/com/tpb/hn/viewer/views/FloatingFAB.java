@@ -95,6 +95,7 @@ public class FloatingFAB extends FloatingActionButton {
                 mUiHandler.removeCallbacks(drag);
                 if(mLongPress) {
                     mListener.fabLongPressUp(mState);
+                    mLongPress = false;
                 } else if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f) {
                     mListener.fabUp(mState);
                 }
