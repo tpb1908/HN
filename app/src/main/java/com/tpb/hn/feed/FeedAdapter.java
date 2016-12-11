@@ -63,6 +63,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     private final FeedManager mManager;
     private final RecyclerView mRecycler;
     private final SwipeRefreshLayout mSwiper;
+    private Handler mLongPressHandler = new Handler();
     //Resources
     @BindColor(R.color.colorPrimaryText) int lightText;
     @BindColor(R.color.colorPrimaryTextInverse) int darkText;
@@ -268,6 +269,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         mRecycler.smoothScrollToPosition(Math.max(currentPos - height, 0));
     }
 
+
     @Override
     public void fabDown(FloatingFAB.FloatingFABState state) {
     }
@@ -286,6 +288,31 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         final int height = mRecycler.getHeight();
         final float scroll = 0.2f * velocitypc * height;
         mRecycler.smoothScrollBy(0, (int) scroll);
+    }
+
+    @Override
+    public void fabLongPressDown(final FloatingFAB.FloatingFABState state) {
+
+        mLongPressHandler.post(new Runnable() {
+            float acceleration = 1f;
+            @Override
+            public void run() {
+                if(state == FloatingFAB.FloatingFABState.UP) {
+                    final float scroll = -0.01f * acceleration * mRecycler.getHeight();
+                    mRecycler.smoothScrollBy(0, (int) scroll);
+                } else {
+                    final float scroll = 0.01f * acceleration * mRecycler.getHeight();
+                    mRecycler.smoothScrollBy(0, (int) scroll);
+                }
+                acceleration = Math.min(acceleration + 0.2f, 10f);
+                mLongPressHandler.postDelayed(this, 43);
+            }
+        });
+    }
+
+    @Override
+    public void fabLongPressUp(FloatingFAB.FloatingFABState state) {
+        mLongPressHandler.removeCallbacksAndMessages(null); //Remove all
     }
 
     @NonNull
