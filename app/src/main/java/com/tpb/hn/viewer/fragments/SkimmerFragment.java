@@ -112,7 +112,7 @@ public class SkimmerFragment extends LoadingFragment implements Loader.ItemLoade
     @Override
     void bindData() {
         mSwiper.setRefreshing(false);
-        mArticle = Html.fromHtml(mArticle).toString().replace("\n", " ");
+        mArticle = Html.fromHtml(mArticle).toString();
         if(mBodyEnabled) mTextBody.setText(mArticle);
         setupSkimmer();
     }
