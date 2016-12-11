@@ -305,7 +305,7 @@ public class Spritzer {
     private void printWord(String word) {
         int startSpan;
         int endSpan;
-        word = word.trim();
+        word = word.trim().replace("\n", "");
         if(VERBOSE) Log.i(TAG + word.length(), word);
         if(word.length() == 1) {
             StringBuilder builder = new StringBuilder();
@@ -333,8 +333,8 @@ public class Spritzer {
             endSpan = startSpan + 1;
         }
 
-        Spannable spanRange = new SpannableString(word);
-        TextAppearanceSpan tas = new TextAppearanceSpan(mTarget.getContext(), R.style.PivotLetter);
+        final Spannable spanRange = new SpannableString(word);
+        final TextAppearanceSpan tas = new TextAppearanceSpan(mTarget.getContext(), R.style.PivotLetter);
         spanRange.setSpan(tas, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTarget.setText(spanRange);
     }

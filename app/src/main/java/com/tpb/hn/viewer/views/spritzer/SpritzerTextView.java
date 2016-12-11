@@ -150,12 +150,9 @@ public class SpritzerTextView extends TextView implements View.OnClickListener {
                 .negativeText(android.R.string.cancel)
                 .show();
 
-        text.setListener(new ClickableTextView.OnSpanClickListener() {
-            @Override
-            public void spanClicked(int pos) {
-                mSpritzer.setPosition(pos);
-                dialog.dismiss();
-            }
+        text.setListener(pos -> {
+            mSpritzer.setPosition(pos);
+            dialog.dismiss();
         });
     }
 
