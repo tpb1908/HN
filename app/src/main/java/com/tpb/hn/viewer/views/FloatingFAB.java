@@ -23,6 +23,7 @@ public class FloatingFAB extends FloatingActionButton {
     private FloatingFABListener mListener;
     private FloatingFABState mState = FloatingFABState.DOWN;
     private boolean mLongPress = false;
+    private boolean mInDragRange = false;
 
     public FloatingFAB(Context context) {
         super(context);
@@ -38,6 +39,11 @@ public class FloatingFAB extends FloatingActionButton {
 
     public void setListener(FloatingFABListener listener) {
         this.mListener = listener;
+    }
+
+    public void setState(FloatingFABState state) {
+        mState = state;
+        setImageResource(mState == FloatingFABState.DOWN ? R.drawable.ic_arrow_downward : R.drawable.ic_arrow_upward);
     }
 
     private Runnable drag = new Runnable() {
@@ -64,6 +70,7 @@ public class FloatingFAB extends FloatingActionButton {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if(mListener == null) return super.onTouchEvent(ev);
+        final float parentHeight = ((View) getParent()).getHeight();
         switch(ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mInitialX = ev.getRawX();
@@ -73,21 +80,28 @@ public class FloatingFAB extends FloatingActionButton {
                 return true;
             case MotionEvent.ACTION_MOVE:
                 moveToPosition(ev);
-                final float dy = (ev.getRawY() - mInitialY)/((View) getParent()).getHeight();
-                if(dy > 0 && mLastDifY < 0) {
+                final float dy = (ev.getRawY() - mInitialY)/parentHeight;
+                if(dy > 0 && (mLastDifY < 0 || !mInDragRange)) {
                     setImageResource(R.drawable.ic_arrow_downward);
                     mState = FloatingFABState.DOWN;
                     mAcceleration = 1f;
-                } else if(dy < 0 && mLastDifY > 0) {
+                } else if(dy < 0 && (mLastDifY > 0 || !mInDragRange)) {
                     setImageResource(R.drawable.ic_arrow_upward);
                     mState = FloatingFABState.UP;
                     mAcceleration = 1f;
                 }
-                if(Math.abs(dy-mLastDifY) > 0.05f || mLastDifY == 0) {
-                    mLastDifY = dy;
-                    mListener.fabLongPressUp(mState);
-                    mUiHandler.removeCallbacks(longPress);
-                    mUiHandler.post(drag);
+                if((getY() < parentHeight/3 || getY() > parentHeight - parentHeight/3)) {
+                    if((Math.abs(dy-mLastDifY) > 0.05f || mLastDifY == 0)) {
+                        mLastDifY = dy;
+                        mInDragRange = true;
+                        mListener.fabLongPressUp(mState);
+                        mUiHandler.removeCallbacks(longPress);
+                        mUiHandler.post(drag);
+                    }
+                } else {
+                    setImageResource(R.drawable.ic_close);
+                    mUiHandler.removeCallbacks(drag);
+                    mInDragRange = false;
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -96,7 +110,7 @@ public class FloatingFAB extends FloatingActionButton {
                 if(mLongPress) {
                     mListener.fabLongPressUp(mState);
                     mLongPress = false;
-                } else if(Math.abs((ev.getRawY() - mInitialY))/((View) getParent()).getHeight() < 0.05f) {
+                } else if(Math.abs((ev.getRawY() - mInitialY))/parentHeight < 0.05f) {
                     mListener.fabUp(mState);
                 }
                 mAcceleration = 1f;
@@ -105,8 +119,6 @@ public class FloatingFAB extends FloatingActionButton {
         }
         return super.onTouchEvent(ev);
     }
-
-
 
     private void moveToPosition(MotionEvent movement) {
         final int[] location = new int[2];
