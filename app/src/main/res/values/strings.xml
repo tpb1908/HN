@@ -116,6 +116,7 @@
         ]]>
     </string>
 
+    <string name="pref_theme_toolbar_bottom">THEME_T_B</string>
     <string name="pref_viewer_pages">VIEWER_PS</string>
     <string name="pref_viewer_sheet">VIEWER_S</string>
     <string name="pref_data_ad_block">DATA_AD_B</string>
@@ -136,10 +137,10 @@
     <string name="pref_comments_font">COMMENTS_F</string>
     <string name="pref_comments_font_size">COMMENTS_F_S</string>
     <string name="pref_comments_line_spacing">COMMENTS_L_S</string>
-    <string name="pref_comments_volume_nav">COMMENTS_V_N</string>
+    <string name="pref_comments_volume_navigation">COMMENTS_V_N</string>
     <string name="pref_comments_floating_fab">COMMENTS_F_F</string>
     <string name="pref_comments_child_count">COMMENTS_C_C</string>
-    <string name="pref_comments_line_count">COMMENTS_L_C</string>
+    <string name="pref_comments_shorten_long_comments">COMMENTS_S_L_C</string>
     <string name="pref_feed_cards">FEED_C</string>
     <string name="pref_feed_default_state">FEED_D_S</string>
     <string name="pref_feed_font">FEED_F</string>
@@ -151,6 +152,7 @@
     <string name="pref_feed_scroll_bar">FEED_S_B</string>
     <string name="pref_feed_fast_scrolling_bar">FEED_F_S_B</string>
     <string name="pref_feed_floating_fab">FEED_F_F</string>
+    <string name="pref_feed_mark_new">FEED_M_N</string>
 
 
 </resources>

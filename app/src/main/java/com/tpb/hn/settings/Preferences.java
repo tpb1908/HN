@@ -1,7 +1,10 @@
 package com.tpb.hn.settings;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 
+import com.tpb.hn.R;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
 
 /**
@@ -73,15 +76,15 @@ public class Preferences {
     }
 
     public static boolean shouldShowViewerInSheet(Context context) {
-        return false;
+        return getBool(context, R.string.pref_viewer_sheet, false);
     }
 
     public static boolean shouldBlockAds(Context context) {
-        return false;
+        return getBool(context, R.string.pref_data_ad_block, true);
     }
 
     public static boolean shouldLoadInBackground(Context context) {
-        return false;
+        return getBool(context, R.string.text_load_in_background, true);
     }
 
     public static int getSkimmerSpeed(Context context) {
@@ -89,11 +92,11 @@ public class Preferences {
     }
 
     public static boolean shouldShowSkimmerSeekbarHint(Context context) {
-        return false;
+        return getBool(context, R.string.pref_skimmer_seekbar_hint, false);
     }
 
     public static boolean shouldShowSkimmerParsedText(Context context) {
-        return false;
+        return getBool(context, R.string.pref_skimmer_parsed_text, true);
     }
 
     //TODO fonts, sizes, and line spacing
@@ -103,85 +106,90 @@ public class Preferences {
     }
 
     public static boolean shouldHideNavigationInBrowserFullscreen(Context context) {
-        return false;
+        return getBool(context, R.string.text_hide_navigation_fullscreen, false);
     }
 
     public static boolean isLazyLoadEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_browser_lazy, false);
     }
 
     public static boolean shouldRedirectThroughService(Context context) {
-        return false;
+        return getBool(context, R.string.pref_browser_redirect, true);
     }
 
     public static boolean isHorizontalBrowserScrollingLocked(Context context) {
-        return false;
+        return getBool(context, R.string.pref_browser_horizontal_scrolling, false);
     }
 
     public static boolean shouldDisplayCommentsAsCards(Context context) {
-        return false;
+        return getBool(context, R.string.pref_comments_cards, true);
     }
 
     public static boolean shouldExpandCommentTrees(Context context) {
-        return false;
+        return getBool(context, R.string.text_expand_comments, true);
     }
 
     //TODO fonts, sizes, and line spacing
 
     public static boolean isCommentVolumeNavigationEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_comments_volume_navigation, false);
     }
 
     public static boolean isCommentFloatingFABEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_comments_floating_fab, false);
     }
 
     public static boolean shouldShowCommentChildCount(Context context) {
-        return false;
+        return getBool(context, R.string.pref_comments_child_count, true);
     }
 
     public static boolean shouldShortenLongComments(Context context) {
-        return false;
+        return getBool(context, R.string.pref_comments_shorten_long_comments, false);
     }
 
     public static boolean shouldDisplayFeedAsCards(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_cards, true);
     }
 
     //TODO fonts, sizes, and line spacing
 
     public static boolean shouldMarkNewItems(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_mark_new, true);
     }
 
     public static boolean shouldMarkReadWhenPassed(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_mark_read, false);
     }
 
     public static boolean shouldScrollToTopOnRefresh(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_scroll_to_top, true);
     }
 
     public static boolean isFeedCommentVolumeNavigationEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_volume_navigation, false);
     }
 
     public static boolean shouldShowFeedScrollbar(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_scroll_bar, true);
     }
 
     public static boolean isFeedFastScrollingEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_fast_scrolling_bar, true);
     }
 
     public static boolean isFeedFloatingFABEnabled(Context context) {
-        return false;
+        return getBool(context, R.string.pref_feed_floating_fab, false);
     }
     
     //TODO Colour scheme
     
     public static boolean shouldDisplayToolbarOnBottom(Context context) {
-        return false;
+        return getBool(context, R.string.pref_theme_toolbar_bottom, false);
+    }
+
+    private static boolean getBool(Context context, @StringRes int resId, boolean defaultVal) {
+        return PreferenceManager.getDefaultSharedPreferences(context).
+                getBoolean(context.getString(resId), defaultVal);
     }
 
 
