@@ -70,6 +70,8 @@ public class Preferences {
 
     private Preferences() {
     }
+    
+
 
     public static FragmentPagerAdapter.PageType getViewerPages(Context context) {
         return null;
@@ -187,39 +189,48 @@ public class Preferences {
         return getBool(context, R.string.pref_theme_toolbar_bottom, false);
     }
 
-    private static boolean getBool(Context context, @StringRes int resId, boolean defaultVal) {
+    private static boolean getBool(Context context, @StringRes int keyId, boolean defaultVal) {
         return PreferenceManager.getDefaultSharedPreferences(context).
-                getBoolean(context.getString(resId), defaultVal);
+                getBoolean(context.getString(keyId), defaultVal);
     }
 
+    private static String getString(Context context, @StringRes int keyId, String defaultVal) {
+        return  PreferenceManager.getDefaultSharedPreferences(context).
+                getString(context.getString(keyId), defaultVal);
+    }
+    
+    private static int getInt(Context context, @StringRes int keyId, int defaultVal) {
+        return PreferenceManager.getDefaultSharedPreferences(context).
+                getInt(context.getString(keyId), defaultVal);
+    }
 
 
     public static void setViewerPages(Context context) {
         
     }
 
-    public static void setShouldShowViewerInSheet(Context context) {
-        
+    public static void setShouldShowViewerInSheet(Context context, boolean show) {
+        setBool(context, R.string.pref_viewer_sheet, show);
     }
 
-    public static void setShouldBlockAds(Context context) {
-        
+    public static void setShouldBlockAds(Context context, boolean block) {
+        setBool(context, R.string.pref_data_ad_block, block);
     }
 
-    public static void setShouldLoadInBackground(Context context) {
-        
+    public static void setShouldLoadInBackground(Context context, boolean background) {
+        setBool(context, R.string.pref_data_bg_loading, background);
     }
 
-    public static void setSkimmerSpeed(Context context) {
-        
+    public static void setSkimmerSpeed(Context context, int value) {
+        setInt(context, R.string.pref_skimmer_speed, value);
     }
 
-    public static void setShouldShowSkimmerSeekbarHvoid(Context context) {
-        
+    public static void setShouldShowSkimmerSeekbarHvoid(Context context, boolean show) {
+        setBool(context, R.string.pref_skimmer_seekbar_hint, show);
     }
 
-    public static void setShouldShowSkimmerParsedText(Context context) {
-        
+    public static void setShouldShowSkimmerParsedText(Context context, boolean show) {
+        setBool(context, R.string.pref_skimmer_parsed_text, show);
     }
 
     //TODO fonts, sizes, and line spacing
@@ -228,87 +239,107 @@ public class Preferences {
         
     }
 
-    public static void setShouldHideNavigationInBrowserFullscreen(Context context) {
-        
+    public static void setShouldHideNavigationInBrowserFullscreen(Context context, boolean hide) {
+        setBool(context, R.string.text_hide_navigation_fullscreen, hide);
     }
 
-    public static void setLazyLoadEnabled(Context context) {
-        
+    public static void setLazyLoadEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_browser_lazy, enabled);
     }
 
-    public static void setShouldRedirectThroughService(Context context) {
-        
+    public static void setShouldRedirectThroughService(Context context, boolean redirect) {
+        setBool(context, R.string.pref_browser_redirect, redirect);
     }
 
-    public static void setHorizontalBrowserScrollingLocked(Context context) {
-        
+    public static void setHorizontalBrowserScrollingLocked(Context context, boolean lock) {
+        setBool(context, R.string.pref_browser_redirect, lock);
     }
 
-    public static void setShouldDsetplayCommentsAsCards(Context context) {
-        
+    public static void setShouldDisplayCommentsAsCards(Context context, boolean cards) {
+        setBool(context, R.string.pref_comments_cards, cards);
     }
 
-    public static void setShouldExpandCommentTrees(Context context) {
-        
-    }
-
-    //TODO fonts, sizes, and line spacing
-
-    public static void setCommentVolumeNavigationEnabled(Context context) {
-        
-    }
-
-    public static void setCommentFloatingFABEnabled(Context context) {
-        
-    }
-
-    public static void setShouldShowCommentChildCount(Context context) {
-        
-    }
-
-    public static void setShouldShortenLongComments(Context context) {
-        
-    }
-
-    public static void setShouldDsetplayFeedAsCards(Context context) {
-        
+    public static void setShouldExpandCommentTrees(Context context, boolean expand) {
+        setBool(context, R.string.text_expand_comments, expand);
     }
 
     //TODO fonts, sizes, and line spacing
 
-    public static void setShouldMarkNewItems(Context context) {
-        
+    public static void setCommentVolumeNavigationEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_comments_volume_navigation, enabled);
     }
 
-    public static void setShouldMarkReadWhenPassed(Context context) {
-        
+    public static void setCommentFloatingFABEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_comments_floating_fab, enabled);
     }
 
-    public static void setShouldScrollToTopOnRefresh(Context context) {
-        
+    public static void setShouldShowCommentChildCount(Context context, boolean show) {
+        setBool(context, R.string.pref_comments_child_count, show);
     }
 
-    public static void setFeedCommentVolumeNavigationEnabled(Context context) {
-        
+    public static void setShouldShortenLongComments(Context context, boolean shorten) {
+        setBool(context, R.string.pref_comments_shorten_long_comments, shorten);
     }
 
-    public static void setShouldShowFeedScrollbar(Context context) {
-        
+    public static void setShouldDsetplayFeedAsCards(Context context, boolean cards) {
+        setBool(context, R.string.pref_feed_cards, cards);
     }
 
-    public static void setFeedFastScrollingEnabled(Context context) {
-        
+    //TODO fonts, sizes, and line spacing
+
+    public static void setShouldMarkNewItems(Context context, boolean mark) {
+        setBool(context, R.string.pref_feed_mark_new, mark);
     }
 
-    public static void setFeedFloatingFABEnabled(Context context) {
-        
+    public static void setShouldMarkReadWhenPassed(Context context, boolean mark) {
+        setBool(context, R.string.pref_feed_mark_read, mark);
+    }
+
+    public static void setShouldScrollToTopOnRefresh(Context context, boolean scroll) {
+        setBool(context, R.string.pref_feed_scroll_to_top, scroll);
+    }
+
+    public static void setFeedCommentVolumeNavigationEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_feed_volume_navigation, enabled);
+    }
+
+    public static void setShouldShowFeedScrollbar(Context context, boolean show) {
+        setBool(context, R.string.pref_feed_scroll_bar, show);
+    }
+
+    public static void setFeedFastScrollingEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_feed_fast_scrolling_bar, enabled);
+    }
+
+    public static void setFeedFloatingFABEnabled(Context context, boolean enabled) {
+        setBool(context, R.string.pref_feed_floating_fab, enabled);
     }
 
     //TODO Colour scheme
 
-    public static void setShouldDisplayToolbarOnBottom(Context context) {
-        
+    public static void setShouldDisplayToolbarOnBottom(Context context, boolean bottom) {
+        setBool(context, R.string.pref_theme_toolbar_bottom, bottom);
     }
-    
+
+    private static void setBool(Context context, @StringRes int keyId, boolean value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(context.getString(keyId), value)
+                .apply();
+    }
+
+    private static void setString(Context context, @StringRes int keyId, String value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(context.getString(keyId), value)
+                .apply();
+    }
+
+    private static void setInt(Context context, @StringRes int keyId, int value) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(context.getString(keyId), value)
+                .apply();
+    }
 
 }
