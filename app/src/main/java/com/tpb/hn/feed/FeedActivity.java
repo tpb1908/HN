@@ -46,6 +46,8 @@ import com.tpb.hn.helpers.AdBlocker;
 import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Login;
+import com.tpb.hn.settings.FeedSettingsActivity;
+import com.tpb.hn.settings.Preferences;
 import com.tpb.hn.settings.SettingsActivity;
 import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserActivity;
@@ -110,6 +112,10 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
+
+        new Preferences(this, key -> Log.i(TAG, "preferenceChanged: " + getString(key)), R.string.pref_feed_floating_fab, R.string.pref_feed_scroll_bar);
+        new Handler().postDelayed(() -> Preferences.setFeedFloatingFABEnabled(FeedActivity.this, true), 1000);
+
 
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
 
@@ -213,6 +219,7 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
         }, 1000 * 60);
         checkThemeChange(false);
+
     }
 
     @Override
@@ -510,15 +517,19 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_content, menu);
+        getMenuInflater().inflate(R.menu.menu_feed, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivityForResult(new Intent(FeedActivity.this, SettingsActivity.class),
-                1,
-                getSharedTransition().toBundle());
+        if(item.getItemId() == R.id.action_settings) {
+            startActivityForResult(new Intent(FeedActivity.this, SettingsActivity.class),
+                    1,
+                    getSharedTransition().toBundle());
+        } else {
+            startActivity(new Intent(FeedActivity.this, FeedSettingsActivity.class));
+        }
         return true;
     }
 

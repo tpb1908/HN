@@ -63,6 +63,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".settings.FeedSettingsActivity"
+            android:theme="@style/AppTheme.Translucent">
+
+        </activity>
+
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"

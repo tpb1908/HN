@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <Switch
+        android:id="@+id/switch_feed_cards"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_content_cards"
+        android:onClick="onToggleClick"
+        />
+
+    <!-- Spinner for default state -->
+
+    <!-- Spinner for font -->
+
+    <!-- Spinner for font size -->
+
+    <!-- Spinner for line spacing -->
+
+    <Switch
+        android:id="@+id/switch_feed_mark_read"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_mark_when_passed"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_mark_new"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_mark_new_items"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_scroll_to_top"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_scroll_to_top"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_volume_navigation"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_volume_navigation"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_scroll_bar"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_scrollbar"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_fast_scrolling_bar"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_fast_scroll"
+        android:onClick="onToggleClick"
+        />
+
+    <Switch
+        android:id="@+id/switch_feed_floating_fab"
+        style="@style/PreferenceSwitchStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_floating_fab"
+        android:onClick="onToggleClick"
+
+        />
+
+</LinearLayout>
