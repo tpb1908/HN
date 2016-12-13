@@ -1,77 +1,56 @@
 package com.tpb.hn.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Log;
 
+import com.tpb.hn.Analytics;
 import com.tpb.hn.R;
 import com.tpb.hn.viewer.FragmentPagerAdapter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by theo on 12/12/16.
  */
 public class Preferences {
+    private static final String TAG = Preferences.class.getSimpleName();
 
-    /*Viewer
-    * Pages
-    * Sheet?
-    *
-    * Data
-    * Block ads
-    * Load in background
-    *
-    * Skimmer
-    * Speed
-    * Show hint in seekbar
-    * Show parsed text
-    *
-    * Mercury
-    * Font
-    * Font size
-    * Line spacing
-    *
-    * Browser
-    * Default  mode
-    * Hide navigation in fullscreen
-    * Lazy loading
-    * Redirect through parser
-    * Lock horizontal scrolling
-    *
-    * Comments
-    * Cards
-    * Initial state
-    * Font
-    * Font size
-    * Line spacing
-    * Navigate with volume keys
-    * Enable floating fab
-    * Show child count button
-    * Line count for large comments
-    *
-    * Content
-    * Cards
-    * Font
-    * Font size
-    * Line spacing
-    * Mark new items
-    * Mark read when passed
-    * Scroll to top on refresh
-    * Navigate with volume keys
-    * Show scroll bar
-    * Enable fast scrolling
-    * Enable floating fab
-    *
-    * Theming
-    * Colour scheme
-    * Toolbar position
-    * (App wide font settings?)
-    * */
+    private final Map<String, Integer> mResourceKeys = new HashMap<>();
+    private PreferenceListener mListener;
+    private final SharedPreferences.OnSharedPreferenceChangeListener mPrefListener = (sharePreferences, key) -> {
+      if(mResourceKeys.containsKey(key)) {
+        if(mListener != null) mListener.preferenceChanged(mResourceKeys.get(key));
+      }
+    };
 
-
-    private Preferences() {
+    public Preferences(Context context, PreferenceListener listener, @NonNull @StringRes int... keys) {
+        mListener = listener;
+        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(mPrefListener);
+        for(int i : keys) addKey(context, i);
     }
-    
 
+    public void addKey(Context context, @StringRes int key) {
+        mResourceKeys.put(context.getString(key), key);
+    }
+
+    public void removeKey(Context context, @StringRes int key) {
+        mResourceKeys.remove(context.getString(key));
+    }
+
+    public void unregister(Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(mPrefListener);
+    }
+
+    public interface PreferenceListener {
+
+        void preferenceChanged(@StringRes int key);
+
+    }
 
     public static FragmentPagerAdapter.PageType getViewerPages(Context context) {
         return null;
@@ -322,6 +301,7 @@ public class Preferences {
     }
 
     private static void setBool(Context context, @StringRes int keyId, boolean value) {
+        if(Analytics.VERBOSE) Log.i(TAG, "setBool: " + context.getString(keyId) + " to " + value);
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(context.getString(keyId), value)
@@ -329,6 +309,7 @@ public class Preferences {
     }
 
     private static void setString(Context context, @StringRes int keyId, String value) {
+        if(Analytics.VERBOSE) Log.i(TAG, "setString: " + context.getString(keyId) + " to " + value);
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(context.getString(keyId), value)
@@ -336,6 +317,7 @@ public class Preferences {
     }
 
     private static void setInt(Context context, @StringRes int keyId, int value) {
+        if(Analytics.VERBOSE) Log.i(TAG, "setInt: " + context.getString(keyId) + " to " + value);
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putInt(context.getString(keyId), value)
