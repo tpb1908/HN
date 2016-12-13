@@ -23,9 +23,7 @@ public class Preferences {
     private final Map<String, Integer> mResourceKeys = new HashMap<>();
     private PreferenceListener mListener;
     private final SharedPreferences.OnSharedPreferenceChangeListener mPrefListener = (sharePreferences, key) -> {
-      if(mResourceKeys.containsKey(key)) {
-        if(mListener != null) mListener.preferenceChanged(mResourceKeys.get(key));
-      }
+      if(mResourceKeys.containsKey(key) && mListener != null) mListener.preferenceChanged(mResourceKeys.get(key));
     };
 
     public Preferences(Context context, PreferenceListener listener, @NonNull @StringRes int... keys) {
@@ -52,8 +50,29 @@ public class Preferences {
 
     }
 
-    public static FragmentPagerAdapter.PageType getViewerPages(Context context) {
-        return null;
+    public static void clearAllPreferences(Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply();
+    }
+
+
+    private static FragmentPagerAdapter.PageType pageTypeFromString(String s) {
+        for(FragmentPagerAdapter.PageType pt : FragmentPagerAdapter.PageType.values()) {
+            if(pt.toString().equals(s)) return pt;
+        }
+       return FragmentPagerAdapter.PageType.BROWSER;
+    }
+
+    public static FragmentPagerAdapter.PageType[] getViewerPages(Context context) {
+        final String[] values = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.pref_viewer_pages),
+                        FragmentPagerAdapter.PageType.COMMENTS.toString() +
+                        FragmentPagerAdapter.PageType.BROWSER.toString() +
+                        FragmentPagerAdapter.PageType.TEXT_READER.toString() +
+                        FragmentPagerAdapter.PageType.SKIMMER.toString())
+                .split(",");
+        final FragmentPagerAdapter.PageType[] pages = new FragmentPagerAdapter.PageType[values.length + 1];
+        for(int i = 0; i < pages.length; i++) pages[i] = pageTypeFromString(values[i]);
+        return pages;
     }
 
     public static boolean shouldShowViewerInSheet(Context context) {
@@ -69,7 +88,7 @@ public class Preferences {
     }
 
     public static int getSkimmerSpeed(Context context) {
-        return 0;
+        return getInt(context, R.string.pref_skimmer_speed, 600);
     }
 
     public static boolean shouldShowSkimmerSeekbarHint(Context context) {
@@ -83,7 +102,13 @@ public class Preferences {
     //TODO fonts, sizes, and line spacing
 
     public static FragmentPagerAdapter.PageType getDefaultBrowserMode(Context context) {
-        return null;
+        return pageTypeFromString(
+                getString(
+                        context,
+                        R.string.pref_browser_default,
+                        FragmentPagerAdapter.PageType.BROWSER.toString()
+                )
+        );
     }
 
     public static boolean shouldHideNavigationInBrowserFullscreen(Context context) {
@@ -184,8 +209,10 @@ public class Preferences {
     }
 
 
-    public static void setViewerPages(Context context) {
-        
+    public static void setViewerPages(Context context, FragmentPagerAdapter.PageType[] pages) {
+        String pageString = "";
+        for(FragmentPagerAdapter.PageType page : pages) pageString += page.toString() + ",";
+        setString(context, R.string.pref_viewer_pages, pageString);
     }
 
     public static void setShouldShowViewerInSheet(Context context, boolean show) {
@@ -214,8 +241,8 @@ public class Preferences {
 
     //TODO fonts, sizes, and line spacing
 
-    public static void setDefaultBrowserMode(Context context) {
-        
+    public static void setDefaultBrowserMode(Context context, FragmentPagerAdapter.PageType mode) {
+        setString(context, R.string.pref_browser_default, mode.toString());
     }
 
     public static void setShouldHideNavigationInBrowserFullscreen(Context context, boolean hide) {
