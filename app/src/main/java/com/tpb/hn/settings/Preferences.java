@@ -16,6 +16,8 @@ import java.util.Map;
 
 /**
  * Created by theo on 12/12/16.
+ *
+ //TODO fonts, sizes, line spacing, and colour scheme
  */
 public class Preferences {
     private static final String TAG = Preferences.class.getSimpleName();
@@ -99,8 +101,6 @@ public class Preferences {
         return getBool(context, R.string.pref_skimmer_parsed_text, true);
     }
 
-    //TODO fonts, sizes, and line spacing
-
     public static FragmentPagerAdapter.PageType getDefaultBrowserMode(Context context) {
         return pageTypeFromString(
                 getString(
@@ -135,8 +135,6 @@ public class Preferences {
         return getBool(context, R.string.text_expand_comments, true);
     }
 
-    //TODO fonts, sizes, and line spacing
-
     public static boolean isCommentVolumeNavigationEnabled(Context context) {
         return getBool(context, R.string.pref_comments_volume_navigation, false);
     }
@@ -156,8 +154,6 @@ public class Preferences {
     public static boolean shouldDisplayFeedAsCards(Context context) {
         return getBool(context, R.string.pref_feed_cards, true);
     }
-
-    //TODO fonts, sizes, and line spacing
 
     public static boolean shouldMarkNewItems(Context context) {
         return getBool(context, R.string.pref_feed_mark_new, true);
@@ -186,9 +182,7 @@ public class Preferences {
     public static boolean isFeedFloatingFABEnabled(Context context) {
         return getBool(context, R.string.pref_feed_floating_fab, false);
     }
-    
-    //TODO Colour scheme
-    
+
     public static boolean shouldDisplayToolbarOnBottom(Context context) {
         return getBool(context, R.string.pref_theme_toolbar_bottom, false);
     }
@@ -239,8 +233,6 @@ public class Preferences {
         setBool(context, R.string.pref_skimmer_parsed_text, show);
     }
 
-    //TODO fonts, sizes, and line spacing
-
     public static void setDefaultBrowserMode(Context context, FragmentPagerAdapter.PageType mode) {
         setString(context, R.string.pref_browser_default, mode.toString());
     }
@@ -269,8 +261,6 @@ public class Preferences {
         setBool(context, R.string.text_expand_comments, expand);
     }
 
-    //TODO fonts, sizes, and line spacing
-
     public static void setCommentVolumeNavigationEnabled(Context context, boolean enabled) {
         setBool(context, R.string.pref_comments_volume_navigation, enabled);
     }
@@ -290,8 +280,6 @@ public class Preferences {
     public static void setShouldDsetplayFeedAsCards(Context context, boolean cards) {
         setBool(context, R.string.pref_feed_cards, cards);
     }
-
-    //TODO fonts, sizes, and line spacing
 
     public static void setShouldMarkNewItems(Context context, boolean mark) {
         setBool(context, R.string.pref_feed_mark_new, mark);
@@ -320,8 +308,6 @@ public class Preferences {
     public static void setFeedFloatingFABEnabled(Context context, boolean enabled) {
         setBool(context, R.string.pref_feed_floating_fab, enabled);
     }
-
-    //TODO Colour scheme
 
     public static void setShouldDisplayToolbarOnBottom(Context context, boolean bottom) {
         setBool(context, R.string.pref_theme_toolbar_bottom, bottom);

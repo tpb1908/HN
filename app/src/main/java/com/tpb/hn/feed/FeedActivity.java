@@ -46,6 +46,7 @@ import com.tpb.hn.helpers.AdBlocker;
 import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Login;
+import com.tpb.hn.settings.Preferences;
 import com.tpb.hn.settings.SettingsActivity;
 import com.tpb.hn.settings.SharedPrefsController;
 import com.tpb.hn.user.UserActivity;
@@ -110,6 +111,10 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTracker = ((Analytics) getApplication()).getDefaultTracker();
+
+        new Preferences(this, key -> Log.i(TAG, "preferenceChanged: " + getString(key)), R.string.pref_feed_floating_fab, R.string.pref_feed_scroll_bar);
+        new Handler().postDelayed(() -> Preferences.setFeedFloatingFABEnabled(FeedActivity.this, true), 1000);
+
 
         final SharedPrefsController prefs = SharedPrefsController.getInstance(getApplicationContext());
 
