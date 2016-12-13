@@ -205,6 +205,7 @@ public class Loader extends BroadcastReceiver {
     }
 
     public void saveItem(final Item item, final Context context, final ItemSaveListener saveListener) {
+
         if(item.getUrl() != null) {
             final WebView wv = new WebView(context);
             wv.setWebViewClient(new WebViewClient() {
@@ -241,6 +242,17 @@ public class Loader extends BroadcastReceiver {
                     } else {
                         saveListener.saveError(item, code);
                     }
+                }
+            });
+
+            networkLoadChildren(item.getId(), new CommentLoader() {
+                @Override
+                public void commentsLoaded(Comment rootComment) {
+                }
+
+                @Override
+                public void commentError(int id, int code) {
+
                 }
             });
 

@@ -116,4 +116,43 @@
         ]]>
     </string>
 
+    <string name="pref_theme_toolbar_bottom">THEME_T_B</string>
+    <string name="pref_viewer_pages">VIEWER_PS</string>
+    <string name="pref_viewer_sheet">VIEWER_S</string>
+    <string name="pref_data_ad_block">DATA_AD_B</string>
+    <string name="pref_data_bg_loading">DATA_BG_L</string>
+    <string name="pref_skimmer_speed">SKIMMER_S</string>
+    <string name="pref_skimmer_seekbar_hint">SKIMMER_S_H</string>
+    <string name="pref_skimmer_parsed_text">SKIMMER_P_T</string>
+    <string name="pref_reader_font">READER_F</string>
+    <string name="pref_reader_font_size">READER_F_S</string>
+    <string name="pref_reader_line_spacing">READER_L_S</string>
+    <string name="pref_browser_default">BROWSER_D</string>
+    <string name="pref_browser_navigation">BROWSER_N</string>
+    <string name="pref_browser_lazy">BROWSER_L_L</string>
+    <string name="pref_browser_redirect">BROWSER_R</string>
+    <string name="pref_browser_horizontal_scrolling">BROWSER_H_S</string>
+    <string name="pref_comments_default_mode">COMMENTS_D_M</string>
+    <string name="pref_comments_cards">COMMENTS_C</string>
+    <string name="pref_comments_font">COMMENTS_F</string>
+    <string name="pref_comments_font_size">COMMENTS_F_S</string>
+    <string name="pref_comments_line_spacing">COMMENTS_L_S</string>
+    <string name="pref_comments_volume_navigation">COMMENTS_V_N</string>
+    <string name="pref_comments_floating_fab">COMMENTS_F_F</string>
+    <string name="pref_comments_child_count">COMMENTS_C_C</string>
+    <string name="pref_comments_shorten_long_comments">COMMENTS_S_L_C</string>
+    <string name="pref_feed_cards">FEED_C</string>
+    <string name="pref_feed_default_state">FEED_D_S</string>
+    <string name="pref_feed_font">FEED_F</string>
+    <string name="pref_feed_font_size">FEED_F_S</string>
+    <string name="pref_feed_line_spacing">FEED_L_S</string>
+    <string name="pref_feed_mark_read">FEED_M_R</string>
+    <string name="pref_feed_scroll_to_top">FEED_S_T_T</string>
+    <string name="pref_feed_volume_navigation">FEED_V_N</string>
+    <string name="pref_feed_scroll_bar">FEED_S_B</string>
+    <string name="pref_feed_fast_scrolling_bar">FEED_F_S_B</string>
+    <string name="pref_feed_floating_fab">FEED_F_F</string>
+    <string name="pref_feed_mark_new">FEED_M_N</string>
+
+
 </resources>
