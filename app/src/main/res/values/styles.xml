@@ -29,6 +29,12 @@
         <item name="drawableColor">@color/md_white_1000</item>
     </style>
 
+    <style name="AppTheme.Translucent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <style name="PivotLetter">
         <item name="android:textColor">@color/pivot_text</item>
     </style>

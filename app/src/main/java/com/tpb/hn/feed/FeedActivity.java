@@ -46,6 +46,7 @@ import com.tpb.hn.helpers.AdBlocker;
 import com.tpb.hn.helpers.Formatter;
 import com.tpb.hn.helpers.Util;
 import com.tpb.hn.network.Login;
+import com.tpb.hn.settings.FeedSettingsActivity;
 import com.tpb.hn.settings.Preferences;
 import com.tpb.hn.settings.SettingsActivity;
 import com.tpb.hn.settings.SharedPrefsController;
@@ -218,6 +219,9 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
             }
         }, 1000 * 60);
         checkThemeChange(false);
+
+        final Intent i = new Intent(FeedActivity.this, FeedSettingsActivity.class);
+        startActivity(i);
     }
 
     @Override
