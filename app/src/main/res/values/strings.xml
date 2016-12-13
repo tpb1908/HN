@@ -90,6 +90,7 @@
     <string name="action_reset">Reset settings</string>
     <string name="action_back">Back</string>
     <string name="action_later">LATER</string>
+    <string name="action_feed_options">Feed options</string>
 
     <string name="html" translatable="false">
         <![CDATA[
@@ -141,6 +142,7 @@
     <string name="pref_comments_floating_fab" translatable="false">COMMENTS_FLOATING_FAB</string>
     <string name="pref_comments_child_count" translatable="false">COMMENTS_CHILD_COUNT</string>
     <string name="pref_comments_shorten_long_comments" translatable="false">COMMENTS_SHORTEN_LONG_COMMENTS</string>
+
     <string name="pref_feed_cards" translatable="false">FEED_CARDS</string>
     <string name="pref_feed_default_state" translatable="false">FEED_DEFAULT_STATE</string>
     <string name="pref_feed_font" translatable="false">FEED_FONT</string>

@@ -220,8 +220,6 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
         }, 1000 * 60);
         checkThemeChange(false);
 
-        final Intent i = new Intent(FeedActivity.this, FeedSettingsActivity.class);
-        startActivity(i);
     }
 
     @Override
@@ -519,15 +517,19 @@ public class FeedActivity extends AppCompatActivity implements FeedAdapter.FeedM
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_content, menu);
+        getMenuInflater().inflate(R.menu.menu_feed, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivityForResult(new Intent(FeedActivity.this, SettingsActivity.class),
-                1,
-                getSharedTransition().toBundle());
+        if(item.getItemId() == R.id.action_settings) {
+            startActivityForResult(new Intent(FeedActivity.this, SettingsActivity.class),
+                    1,
+                    getSharedTransition().toBundle());
+        } else {
+            startActivity(new Intent(FeedActivity.this, FeedSettingsActivity.class));
+        }
         return true;
     }
 

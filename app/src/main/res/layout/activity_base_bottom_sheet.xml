@@ -16,8 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-        app:behavior_peekHeight="128dp"
-        app:behavior_hideable="true">
+        app:behavior_peekHeight="172dp"
+        app:behavior_hideable="true"
+        android:background="@color/colorPrimary">
 
 
     </FrameLayout>

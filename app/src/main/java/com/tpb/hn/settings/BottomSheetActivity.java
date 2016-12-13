@@ -52,6 +52,7 @@ public abstract class BottomSheetActivity extends AppCompatActivity {
                     }
                 });
         ((FrameLayout) findViewById(R.id.bottom_sheet)).addView(getView(this, (ViewGroup) findViewById(R.id.bottom_sheet)));
+        setStatusBarDim(true);
         ButterKnife.bind(this);
         onSheetCreate(savedInstanceState);
     }
